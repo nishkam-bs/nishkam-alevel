@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Concept Mastery — AQA A-Level Business</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0d1b34;--navy2:#172a4a;--gold:#eeb834;--gold-soft:#fff8e5;
+  --blue:#3a69b4;--green:#288566;--red:#be4848;--cream:#f8f6f0;
+  --ink:#191f2a;--muted:#6a7485;--line:#dfe4ea;--white:#fff;--soft:#f3f5f8;
+  --shadow:0 12px 30px rgba(13,27,52,.08);--radius:16px;
+}
+*{box-sizing:border-box;margin:0}
+html{scrollbar-gutter:stable}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.55;overflow-y:scroll}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--blue);text-decoration:none}
+
+/* Layout */
+.page{max-width:900px;margin:0 auto;padding:24px 20px 80px}
+
+/* Header */
+.hdr{background:var(--navy);color:white;padding:28px 24px;border-radius:var(--radius);margin-bottom:28px;position:relative;overflow:hidden}
+.hdr::after{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:var(--gold);opacity:.08;border-radius:50%}
+.hdr h1{font-size:26px;font-weight:900;letter-spacing:-.02em}
+.hdr p{font-size:14px;color:#a0b0c8;margin-top:6px;max-width:600px;line-height:1.65}
+.hdr .school{font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--gold);font-weight:600;margin-bottom:14px}
+
+/* Search */
+.search-wrap{position:relative;margin-bottom:24px}
+.search-wrap input{width:100%;padding:16px 20px 16px 48px;border:2px solid var(--line);border-radius:14px;font-size:16px;background:var(--white);transition:border .2s}
+.search-wrap input:focus{outline:none;border-color:var(--blue)}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:20px}
+.suggestions{position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);z-index:10;display:none;max-height:300px;overflow-y:auto}
+.suggestions.show{display:block}
+.sug-item{padding:12px 20px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--soft);display:flex;justify-content:space-between;align-items:center}
+.sug-item:hover{background:var(--soft)}
+.sug-item:last-child{border-bottom:none}
+.sug-spec{font-size:11px;color:var(--muted)}
+
+/* Cards */
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);overflow:hidden;min-width:0;margin-bottom:16px}
+.card h3{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:8px}
+
+/* Spec badge */
+.spec-badge{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:white;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:600;margin-bottom:20px}
+.spec-badge span{color:var(--gold)}
+
+/* Five point sections */
+.fp{border-left:4px solid var(--line);padding:16px 20px;margin-bottom:12px;border-radius:0 12px 12px 0;background:var(--white)}
+.fp-know{border-left-color:var(--blue)}
+.fp-understand{border-left-color:var(--green)}
+.fp-analyse{border-left-color:var(--gold)}
+.fp-apply{border-left-color:#7c5cbf}
+.fp-evaluate{border-left-color:var(--red)}
+.fp h4{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.fp-know h4{color:var(--blue)}
+.fp-understand h4{color:var(--green)}
+.fp-analyse h4{color:#8a6d1b}
+.fp-apply h4{color:#7c5cbf}
+.fp-evaluate h4{color:var(--red)}
+.fp p{font-size:14px;line-height:1.7}
+
+/* Chain visual */
+.chain{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin:10px 0}
+.chain-link{padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;position:relative}
+.chain-arrow{color:var(--muted);font-size:16px;margin-left:14px}
+
+/* Endpoint pills */
+.ep-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ep-pill{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;background:var(--soft);border:1px solid var(--line);cursor:pointer;transition:all .2s}
+.ep-pill:hover,.ep-pill.on{background:var(--navy);color:white;border-color:var(--navy)}
+
+/* Alerts */
+.al{padding:15px 16px;border-radius:12px;font-size:13px;line-height:1.6;overflow-wrap:break-word;word-wrap:break-word;margin-bottom:10px}
+.al-r{background:#fff5f5;border:1px solid #fecaca}
+.al-g{background:#f0fdf4;border:1px solid #bbf7d0}
+.al-b{background:#eff6ff;border:1px solid #bfdbfe}
+.al-y{background:#fffbeb;border:1px solid #fde68a}
+.al b{display:block;margin-bottom:4px}
+
+/* Connected concepts */
+.cc-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.cc-pill{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;background:var(--gold-soft);border:1px solid #ecd58a;cursor:pointer;transition:all .2s;color:#6b5400}
+.cc-pill:hover{background:var(--gold);color:var(--navy)}
+
+/* Test me */
+.test-q{padding:16px;border-radius:12px;background:var(--soft);margin-bottom:10px}
+.test-q p{font-size:14px;line-height:1.6;margin-bottom:10px}
+.test-opts label{display:block;padding:10px 14px;border-radius:8px;margin-bottom:6px;cursor:pointer;font-size:13px;border:1px solid var(--line);background:var(--white);transition:all .15s}
+.test-opts label:hover{border-color:var(--blue);background:#f0f5fc}
+.test-opts input{margin-right:8px}
+.test-fb{display:none;margin-top:10px}
+
+/* Buttons */
+.btn{border:none;padding:10px 20px;border-radius:10px;font-size:14px;font-weight:700;transition:all .2s}
+.btn-p{background:var(--navy);color:white}.btn-p:hover{background:var(--navy2)}
+.btn-o{background:transparent;border:2px solid var(--line);color:var(--navy)}.btn-o:hover{border-color:var(--navy)}
+.btn-g{background:var(--green);color:white}
+.btn-sm{padding:8px 14px;font-size:12px}
+
+/* Loading */
+.ld{text-align:center;padding:30px 0;display:none}
+.ld.show{display:block}
+.spin{width:28px;height:28px;border:3px solid var(--line);border-top-color:var(--navy);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 10px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Result container overflow protection */
+#conceptResult{width:100%;min-width:0;overflow:hidden}
+#conceptResult *{max-width:100%!important;box-sizing:border-box!important;min-width:0!important}
+#conceptResult .grid{display:block!important}
+#conceptResult table{width:100%!important;table-layout:fixed!important}
+#conceptResult pre,#conceptResult code{white-space:pre-wrap!important;word-break:break-word!important;overflow:hidden!important}
+
+/* Section toggles */
+.section-toggle{cursor:pointer;padding:14px 18px;background:var(--soft);border-radius:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px;color:var(--navy);border:1px solid var(--line);transition:all .2s}
+.section-toggle:hover{border-color:var(--navy)}
+.section-body{display:none;padding:0 4px;margin-bottom:16px}
+.section-body.show{display:block}
+
+/* Responsive */
+@media(max-width:600px){.page{padding:16px 12px}.hdr{padding:20px 16px}.hdr h1{font-size:20px}}
+
+/* Visual explainer */
+.vis-screen{background:var(--navy);border-radius:var(--radius);padding:32px 24px;min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.vis-step{opacity:0;transform:translateY(20px);transition:all .6s ease;text-align:center;margin:6px 0}
+.vis-step.show{opacity:1;transform:translateY(0)}
+.vis-concept{font-size:22px;font-weight:900;color:var(--gold);padding:12px 24px;border:2px solid var(--gold);border-radius:12px;display:inline-block}
+.vis-arrow{font-size:24px;color:#4a6a9a;margin:4px 0}
+.vis-link{font-size:15px;font-weight:600;color:#c8d8f0;padding:10px 20px;background:rgba(255,255,255,.08);border-radius:10px;display:inline-block;max-width:90%}
+.vis-endpoint{font-size:18px;font-weight:900;color:var(--green);padding:12px 24px;border:2px solid var(--green);border-radius:12px;display:inline-block}
+.vis-break{font-size:16px;font-weight:700;color:var(--red);padding:10px 20px;background:rgba(190,72,72,.15);border:1px solid rgba(190,72,72,.3);border-radius:10px;display:inline-block;max-width:90%}
+.vis-controls{display:flex;gap:10px;justify-content:center;margin-top:16px}
+.vis-progress{width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:16px}
+.vis-progress-bar{height:100%;background:var(--gold);border-radius:2px;transition:width .4s ease;width:0}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<!-- Header -->
+<div class="hdr">
+  <div class="school">AQA A-Level Business 7132</div>
+  <a href="index.html" class="back">Back to all tools</a>
+  <h1>Concept Mastery</h1>
+  <p>Search any concept on the AQA specification. Understand it, analyse it, apply it, evaluate it — and see exactly where it leads in an exam.</p>
+</div>
+
+<!-- Search -->
+<div class="search-wrap">
+  <div class="search-icon">&#x1F50D;</div>
+  <input id="searchInput" type="text" placeholder="What do you want to master?" autocomplete="off" />
+  <div class="suggestions" id="suggestions"></div>
+</div>
+
+<!-- Loading -->
+<div class="ld" id="mainLoading">
+  <div class="spin"></div>
+  <p style="font-weight:700;color:var(--navy)">Building your concept mastery...</p>
+  <p style="color:var(--muted);font-size:13px;margin-top:4px">This takes about 15 seconds. Hang tight.</p>
+</div>
+
+<!-- Result -->
+<div id="conceptResult"></div>
+
+</div>
+
+<script>
+// ══════════ AQA 7132 CONCEPT DATABASE ══════════
+const CONCEPTS=[
+  // Unit 3.1 — What is business?
+  {name:"Mission statement",spec:"3.1.1",unit:"What is business?",topic:"Understanding the nature and purpose of business"},
+  {name:"Corporate objectives",spec:"3.1.1",unit:"What is business?",topic:"Understanding the nature and purpose of business"},
+  {name:"Stakeholders",spec:"3.1.1",unit:"What is business?",topic:"Understanding the nature and purpose of business"},
+  {name:"Shareholder concept",spec:"3.1.1",unit:"What is business?",topic:"Understanding the nature and purpose of business"},
+  {name:"Revenue",spec:"3.1.2",unit:"What is business?",topic:"Understanding different business forms"},
+  {name:"Fixed costs",spec:"3.1.2",unit:"What is business?",topic:"Understanding different business forms"},
+  {name:"Variable costs",spec:"3.1.2",unit:"What is business?",topic:"Understanding different business forms"},
+  {name:"Profit",spec:"3.1.2",unit:"What is business?",topic:"Understanding different business forms"},
+  {name:"Limited liability",spec:"3.1.2",unit:"What is business?",topic:"Understanding different business forms"},
+  {name:"Sole trader",spec:"3.1.2",unit:"What is business?",topic:"Understanding different business forms"},
+  {name:"Partnership",spec:"3.1.2",unit:"What is business?",topic:"Understanding different business forms"},
+  {name:"Private limited company",spec:"3.1.2",unit:"What is business?",topic:"Understanding different business forms"},
+  {name:"Public limited company",spec:"3.1.2",unit:"What is business?",topic:"Understanding different business forms"},
+  {name:"Social enterprise",spec:"3.1.2",unit:"What is business?",topic:"Understanding different business forms"},
+  // Unit 3.2 — Managers, leadership and decision making
+  {name:"Leadership",spec:"3.2.1",unit:"Managers, leadership and decision making",topic:"Understanding management, leadership and decision making"},
+  {name:"Management",spec:"3.2.1",unit:"Managers, leadership and decision making",topic:"Understanding management, leadership and decision making"},
+  {name:"Tannenbaum Schmidt",spec:"3.2.1",unit:"Managers, leadership and decision making",topic:"Understanding management, leadership and decision making"},
+  {name:"Decision trees",spec:"3.2.2",unit:"Managers, leadership and decision making",topic:"Understanding management decision making"},
+  {name:"Stakeholder mapping",spec:"3.2.3",unit:"Managers, leadership and decision making",topic:"Understanding the role and importance of stakeholders"},
+  {name:"Mendelow's Matrix",spec:"3.2.3",unit:"Managers, leadership and decision making",topic:"Understanding the role and importance of stakeholders"},
+  // Unit 3.3 — Decision making to improve marketing performance
+  {name:"Marketing objectives",spec:"3.3.1",unit:"Decision making to improve marketing performance",topic:"Setting marketing objectives"},
+  {name:"Market share",spec:"3.3.1",unit:"Decision making to improve marketing performance",topic:"Setting marketing objectives"},
+  {name:"Price elasticity of demand",spec:"3.3.2",unit:"Decision making to improve marketing performance",topic:"Understanding markets and customers"},
+  {name:"Income elasticity of demand",spec:"3.3.2",unit:"Decision making to improve marketing performance",topic:"Understanding markets and customers"},
+  {name:"Market mapping",spec:"3.3.2",unit:"Decision making to improve marketing performance",topic:"Understanding markets and customers"},
+  {name:"Marketing mix",spec:"3.3.3",unit:"Decision making to improve marketing performance",topic:"Segmentation, targeting, positioning"},
+  {name:"Product life cycle",spec:"3.3.3",unit:"Decision making to improve marketing performance",topic:"Segmentation, targeting, positioning"},
+  {name:"Boston Matrix",spec:"3.3.3",unit:"Decision making to improve marketing performance",topic:"Segmentation, targeting, positioning"},
+  {name:"Pricing strategies",spec:"3.3.3",unit:"Decision making to improve marketing performance",topic:"Segmentation, targeting, positioning"},
+  {name:"Niche marketing",spec:"3.3.3",unit:"Decision making to improve marketing performance",topic:"Segmentation, targeting, positioning"},
+  {name:"Mass marketing",spec:"3.3.3",unit:"Decision making to improve marketing performance",topic:"Segmentation, targeting, positioning"},
+  // Unit 3.4 — Decision making to improve operational performance
+  {name:"Operational objectives",spec:"3.4.1",unit:"Decision making to improve operational performance",topic:"Setting operational objectives"},
+  {name:"Capacity utilisation",spec:"3.4.2",unit:"Decision making to improve operational performance",topic:"Analysing operational performance"},
+  {name:"Labour productivity",spec:"3.4.2",unit:"Decision making to improve operational performance",topic:"Analysing operational performance"},
+  {name:"Unit costs",spec:"3.4.2",unit:"Decision making to improve operational performance",topic:"Analysing operational performance"},
+  {name:"Lean production",spec:"3.4.3",unit:"Decision making to improve operational performance",topic:"Increasing efficiency and productivity"},
+  {name:"Just-in-time",spec:"3.4.3",unit:"Decision making to improve operational performance",topic:"Increasing efficiency and productivity"},
+  {name:"Kaizen",spec:"3.4.3",unit:"Decision making to improve operational performance",topic:"Increasing efficiency and productivity"},
+  {name:"Economies of scale",spec:"3.4.3",unit:"Decision making to improve operational performance",topic:"Increasing efficiency and productivity"},
+  {name:"Diseconomies of scale",spec:"3.4.3",unit:"Decision making to improve operational performance",topic:"Increasing efficiency and productivity"},
+  {name:"Quality assurance",spec:"3.4.4",unit:"Decision making to improve operational performance",topic:"Improving quality"},
+  {name:"Quality control",spec:"3.4.4",unit:"Decision making to improve operational performance",topic:"Improving quality"},
+  {name:"Total quality management",spec:"3.4.4",unit:"Decision making to improve operational performance",topic:"Improving quality"},
+  {name:"Inventory control",spec:"3.4.5",unit:"Decision making to improve operational performance",topic:"Managing inventory and supply chains"},
+  {name:"Supply chain management",spec:"3.4.5",unit:"Decision making to improve operational performance",topic:"Managing inventory and supply chains"},
+  // Unit 3.5 — Decision making to improve financial performance
+  {name:"Financial objectives",spec:"3.5.1",unit:"Decision making to improve financial performance",topic:"Setting financial objectives"},
+  {name:"Cash flow",spec:"3.5.1",unit:"Decision making to improve financial performance",topic:"Setting financial objectives"},
+  {name:"Revenue objectives",spec:"3.5.1",unit:"Decision making to improve financial performance",topic:"Setting financial objectives"},
+  {name:"Gross profit",spec:"3.5.2",unit:"Decision making to improve financial performance",topic:"Analysing financial performance"},
+  {name:"Operating profit",spec:"3.5.2",unit:"Decision making to improve financial performance",topic:"Analysing financial performance"},
+  {name:"Operating profit margin",spec:"3.5.2",unit:"Decision making to improve financial performance",topic:"Analysing financial performance"},
+  {name:"Profit for the year",spec:"3.5.2",unit:"Decision making to improve financial performance",topic:"Analysing financial performance"},
+  {name:"ROCE",spec:"3.5.2",unit:"Decision making to improve financial performance",topic:"Analysing financial performance"},
+  {name:"Gearing",spec:"3.5.2",unit:"Decision making to improve financial performance",topic:"Analysing financial performance"},
+  {name:"Current ratio",spec:"3.5.2",unit:"Decision making to improve financial performance",topic:"Analysing financial performance"},
+  {name:"Contribution",spec:"3.5.3",unit:"Decision making to improve financial performance",topic:"Making financial decisions: sources of finance"},
+  {name:"Break-even analysis",spec:"3.5.3",unit:"Decision making to improve financial performance",topic:"Making financial decisions: sources of finance"},
+  {name:"Margin of safety",spec:"3.5.3",unit:"Decision making to improve financial performance",topic:"Making financial decisions: sources of finance"},
+  {name:"Budgets",spec:"3.5.3",unit:"Decision making to improve financial performance",topic:"Making financial decisions: sources of finance"},
+  {name:"Cash flow forecast",spec:"3.5.3",unit:"Decision making to improve financial performance",topic:"Making financial decisions: sources of finance"},
+  {name:"Debt factoring",spec:"3.5.3",unit:"Decision making to improve financial performance",topic:"Making financial decisions: sources of finance"},
+  // Unit 3.6 — Decision making to improve HR performance
+  {name:"HR objectives",spec:"3.6.1",unit:"Decision making to improve HR performance",topic:"Setting HR objectives"},
+  {name:"Labour turnover",spec:"3.6.1",unit:"Decision making to improve HR performance",topic:"Setting HR objectives"},
+  {name:"Motivation",spec:"3.6.2",unit:"Decision making to improve HR performance",topic:"Analysing HR performance"},
+  {name:"Taylor",spec:"3.6.2",unit:"Decision making to improve HR performance",topic:"Analysing HR performance"},
+  {name:"Maslow",spec:"3.6.2",unit:"Decision making to improve HR performance",topic:"Analysing HR performance"},
+  {name:"Herzberg",spec:"3.6.2",unit:"Decision making to improve HR performance",topic:"Analysing HR performance"},
+  {name:"Delegation",spec:"3.6.3",unit:"Decision making to improve HR performance",topic:"Making HR decisions: improving organisational design"},
+  {name:"Centralisation",spec:"3.6.3",unit:"Decision making to improve HR performance",topic:"Making HR decisions: improving organisational design"},
+  {name:"Decentralisation",spec:"3.6.3",unit:"Decision making to improve HR performance",topic:"Making HR decisions: improving organisational design"},
+  {name:"Organisational structure",spec:"3.6.3",unit:"Decision making to improve HR performance",topic:"Making HR decisions: improving organisational design"},
+  {name:"Span of control",spec:"3.6.3",unit:"Decision making to improve HR performance",topic:"Making HR decisions: improving organisational design"},
+  {name:"Organisational culture",spec:"3.6.4",unit:"Decision making to improve HR performance",topic:"Making HR decisions: improving employer-employee relations"},
+  {name:"Handy's culture types",spec:"3.6.4",unit:"Decision making to improve HR performance",topic:"Making HR decisions: improving employer-employee relations"},
+  {name:"Trade unions",spec:"3.6.4",unit:"Decision making to improve HR performance",topic:"Making HR decisions: improving employer-employee relations"},
+  // Unit 3.7 — Analysing the strategic position of a business
+  {name:"Strategic direction",spec:"3.7.1",unit:"Analysing the strategic position of a business",topic:"Mission, corporate objectives and strategy"},
+  {name:"Ansoff's Matrix",spec:"3.7.1",unit:"Analysing the strategic position of a business",topic:"Mission, corporate objectives and strategy"},
+  {name:"SWOT analysis",spec:"3.7.2",unit:"Analysing the strategic position of a business",topic:"Analysing the external environment"},
+  {name:"PESTLE",spec:"3.7.2",unit:"Analysing the strategic position of a business",topic:"Analysing the external environment"},
+  {name:"Porter's Five Forces",spec:"3.7.2",unit:"Analysing the strategic position of a business",topic:"Analysing the external environment"},
+  {name:"Exchange rates",spec:"3.7.3",unit:"Analysing the strategic position of a business",topic:"Analysing the external environment: economic change"},
+  {name:"Interest rates",spec:"3.7.3",unit:"Analysing the strategic position of a business",topic:"Analysing the external environment: economic change"},
+  {name:"Investment appraisal",spec:"3.7.4",unit:"Analysing the strategic position of a business",topic:"Analysing strategic options: financial"},
+  {name:"Payback",spec:"3.7.4",unit:"Analysing the strategic position of a business",topic:"Analysing strategic options: financial"},
+  {name:"ARR",spec:"3.7.4",unit:"Analysing the strategic position of a business",topic:"Analysing strategic options: financial"},
+  {name:"NPV",spec:"3.7.4",unit:"Analysing the strategic position of a business",topic:"Analysing strategic options: financial"},
+  // Unit 3.8 — Choosing strategic direction
+  {name:"Market penetration",spec:"3.8.1",unit:"Choosing strategic direction",topic:"Strategic direction: choosing which markets to compete in"},
+  {name:"Market development",spec:"3.8.1",unit:"Choosing strategic direction",topic:"Strategic direction: choosing which markets to compete in"},
+  {name:"Diversification",spec:"3.8.1",unit:"Choosing strategic direction",topic:"Strategic direction: choosing which markets to compete in"},
+  {name:"Product development",spec:"3.8.1",unit:"Choosing strategic direction",topic:"Strategic direction: choosing which markets to compete in"},
+  {name:"Porter's Generic Strategies",spec:"3.8.2",unit:"Choosing strategic direction",topic:"Strategic positioning"},
+  {name:"Cost leadership",spec:"3.8.2",unit:"Choosing strategic direction",topic:"Strategic positioning"},
+  {name:"Differentiation",spec:"3.8.2",unit:"Choosing strategic direction",topic:"Strategic positioning"},
+  // Unit 3.9 — Strategic methods
+  {name:"Organic growth",spec:"3.9.1",unit:"Strategic methods: how to pursue strategies",topic:"Growth"},
+  {name:"Mergers and acquisitions",spec:"3.9.1",unit:"Strategic methods: how to pursue strategies",topic:"Growth"},
+  {name:"Horizontal integration",spec:"3.9.1",unit:"Strategic methods: how to pursue strategies",topic:"Growth"},
+  {name:"Vertical integration",spec:"3.9.1",unit:"Strategic methods: how to pursue strategies",topic:"Growth"},
+  {name:"Conglomerate integration",spec:"3.9.1",unit:"Strategic methods: how to pursue strategies",topic:"Growth"},
+  // Unit 3.10 — Managing strategic change
+  {name:"Lewin's Force Field",spec:"3.10.1",unit:"Managing strategic change",topic:"Managing change"},
+  {name:"Kotter and Schlesinger",spec:"3.10.1",unit:"Managing strategic change",topic:"Managing change"},
+  {name:"Elkington's Triple Bottom Line",spec:"3.10.2",unit:"Managing strategic change",topic:"Problems with strategy and why strategies fail"},
+  {name:"Carroll's CSR Pyramid",spec:"3.10.2",unit:"Managing strategic change",topic:"Problems with strategy and why strategies fail"},
+  {name:"Contingency planning",spec:"3.10.2",unit:"Managing strategic change",topic:"Problems with strategy and why strategies fail"},
+  {name:"Critical Path Analysis",spec:"3.10.3",unit:"Managing strategic change",topic:"Managing strategic implementation"},
+  {name:"Network diagrams",spec:"3.10.3",unit:"Managing strategic change",topic:"Managing strategic implementation"},
+  // Additional frequently tested
+  {name:"Performance-related pay",spec:"3.6.2",unit:"Decision making to improve HR performance",topic:"Analysing HR performance"},
+  {name:"Piece rate",spec:"3.6.2",unit:"Decision making to improve HR performance",topic:"Analysing HR performance"},
+  {name:"Competitiveness",spec:"3.7.2",unit:"Analysing the strategic position of a business",topic:"Analysing the external environment"},
+  {name:"Automation",spec:"3.4.3",unit:"Decision making to improve operational performance",topic:"Increasing efficiency and productivity"},
+  {name:"Capital intensive",spec:"3.4.3",unit:"Decision making to improve operational performance",topic:"Increasing efficiency and productivity"},
+  {name:"Labour intensive",spec:"3.4.3",unit:"Decision making to improve operational performance",topic:"Increasing efficiency and productivity"},
+  {name:"Outsourcing",spec:"3.4.5",unit:"Decision making to improve operational performance",topic:"Managing inventory and supply chains"},
+];
+
+// Aliases for fuzzy search
+const ALIASES={
+  "ped":"Price elasticity of demand","yed":"Income elasticity of demand",
+  "jit":"Just-in-time","tqm":"Total quality management","cpa":"Critical Path Analysis",
+  "roce":"ROCE","arr":"ARR","npv":"NPV","prp":"Performance-related pay",
+  "cap util":"Capacity utilisation","capacity util":"Capacity utilisation",
+  "break even":"Break-even analysis","breakeven":"Break-even analysis",
+  "profit margin":"Operating profit margin","op margin":"Operating profit margin",
+  "cash flow":"Cash flow","cashflow":"Cash flow",
+  "boston":"Boston Matrix","bcg":"Boston Matrix",
+  "ansoff":"Ansoff's Matrix","ansoffs":"Ansoff's Matrix",
+  "porter":"Porter's Five Forces","porters":"Porter's Five Forces",
+  "five forces":"Porter's Five Forces","5 forces":"Porter's Five Forces",
+  "generic strategies":"Porter's Generic Strategies",
+  "herzberg":"Herzberg","maslow":"Maslow","taylor":"Taylor",
+  "lewin":"Lewin's Force Field","kotter":"Kotter and Schlesinger",
+  "handy":"Handy's culture types","elkington":"Elkington's Triple Bottom Line",
+  "carroll":"Carroll's CSR Pyramid","mendelow":"Mendelow's Matrix",
+  "econ of scale":"Economies of scale","economies":"Economies of scale",
+  "disecon":"Diseconomies of scale",
+  "debt factor":"Debt factoring",
+  "swot":"SWOT analysis","pestle":"PESTLE",
+  "org structure":"Organisational structure","org culture":"Organisational culture",
+  "lt":"Labour turnover","labour turn":"Labour turnover",
+  "span":"Span of control","delegation":"Delegation",
+  "network":"Network diagrams","critical path":"Critical Path Analysis",
+  "contingency":"Contingency planning",
+  "social ent":"Social enterprise","sole":"Sole trader","plc":"Public limited company","ltd":"Private limited company",
+  "horizontal":"Horizontal integration","vertical":"Vertical integration",
+  "organic":"Organic growth","merger":"Mergers and acquisitions","acquisition":"Mergers and acquisitions",
+  "kaizen":"Kaizen","lean":"Lean production",
+  "inv control":"Inventory control","stock control":"Inventory control",
+  "qa":"Quality assurance","qc":"Quality control",
+  "exchange":"Exchange rates","interest":"Interest rates",
+  "payback":"Payback","budget":"Budgets",
+  "contribution":"Contribution","margin of safety":"Margin of safety","mos":"Margin of safety",
+  "gearing":"Gearing","current ratio":"Current ratio",
+  "decision tree":"Decision trees",
+  "stakeholder":"Stakeholders","shareholder":"Shareholder concept",
+  "mission":"Mission statement","corporate obj":"Corporate objectives",
+};
+
+const searchInput=document.getElementById('searchInput');
+const sugBox=document.getElementById('suggestions');
+const resultBox=document.getElementById('conceptResult');
+const loadingBox=document.getElementById('mainLoading');
+
+// Search & autocomplete
+searchInput.addEventListener('input',function(){
+  const val=this.value.trim().toLowerCase();
+  if(val.length<2){sugBox.classList.remove('show');return;}
+  // Check aliases first
+  let matches=[];
+  for(const[alias,target]of Object.entries(ALIASES)){
+    if(alias.includes(val)){
+      const c=CONCEPTS.find(x=>x.name===target);
+      if(c&&!matches.find(m=>m.name===c.name))matches.push(c);
+    }
+  }
+  // Then search concept names
+  CONCEPTS.forEach(c=>{
+    if(c.name.toLowerCase().includes(val)&&!matches.find(m=>m.name===c.name))matches.push(c);
+  });
+  if(matches.length===0){sugBox.classList.remove('show');return;}
+  sugBox.innerHTML=matches.slice(0,8).map(c=>`<div class="sug-item" data-name="${c.name}"><span>${c.name}</span><span class="sug-spec">${c.spec} ${c.unit}</span></div>`).join('');
+  sugBox.classList.add('show');
+  sugBox.querySelectorAll('.sug-item').forEach(item=>{
+    item.onclick=()=>{
+      searchInput.value=item.dataset.name;
+      sugBox.classList.remove('show');
+      loadConcept(item.dataset.name);
+    };
+  });
+});
+
+searchInput.addEventListener('keydown',function(e){
+  if(e.key==='Enter'){
+    e.preventDefault();
+    const val=this.value.trim().toLowerCase();
+    // Try alias first
+    if(ALIASES[val]){loadConcept(ALIASES[val]);sugBox.classList.remove('show');return;}
+    // Try exact match
+    const exact=CONCEPTS.find(c=>c.name.toLowerCase()===val);
+    if(exact){loadConcept(exact.name);sugBox.classList.remove('show');return;}
+    // Try partial
+    const partial=CONCEPTS.find(c=>c.name.toLowerCase().includes(val));
+    if(partial){loadConcept(partial.name);sugBox.classList.remove('show');return;}
+    // Try alias partial
+    for(const[alias,target]of Object.entries(ALIASES)){
+      if(alias.includes(val)){loadConcept(target);sugBox.classList.remove('show');return;}
+    }
+  }
+});
+
+document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))sugBox.classList.remove('show');});
+
+// Load concept via API
+async function loadConcept(name){
+  const concept=CONCEPTS.find(c=>c.name===name);
+  if(!concept)return;
+  searchInput.value=name;
+  resultBox.innerHTML='';
+  loadingBox.classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const sysPrompt=`You are an AQA A-Level Business Studies teacher. A student wants to master the concept: "${name}".
+
+SPECIFICATION LOCATION: ${concept.spec} — ${concept.unit} — ${concept.topic}
+
+You must return the concept explanation as HTML. Follow this EXACT structure. Do not skip any section.
+
+CRITICAL RULES:
+- Write for a 17-year-old student. Clear, precise, no waffle.
+- Everything must be accurate for AQA 7132.
+- Do NOT use grid layouts, tables with fixed widths, multi-column structures, pre tags, or inline width styles. Stack everything vertically.
+- Do NOT mention banned models: Bowman's Strategic Clock, Blake Mouton, Hackman & Oldham, Kaplan & Norton, Greiner's Growth Model, Bartlett & Ghoshal, Hofstede.
+- Use Porter's Generic Strategies instead of Bowman's throughout.
+
+OUTPUT THIS EXACT HTML STRUCTURE:
+
+<div class="fp fp-know"><h4>Know it</h4><p>[Precise AQA-level definition in 1-2 sentences]</p></div>
+<div class="fp fp-understand"><h4>Understand it</h4><p>[How it works — the mechanism — in 2-3 sentences]</p></div>
+<div class="fp fp-analyse"><h4>Analyse it</h4><p>[One complete causal chain showing what this concept can cause. Use arrows: concept -> effect -> why -> consequence -> endpoint. Write as flowing prose, not bullet points.]</p></div>
+<div class="fp fp-apply"><h4>Apply it</h4><p>[One real-business example where this concept matters. Explain WHY the business characteristic makes the concept important — do not just name the business.]</p></div>
+<div class="fp fp-evaluate"><h4>Evaluate it</h4><p>[When does the relationship weaken, strengthen, or reverse? Give a specific condition and explain the mechanism.]</p></div>
+
+<div id="visualBtn" style="text-align:center;margin:24px 0"><button class="btn btn-p" onclick="runVisual()" style="padding:14px 28px;font-size:15px">Explain visually</button><p style="font-size:12px;color:#6a7485;margin-top:6px">Watch the causal chain animate step by step</p></div>
+<div id="visualPlayer" style="display:none"></div>
+
+<h3 style="margin-top:24px;margin-bottom:10px">Where can this concept take me?</h3>
+<p style="font-size:13px;color:#6a7485;margin-bottom:10px">Common AQA question endpoints this concept connects to:</p>
+<div class="ep-grid">[Generate 4-6 endpoint pills as: <span class="ep-pill">Endpoint name</span> for each one]</div>
+
+<h3 style="margin-top:24px;margin-bottom:10px">Common exam trap</h3>
+<div class="al al-r"><b>[The specific misconception or confusion]</b>[1-2 sentences explaining why students get this wrong and what the correct distinction is]</div>
+
+<h3 style="margin-top:24px;margin-bottom:10px">Connected concepts</h3>
+<p style="font-size:13px;color:#6a7485;margin-bottom:10px">This concept links to:</p>
+<div class="cc-grid">[Generate 5-8 connected concept pills as: <span class="cc-pill">[concept name]</span>]</div>
+
+<h3 style="margin-top:24px;margin-bottom:10px">Real business application</h3>
+<div class="al al-g"><b>[Business name and characteristic]</b>[2-3 sentences showing how this concept applies specifically to this business — the characteristic must change the reasoning]</div>
+
+<h3 style="margin-top:24px;margin-bottom:10px">Test yourself</h3>
+<div class="al al-b"><b>Level 1 — Define it</b>[A definition question]</div>
+<div class="al al-b"><b>Level 2 — Explain it</b>[An understanding question]</div>
+<div class="al al-b"><b>Level 3 — Analyse it</b>[Build a chain question]</div>
+<div class="al al-b"><b>Level 4 — Apply it</b>[Apply to a specific business context]</div>
+<div class="al al-b"><b>Level 5 — Evaluate it</b>[When does this relationship change?]</div>
+
+Do NOT include any other HTML. Do NOT wrap in markdown. Go straight into the first <div>.`;
+
+  try{
+    const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      model:"claude-sonnet-4-6",max_tokens:2000,
+      system:sysPrompt,
+      messages:[{role:"user",content:`Explain the concept: ${name}`}]
+    })});
+    if(!resp.ok){
+      const errText=await resp.text().catch(()=>'');
+      throw new Error(`Server returned ${resp.status}. ${errText.slice(0,200)}`);
+    }
+    const data=await resp.json();
+    const txt=data.content.map(c=>c.text||'').join('');
+    loadingBox.classList.remove('show');
+
+    // Build the full result with spec badge
+    resultBox.innerHTML=`
+      <div class="spec-badge"><span>AQA 7132</span> ${concept.spec} — ${concept.unit} — ${concept.topic}</div>
+      <h2 style="font-size:24px;font-weight:900;color:var(--navy);margin-bottom:20px">${name}</h2>
+      ${txt}
+      <div style="margin-top:24px;padding-top:18px;border-top:2px solid var(--line);text-align:center">
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Want to use this concept in a 25-mark essay?</p>
+        <a href="marker.html" class="btn btn-p">Open the 25-Marker Lab</a>
+      </div>
+    `;
+
+    // Sanitise
+    resultBox.querySelectorAll('.grid,.g2,.g3,.g4').forEach(g=>{g.style.display='block';});
+    resultBox.querySelectorAll('*').forEach(c=>{c.style.maxWidth='100%';c.style.boxSizing='border-box';if(c.style.minWidth)c.style.minWidth='0';});
+
+    // Make connected concept pills clickable
+    resultBox.querySelectorAll('.cc-pill').forEach(pill=>{
+      pill.style.cursor='pointer';
+      pill.onclick=function(){
+        const target=this.textContent.trim();
+        const found=CONCEPTS.find(c=>c.name.toLowerCase()===target.toLowerCase());
+        if(found){loadConcept(found.name);}
+        else{searchInput.value=target;searchInput.dispatchEvent(new Event('input'));}
+      };
+    });
+
+    // Store concept name for visual explainer
+    window._currentConcept=name;
+    window._currentSpec=`${concept.spec} — ${concept.unit}`;
+
+  }catch(err){
+    loadingBox.classList.remove('show');
+    resultBox.innerHTML=`<div class="al al-r"><b>Connection error</b>${err.message||'Could not connect.'}<br><br>This tool needs an internet connection and must be accessed via a web server (not opened as a local file). If you are seeing this on GitHub Pages, please try refreshing the page.</div>`;
+  }
+}
+
+// ══════════ VISUAL EXPLAINER ══════════
+async function runVisual(){
+  const name=window._currentConcept;
+  if(!name)return;
+  const player=document.getElementById('visualPlayer');
+  const btn=document.getElementById('visualBtn');
+  if(!player||!btn)return;
+  btn.innerHTML='<div class="ld show"><div class="spin"></div><p style="font-size:13px;color:var(--muted)">Building your visual explanation...</p></div>';
+
+  try{
+    const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      model:"claude-sonnet-4-6",max_tokens:800,
+      system:`You are building an animated visual explainer for an AQA A-Level Business concept. Return ONLY valid JSON (no markdown, no backticks).
+
+The JSON must be an object with these fields:
+- "concept": the concept name (string)
+- "chain": an array of 5-7 objects, each with "text" (the chain link, max 10 words) and "type" (one of: "start", "link", "endpoint")
+- "break": a string (max 15 words) explaining what could stop this chain from working
+- "trap": a string (max 20 words) stating the common exam misconception
+
+Example:
+{"concept":"Economies of Scale","chain":[{"text":"Business increases output volume","type":"start"},{"text":"Fixed costs spread across more units","type":"link"},{"text":"Average fixed cost per unit falls","type":"link"},{"text":"Total unit costs decrease","type":"link"},{"text":"Potential profitability increases","type":"endpoint"}],"break":"Diseconomies of scale if growth causes communication problems","trap":"Economies of scale is not the same as economies of scope"}`,
+      messages:[{role:"user",content:`Build the visual chain for: ${name}`}]
+    })});
+    if(!resp.ok)throw new Error('Server error '+resp.status);
+    const data=await resp.json();
+    const txt=data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
+    const chain=JSON.parse(txt);
+
+    // Build the player
+    btn.style.display='none';
+    let stepsHTML='';
+    chain.chain.forEach((step,i)=>{
+      if(i>0)stepsHTML+=`<div class="vis-step vis-arrow" data-i="${i*2-1}">&#x2193;</div>`;
+      const cls=step.type==='start'?'vis-concept':step.type==='endpoint'?'vis-endpoint':'vis-link';
+      stepsHTML+=`<div class="vis-step" data-i="${i*2}"><span class="${cls}">${step.text}</span></div>`;
+    });
+    // Add break
+    const breakIdx=chain.chain.length*2;
+    stepsHTML+=`<div class="vis-step" data-i="${breakIdx}" style="margin-top:20px"><div style="color:var(--red);font-size:13px;font-weight:800;letter-spacing:.1em;margin-bottom:6px">BUT...</div><span class="vis-break">${chain.break}</span></div>`;
+    // Add trap
+    stepsHTML+=`<div class="vis-step" data-i="${breakIdx+1}" style="margin-top:12px"><div style="color:var(--gold);font-size:11px;font-weight:800;letter-spacing:.1em;margin-bottom:4px">EXAM TRAP</div><span class="vis-link" style="border:1px solid var(--gold);background:rgba(238,184,52,.1)">${chain.trap}</span></div>`;
+
+    const totalSteps=breakIdx+2;
+
+    player.innerHTML=`
+      <div class="vis-screen">
+        <div style="position:absolute;top:14px;left:18px;font-size:11px;color:#4a6a9a;font-weight:700;letter-spacing:.1em">EXPLAIN VISUALLY</div>
+        <div id="visSteps">${stepsHTML}</div>
+        <div class="vis-progress"><div class="vis-progress-bar" id="visBar"></div></div>
+      </div>
+      <div class="vis-controls">
+        <button class="btn btn-o btn-sm" id="visReplay">Replay</button>
+        <button class="btn btn-o btn-sm" id="visSkip">Show all</button>
+      </div>`;
+    player.style.display='block';
+    player.scrollIntoView({behavior:'smooth',block:'start'});
+
+    // Animate steps
+    let currentStep=0;
+    const steps=player.querySelectorAll('.vis-step');
+    const bar=document.getElementById('visBar');
+
+    function showNext(){
+      if(currentStep>=steps.length)return;
+      steps[currentStep].classList.add('show');
+      currentStep++;
+      bar.style.width=(currentStep/steps.length*100)+'%';
+      if(currentStep<steps.length)setTimeout(showNext,800);
+    }
+    setTimeout(showNext,500);
+
+    document.getElementById('visReplay').onclick=()=>{
+      currentStep=0;
+      bar.style.width='0';
+      steps.forEach(s=>s.classList.remove('show'));
+      setTimeout(showNext,500);
+    };
+    document.getElementById('visSkip').onclick=()=>{
+      steps.forEach(s=>s.classList.add('show'));
+      bar.style.width='100%';
+      currentStep=steps.length;
+    };
+
+  }catch(err){
+    btn.innerHTML=`<div class="al al-r"><b>Could not build visual</b>${err.message}</div>`;
+  }
+}
+</script>
+</body>
+</html>
