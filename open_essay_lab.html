@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Open Essay Lab — AQA A-Level Business</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0d1b34;--navy2:#172a4a;--gold:#eeb834;--gold-soft:#fff8e5;
+  --blue:#3a69b4;--green:#288566;--red:#be4848;--cream:#f8f6f0;
+  --ink:#191f2a;--muted:#6a7485;--line:#dfe4ea;--white:#fff;--soft:#f3f5f8;
+  --shadow:0 12px 30px rgba(13,27,52,.08);--radius:16px;
+}
+*{box-sizing:border-box;margin:0}
+html{scrollbar-gutter:stable}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.55;overflow-y:scroll}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--blue);text-decoration:none}
+
+/* ── Layout ── */
+.app{min-height:100vh;display:grid;grid-template-columns:260px minmax(0,1fr)}
+aside{background:linear-gradient(180deg,var(--navy),#112442 70%);color:white;padding:24px 18px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+main{padding:32px 38px 80px;max-width:1500px;width:100%;min-width:0;overflow-x:hidden}
+
+/* ── Sidebar ── */
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.logo{width:46px;height:46px;border-radius:13px;background:var(--gold);display:grid;place-items:center;color:var(--navy);font-weight:900;font-size:17px}
+.brand h1{font-size:16px;line-height:1.15;margin:0}.brand span{font-size:11px;color:#aebbd1;display:block;margin-top:2px}
+nav{display:flex;flex-direction:column;gap:4px}
+nav button{width:100%;border:0;background:transparent;color:#dbe4f2;padding:13px 14px;border-radius:11px;text-align:left;font-size:14px;font-weight:600;transition:.15s;display:flex;align-items:center;gap:10px}
+nav button:hover{background:rgba(255,255,255,.08);color:white}
+nav button.on{background:rgba(255,255,255,.12);color:white}
+.side-card{margin-top:auto;padding:15px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.04)}
+.side-card .mini{font-size:10px;color:#b8c5d9;text-transform:uppercase;letter-spacing:.1em}
+.side-card strong{font-size:20px;color:var(--gold);display:block;margin-top:4px}
+.side-card p{font-size:11px;color:#9aadca;margin-top:4px}
+.student-tag{margin-top:16px;padding:10px 14px;border:1px solid rgba(255,255,255,.1);border-radius:10px;font-size:12px;color:#a4b3cc;display:flex;align-items:center;gap:8px}
+.student-tag strong{color:var(--gold);font-size:13px}
+
+/* ── Tabs ── */
+.tab{display:none}.tab.on{display:block}
+
+/* ── Typography ── */
+.eyebrow{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);font-weight:800}
+h2{font-size:30px;font-weight:900;color:var(--navy);margin:5px 0 6px}
+.sub{color:var(--muted);font-size:14px;line-height:1.5}
+h3{font-size:18px;font-weight:800;color:var(--navy);margin:0 0 10px}
+h4{font-size:14px;font-weight:700;color:var(--navy);margin:0 0 6px}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px}
+
+/* ── Cards ── */
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.mt{margin-top:18px}
+
+/* ── Forms ── */
+label.fl{font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:6px}
+input,textarea,select{width:100%;border:1px solid #ccd3dc;border-radius:11px;background:white;padding:12px 14px;font:inherit;font-size:14px;color:var(--ink);outline:0;transition:.15s}
+input:focus,textarea:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(58,105,180,.12)}
+textarea{min-height:280px;resize:vertical;line-height:1.7}
+
+/* ── Buttons ── */
+.btn{border:0;border-radius:11px;padding:12px 18px;font-weight:800;font-size:14px;transition:.15s}
+.btn-p{background:var(--navy);color:white}.btn-p:hover{background:var(--navy2)}
+.btn-g{background:var(--gold);color:var(--navy)}.btn-g:hover{filter:brightness(1.05)}
+.btn-o{background:var(--soft);color:var(--navy);border:1px solid var(--line)}.btn-o:hover{background:#e8ebf0}
+.btn-sm{padding:8px 13px;font-size:12px;border-radius:9px}
+.badge{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:8px 14px;background:#fff4cf;color:#6b5312;font-size:12px;font-weight:800;border:1px solid #f5df8a}
+
+/* ── Utility ── */
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ml{margin-left:auto}.tiny{font-size:11px;color:var(--muted)}.muted{color:var(--muted)}
+
+/* ── Question list ── */
+.qlist{display:grid;gap:8px;max-height:380px;overflow-y:auto;padding-right:6px}
+.qopt{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:white;cursor:pointer;font-size:13px;line-height:1.5;text-align:left;transition:.15s;width:100%}
+.qopt:hover{border-color:var(--blue);background:#f5f8fd}
+.qopt.sel{border-color:var(--gold);background:var(--gold-soft);border-width:2px}
+.qopt .qy{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+
+/* ── Upload area ── */
+.upload-zone{border:2px dashed var(--line);border-radius:14px;padding:30px;text-align:center;cursor:pointer;transition:.15s;background:var(--soft)}
+.upload-zone:hover{border-color:var(--blue);background:#f0f4fb}
+.upload-zone .icon{font-size:32px;margin-bottom:8px}
+.upload-previews{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.upload-previews img{width:60px;height:80px;object-fit:cover;border-radius:8px;border:2px solid var(--line)}
+
+/* ── Feedback ── */
+.markbox{text-align:center;padding:30px 16px}
+.mark-num{font-size:64px;font-weight:900;color:var(--navy);letter-spacing:-.04em;line-height:1}
+.mark-level{font-weight:900;font-size:18px;margin-top:8px}
+.mark-bar{height:10px;border-radius:99px;background:#e9edf2;margin:14px auto 0;width:80%;overflow:hidden}
+.mark-bar span{display:block;height:100%;border-radius:99px;transition:width .5s}
+.verdict-text{font-size:16px;line-height:1.6}
+.kpi{font-size:34px;font-weight:900;color:var(--navy);line-height:1}
+.kpi small{font-size:13px;color:var(--muted);font-weight:700}
+.ao-top{border-top:4px solid var(--blue)}.ao-good{border-top-color:var(--green)}.ao-warn{border-top-color:var(--gold)}.ao-bad{border-top-color:var(--red)}
+.progress-bar{height:9px;border-radius:99px;background:#e9edf2;overflow:hidden;margin-top:8px}
+.progress-bar span{display:block;height:100%;border-radius:99px}
+
+/* ── Alerts ── */
+.al{padding:15px 16px;border-radius:12px;font-size:13px;line-height:1.6;overflow-wrap:break-word;word-wrap:break-word}
+
+/* ── API result containers ── */
+#step2Result,#step3Result,#rewriteResult{max-width:100%;overflow-x:hidden!important;overflow-wrap:break-word;word-break:break-word}
+#step2Result *,#step3Result *,#rewriteResult *{max-width:100%!important;box-sizing:border-box!important;min-width:0!important}
+#step2Result .grid,#step3Result .grid,#rewriteResult .grid,
+#step2Result .g2,#step3Result .g2,#rewriteResult .g2,
+#step2Result .g3,#step3Result .g3,#rewriteResult .g3,
+#step2Result .g4,#step3Result .g4,#rewriteResult .g4{display:block!important;grid-template-columns:none!important}
+#step2Result table,#step3Result table,#rewriteResult table{width:100%!important;table-layout:fixed!important;word-break:break-word}
+#step2Result pre,#step3Result pre,#rewriteResult pre,
+#step2Result code,#step3Result code,#rewriteResult code{white-space:pre-wrap!important;word-break:break-word!important;overflow:hidden!important}
+#step2Result h4,#step3Result h4{margin-top:18px}
+.al b{display:block;margin-bottom:3px;font-size:14px}
+.al-r{background:#fff5f5;border-left:5px solid var(--red)}
+.al-g{background:#f3faf6;border-left:5px solid var(--green)}
+.al-y{background:#fffaf0;border-left:5px solid var(--gold)}
+.al-b{background:#f0f5fc;border-left:5px solid var(--blue)}
+
+/* ── Exemplar cards ── */
+.exemplar{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:white}
+.exemplar-head{padding:14px 18px;background:var(--navy);color:white;display:flex;justify-content:space-between;align-items:center}
+.exemplar-head .ex-mark{font-size:20px;font-weight:900;color:var(--gold)}
+.exemplar-body{padding:18px;font-size:13px;line-height:1.8}
+.exemplar-body .ex-label{font-size:10px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;margin:12px 0 4px}
+.exemplar-body blockquote{border-left:3px solid var(--gold);padding:10px 14px;margin:8px 0;background:var(--gold-soft);border-radius:0 8px 8px 0;font-style:italic}
+.exemplar-body .why{background:#f0f5fc;padding:10px 14px;border-radius:8px;margin:6px 0;font-size:12px}
+
+/* ── Training ── */
+.drill-card{cursor:pointer;transition:.18s;padding:20px;border-radius:var(--radius);border:1px solid var(--line);background:white;box-shadow:var(--shadow)}
+.drill-card:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(13,27,52,.12)}
+.drill-tag{font-size:10px;font-weight:900;color:white;background:var(--navy);padding:4px 10px;border-radius:99px;display:inline-block;margin-bottom:8px;letter-spacing:.04em}
+
+/* ── Progress table ── */
+.p-table{width:100%;border-collapse:collapse}
+.p-table td,.p-table th{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
+.p-table th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+
+/* ── Loading ── */
+.ld{display:none;text-align:center;padding:50px 20px}
+.ld.show{display:block}
+.spin{width:40px;height:40px;border:4px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 14px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ── Modal ── */
+.ov{position:fixed;inset:0;background:rgba(8,18,34,.55);display:none;place-items:center;z-index:100;padding:20px}
+.ov.show{display:grid}
+.modal{width:min(540px,100%);background:white;border-radius:20px;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.22)}
+.chk{display:flex;align-items:flex-start;gap:9px;font-size:13px;font-weight:600;padding:8px 0}
+
+/* ── Responsive ── */
+@media(max-width:1050px){.app{grid-template-columns:1fr}aside{height:auto;position:relative;flex-direction:row;align-items:center;gap:12px;padding:14px 16px}aside nav{display:flex;overflow-x:auto;gap:4px;flex:1}.brand{margin-bottom:0}.side-card,.student-tag{display:none}.g4,.g3,.g2{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){main{padding:20px 14px}.g4,.g3,.g2{grid-template-columns:1fr}.topbar{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ LOGIN OVERLAY ════════════════ -->
+<div class="ov show" id="loginOv">
+  <div class="modal">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="width:56px;height:56px;border-radius:14px;background:var(--gold);display:inline-grid;place-items:center;font-weight:900;font-size:13px;color:var(--navy);line-height:1.1;text-align:center">16 &amp;<br>24</div>
+      <h2 style="margin-top:12px">Welcome to the Open Essay Lab</h2>
+      <p class="muted" style="margin-top:4px">AQA A-Level Business — 16 &amp; 24 mark coaching tool</p>
+    </div>
+    <label class="fl">Your name</label>
+    <input id="loginName" placeholder="e.g. Jasneet" />
+    <label class="fl" style="margin-top:14px">Your exam candidate number</label>
+    <input id="loginNum" placeholder="e.g. 1464" maxlength="6" />
+    <p class="tiny" style="margin-top:6px">Your candidate number is used so your teacher can see your progress.</p>
+    <button class="btn btn-g" style="width:100%;margin-top:18px" id="loginBtn">Enter the Lab</button>
+  </div>
+</div>
+
+<!-- ════════════════ RUBRIC MODAL ════════════════ -->
+<div class="ov" id="rubricOv">
+  <div class="modal" style="max-width:720px;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="font-size:22px">How Your Open Essays Are Marked</h2>
+      <button class="btn btn-o btn-sm" id="rubricClose" style="flex-shrink:0">Close</button>
+    </div>
+    <p style="font-size:14px;line-height:1.7;color:var(--ink);margin-bottom:18px">Your essay is read as a whole and given a single mark out of 16 (Paper 2) or 24 (Paper 3). The examiner asks one question: what is the overall quality of this response? They match it to the level that best fits — not by ticking boxes, but by judging the whole piece.</p>
+
+    <div style="display:grid;gap:10px;margin-bottom:20px">
+      <div style="padding:14px 16px;border-radius:12px;background:#f3faf6;border-left:5px solid var(--green)"><b style="color:var(--green)">Level 5 (21–24, Paper 3 only) — Excellent</b><p style="font-size:13px;line-height:1.65;margin-top:4px">You know your stuff and choose the right knowledge for this question. Your arguments are developed — each one explains the mechanism, uses real examples or case study data to strengthen the reasoning, and reaches the exact outcome the question asks about. You consider both sides and genuinely weigh up which matters more and why. Your conclusion pulls everything together and resolves the question.</p></div>
+      <div style="padding:14px 16px;border-radius:12px;background:#f0f5fc;border-left:5px solid var(--blue)"><b style="color:var(--blue)">Level 4 (14–16 on Paper 2, 16–20 on Paper 3) — Good</b><p style="font-size:13px;line-height:1.65;margin-top:4px">Strong knowledge and some well-developed arguments, but the quality isn't sustained throughout. You apply context and show balance, but your evaluation doesn't always explain why one factor outweighs another. Your conclusion addresses the question but may not fully resolve it.</p></div>
+      <div style="padding:14px 16px;border-radius:12px;background:#fffaf0;border-left:5px solid var(--gold)"><b style="color:#8a6d1b">Level 3 (11–15) — Reasonable</b><p style="font-size:13px;line-height:1.65;margin-top:4px">You show relevant knowledge and make some analytical points, but your chains of reasoning often stop short of the endpoint the question asks about. You might present both sides but without weighing them up. Your conclusion may repeat your arguments rather than reaching a judgement.</p></div>
+      <div style="padding:14px 16px;border-radius:12px;background:#fff5f5;border-left:5px solid var(--red)"><b style="color:var(--red)">Level 2 (6–10) — Limited</b><p style="font-size:13px;line-height:1.65;margin-top:4px">Some relevant knowledge but your analysis is short or descriptive — you state things rather than explain how they lead to an outcome. Application is generic. There is little evaluation.</p></div>
+      <div style="padding:14px 16px;border-radius:12px;background:#f8f6f0;border-left:5px solid var(--muted)"><b style="color:var(--muted)">Level 1 (1–5) — Weak</b><p style="font-size:13px;line-height:1.65;margin-top:4px">Basic or isolated knowledge with little reasoning. Points are asserted rather than explained.</p></div>
+    </div>
+
+    <h3 style="font-size:17px;margin-bottom:12px">Seven things that separate the levels</h3>
+    <div style="display:grid;gap:8px;margin-bottom:20px">
+      <div style="padding:12px 16px;border-radius:10px;background:var(--soft);font-size:13px;line-height:1.65"><b>1. Reach the endpoint.</b> If the question asks about profitability, don't stop at sales or costs — explain how they affect profit. If it asks about competitiveness, don't stop at profit. Always check: have I answered the exact question?</div>
+      <div style="padding:12px 16px;border-radius:10px;background:var(--soft);font-size:13px;line-height:1.65"><b>2. Make your examples work.</b> Naming a business isn't enough. Use specific details about that business to change your argument — explain why their size, market, brand, or situation makes your point stronger or weaker.</div>
+      <div style="padding:12px 16px;border-radius:10px;background:var(--soft);font-size:13px;line-height:1.65"><b>3. Explain the mechanism.</b> Don't just say "this leads to more sales." Explain why and how. The chain of reasoning is where analysis marks come from.</div>
+      <div style="padding:12px 16px;border-radius:10px;background:var(--soft);font-size:13px;line-height:1.65"><b>4. Weigh, don't just balance.</b> Writing "however" and giving the other side shows balance — that's necessary but not sufficient. To reach the top levels, explain which factor matters more and under what conditions.</div>
+      <div style="padding:12px 16px;border-radius:10px;background:var(--soft);font-size:13px;line-height:1.65"><b>5. Use models to drive your argument.</b> You don't need to use named models, but if you do, weave them into your reasoning. Describing Porter's Five Forces and then moving on earns knowledge marks only. Using it to explain why competitive rivalry makes price more important than product in a specific market — that earns analysis marks too.</div>
+      <div style="padding:12px 16px;border-radius:10px;background:var(--soft);font-size:13px;line-height:1.65"><b>6. Test the claim.</b> If the question says "always," "most important," or "best," challenge it. When is it true? When isn't it? What does it depend on? This is where the strongest evaluation comes from.</div>
+      <div style="padding:12px 16px;border-radius:10px;background:var(--soft);font-size:13px;line-height:1.65"><b>7. Keep coming back to the question.</b> Before starting each new paragraph, re-read the question. Make sure the argument you are about to write is answering the exact wording rather than simply showing what you know about the topic. Strong essays stay focused on the question from beginning to end.</div>
+    </div>
+
+    <h3 style="font-size:17px;margin-bottom:10px">Common mistakes that limit your mark</h3>
+    <p style="font-size:13px;line-height:1.65;margin-bottom:10px;color:var(--muted)">These aren't automatic penalties — but if your argument relies on a wrong idea, that argument can't score as highly.</p>
+    <div style="display:grid;gap:6px;margin-bottom:20px;font-size:13px;line-height:1.5">
+      <div style="padding:8px 14px;border-radius:8px;background:#fff5f5">Treating cash flow and profit as the same thing</div>
+      <div style="padding:8px 14px;border-radius:8px;background:#fff5f5">Treating revenue and profit as the same thing</div>
+      <div style="padding:8px 14px;border-radius:8px;background:#fff5f5">Confusing operating profit with operating profit margin</div>
+      <div style="padding:8px 14px;border-radius:8px;background:#fff5f5">Confusing economies of scope with economies of scale</div>
+      <div style="padding:8px 14px;border-radius:8px;background:#fff5f5">Saying Herzberg claimed pay motivates workers (he classified it as a hygiene factor)</div>
+      <div style="padding:8px 14px;border-radius:8px;background:#fff5f5">Confusing PRP with piece-rate pay</div>
+      <div style="padding:8px 14px;border-radius:8px;background:#fff5f5">Discussing ethics when the question asks about legislation</div>
+      <div style="padding:8px 14px;border-radius:8px;background:#fff5f5">Confusing productivity with output</div>
+    </div>
+
+    <h3 style="font-size:17px;margin-bottom:10px">Your conclusion</h3>
+    <p style="font-size:13px;line-height:1.65;margin-bottom:16px">A strong conclusion doesn't repeat your arguments. It identifies the most important factor, explains what the answer depends on, weighs up which side matters more, and gives a clear final judgement that answers the exact question. New points introduced for the first time in your conclusion don't strengthen your evaluation — they needed to be developed earlier in the essay.</p>
+
+    <div style="padding:16px;border-radius:12px;background:var(--navy);color:white;text-align:center">
+      <p style="font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:800;margin-bottom:6px">The open essay rule</p>
+      <p style="font-size:14px;font-weight:700;line-height:1.6">Answer the question &#8594; build the chain &#8594; reach the endpoint &#8594; change the business &#8594; test the claim &#8594; weigh it &#8594; decide.</p>
+    </div>
+  </div>
+</div>
+
+<div class="app" style="display:none" id="appShell">
+<aside>
+  <div class="brand">
+    <div class="logo" style="font-size:11px;line-height:1.1;text-align:center">Open<br>Essay</div>
+    <div><h1>AQA Business<br>Open Essay Lab</h1><span>16 &amp; 24 mark coaching</span></div>
+  </div>
+  <nav>
+    <button class="on" data-t="mark">Mark My Essay</button>
+    <button data-t="feedback">Feedback</button>
+    <button data-t="progress">Progress</button>
+    <button data-t="train">Improve My Exam Technique</button>
+  </nav>
+  <div class="student-tag" id="sideStudent">
+    <strong id="sideName">—</strong>
+  </div>
+  <div class="side-card">
+    <div class="mini">Nishkam School West London</div>
+    <strong style="font-size:14px;color:#dbe4f2">Man Neeva, Mat Uchi</strong>
+  </div>
+</aside>
+
+<main>
+
+<!-- ══════════ MARK TAB ══════════ -->
+<section id="mark" class="tab on">
+  <div class="topbar">
+    <div><div class="eyebrow">Open Essay Lab</div><h2>Mark my essay</h2><div class="sub">Choose a past paper question, plan your answer, then submit for examiner-level feedback.</div></div>
+  </div>
+
+  <div class="grid g2">
+  <!-- ── STEP 1: CHOOSE QUESTION ── -->
+  <div class="card">
+    <h3>Step 1 — Choose your question</h3>
+    <label class="fl" style="margin-top:10px">Filter by paper</label>
+    <select id="yearFilter" style="max-width:280px">
+      <option value="all">All questions (2017-2025)</option>
+      <option value="p2">Paper 2 — 16 marks</option>
+      <option value="p3">Paper 3 — 24 marks</option>
+    </select>
+    <div class="qlist mt" id="qList"></div>
+    <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+      <label class="fl">Or type your own question</label>
+      <input id="customQ" placeholder="Write a 16 or 24 mark question..." />
+      <div class="row mt" style="gap:8px">
+        <select id="customMarks" style="width:auto;max-width:120px"><option value="16">16 marks</option><option value="24">24 marks</option></select>
+        <select id="customPaper" style="width:auto;max-width:120px"><option value="2">Paper 2</option><option value="3">Paper 3</option></select>
+        <button class="btn btn-o btn-sm" id="useCustom">Use this question</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: UNDERSTAND HOW YOUR WORK WILL BE MARKED ── -->
+  <div class="card">
+    <h3>Step 2 — Understand how my work will be marked</h3>
+    <p class="muted" style="margin-top:6px">Before you write, understand exactly what the examiner is looking for and how they decide your mark.</p>
+    <button class="btn btn-p" style="width:100%;margin-top:14px" id="rubricBtn">View the marking rubric</button>
+  </div>
+  </div>
+
+  <!-- Question decode (full width, appears when question selected) -->
+  <div class="card mt" id="decodeCard" style="display:none">
+    <h3>Question decode</h3>
+    <div id="decodeQuestion" style="font-size:15px;line-height:1.6;background:var(--gold-soft);padding:14px 16px;border-radius:10px;border-left:4px solid var(--gold);margin-bottom:12px;font-weight:600;color:var(--navy)"></div>
+    <div class="grid g3" id="decodeGrid"></div>
+  </div>
+
+  <!-- ── STEP 3: NEED HELP? HELP ME PLAN MY ANSWER ── -->
+  <div class="card mt" id="step3Card" style="display:none">
+    <h3>Step 3 — Need help? Help me plan my answer</h3>
+    <p class="muted" style="margin-top:6px">Get the key content knowledge, then plan your arguments, examples, structure or evaluation before you write.</p>
+
+    <div style="border-top:1px solid var(--line);padding-top:14px;margin-top:14px">
+      <div class="row">
+        <h4>What do I need to know for this question?</h4>
+        <button class="btn btn-o btn-sm ml" id="step2Btn">Show me the key content</button>
+      </div>
+      <div id="step2Content" style="display:none" class="mt">
+        <div class="ld" id="step2Loading"><div class="spin"></div><p class="tiny">Loading — this takes about 10 seconds, hang tight.</p></div>
+        <div id="step2Result" style="width:100%;min-width:0;overflow:hidden"></div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid var(--line);padding-top:14px;margin-top:14px">
+      <div class="row">
+        <h4>Help me plan my answer</h4>
+        <button class="btn btn-o btn-sm ml" id="step3Toggle">Open the planning tool</button>
+      </div>
+      <div id="step3Content" style="display:none;width:100%;min-width:0;overflow:hidden" class="mt">
+        <label class="fl">What part of the answer do you need help with?</label>
+        <div class="grid g2 mt" style="margin-bottom:14px">
+          <button class="btn btn-o plan-opt" data-p="args">Help me find arguments for and against</button>
+          <button class="btn btn-o plan-opt" data-p="examples">Help me choose real-world examples</button>
+          <button class="btn btn-o plan-opt" data-p="structure">Help me structure the whole essay</button>
+          <button class="btn btn-o plan-opt" data-p="conclusion">Help me plan my conclusion</button>
+          <button class="btn btn-o plan-opt" data-p="models">Which models should I use?</button>
+          <button class="btn btn-o plan-opt" data-p="evaluate">How do I evaluate this question?</button>
+        </div>
+        <div class="ld" id="step3Loading"><div class="spin"></div><p class="tiny">Building your plan — this takes about 10 seconds, hang tight.</p></div>
+        <div id="step3Result" style="width:100%;min-width:0;overflow:hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: SUBMIT YOUR ANSWER ── -->
+  <div class="card mt" id="step4Card" style="display:none">
+    <h3>Step 4 — Submit your answer</h3>
+    <div class="row" style="margin-bottom:10px">
+      <button class="btn btn-o btn-sm mode-btn on" data-m="type">Type</button>
+      <button class="btn btn-o btn-sm mode-btn" data-m="upload">Upload photos</button>
+    </div>
+    <div id="typeMode">
+      <textarea id="essay" placeholder="Write or paste your essay here..."></textarea>
+      <div class="row mt"><span class="tiny" id="wc">0 words</span></div>
+    </div>
+    <div id="uploadMode" style="display:none">
+      <div class="upload-zone" id="dropZone">
+        <p style="font-weight:700;color:var(--navy)">Upload photos of your handwritten essay</p>
+        <p class="tiny" style="margin-top:4px">Tap to choose photos or drag and drop. Up to 6 pages.</p>
+        <input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
+      </div>
+      <div class="upload-previews" id="previews"></div>
+    </div>
+    <button class="btn btn-g" style="width:100%;margin-top:14px" id="submitBtn">Mark my essay</button>
+  </div>
+</section>
+
+<!-- ══════════ FEEDBACK TAB ══════════ -->
+<section id="feedback" class="tab">
+  <div class="topbar">
+    <div><div class="eyebrow">Your feedback</div><h2>How did you do?</h2></div>
+  </div>
+
+  <div class="ld" id="ldPanel">
+    <div class="spin"></div>
+    <p style="font-weight:700;color:var(--navy);font-size:16px">Marking your essay...</p>
+    <p class="muted" style="margin-top:4px">This takes about 15 seconds. Hang tight.</p>
+  </div>
+
+  <div id="fbPanel">
+    <!-- Mark + Verdict -->
+    <div class="grid g2">
+      <div class="card markbox" style="border-top:5px solid var(--navy)">
+        <div class="tiny" style="letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--muted)">YOUR MARK</div>
+        <div class="mark-num" id="rMark">—</div>
+        <div class="mark-level" id="rLevel">—</div>
+        <div class="mark-bar"><span id="rBar" style="width:0;background:var(--green)"></span></div>
+        <button class="btn btn-o btn-sm mt" onclick="document.getElementById('rubricOv').classList.add('show')">What does this level mean?</button>
+      </div>
+      <div class="card" style="border-top:5px solid var(--gold)">
+        <h3>Overall verdict</h3>
+        <p id="rVerdict" class="verdict-text">—</p>
+        <div class="al al-y mt" id="rBlocker"></div>
+      </div>
+    </div>
+
+    <!-- WWW / EBI -->
+    <div class="grid g2 mt">
+      <div class="card" style="border-top:5px solid var(--green)">
+        <h3 style="color:var(--green)">What went well</h3>
+        <div id="rWWW"></div>
+      </div>
+      <div class="card" style="border-top:5px solid var(--red)">
+        <h3 style="color:var(--red)">Even better if</h3>
+        <div id="rEBI"></div>
+      </div>
+    </div>
+
+    <!-- One tip to improve -->
+    <div class="card mt" style="border-top:5px solid var(--blue)">
+      <h3>The one thing to work on next</h3>
+      <div id="rNext"></div>
+    </div>
+
+    <!-- This is what you could have written -->
+    <div class="card mt" style="border-top:5px solid var(--navy)">
+      <h3>This is what you could have written</h3>
+      <p class="muted" style="margin-top:4px;margin-bottom:14px">Your weakest section, rewritten to show you exactly what the examiner is looking for. Compare it with what you wrote — the differences are where the marks are.</p>
+      <div id="rewriteLoading" class="ld"><div class="spin"></div><p class="tiny">Building your upgraded answer — this takes about 15 seconds, hang tight.</p></div>
+      <div id="rewriteResult" style="width:100%;min-width:0;overflow:hidden"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="grid g2 mt">
+      <button class="btn btn-p" onclick="openTab('mark')">Write another essay</button>
+      <button class="btn btn-o" onclick="openTab('train')">Practise a specific skill</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ IMPROVE MY EXAM TECHNIQUE TAB (merged) ══════════ -->
+<section id="train" class="tab">
+  <div class="topbar">
+    <div><div class="eyebrow">Improve my exam technique</div><h2>How to reach Level 5</h2><div class="sub">What examiners are looking for, what to avoid, and targeted practice drills.</div></div>
+  </div>
+
+  <!-- ═══ SECTION 1: WHAT EXAMINERS ARE LOOKING FOR ═══ -->
+  <div style="margin-bottom:28px">
+    <h3 style="font-size:20px;color:var(--navy);margin-bottom:14px">What examiners are looking for</h3>
+    <p class="muted" style="margin-bottom:16px">These are the six things that separate a Level 5 essay from the rest. Every one of them is drawn from AQA mark schemes and examiner reports.</p>
+
+    <div class="grid g2">
+      <div class="card" style="border-top:4px solid var(--green)"><h3>1. Know</h3><p style="font-size:13px;line-height:1.7">Accurate business knowledge. Distinguish similar concepts precisely — cash flow ≠ profit, revenue ≠ profit, operating profit ≠ margin. Know model mechanics, not just names. If your starting concept is wrong, the chain built on it is wrong.</p></div>
+      <div class="card" style="border-top:4px solid var(--green)"><h3>2. Apply</h3><p style="font-size:13px;line-height:1.7">Context must <strong>change</strong> the reasoning. Naming Nike is not application. Explaining that Nike's athlete endorsements reduce price sensitivity in a market where brand loyalty drives repeat purchasing — that is application. On Paper 1, use real businesses and industries. The strongest context could not be removed without weakening the argument.</p></div>
+      <div class="card" style="border-top:4px solid var(--green)"><h3>3. Analyse</h3><p style="font-size:13px;line-height:1.7">Build causal chains: factor → immediate effect → why → business consequence → endpoint. One deep chain beats three shallow ones. Every link must explain <strong>why</strong> the next step follows — do not jump from action to outcome.</p></div>
+      <div class="card" style="border-top:4px solid var(--green)"><h3>4. Hit the endpoint</h3><p style="font-size:13px;line-height:1.7">Circle the exact variable the question asks about. Every chain must reach it. If the question asks about <strong>profit</strong>, stopping at "increased sales" is unfinished — you need to consider whether additional revenue exceeds additional costs. Sales ≠ profit. Output ≠ productivity. Revenue ≠ competitiveness.</p></div>
+      <div class="card" style="border-top:4px solid var(--green)"><h3>5. Evaluate conditionally</h3><p style="font-size:13px;line-height:1.7">The strongest evaluation explains <strong>when and why</strong> the answer changes. "It depends on the business" earns nothing. "For a small manufacturer with limited finance, labour-intensive production may be more profitable because it avoids a large capital outlay" — that explains the condition and the mechanism.</p></div>
+      <div class="card" style="border-top:4px solid var(--green)"><h3>6. Weigh and resolve</h3><p style="font-size:13px;line-height:1.7">Compare significance — explain why one argument <strong>outweighs</strong> another. Your conclusion should resolve the question using arguments already developed, not restart the essay with new material. Overall → most significant → decisive condition → outweighs → therefore.</p></div>
+    </div>
+  </div>
+
+  <!-- ═══ WORKED EXEMPLARS ═══ -->
+  <div id="exSection" style="scroll-margin-top:20px;margin-bottom:28px">
+    <h3 style="font-size:20px;color:var(--navy);margin-bottom:6px">See it in action</h3>
+    <p class="muted" style="margin-bottom:16px">Weak vs strong examples showing exactly what earns the marks.</p>
+
+    <div class="exemplar mt">
+      <div class="exemplar-head"><span>Exemplar 1 — A complete analytical chain reaching profit</span><div class="ex-mark">9/9</div></div>
+      <div class="exemplar-body">
+        <div class="ex-label">Question</div>
+        <p>Analyse how using Maslow's hierarchy of needs might help a business reduce labour turnover. [9 marks]</p>
+        <div class="ex-label">Top-band response</div>
+        <blockquote>One could argue that Maslow's hierarchy suggests managers must first address basic needs before higher-level needs can motivate. If a business ensures competitive pay and job security (physiological and safety needs), employees are less likely to leave for a marginal pay increase elsewhere. Once these are secure, fulfilling social needs through team-based working and a task culture (Handy) may build workplace belonging, making employees emotionally invested in remaining. This could reduce recruitment and training costs, which in a labour-intensive business such as a care home could represent a significant proportion of operating costs, potentially improving profitability.</blockquote>
+        <div class="why"><strong>Why this earns 9/9:</strong> The chain runs 6–7 links deep. Maslow's mechanism (hierarchical nature — lower needs first) drives the argument, not just labels it. The model is woven in, not dumped. Context (care home) changes the significance. The chain reaches beyond labour turnover to cost implications.</div>
+      </div>
+    </div>
+
+    <div class="exemplar mt">
+      <div class="exemplar-head"><span>Exemplar 2 — Context that drives the argument</span><div class="ex-mark">Application: Excellent</div></div>
+      <div class="exemplar-body">
+        <div class="ex-label">Weak version</div>
+        <blockquote>Nike should use promotion to increase sales. This would increase revenue and therefore profit.</blockquote>
+        <div class="why"><strong>Why this is weak:</strong> "Nike" is named but the argument would be identical for any business. Context is decorative. The chain jumps from revenue to profit without considering costs.</div>
+        <div class="ex-label">Strong version</div>
+        <blockquote>In the sports-shoe market, Nike's athlete endorsements may strengthen brand image among performance-focused runners, making consumers less price-sensitive. This could allow Nike to maintain premium pricing even during competitive pressure from Adidas and New Balance, meaning promotion protects profit margins rather than simply increasing volume — which matters because volume-led growth in a market with high marketing costs may not improve profitability.</blockquote>
+        <div class="why"><strong>Why this is strong:</strong> The specific market (sports shoes), the specific strategy (endorsements), and the specific competitive context (Adidas, New Balance) all change the reasoning. Remove Nike and the argument falls apart. That is integrated application.</div>
+      </div>
+    </div>
+
+    <div class="exemplar mt">
+      <div class="exemplar-head"><span>Exemplar 3 — A conclusion that resolves, not restarts</span><div class="ex-mark">Evaluation: Excellent</div></div>
+      <div class="exemplar-body">
+        <div class="ex-label">Weak conclusion</div>
+        <blockquote>Overall I think capital intensive is better because it lowers costs.</blockquote>
+        <div class="why"><strong>Why this is weak:</strong> Asserts without explaining. Does not weigh. Does not identify a condition. Does not address "always."</div>
+        <div class="ex-label">Strong conclusion</div>
+        <blockquote>Overall, capital-intensive production is not always more profitable. For a mass producer with predictable demand — such as a car manufacturer — lower unit costs from automation may outweigh the high initial investment because fixed costs can be spread over large, stable output. However, for a small bespoke furniture maker with unpredictable orders, the capital investment may never be recovered, making skilled labour and lower fixed costs more profitable. Therefore, the scale of production and the predictability of demand are the decisive factors — and the claim fails for businesses where demand is volatile or volumes are low.</blockquote>
+        <div class="why"><strong>Why this earns top marks:</strong> Overall judgement → specific condition (scale + demand predictability) → contrasting business types → explains WHY one outweighs → directly addresses "always" → resolves the exact question. This is the conclusion formula in action: Overall → Most Significant → Depends On → Outweighs → Therefore.</div>
+      </div>
+    </div>
+
+    <div class="exemplar mt">
+      <div class="exemplar-head"><span>Exemplar 4 — Conditional evaluation vs assertion</span><div class="ex-mark">Evaluation: Strong</div></div>
+      <div class="exemplar-body">
+        <div class="ex-label">Weak evaluation</div>
+        <blockquote>It depends on the size of the business.</blockquote>
+        <div class="why"><strong>Why this is weak:</strong> Names a condition but does not explain the mechanism. The examiner cannot give strong evaluation credit for an undeveloped "it depends."</div>
+        <div class="ex-label">Strong evaluation</div>
+        <blockquote>For a small manufacturer with limited finance, labour-intensive production may initially be more profitable because it avoids a large capital investment that would need to be financed through borrowing — increasing gearing and interest costs. However, for a mass producer facing predictable high demand, automation may reduce unit costs sufficiently to outweigh the initial investment, particularly if competitors are also automating and the business risks becoming uncompetitive on price.</blockquote>
+        <div class="why"><strong>Why this works:</strong> Two contrasting conditions (small/limited finance vs mass/predictable demand). Each condition has a mechanism explaining WHY the answer changes. The competitive pressure adds a further evaluative layer. This is conditional evaluation — not the phrase "it depends" but the thinking behind it.</div>
+      </div>
+    </div>
+
+    <div class="exemplar mt">
+      <div class="exemplar-head"><span>Exemplar 5 — Model weaving vs model dumping</span><div class="ex-mark">AO3: Strong</div></div>
+      <div class="exemplar-body">
+        <div class="ex-label">Model dumping (weak)</div>
+        <blockquote>Porter's Five Forces looks at competitive rivalry, threat of new entrants, threat of substitutes, bargaining power of suppliers and bargaining power of buyers. This model is useful for businesses to understand their competitive environment.</blockquote>
+        <div class="why"><strong>Why this earns minimal marks:</strong> The model is described, not used. The five forces are listed but none of them drive the next link in an analytical chain. This is AO1 knowledge credit at best.</div>
+        <div class="ex-label">Model weaving (strong)</div>
+        <blockquote>If a car manufacturer pursues horizontal integration by acquiring a rival, this may reduce competitive rivalry (Porter's Five Forces) in the market. Fewer competitors could give the enlarged business greater pricing power, allowing it to increase prices without losing significant market share. Whether this increases profit depends on the acquisition cost and whether integration delivers the expected synergies — if cultural clashes between the two workforces lead to reduced productivity, the expected benefits may not materialise.</blockquote>
+        <div class="why"><strong>Why this works:</strong> Porter's Five Forces is not described — one force (competitive rivalry) is used as the mechanism that makes the next analytical link happen. The model drives the chain: acquisition → reduced rivalry → pricing power → revenue → profit (with evaluation of risks). This is weaving.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 2: WHAT NOT TO DO ═══ -->
+  <div style="margin-bottom:28px">
+    <h3 style="font-size:20px;color:var(--navy);margin-bottom:6px">What not to do</h3>
+    <p class="muted" style="margin-bottom:16px">Concepts students confuse — these are not automatic penalties, but if your argument relies on a wrong idea, that argument cannot score as highly.</p>
+    <div class="card">
+      <div style="display:grid;gap:10px">
+        <div class="al al-r"><b>Cash flow ≠ profit</b>Cash flow = timing of money in/out. Profit = revenue minus costs over a period. A profitable business can run out of cash.</div>
+        <div class="al al-r"><b>Revenue ≠ profit</b>If the question asks about profit and your chain stops at revenue, it is unfinished.</div>
+        <div class="al al-r"><b>Herzberg: pay is NOT a motivator</b>Pay is a hygiene factor. Its absence causes dissatisfaction, but its presence does not motivate. If you write "higher wages will motivate (Herzberg)" you will lose marks.</div>
+        <div class="al al-r"><b>Operating profit ≠ margin</b>One is an absolute figure in pounds. The other is OP divided by revenue times 100. The examiner will not accept one when the question asks for the other.</div>
+        <div class="al al-r"><b>Debt factoring ≠ borrowing</b>Factoring = selling receivables to a third party at a discount. Not a loan.</div>
+        <div class="al al-r"><b>Economies of scope ≠ scale</b>Scope = cost savings from wider range. Scale = cost savings from higher volume.</div>
+        <div class="al al-r"><b>PRP ≠ piece rate</b>Performance-related pay rewards targets met over a period. Piece rate pays per unit produced. Different mechanisms, different effects.</div>
+        <div class="al al-r"><b>Ethics ≠ legislation</b>Ethics = voluntary moral choices. Legislation = legal requirements. If the question asks about legislation, do not write about ethics.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 3: PRACTISE YOUR SKILLS ═══ -->
+  <h3 style="font-size:20px;color:var(--navy);margin-bottom:6px">Practise your skills</h3>
+  <p class="muted" style="margin-bottom:16px">Each skill below is something the examiner specifically looks for. Read the explanation, study the examples, then practise it yourself.</p>
+
+  <!-- ── SKILL 1: WEIGHTED JUDGEMENT ── -->
+  <div class="card mt" id="sk-weigh">
+    <div class="row"><div class="drill-tag">EVALUATION</div><h3 style="margin:0 0 0 8px">Weighted judgement</h3></div>
+    <div class="grid g2 mt">
+      <div>
+        <h4>What this means</h4>
+        <p style="font-size:13px;line-height:1.7">A weighted judgement does not just say "both sides are important." It explains <strong>which side matters more</strong>, <strong>under what conditions</strong>, and <strong>why</strong>. This is what AO4 (evaluation) — worth a significant proportion of the available marks — is really testing. Without it, you cannot access Level 5.</p>
+        <h4 class="mt">Why students lose marks</h4>
+        <p style="font-size:13px;line-height:1.7">Most students can write two arguments. The gap is in the final step: instead of explaining which argument carries more weight and why, they just write "overall, both are important" or "it depends on the business." The examiner reads this as unresolved — you have balanced but not weighed.</p>
+      </div>
+      <div>
+        <div class="al al-r"><b>This earns limited evaluation marks</b>"Training is important for a business. However, marketing is also important. Overall, it depends on the business."<br><br><em>Why it's weak: Two assertions. No mechanism. No condition. No weighing. "It depends on the business" says nothing.</em></div>
+        <div class="al al-g mt"><b>Good: This is what the examiner rewards</b>"For a service business with high labour turnover and inconsistent customer experiences, training is likely to have a larger impact on profitability than promotion. This is because poor service directly damages repeat demand — and no amount of advertising can compensate for a customer experience that fails to meet expectations. However, for a product-based business with strong quality but low awareness, promotion may matter more because the constraint is visibility, not capability."<br><br><em>Why it works: Two contrasting conditions. Each has a mechanism explaining WHY the judgement changes. The word "because" does real work.</em></div>
+      </div>
+    </div>
+    <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+      <h4>Now practise it</h4>
+      <div class="al al-b mt"><b>Your task:</b> Upgrade this weak evaluation into a weighted judgement that reaches profitability:<br><br><em>"Capital-intensive production has advantages. However, labour-intensive production also has advantages."</em><br><br>Name a specific condition. Explain WHY one outweighs the other. Reach the endpoint.</div>
+      <textarea class="drill-ta mt" data-skill="weigh" placeholder="Write your weighted judgement here..." style="min-height:140px"></textarea>
+      <div class="row mt"><button class="btn btn-g drill-submit" data-skill="weigh">Check my answer</button><button class="btn btn-o ml drill-new" data-skill="weigh">Give me a different task</button></div>
+      <div class="drill-fb mt" data-skill="weigh" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── SKILL 2: COMPLETE THE CHAIN ── -->
+  <div class="card mt" id="sk-endpoint">
+    <div class="row"><div class="drill-tag">ANALYSIS</div><h3 style="margin:0 0 0 8px">Complete the chain to the endpoint</h3></div>
+    <div class="grid g2 mt">
+      <div>
+        <h4>What this means</h4>
+        <p style="font-size:13px;line-height:1.7">Before you write, the examiner identifies the <strong>exact variable</strong> the question asks about — profit, competitiveness, productivity, labour turnover, etc. Every analytical chain you build must reach that variable. If the question asks about profit and your chain stops at "increased sales," you have stopped too early. Sales ≠ profit. The examiner sees an incomplete chain.</p>
+        <h4 class="mt">The endpoint lock</h4>
+        <p style="font-size:13px;line-height:1.7">Circle the endpoint before you start writing. After each paragraph, check: "Did I reach it?" If not, add the missing links. It usually only takes 1–2 more sentences.</p>
+      </div>
+      <div>
+        <div class="al al-r"><b>Chain stops too early (question asks about profit)</b>"Better training may reduce mistakes and improve service quality, leading to higher customer satisfaction. This could increase demand and therefore sales."<br><br><em>Stops at sales. The examiner is waiting for: do the additional sales generate enough revenue to exceed the cost of training? Without this, the chain does not reach profit.</em></div>
+        <div class="al al-g mt"><b>Good: Chain reaches the endpoint</b>"Better training may reduce mistakes and improve service quality, leading to higher customer satisfaction and repeat purchasing. This could increase sales volume and revenue. However, whether this improves profitability depends on whether the additional revenue exceeds the cost of the training programme — which for a small business may represent a significant short-term investment."<br><br><em>The chain now reaches profit by considering both revenue AND costs. The final link is the one that earns the marks.</em></div>
+      </div>
+    </div>
+    <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+      <h4>Now practise it</h4>
+      <div class="al al-b mt"><b>Complete this chain to reach PROFIT:</b><br><br>"A business introduces lean production techniques. This reduces waste in the manufacturing process, meaning fewer raw materials are used per unit of output..."<br><br>Continue the chain. Do not stop at "lower costs" — explain how this connects to profitability.</div>
+      <textarea class="drill-ta mt" data-skill="endpoint" placeholder="Continue the chain here..." style="min-height:140px"></textarea>
+      <div class="row mt"><button class="btn btn-g drill-submit" data-skill="endpoint">Check my answer</button><button class="btn btn-o ml drill-new" data-skill="endpoint">Give me a different task</button></div>
+      <div class="drill-fb mt" data-skill="endpoint" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── SKILL 3: CHALLENGE "ALWAYS" ── -->
+  <div class="card mt" id="sk-absolute">
+    <div class="row"><div class="drill-tag">QUESTION FOCUS</div><h3 style="margin:0 0 0 8px">Challenge absolute wording</h3></div>
+    <div class="grid g2 mt">
+      <div>
+        <h4>What this means</h4>
+        <p style="font-size:13px;line-height:1.7">Many open essay questions include words like <strong>"always," "never," "all businesses," "most important,"</strong> or <strong>"better."</strong> These words are there deliberately — they are an invitation to test the claim. The examiner wants to see you consider: is this really ALWAYS true? For ALL businesses? Under EVERY circumstance?</p>
+        <h4 class="mt">How to do it</h4>
+        <p style="font-size:13px;line-height:1.7">You do not have to write "not always" literally. What you need to do is show different circumstances where the answer changes. Think about contrasting: business size, market type, financial position, objectives, demand conditions, stage of development, or industry. If you agree with the statement for one type of business but not another, you are challenging the absolute — and accessing the evaluation marks.</p>
+      </div>
+      <div>
+        <div class="al al-r"><b>Ignores the absolute wording</b>Question: "'Product is always the most important element of the marketing mix.' Do you agree?"<br><br>"Product is important because customers need a good product. Good quality leads to satisfied customers and repeat purchasing. Therefore product is the most important element."<br><br><em>This agrees with the statement and never considers when it might NOT be true. The word "always" has been ignored. Evaluation is capped.</em></div>
+        <div class="al al-g mt"><b>Good: Tests the absolute under different conditions</b>"For specialist running shoes, product may be the most important element because technical performance — cushioning, durability, support — directly determines whether serious runners repurchase. However, for fashion trainers targeting teenagers, promotion through social media influencers and brand image may matter more than technical features, because the purchasing decision is driven by status rather than performance. Therefore, product is not ALWAYS the most important element — it depends on whether the target customer prioritises function or image."<br><br><em>Two contrasting circumstances. The absolute is tested. The judgement explains WHEN the answer changes.</em></div>
+      </div>
+    </div>
+    <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+      <h4>Now practise it</h4>
+      <div class="al al-b mt"><b>The question says:</b> "'Technology will always give a business a competitive advantage.' Do you agree?"<br><br>Write two paragraphs. In the first, explain a specific circumstance where technology DOES give competitive advantage (name the business type). In the second, explain a circumstance where it does NOT. Then write one sentence explaining what determines the answer.</div>
+      <textarea class="drill-ta mt" data-skill="absolute" placeholder="Write your response here..." style="min-height:160px"></textarea>
+      <div class="row mt"><button class="btn btn-g drill-submit" data-skill="absolute">Check my answer</button><button class="btn btn-o ml drill-new" data-skill="absolute">Give me a different task</button></div>
+      <div class="drill-fb mt" data-skill="absolute" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── SKILL 4: INTEGRATE CONTEXT ── -->
+  <div class="card mt" id="sk-context">
+    <div class="row"><div class="drill-tag">APPLICATION</div><h3 style="margin:0 0 0 8px">Make context do analytical work</h3></div>
+    <div class="grid g2 mt">
+      <div>
+        <h4>What this means</h4>
+        <p style="font-size:13px;line-height:1.7">Naming a business is not application. The examiner is looking for context that <strong>changes the argument</strong>. If you could delete the business name and the argument would be exactly the same, your application is decorative — and it earns minimal AO2 credit.</p>
+        <h4 class="mt">The test</h4>
+        <p style="font-size:13px;line-height:1.7">After writing a paragraph, ask: "If I removed the business name and industry, would this argument still work exactly the same?" If yes, your application is decorative. If no — if the argument would collapse or weaken — your application is integrated.</p>
+      </div>
+      <div>
+        <div class="al al-r"><b>Decorative — earns minimal marks</b>"Nike should use promotion to increase sales. Promotion increases awareness and attracts new customers, which could increase revenue and profit."<br><br><em>Replace "Nike" with any company name and the argument is identical. The context is not doing any analytical work.</em></div>
+        <div class="al al-g mt"><b>Good: Integrated — context drives the argument</b>"In the sports-shoe market, Nike's athlete endorsements may strengthen brand image among performance-focused runners, making consumers less price-sensitive. This could allow Nike to maintain premium pricing even during competitive pressure from Adidas and New Balance, protecting profit margins rather than simply increasing volume — which matters because volume-led growth in a market with high marketing costs may not improve profitability."<br><br><em>The market (sports shoes), the strategy (endorsements), the customer segment (performance runners), and the competitors (Adidas, NB) all shape the argument. Remove them and it falls apart.</em></div>
+      </div>
+    </div>
+    <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+      <h4>Now practise it</h4>
+      <div class="al al-b mt"><b>Upgrade this decorative application:</b><br><br><em>"Tesco should reduce prices to increase competitiveness."</em><br><br>Rewrite it so that Tesco's specific market position, customer base, competitors, or operational characteristics are essential to the argument.</div>
+      <textarea class="drill-ta mt" data-skill="context" placeholder="Write your upgraded version here..." style="min-height:140px"></textarea>
+      <div class="row mt"><button class="btn btn-g drill-submit" data-skill="context">Check my answer</button><button class="btn btn-o ml drill-new" data-skill="context">Give me a different task</button></div>
+      <div class="drill-fb mt" data-skill="context" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── SKILL 5: CONCLUSIONS ── -->
+  <div class="card mt" id="sk-conclude">
+    <div class="row"><div class="drill-tag">CONCLUSION</div><h3 style="margin:0 0 0 8px">Resolve, don't restart</h3></div>
+    <div class="grid g2 mt">
+      <div>
+        <h4>What this means</h4>
+        <p style="font-size:13px;line-height:1.7">Your conclusion should <strong>weigh up the arguments you have already made</strong>. It is not the place to introduce a brand-new argument you have not analysed. New material at the end does not become strong evaluation just because it is in the conclusion — it weakens it, because the examiner sees undeveloped material instead of a judgement built on your analysis.</p>
+        <h4 class="mt">The conclusion formula</h4>
+        <p style="font-size:13px;line-height:1.7"><strong>Overall judgement → most significant reason → decisive condition → why one outweighs the other → therefore (direct answer).</strong> You do not have to follow this rigidly, but your conclusion should do something close to it.</p>
+      </div>
+      <div>
+        <div class="al al-r"><b>Restarts the essay</b>"Overall, training is important but marketing is also important. Another factor to consider is technology, which could also improve productivity..."<br><br><em>New argument (technology) introduced only in the conclusion. Not developed. The conclusion does not weigh the existing arguments — it restarts.</em></div>
+        <div class="al al-g mt"><b>Good: Resolves the question</b>"Overall, training is likely to be the most effective route to improved profitability only when poor employee capability is the main constraint. For a service business with high turnover and inconsistent customer experiences, the return on training investment is likely to outweigh the return on additional promotion, because repeat demand depends on service quality. However, if the main problem is weak demand in a competitive market, promotion may generate a larger short-term impact. Therefore, the decisive factor is the source of the profitability problem."<br><br><em>No new arguments. Identifies the most significant factor. Names the decisive condition. Explains why one outweighs. Directly answers the question.</em></div>
+      </div>
+    </div>
+    <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+      <h4>Now practise it</h4>
+      <div class="al al-b mt"><b>Write a conclusion for this question:</b><br><br><em>"'Soft HRM always leads to better business performance than hard HRM.' Do you agree?"</em><br><br>Use the formula: Overall → Most Significant → Decisive Condition → Outweighs → Therefore. Do NOT introduce any new arguments — only weigh the arguments that would already have been developed.</div>
+      <textarea class="drill-ta mt" data-skill="conclude" placeholder="Write your conclusion here..." style="min-height:140px"></textarea>
+      <div class="row mt"><button class="btn btn-g drill-submit" data-skill="conclude">Check my answer</button><button class="btn btn-o ml drill-new" data-skill="conclude">Give me a different task</button></div>
+      <div class="drill-fb mt" data-skill="conclude" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── SKILL 6: MODEL WEAVING ── -->
+  <div class="card mt" id="sk-models">
+    <div class="row"><div class="drill-tag">KNOWLEDGE + ANALYSIS</div><h3 style="margin:0 0 0 8px">Weave in models — don't dump them</h3></div>
+    <div class="grid g2 mt">
+      <div>
+        <h4>What this means</h4>
+        <p style="font-size:13px;line-height:1.7">You do not have to name a model in every answer. But when you do use one, it must <strong>drive the argument forward</strong>. A model described in isolation — listing Maslow's five levels, naming Porter's five forces — earns knowledge credit (AO1) at best. A model whose mechanism explains WHY the next link in your chain happens earns analysis credit (AO3).</p>
+        <h4 class="mt">The test</h4>
+        <p style="font-size:13px;line-height:1.7">Ask: "Does the model make the next link in my chain happen?" If yes, you are weaving. If you could delete the model and the argument would be unchanged, you are dumping.</p>
+      </div>
+      <div>
+        <div class="al al-r"><b>Model dumping (AO1 only)</b>"Porter's Five Forces looks at competitive rivalry, threat of new entrants, threat of substitutes, bargaining power of suppliers and bargaining power of buyers. This is useful for understanding the competitive environment."<br><br><em>The model is described but not used. None of the five forces drive the next analytical link. This is a paragraph about a model, not an argument.</em></div>
+        <div class="al al-g mt"><b>Good: Model weaving (AO1 + AO3)</b>"If a car manufacturer acquires a rival through horizontal integration, this may reduce competitive rivalry (Porter's Five Forces) in the market. Fewer competitors could give the enlarged business greater pricing power, allowing it to increase prices without losing significant market share, potentially increasing revenue and profit margins."<br><br><em>One force (rivalry) is used as the mechanism that makes the next link happen. The model drives the chain: acquisition → reduced rivalry → pricing power → revenue → profit.</em></div>
+      </div>
+    </div>
+    <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+      <h4>Now practise it</h4>
+      <div class="al al-b mt"><b>Upgrade this model dump into model weaving:</b><br><br><em>"Herzberg's two-factor theory says there are hygiene factors and motivators. Hygiene factors prevent dissatisfaction. Motivators create motivation. Businesses should consider both."</em><br><br>Rewrite it so that Herzberg's mechanism (the distinction between hygiene and motivators) drives an analytical chain about whether a 20% wage increase would reduce labour turnover.</div>
+      <textarea class="drill-ta mt" data-skill="models" placeholder="Write your model-weaving version here..." style="min-height:140px"></textarea>
+      <div class="row mt"><button class="btn btn-g drill-submit" data-skill="models">Check my answer</button><button class="btn btn-o ml drill-new" data-skill="models">Give me a different task</button></div>
+      <div class="drill-fb mt" data-skill="models" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── SKILL 7: COMPARE SIGNIFICANCE ── -->
+  <div class="card mt" id="sk-compare">
+    <div class="row"><div class="drill-tag">EVALUATION</div><h3 style="margin:0 0 0 8px">Compare significance — don't just list</h3></div>
+    <div class="grid g2 mt">
+      <div>
+        <h4>What this means</h4>
+        <p style="font-size:13px;line-height:1.7">Many students write two separate arguments — one for, one against — without ever comparing them directly. The examiner calls this "balance without weighing." To access the top marks, you need to explain <strong>why one factor matters MORE than another</strong> in a specific context.</p>
+      </div>
+      <div>
+        <div class="al al-r"><b>Listed, not compared</b>"Product is important for sports shoes. However, promotion is also important for sports shoes."<br><br><em>Two separate assertions. Neither explains why it matters MORE than the other.</em></div>
+        <div class="al al-g mt"><b>Good: Compared</b>"For specialist running shoes, product is likely to outweigh promotion because technical performance directly affects repeat purchasing — promotion may attract the initial customer, but it cannot sustain demand if the shoe fails to meet the needs of serious runners."<br><br><em>Direct comparison. Explains the mechanism. One is explicitly shown to matter more, with a reason.</em></div>
+      </div>
+    </div>
+    <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+      <h4>Now practise it</h4>
+      <div class="al al-b mt"><b>Compare these two factors — don't just list them:</b><br><br><em>"Quality is important for a restaurant. Price is also important for a restaurant."</em><br><br>Rewrite so you explain which matters MORE for a specific type of restaurant, and WHY.</div>
+      <textarea class="drill-ta mt" data-skill="compare" placeholder="Write your comparison here..." style="min-height:130px"></textarea>
+      <div class="row mt"><button class="btn btn-g drill-submit" data-skill="compare">Check my answer</button><button class="btn btn-o ml drill-new" data-skill="compare">Give me a different task</button></div>
+      <div class="drill-fb mt" data-skill="compare" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── SKILL 8: USE DATA ── -->
+  <div class="card mt" id="sk-data">
+    <div class="row"><div class="drill-tag">APPLICATION</div><h3 style="margin:0 0 0 8px">Use data to strengthen arguments</h3></div>
+    <div class="grid g2 mt">
+      <div>
+        <h4>What this means</h4>
+        <p style="font-size:13px;line-height:1.7">On Papers 2 and 3, data is provided for a reason. Quoting a number is not using it. <strong>Calculate with it, interpret what it means, and make it change your argument.</strong> A number becomes powerful when it shifts the significance of a point — "labour costs are 45% of revenue, meaning even a small improvement in productivity could have a substantial impact on profitability."</p>
+      </div>
+      <div>
+        <div class="al al-r"><b>Data quoted, not used</b>"The business has revenue of £2.4 million. Labour turnover is 22%."<br><br><em>Numbers are copied from the case. They have not been interpreted or connected to the argument.</em></div>
+        <div class="al al-g mt"><b>Good: Data drives the argument</b>"With labour turnover at 22%, the business is replacing roughly one in five employees each year. Given that labour costs represent 45% of revenue (£1.08m), the recruitment and retraining costs associated with this turnover could be significant. A 20% wage increase would cost approximately £216,000 — but if it halved labour turnover to 11%, the savings in recruitment, induction and lost productivity could outweigh this cost, improving profitability."<br><br><em>Data is calculated (£1.08m, £216k), interpreted (one in five), and used to change the argument's conclusion.</em></div>
+      </div>
+    </div>
+    <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+      <h4>Now practise it</h4>
+      <div class="al al-b mt"><b>Use this data in an argument about whether the business should invest in automation:</b><br><br>Revenue: £5.2m. Operating profit margin: 8%. Labour costs: £2.1m (40% of revenue). Output per worker: 850 units. Industry average output per worker: 1,200 units.<br><br>Calculate, interpret, and make at least two figures change your reasoning.</div>
+      <textarea class="drill-ta mt" data-skill="data" placeholder="Write your data-driven argument here..." style="min-height:140px"></textarea>
+      <div class="row mt"><button class="btn btn-g drill-submit" data-skill="data">Check my answer</button><button class="btn btn-o ml drill-new" data-skill="data">Give me a different task</button></div>
+      <div class="drill-fb mt" data-skill="data" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── SKILL 9: OPENING PARAGRAPH ── -->
+  <div class="card mt" id="sk-intro">
+    <div class="row"><div class="drill-tag">STRUCTURE</div><h3 style="margin:0 0 0 8px">Opening paragraph — pick a side, keep it short</h3></div>
+    <div class="grid g2 mt">
+      <div>
+        <h4>What this means</h4>
+        <p style="font-size:13px;line-height:1.7">You do not need an introduction. The examiner does not require one. But if you write one, it should do four things in 2-3 sentences: <strong>take a position, give your main reason, acknowledge the strongest alternative, and state your provisional judgement.</strong> That is it. No definitions. No background. No history of the concept.</p>
+        <h4 class="mt">Timing</h4>
+        <p style="font-size:13px;line-height:1.7">If you are pressed for time, <strong>skip the introduction entirely</strong> and go straight into your first argument. If you finish your essay with time to spare, <strong>write your introduction last</strong> — by then you know exactly what your arguments are and what your judgement is, so the introduction writes itself. This is what students who score full marks actually do.</p>
+      </div>
+      <div>
+        <div class="al al-r"><b>Wastes time</b>"The marketing mix is a very important concept in Business Studies. It was first developed by McCarthy in 1960 and consists of four elements: product, price, promotion and place. Some people also include three more elements: people, process and physical environment. In this essay I will discuss whether product is the most important element."<br><br><em>Four sentences of description. No position taken. No reason given. The examiner already knows what the marketing mix is. This earns nothing.</em></div>
+        <div class="al al-g mt"><b>Good: Position, reason, alternative, judgement</b>"On one hand the product is most important in the marketing mix due to its USP and targeting niche consumers and markets. However, on balance other factors like promotion and price may be more significant. Overall this essay will show how product is more important."<br><br><em>Three sentences. Takes a side immediately. Gives the reason (USP/niche). Acknowledges the alternative (promotion, price). States a provisional judgement. Then gets straight into the analysis. This is from a top-scoring essay.</em></div>
+      </div>
+    </div>
+    <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+      <h4>Now practise it</h4>
+      <div class="al al-b mt"><b>Write an opening (2-3 sentences) for:</b><br><br><em>"'Quality assurance is always a better approach than quality control for improving a business's competitiveness.' Do you agree?"</em><br><br>Pick a side. Give your main reason. Name the strongest alternative. State your provisional judgement. Nothing else.</div>
+      <textarea class="drill-ta mt" data-skill="intro" placeholder="Write your opening here..." style="min-height:100px"></textarea>
+      <div class="row mt"><button class="btn btn-g drill-submit" data-skill="intro">Check my answer</button><button class="btn btn-o ml drill-new" data-skill="intro">Give me a different task</button></div>
+      <div class="drill-fb mt" data-skill="intro" style="display:none"></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════ PROGRESS TAB ══════════ -->
+<section id="progress" class="tab">
+  <div class="topbar">
+    <div><div class="eyebrow">Your journey</div><h2>Progress</h2><div class="sub">Every essay you submit is tracked. Your teacher can see this too.</div></div>
+  </div>
+
+  <div class="grid g3">
+    <div class="card" style="text-align:center;padding:20px"><div class="kpi" id="pCount">0</div><p class="tiny mt">Essays marked</p></div>
+    <div class="card" style="text-align:center;padding:20px"><div class="kpi" id="pAvg">—</div><p class="tiny mt">Average mark</p></div>
+    <div class="card" style="text-align:center;padding:20px"><div class="kpi" id="pBest">—</div><p class="tiny mt">Best mark</p></div>
+  </div>
+
+  <!-- How you are improving -->
+  <div class="card mt" style="border-top:5px solid var(--green)">
+    <h3 style="color:var(--green)">How you are improving</h3>
+    <p class="muted" style="margin-top:4px;margin-bottom:14px">Based on all the essays you have submitted.</p>
+    <div id="pImprove"><p class="muted">Submit at least 2 essays to start seeing your improvement.</p></div>
+  </div>
+
+  <!-- What you still need to work on -->
+  <div class="card mt" style="border-top:5px solid var(--red)">
+    <h3 style="color:var(--red)">What you still need to work on</h3>
+    <p class="muted" style="margin-top:4px;margin-bottom:14px">The most common issues across all your essays. Focus your practice here.</p>
+    <div id="pWorkOn"><p class="muted">Submit your first essay to start tracking.</p></div>
+  </div>
+
+  <!-- Submission history -->
+  <div class="card mt">
+    <h3>Submission history</h3>
+    <div id="pHist"><p class="muted" style="padding:12px 0">No essays marked yet. Submit your first essay to start tracking.</p></div>
+  </div>
+</section>
+
+
+</main>
+</div>
+
+<!-- No pre-submit modal - goes straight to marking -->
+
+<script>
+// ══════════ QUESTIONS ══════════
+const QS=[
+{y:"2017",m:16,p:"2",q:"To what extent is cutting prices a good way for any business to respond to a fall in the overall capacity utilisation in its industry?"},
+{y:"2017",m:16,p:"2",q:"To what extent is Africa an attractive market for all businesses wanting to sell their products internationally?"},
+{y:"2018",m:16,p:"2",q:"Lego's profits depend partly on exchange rate changes. To what extent do you think managers of all businesses need to worry about the impact of exchange rates on profits?"},
+{y:"2018",m:16,p:"2",q:"Technology is always the most important factor in improving competitiveness. To what extent do you agree with this statement for all businesses?"},
+{y:"2019",m:16,p:"2",q:"To what extent do legal changes create more threats than opportunities for all businesses?"},
+{y:"2019",m:16,p:"2",q:"To what extent is financial motivation always the most effective way to improve employee performance in all businesses?"},
+{y:"2020",m:16,p:"2",q:"To what extent is international trade always beneficial for all UK businesses?"},
+{y:"2020",m:16,p:"2",q:"Corporate social responsibility is always beneficial for all businesses. To what extent do you agree?"},
+{y:"2022",m:16,p:"2",q:"To what extent is a fall in the exchange rate of the pound always good for all UK businesses?"},
+{y:"2022",m:16,p:"2",q:"To what extent is organic growth always better than external growth for all businesses?"},
+{y:"2023",m:16,p:"2",q:"To what extent is inflation always damaging for all businesses?"},
+{y:"2023",m:16,p:"2",q:"Decentralisation always improves business performance. To what extent do you agree?"},
+{y:"2024",m:16,p:"2",q:"To what extent is legislation to protect the environment always damaging to business?"},
+{y:"2024",m:16,p:"2",q:"Would using performance-related pay be beneficial for all businesses? Justify your decision."},
+{y:"2025",m:16,p:"2",q:"To what extent should all businesses be concerned about changes in interest rates?"},
+{y:"2025",m:16,p:"2",q:"To what extent is a strong corporate culture the most important factor in business success for all businesses?"},
+{y:"2017",m:24,p:"3",q:"Should all UK businesses try to use only UK suppliers?"},
+{y:"2018",m:24,p:"3",q:"To what extent should all businesses aim to grow?"},
+{y:"2019",m:24,p:"3",q:"To what extent is choosing the right pricing strategy the most important factor in the success of all businesses?"},
+{y:"2020",m:24,p:"3",q:"To what extent is quality the most important factor in competitiveness for all businesses?"},
+{y:"2022",m:24,p:"3",q:"Without strategic planning all businesses are doomed to fail. To what extent do you agree with this statement?"},
+{y:"2023",m:24,p:"3",q:"To what extent is pursuing a strategy of differentiation always the best approach for all businesses?"},
+{y:"2024",m:24,p:"3",q:"To what extent is innovation the most important factor in the long-term success of all businesses?"},
+{y:"2025",m:24,p:"3",q:"To what extent should all businesses prioritise the interests of shareholders over other stakeholders?"},
+];
+
+let selQ=null,hist=[],student={name:'',num:''};
+
+// ── Login ──
+document.getElementById('loginBtn').onclick=()=>{
+  const n=document.getElementById('loginName').value.trim();
+  const num=document.getElementById('loginNum').value.trim();
+  if(!n||!num){alert('Please enter your name and candidate number.');return;}
+  student={name:n,num:num};
+  document.getElementById('loginOv').classList.remove('show');
+  document.getElementById('appShell').style.display='grid';
+  document.getElementById('sideName').textContent=n+' ('+num+')';
+  loadHist();
+};
+
+const SHEET_ID='1ssFrYNnnWuyuXFbGMv1WchHTIyhFJhljTVwcyL8TQHI';
+function loadHist(){
+  hist=[];
+  try{
+    const local=localStorage.getItem('hist_'+student.num);
+    if(local) hist=JSON.parse(local);
+  }catch(e){hist=[];}
+  updateProgress();
+}
+function saveHist(){
+  try{localStorage.setItem('hist_'+student.num,JSON.stringify(hist));}catch(e){}
+}
+
+// ── Questions ──
+function renderQ(yr){
+  const el=document.getElementById('qList');
+  const f=yr==='all'?QS:QS.filter(q=>q.p===yr.replace('p',''));
+  el.innerHTML=f.map((q,i)=>{const idx=QS.indexOf(q);return`<button class="qopt${selQ===idx?' sel':''}" data-i="${idx}"><div class="qy">${q.y} · Paper ${q.p} · ${q.m} marks</div>${q.q}</button>`;}).join('');
+  el.querySelectorAll('.qopt').forEach(b=>b.onclick=()=>{selQ=parseInt(b.dataset.i);renderQ(document.getElementById('yearFilter').value);showDecode(QS[selQ].q);});
+}
+document.getElementById('yearFilter').onchange=function(){renderQ(this.value);};
+document.getElementById('useCustom').onclick=()=>{const v=document.getElementById('customQ').value.trim();if(!v)return;selQ=-1;window._cq=v;window._cm=document.getElementById('customMarks').value;window._cp=document.getElementById('customPaper').value;document.querySelectorAll('.qopt').forEach(x=>x.classList.remove('sel'));showDecode(v);};
+
+function showDecode(t){
+  document.getElementById('decodeCard').style.display='block';
+  document.getElementById('decodeQuestion').textContent=t;
+  document.getElementById('step3Card').style.display='block';
+  document.getElementById('step4Card').style.display='block';
+  // Reset content panels
+  document.getElementById('step2Content').style.display='none';
+  document.getElementById('step3Content').style.display='none';
+  document.getElementById('step2Result').innerHTML='';
+  document.getElementById('step3Result').innerHTML='';
+  let ep='—',abs='—',cmd='Evaluate';
+  const eps=['profitability','profit','profits','competitiveness','sales growth','sales','unit costs','costs','performance','labour turnover','labour productivity','productivity','motivation'];
+  for(const w of eps){if(t.toLowerCase().includes(w)){ep=w.charAt(0).toUpperCase()+w.slice(1);break;}}
+  const abw=['always','never','all','most important','more important','better','best','inevitable','only'];
+  for(const w of abw){if(t.toLowerCase().includes(w)){abs='"'+w+'"';break;}}
+  if(t.toLowerCase().includes('to what extent'))cmd='To what extent';
+  if(t.toLowerCase().includes('do you agree'))cmd='Do you agree';
+  document.getElementById('decodeGrid').innerHTML=`
+    <div class="al al-b"><b>Command</b>${cmd}</div>
+    <div class="al al-b"><b>Endpoint</b>${ep}</div>
+    <div class="al al-b"><b>Absolute wording</b>${abs}</div>`;
+}
+
+// ── STEP 2: Content Knowledge API ──
+document.getElementById('step2Btn').onclick=async function(){
+  const qText=selQ>=0?QS[selQ].q:(window._cq||'');
+  if(!qText){alert('Select a question first.');return;}
+  document.getElementById('step2Content').style.display='block';
+  document.getElementById('step2Loading').style.display='block';
+  document.getElementById('step2Result').innerHTML='';
+  try{
+    const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      model:"claude-sonnet-4-6",max_tokens:2000,
+      system:`You are an AQA A-level Business Studies teacher preparing a Year 13 student to answer a specific 16 or 24 mark "all businesses" essay question. The student wants to know what they need to understand before writing.
+
+YOUR RESPONSE MUST BE GROUNDED IN THE AQA 7132 MARK SCHEME AND SPECIFICATION. Do not invent content that is not on the AQA A-level Business specification. Every concept, model, and theory you mention must be from the AQA 7132 specification.
+
+BANNED MODELS — do NOT mention these under any circumstances: Bowman\'s Strategic Clock, Blake Mouton Grid, Hackman and Oldham, Kaplan and Norton Balanced Scorecard, Greiner\'s Growth Model, Bartlett and Ghoshal, Hofstede\'s Cultural Dimensions. Use Porter\'s Generic Strategies instead of Bowman\'s.
+
+Write in clear, direct English suitable for a 17-year-old. No academic jargon. No waffle.
+
+Cover these sections IN THIS ORDER:
+
+1. KEY CONCEPTS (heading: <h4>Key concepts you must understand</h4>)
+List 3-5 core business concepts this question tests. For each one: define it precisely in one sentence, then explain in one sentence why it matters for THIS specific question. Use <div class="al al-b"><b>[concept name]</b>[definition and relevance]</div> format.
+
+2. RELEVANT MODELS (heading: <h4>Which models to use — and HOW</h4>)
+List 2-3 AQA specification models that are genuinely useful for this question. For each: name it, explain the MECHANISM (not just the description), and show in one sentence how to weave it into an argument for THIS question. Use <div class="al al-g"><b>[model name]</b>[mechanism and how to use it]</div> format. If a model would be forced or irrelevant, do NOT include it just to fill space.
+
+3. THE ENDPOINT (heading: <h4>The exact endpoint your chains must reach</h4>)
+State the precise variable the question demands. Give one example of a chain that stops too early and one that reaches the endpoint. Use <div class="al al-r"><b>Stops too early:</b>[example]</div> and <div class="al al-g"><b>Reaches the endpoint:</b>[example]</div>.
+
+4. THE EVALUATIVE CHALLENGE (heading: <h4>How to evaluate this question</h4>)
+Explain what makes evaluation difficult on this question. If there is absolute wording (always/never/all/best), explain specifically how to challenge it. List 3-4 contrasting circumstances the student should consider (e.g. small vs large, short run vs long run). Use <div class="al al-b"> format.
+
+5. COMMON TRAPS (heading: <h4>Common traps — based on examiner reports</h4>)
+List 3-4 specific mistakes students typically make on this type of question. Be concrete — "students describe the model instead of using its mechanism" is useful; "some students lose marks" is not. Use <div class="al al-r"><b>Trap:</b>[specific mistake and consequence]</div> format.
+
+6. USEFUL EXAMPLES (heading: <h4>Real-world examples that work well</h4>)
+Suggest 3-4 real businesses or industries with one sentence explaining why each is useful for THIS question. Use <div class="al al-g"> format.
+
+Do NOT include any HTML outside of these div structures. Do NOT add a preamble or conclusion. CRITICAL: Do NOT use grid layouts, tables, multi-column structures, pre tags, code blocks, or any inline width/min-width styles. Every element must stack vertically in a single column. Go straight into the content.`,
+      messages:[{role:"user",content:`QUESTION: ${qText}\n\nWhat key content do I need to know to answer this question well?`}]
+    })});
+    const data=await resp.json();
+    const txt=data.content.map(c=>c.text||'').join('');
+    document.getElementById('step2Loading').style.display='none';
+    document.getElementById('step2Result').innerHTML=txt;
+    sanitiseResult(document.getElementById('step2Result'));
+  }catch(err){
+    document.getElementById('step2Loading').style.display='none';
+    document.getElementById('step2Result').innerHTML=`<div class="al al-r"><b>Error</b>${err.message||'Could not connect.'}</div>`;
+  }
+};
+
+// ── STEP 3: Planning Tool API ──
+document.getElementById('step3Toggle').onclick=()=>{
+  document.getElementById('step3Content').style.display='block';
+};
+
+document.querySelectorAll('.plan-opt').forEach(btn=>{
+  btn.onclick=async function(){
+    const qText=selQ>=0?QS[selQ].q:(window._cq||'');
+    if(!qText){alert('Select a question first.');return;}
+    const aspect=this.dataset.p;
+    const labels={args:'finding arguments for and against',examples:'choosing real-world examples',structure:'structuring the whole essay',conclusion:'planning the conclusion',models:'choosing which models to use',evaluate:'how to evaluate this question'};
+    document.getElementById('step3Loading').style.display='block';
+    document.getElementById('step3Result').innerHTML='';
+    // Highlight selected
+    document.querySelectorAll('.plan-opt').forEach(x=>{x.classList.remove('btn-g');x.classList.add('btn-o');});
+    this.classList.remove('btn-o');this.classList.add('btn-g');
+    try{
+      const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+        model:"claude-sonnet-4-6",max_tokens:1500,
+        system:`You are an AQA A-level Business teacher helping a Year 13 student plan an "all businesses" essay (16 or 24 marks). These questions require the student to use different types of businesses to test their argument. The student needs help with: ${labels[aspect]}.
+
+Be specific to THIS question. Do not give generic advice. Write for a 17-year-old.
+
+THE ESSAY STRUCTURE YOU MUST FOLLOW:
+1. Brief introduction (optional — write it last if time allows): Take a position, give the main reason, acknowledge the strongest alternative, state your provisional judgement. Maximum 2-3 sentences. No definitions. No background. If the student is short on time, skip this entirely and go straight into argument 1.
+2. Argument that AGREES with the statement: 5-7 chains of analysis with a real-world example woven in and a relevant business model used for its mechanism. Must reach the exact endpoint in the question.
+3. Balanced reply to this argument: "However, this may not be the case if..." — explain when and why this argument weakens. Use a different business type or circumstance.
+4. Argument that DISAGREES with the statement: 5-7 chains of analysis with a different real-world example and a different model. Must reach the same endpoint.
+5. Balanced reply to this argument: "However, this argument may be weaker if..." — explain when and why.
+6. Weighted judgement conclusion: Overall → Most Significant → Depends On → Outweighs → Therefore. NO new arguments. Challenge any absolute wording.
+
+LANGUAGE: Use "One could argue" / "One might suggest" / "This could lead to" throughout. Write like a well-prepared Year 13 student, not a textbook. Use precise Business terminology where it earns marks, plain English everywhere else.
+
+Format as HTML. Use <div class="al al-b"> for blue guidance boxes, <div class="al al-g"> for green examples. Use <h4> for section headers. CRITICAL: Do NOT use grid layouts, tables, multi-column structures, pre tags, code blocks, or any inline width/min-width styles. Every element must stack vertically in a single column. Be direct and specific.`,
+        messages:[{role:"user",content:`QUESTION: ${qText}\n\nHelp me with: ${labels[aspect]}`}]
+      })});
+      const data=await resp.json();
+      const txt=data.content.map(c=>c.text||'').join('');
+      document.getElementById('step3Loading').style.display='none';
+      document.getElementById('step3Result').innerHTML=txt;
+      sanitiseResult(document.getElementById('step3Result'));
+    }catch(err){
+      document.getElementById('step3Loading').style.display='none';
+      document.getElementById('step3Result').innerHTML=`<div class="al al-r"><b>Error</b>${err.message||'Could not connect.'}</div>`;
+    }
+  };
+});
+
+renderQ('all');
+
+// ── Input modes ──
+document.querySelectorAll('.mode-btn').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  document.getElementById('typeMode').style.display=b.dataset.m==='type'?'block':'none';
+  document.getElementById('uploadMode').style.display=b.dataset.m==='upload'?'block':'none';
+});
+
+// Word count
+document.getElementById('essay').addEventListener('input',()=>{const t=document.getElementById('essay').value.trim();document.getElementById('wc').textContent=(t?t.split(/\s+/).length:0)+' words';});
+
+// File upload
+const dropZone=document.getElementById('dropZone');
+const fileInput=document.getElementById('fileInput');
+let uploadedImages=[];
+dropZone.onclick=()=>fileInput.click();
+dropZone.ondragover=e=>{e.preventDefault();dropZone.style.borderColor='var(--blue)';};
+dropZone.ondragleave=()=>{dropZone.style.borderColor='var(--line)';};
+dropZone.ondrop=e=>{e.preventDefault();dropZone.style.borderColor='var(--line)';handleFiles(e.dataTransfer.files);};
+fileInput.onchange=()=>handleFiles(fileInput.files);
+
+function handleFiles(files){
+  const previews=document.getElementById('previews');
+  for(const f of files){
+    if(uploadedImages.length>=6)break;
+    if(!f.type.startsWith('image/'))continue;
+    const reader=new FileReader();
+    reader.onload=e=>{
+      uploadedImages.push(e.target.result);
+      const img=document.createElement('img');img.src=e.target.result;
+      previews.appendChild(img);
+    };
+    reader.readAsDataURL(f);
+  }
+}
+
+// ── Submit ──
+document.getElementById('submitBtn').onclick=()=>{
+  const hasText=document.getElementById('essay').value.trim().length>0;
+  const hasImages=uploadedImages.length>0;
+  if(!hasText&&!hasImages){alert('Please write your essay or upload photos of it.');return;}
+  if(selQ===null&&!window._cq){alert('Please select a question first.');return;}
+  runMark();
+};
+
+// ── Marking ──
+async function runMark(){
+  openTab('feedback');
+  document.getElementById('ldPanel').classList.add('show');
+  document.getElementById('fbPanel').style.display='none';
+
+  const qText=selQ>=0?QS[selQ].q:(window._cq||'');
+  const maxMark=selQ>=0?QS[selQ].m:parseInt(window._cm||'16');
+  const paper=selQ>=0?QS[selQ].p:(window._cp||'2');
+  const essayText=document.getElementById('essay').value.trim();
+  const isP3=paper==='3';
+
+  let levels;
+  if(maxMark===16){levels=`AQA LEVEL DESCRIPTORS:\nL4 14-16: A response that demonstrates a coherent and logical chain of reasoning, showing an ability to make connections between relevant points. There is a balanced consideration of the question and a supported judgement is reached.\nL3 9-13: A response showing an ability to present relevant analysis and some balance but where the arguments are not fully developed or the evaluation is not sustained.\nL2 5-8: A response showing some relevant knowledge and understanding but limited analysis or evaluation.\nL1 1-4: A response with isolated or basic points with little relevance or development.\n\nCALIBRATION GUIDANCE:\n14 = just L4; 15 = secure L4; 16 = exceptional and should be rare. L3 responses often show relevant knowledge with some balance, but the evaluation tends to name different businesses rather than explain why the significance of the issue varies.`;}
+  else{levels=`AQA LEVEL DESCRIPTORS:\nL5 21-24: An excellent response overall that is well organised and demonstrates a logical chain of reasoning. A range of relevant issues are considered and there is a well-supported and focused judgement. Analysis is well developed showing an ability to make connections between relevant points.\nL4 16-20: A good response overall that develops relevant analysis and demonstrates a balanced consideration with a supported judgement. Knowledge is accurate and appropriately selected.\nL3 11-15: A reasonable response showing relevant knowledge and some analysis. There is some consideration of the question but the evaluation is not fully developed or sustained.\nL2 6-10: A limited response. Some relevant knowledge is shown but analysis is underdeveloped and evaluation is weak.\nL1 1-5: A weak response with isolated or basic knowledge and little effective reasoning.\n\nCALIBRATION GUIDANCE:\n21 = just L5; 22 = secure L5; 23 = strong L5; 24 = exceptional and should be rare. L4 responses show developed analysis and some evaluation with different business types, but the evaluation is less sustained or precise than L5.`;}
+
+  const sysPrompt=`ROLE\nYou are marking an AQA A-level Business ${maxMark}-mark response (Paper ${paper}). Apply AQA's standard accurately and consistently. Do not inflate marks, but do not suppress marks merely to appear rigorous. Reward what the student actually demonstrates.\n\nHOLISTIC BEST FIT\nAward one overall mark out of ${maxMark} using best fit. Read the whole response first. Level descriptors describe overall quality, not mandatory checklists. One weak paragraph does not automatically lower a level; one excellent paragraph does not automatically raise one.\n\nLEVELS\n${levels}\n\nLEVEL LABEL MAPPING\n${maxMark===16?'L1 Weak, L2 Limited, L3 Reasonable, L4 Good.':'L1 Weak, L2 Limited, L3 Reasonable, L4 Good, L5 Excellent.'}\n\nQUESTION DECODE\nBefore marking, identify:\n- START POINT: What business concept does the question test?\n- END POINT: What precise outcome does the question ask about? (profitability, competitiveness, performance, success — these are NOT interchangeable)\n- THE CLAIM: Does the question use absolute/broad wording (always, all businesses, most important, best, should)? If so, the student must test when the claim holds and when it does not.\n\nENDPOINT LOCK\nJudge whether causal reasoning reaches the precise endpoint. A chain ending at "sales increase" when the question asks about profitability is incomplete unless the student explains the subsequent effect on profit relative to costs. Do not treat revenue, productivity, market share, competitiveness, cash flow and profit as interchangeable. Do not mechanically demand the endpoint in every paragraph; judge sustained question focus across the response.\n\nTHE ALL BUSINESSES TEST\nThis is an important discriminator in broad or general questions.\n- Not demonstrated: Generic assertion such as "it depends on the type of business" with no explanation of why.\n- Developing: Different businesses or circumstances are identified but mainly illustrate the same argument rather than changing it.\n- Strong: Relevant business characteristics are used to explain why the strength, likelihood or consequences of the mechanism change.\n- Exceptional: Contrasting business circumstances are integrated into the reasoning to test the argument's limits, compare its relative significance and materially shape the final judgement.\nThis is diagnostic information, not a separate marking criterion or automatic level cap.\n\nEXTERNAL BUSINESS EXAMPLES\nDo not reward a named business simply for being named. An example becomes valuable when the student explains what relevant characteristic of that business changes, supports or challenges the causal relationship. Do not require named businesses where the student demonstrates equally strong reasoning through clearly differentiated business circumstances.\n\n${isP3?'PAPER 3 SPECIFIC\nFor broad Paper 3 questions, strong responses normally move beyond the case business and demonstrate that the reasoning applies differently across contrasting business circumstances. Depth is more important than the number of arguments. Do not require a fixed number of arguments.':'PAPER 2 SPECIFIC\nFor Paper 2 16-mark questions that ask about "all businesses", strong responses move beyond the case study and demonstrate that the reasoning applies differently across contrasting business circumstances.'}\n\nANALYSIS\nReward logical causal reasoning, not connective words. Strong analysis explains the mechanism linking the business factor to the precise question endpoint.\n\nEVALUATION\nBalance alone is not strong evaluation. Reward assessment of significance, conditions, assumptions, magnitude, likelihood, timeframe, stakeholder effects, business characteristics and competing explanations where relevant. Conditional evaluation is strong when the student explains WHY a condition changes the judgement. Reward the thinking, not phrases such as "it depends".\n\nCONCEPTUAL ACCURACY\nWatch for: cash flow/profit confusion; revenue/profit; operating profit/operating profit margin; PRP/piece rate; economies of scale/scope; ethics/legislation; Herzberg — pay is a hygiene factor not a motivator; debt factoring misunderstanding; contribution/revenue. An error only limits marks to the extent it damages the reasoning built upon it. Never mechanically deduct.\n\nCONCLUSION\nA strong conclusion should normally derive its judgement from analysis already established in the response. New undeveloped assertions in the conclusion should not receive the same credit as developed reasoning elsewhere. Repeating arguments instead of resolving them limits the quality of evaluation demonstrated.\n\nMARKING SAFEGUARD\nDo not infer quality from essay length, paragraph count, use of named models, number of external businesses or presence of particular evaluative phrases. There is no required essay structure. Judge the quality of the Business reasoning demonstrated and apply the level descriptors holistically. Diagnostics explain the mark; they do not calculate it.\n\nOUTPUT\nRespond with ONLY valid JSON (no markdown, no backticks):\n{"mark":<0-${maxMark}>,"level":<1-${maxMark===16?4:5}>,"level_label":"<label per LEVEL LABEL MAPPING>","question_decode":{"start_point":"<the business concept>","end_point":"<the precise outcome>","claim_tested":"<the broad/absolute claim, or none>"},"verdict":"<2 short sentences>","www":["<specific strength>","<another>","<another>"],"ebi":["<specific improvement>","<another>","<another>"],"endpoint_reached":true,"endpoint_note":"<if false, where the chain stopped and what was needed>","missing_link":{"found":true,"student_chain":"<the chain as the student wrote it>","problem":"<what was skipped or assumed>","repair":"<the complete chain with the missing step inserted>"},"change_the_business":"<Not demonstrated|Developing|Strong|Exceptional> — <1 sentence explanation>","business_test":{"business_a":"<a business circumstance where the argument is likely to be relatively strong>","business_b":"<a contrasting circumstance where the argument may be weaker stronger or operate differently>","challenge":"Would your argument work equally well for both? Explain why."},"blocker":"<the single biggest limitation>","tip":"<one concrete thing to do differently next time>","how_to_repair":"<specific instruction on what to add or change in the weakest part, without writing it for them>"}\n\nFor missing_link: Identify the single most important missing or assumed causal link. If no meaningful missing link exists, set found to false.`;
+
+  const messages=[{role:"user",content:`QUESTION: ${qText}\n\nSTUDENT ESSAY:\n${essayText}`}];
+  if(uploadedImages.length>0 && !essayText){
+    const imgContent=uploadedImages.map(d=>({type:"image",source:{type:"base64",media_type:"image/jpeg",data:d.split(',')[1]}}));
+    imgContent.push({type:"text",text:`QUESTION: ${qText}\n\nThe student's handwritten essay is in the images above. Read it carefully, then mark it.`});
+    messages[0]={role:"user",content:imgContent};
+  }
+
+  try{
+    const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:3500,system:sysPrompt,messages})});
+    const data=await resp.json();
+    const txt=data.content.map(c=>c.text||'').join('');
+    const fb=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    fb._maxMark=maxMark;
+    showFeedback(fb,qText);
+    hist.push({date:new Date().toISOString().slice(0,10),q:qText.slice(0,70),mark:fb.mark,marks:maxMark,level:fb.level,blocker:fb.blocker,ctb:fb.change_the_business,ebi:fb.ebi||[],www:fb.www||[]});
+    saveHist();updateProgress();
+    logToSheet({
+      name:student.name,
+      candidateNumber:student.num,
+      question:qText.slice(0,120),
+      maxMark:maxMark,
+      mark:fb.mark,
+      level:fb.level,
+      levelLabel:fb.level_label,
+      www1:(fb.www||[])[0]||'',
+      www2:(fb.www||[])[1]||'',
+      ebi1:(fb.ebi||[])[0]||'',
+      ebi2:(fb.ebi||[])[1]||'',
+      blocker:fb.blocker||'',
+      tool:'openessay'
+    });
+  }catch(err){
+    document.getElementById('ldPanel').classList.remove('show');
+    document.getElementById('fbPanel').style.display='block';
+    document.getElementById('rMark').textContent='Error';
+    document.getElementById('rLevel').textContent='Could not connect. Try again.';
+  }
+}
+
+function showFeedback(fb,qText){
+  document.getElementById('ldPanel').classList.remove('show');
+  document.getElementById('fbPanel').style.display='block';
+  const mx=fb._maxMark||16;
+  const col={5:'var(--green)',4:'var(--blue)',3:'var(--gold)',2:'var(--red)',1:'var(--red)'}[fb.level]||'var(--muted)';
+  document.getElementById('rMark').textContent=fb.mark+'/'+mx;
+  document.getElementById('rLevel').textContent=`LEVEL ${fb.level} · ${(fb.level_label||'').toUpperCase()}`;
+  document.getElementById('rLevel').style.color=col;
+  document.getElementById('rBar').style.width=(fb.mark/mx*100)+'%';
+  document.getElementById('rBar').style.background=col;
+  document.getElementById('rVerdict').textContent=fb.verdict||'';
+  document.getElementById('rBlocker').innerHTML=`<b>What's holding the mark back</b>${fb.blocker||''}`;
+  document.getElementById('rWWW').innerHTML=(fb.www||[]).map(p=>`<div class="al al-g mt">${p}</div>`).join('');
+  document.getElementById('rEBI').innerHTML=(fb.ebi||[]).map(p=>`<div class="al al-r mt">${p}</div>`).join('');
+
+  // V3 fields — build the "next" section with V3 diagnostics
+  let nextHtml=`<div class="al al-b">${fb.tip||''}</div>`;
+  if(fb.missing_link&&fb.missing_link.found){
+    nextHtml+=`<div class="al al-y mt"><b>Missing link in your chain</b>Your chain: ${fb.missing_link.student_chain}<br><br><strong>What's missing:</strong> ${fb.missing_link.problem}<br><br><strong>Complete chain:</strong> ${fb.missing_link.repair}</div>`;
+  }
+  if(fb.how_to_repair){
+    nextHtml+=`<div class="al al-b mt"><b>How to repair it</b>${fb.how_to_repair}</div>`;
+  }
+  const ctbRating=(fb.change_the_business||'').split('—')[0].trim();
+  const ctbNote=(fb.change_the_business||'').includes('—')?(fb.change_the_business||'').split('—').slice(1).join('—').trim():'';
+  if(ctbRating){
+    nextHtml+=`<div class="al al-y mt"><b>Change the Business: ${ctbRating}</b>${ctbNote}</div>`;
+  }
+  if(fb.business_test&&fb.business_test.business_a){
+    nextHtml+=`<div class="al al-g mt"><b>Test your argument</b><strong>Business A:</strong> ${fb.business_test.business_a}<br><strong>Business B:</strong> ${fb.business_test.business_b}<br><br><em>${fb.business_test.challenge}</em></div>`;
+  }
+  document.getElementById('rNext').innerHTML=nextHtml;
+
+  // Fire the rewrite with V3 context
+  runRewrite(qText,fb);
+}
+
+async function runRewrite(qText,fb){
+  document.getElementById('rewriteLoading').style.display='block';
+  document.getElementById('rewriteResult').innerHTML='';
+  const essayText=document.getElementById('essay').value.trim();
+  const rewritePrompt=`You are an AQA A-level Business Studies teacher. A student has submitted a ${fb._maxMark||16}-mark "all businesses" essay and received feedback. Your job is to take their WEAKEST section and rewrite it to show them exactly what they should have written.
+
+CRITICAL RULES:
+1. You MUST use the student's own words, ideas and arguments as your starting point. Do not invent a completely new answer. Take what they wrote and make it better.
+2. Write like a well-prepared Year 13 student — use "One could argue", "This means that", "This is because", "Therefore", "However, on balance". Natural student language, not textbook language.
+3. Keep the same argument the student was trying to make — but develop it properly: explain the mechanism, use context that changes the reasoning, reach the endpoint, and weigh significance.
+4. Your rewrite should be 150-250 words maximum — one or two paragraphs, not a whole essay.
+5. THE LAST SENTENCE MUST LINK DIRECTLY BACK TO THE EXACT WORDING OF THE QUESTION. If the question asks whether something is "always a disadvantage", your final sentence must explicitly address whether it is always a disadvantage. If the question asks about "the most important element", your final sentence must address whether it is the most important element. Use the same key words from the question in your final sentence so the student can see the chain connecting back to the question being asked.
+
+FORMAT YOUR RESPONSE AS HTML:
+<div class="al al-y"><b>Your original</b>[Quote the student's weakest 2-3 sentences exactly as they wrote them]</div>
+<div class="al al-g mt"><b>What you could have written instead</b>[Your rewritten version that develops their argument properly — same idea, better execution. Write as a Year 13 student would.]</div>
+<div class="al al-b mt"><b>What changed and why it is important</b>[2-3 sentences explaining the specific improvements and which marks they earn. Refer to the marking rubric: endpoint, mechanism, context, weighing.]</div>`;
+
+  // Get the essay content
+  let studentContent=essayText;
+  if(!studentContent && uploadedImages.length>0){
+    studentContent='[Handwritten essay - see images submitted]';
+  }
+
+  try{
+    const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      model:"claude-sonnet-4-6",max_tokens:1500,
+      system:rewritePrompt,
+      messages:[{role:"user",content:`QUESTION: ${qText}\n\nSTUDENT'S ESSAY:\n${studentContent}\n\nFEEDBACK RECEIVED:\nMark: ${fb.mark}/${fb._maxMark||16} (Level ${fb.level})\nBlocker: ${fb.blocker}\nEBI: ${(fb.ebi||[]).join('; ')}\n\nNow identify the student's weakest section and rewrite it to show them what they should have done.`}]
+    })});
+    const data=await resp.json();
+    const txt=data.content.map(c=>c.text||'').join('');
+    document.getElementById('rewriteLoading').style.display='none';
+    document.getElementById('rewriteResult').innerHTML=txt;
+    sanitiseResult(document.getElementById('rewriteResult'));
+  }catch(err){
+    document.getElementById('rewriteLoading').style.display='none';
+    document.getElementById('rewriteResult').innerHTML=`<div class="al al-r"><b>Error</b>${err.message||'Could not connect.'}</div>`;
+  }
+}
+
+// ── Google Sheet Logging (teacher dashboard) ──
+const SHEET_URL='https://script.google.com/macros/s/AKfycbxbOyg1Ggz2m3c3wAL5ulRAoPgK_sw7YWrlavz4eIf3hKsOlmlrIrfADTXRvxkXVjtj0A/exec';
+function logToSheet(data){
+  try{
+    const form=document.createElement('form');
+    form.method='POST';form.action=SHEET_URL;form.target='sheet_iframe';form.style.display='none';
+    const input=document.createElement('input');
+    input.name='payload';input.value=JSON.stringify(data);
+    form.appendChild(input);
+    let iframe=document.getElementById('sheet_iframe');
+    if(!iframe){iframe=document.createElement('iframe');iframe.name='sheet_iframe';iframe.id='sheet_iframe';iframe.style.display='none';document.body.appendChild(iframe);}
+    document.body.appendChild(form);form.submit();document.body.removeChild(form);
+  }catch(e){console.log('Sheet log failed:',e);}
+}
+
+// ── Sanitise API result content to prevent layout overflow ──
+function sanitiseResult(el){
+  if(!el)return;
+  el.querySelectorAll('.grid,.g2,.g3,.g4').forEach(g=>{
+    g.style.display='block';
+    g.style.gridTemplateColumns='none';
+  });
+  el.querySelectorAll('table').forEach(t=>{
+    t.style.width='100%';
+    t.style.tableLayout='fixed';
+  });
+  el.querySelectorAll('pre,code').forEach(p=>{
+    p.style.whiteSpace='pre-wrap';
+    p.style.wordBreak='break-word';
+    p.style.maxWidth='100%';
+    p.style.overflow='hidden';
+  });
+  el.querySelectorAll('*').forEach(c=>{
+    c.style.maxWidth='100%';
+    c.style.boxSizing='border-box';
+    if(c.style.width&&c.style.width!=='100%')c.style.width='100%';
+    if(c.style.minWidth)c.style.minWidth='0';
+  });
+}
+
+// ── Rubric modal ──
+document.getElementById('rubricBtn').onclick=()=>document.getElementById('rubricOv').classList.add('show');
+document.getElementById('rubricClose').onclick=()=>document.getElementById('rubricOv').classList.remove('show');
+
+// ── Tabs ──
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>openTab(b.dataset.t));
+function openTab(id){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));document.getElementById(id).classList.add('on');const btn=[...document.querySelectorAll('nav button')].find(b=>b.dataset.t===id);if(btn)btn.classList.add('on');window.scrollTo({top:0,behavior:'smooth'});}
+
+// ── Progress ──
+function updateProgress(){
+  document.getElementById('pCount').textContent=hist.length;
+  if(hist.length){
+    const avg=(hist.reduce((s,h)=>s+h.mark,0)/hist.length).toFixed(1);
+    const best=Math.max(...hist.map(h=>h.mark));
+    document.getElementById('pAvg').textContent=avg+'%';
+    const bestH=hist.reduce((b,h)=>(h.mark/(h.marks||16))>(b.mark/(b.marks||16))?h:b,hist[0]);
+    document.getElementById('pBest').textContent=bestH.mark+'/'+(bestH.marks||16);
+
+    // ── Submission history table ──
+    document.getElementById('pHist').innerHTML='<table class="p-table"><tr><th>#</th><th>Date</th><th>Mark</th><th>Level</th><th>Question</th></tr>'+hist.map((h,i)=>{
+      const lvlCol={5:'var(--green)',4:'var(--blue)',3:'var(--gold)',2:'var(--red)',1:'var(--red)'}[h.level]||'var(--muted)';
+      const lvlName={5:'Excellent',4:'Good',3:'Reasonable',2:'Limited',1:'Weak'}[h.level]||'';
+      return`<tr><td>${i+1}</td><td>${h.date}</td><td style="font-weight:800">${h.mark}</td><td style="color:${lvlCol};font-weight:700">${lvlName}</td><td style="color:var(--muted);font-size:12px">${h.q}...</td></tr>`;
+    }).join('')+'</table>';
+
+    // ── How you are improving ──
+    const improveEl=document.getElementById('pImprove');
+    if(hist.length>=2){
+      const first3=hist.slice(0,Math.min(3,hist.length));
+      const last3=hist.slice(-Math.min(3,hist.length));
+      const earlyAvg=(first3.reduce((s,h)=>s+h.mark,0)/first3.length).toFixed(1);
+      const recentAvg=(last3.reduce((s,h)=>s+h.mark,0)/last3.length).toFixed(1);
+      const diff=(recentAvg-earlyAvg).toFixed(1);
+      const trend=parseFloat(diff);
+      const lowest=Math.min(...hist.map(h=>h.mark));
+      const highest=best;
+      const levelCounts={1:0,2:0,3:0,4:0,5:0};
+      hist.forEach(h=>{if(h.level)levelCounts[h.level]++;});
+      const recentLevels=hist.slice(-3);
+      const recentBestLevel=Math.max(...recentLevels.map(h=>h.level||1));
+
+      let html='<div style="display:grid;gap:10px">';
+
+      // Mark trend
+      if(trend>0){
+        html+=`<div class="al al-g"><b>Your marks are going up</b>Your early essays averaged ${earlyAvg}%. Your most recent essays average ${recentAvg}%. That is a ${Math.abs(diff)} mark improvement.</div>`;
+      }else if(trend<0){
+        html+=`<div class="al al-y"><b>Your recent marks have dipped</b>Your early essays averaged ${earlyAvg}% but your most recent essays average ${recentAvg}%. Look at the blockers below and focus your practice there.</div>`;
+      }else{
+        html+=`<div class="al al-b"><b>Holding steady</b>Your early and recent essays both average around ${earlyAvg}%. To push higher, focus on the areas below.</div>`;
+      }
+
+      // Range
+      html+=`<div class="al al-b"><b>Your range</b>Your lowest mark is ${lowest} and your highest is ${highest}. ${highest-lowest>=6?'That is a big range — your best work shows you can do it, so the goal is consistency.':highest-lowest>=3?'You are getting more consistent. Keep working on the areas below.':'Very consistent marks. To break through to the next level, focus on the specific skills below.'}</div>`;
+
+      // Level progress
+      if(recentBestLevel>=4){
+        html+=`<div class="al al-g"><b>You are reaching Level ${recentBestLevel} work</b>${recentBestLevel===5?'You have produced excellent work. Keep that quality consistent across every essay.':'You are producing good work. To reach Level 5, you need to sustain the quality throughout and strengthen your evaluation.'}</div>`;
+      }else if(recentBestLevel===3){
+        html+=`<div class="al al-y"><b>You are working at Level 3</b>Your analysis is developing but you need to reach the endpoint more consistently, weigh your arguments rather than just balancing them, and use context that changes the reasoning.</div>`;
+      }
+
+      // Strengths from WWW
+      const allWWW=hist.flatMap(h=>h.www||[]);
+      if(allWWW.length>=3){
+        html+=`<div class="al al-g"><b>What you do well</b>${allWWW.slice(-3).join(' ')}</div>`;
+      }
+
+      html+='</div>';
+      improveEl.innerHTML=html;
+    }
+
+    // ── What you still need to work on ──
+    const workEl=document.getElementById('pWorkOn');
+    const allBlockers=hist.map(h=>h.blocker).filter(Boolean);
+    const allEBI=hist.flatMap(h=>h.ebi||[]);
+
+    if(allBlockers.length>=1){
+      let whtml='<div style="display:grid;gap:10px">';
+
+      // Most recent blocker (most relevant)
+      const recentBlocker=allBlockers[allBlockers.length-1];
+      whtml+=`<div class="al al-r"><b>Your most recent blocker</b>${recentBlocker}</div>`;
+
+      // Recurring blockers — find patterns
+      if(allBlockers.length>=3){
+        const blockerWords=allBlockers.join(' ').toLowerCase();
+        const patterns=[];
+        if(blockerWords.includes('endpoint')||blockerWords.includes('profit')||blockerWords.includes('stops at'))patterns.push('Reaching the endpoint — your chains of reasoning often stop before answering the exact question');
+        if(blockerWords.includes('evaluat')||blockerWords.includes('weigh')||blockerWords.includes('balance')||blockerWords.includes('judgement'))patterns.push('Evaluation and weighing — you balance arguments but do not always explain which matters more and why');
+        if(blockerWords.includes('context')||blockerWords.includes('applic')||blockerWords.includes('generic')||blockerWords.includes('decorat'))patterns.push('Application — your examples need to change the argument, not just name a business');
+        if(blockerWords.includes('mechanism')||blockerWords.includes('chain')||blockerWords.includes('develop')||blockerWords.includes('analysis'))patterns.push('Analysis depth — your chains need more links explaining why each step follows');
+        if(blockerWords.includes('conclusion')||blockerWords.includes('resolve'))patterns.push('Conclusion — you need to resolve the question with a weighted judgement, not just repeat your arguments');
+        if(blockerWords.includes('model')||blockerWords.includes('theory')||blockerWords.includes('dump'))patterns.push('Model use — describe the mechanism and use it to drive the argument, not just name the model');
+
+        if(patterns.length>0){
+          whtml+=`<div class="al al-y"><b>Patterns across your essays</b>Looking at all ${allBlockers.length} essays, these issues keep coming up:<br><br>${patterns.map(p=>'&bull; '+p).join('<br>')}</div>`;
+        }
+      }
+
+      // Most recent EBI points
+      if(allEBI.length>=2){
+        const recentEBI=allEBI.slice(-3);
+        whtml+=`<div class="al al-b"><b>From your most recent feedback</b>${recentEBI.map(e=>'&bull; '+e).join('<br>')}</div>`;
+      }
+
+      // Suggested next step
+      if(hist.length>=2){
+        const lastMark=hist[hist.length-1].mark;
+        let suggestion='';
+        if(lastMark<=10)suggestion='Focus on the "Complete the chain to the endpoint" and "Explain the mechanism" drills in the Improve My Technique tab. Your priority is building longer, more developed chains of reasoning.';
+        else if(lastMark<=15)suggestion='Focus on the "Weighted judgement" and "Challenge absolute wording" drills. You have the analysis foundations — now you need to evaluate more effectively to break into Level 4.';
+        else if(lastMark<=20)suggestion='Focus on the "Compare significance" and "Make context do analytical work" drills. You are close to Level 5 — the gap is usually sustained quality and integrated application throughout.';
+        else suggestion='You are producing excellent work. Focus on consistency — make sure every essay hits this standard, not just your best ones.';
+        whtml+=`<div class="al al-g"><b>What to practise next</b>${suggestion}</div>`;
+      }
+
+      whtml+='</div>';
+      workEl.innerHTML=whtml;
+    }
+  }
+}
+
+// ── Training drills (per-skill) ──
+const ALT_DRILLS={
+  weigh:[
+    `<b>Upgrade this:</b><br>"Outsourcing has benefits. However, keeping production in-house also has benefits."<br><br>Name a specific business type. Explain WHY one option outweighs the other for THAT business. Reach profitability.`,
+    `<b>Upgrade this:</b><br>"Diversification can increase revenue. However, it also increases risk."<br><br>Explain under what specific conditions the revenue benefit outweighs the risk — and when it does not.`,
+    `<b>Upgrade this:</b><br>"Organic growth is safer. External growth is faster."<br><br>For a specific type of business, explain which matters more and WHY — do not just list advantages of each.`
+  ],
+  endpoint:[
+    `<b>Complete this chain to reach COMPETITIVENESS:</b><br><br>"A retailer invests in staff training to improve customer service..."<br><br>Do not stop at "happy customers." Connect to competitive position.`,
+    `<b>Complete this chain to reach PROFITABILITY:</b><br><br>"A manufacturer introduces automation on its production line, replacing manual assembly with robotic arms..."<br><br>Do not stop at "lower costs." Explain the full profit mechanism.`,
+    `<b>Complete this chain to reach LABOUR TURNOVER:</b><br><br>"A business introduces flexible working hours for all employees..."<br><br>Explain the mechanism step by step. Do not assert — show WHY each step follows.`
+  ],
+  absolute:[
+    `<b>Question:</b> "'Price is always the most important element of the marketing mix.' Do you agree?"<br><br>Write two contrasting paragraphs showing when price IS and IS NOT the most important, using different business types.`,
+    `<b>Question:</b> "'All businesses benefit from economies of scale.' Do you agree?"<br><br>Give a specific example where economies of scale help and one where they create problems. Explain the mechanism in each case.`,
+    `<b>Question:</b> "'Soft HRM always leads to better performance than hard HRM.' Do you agree?"<br><br>Show a circumstance where soft HRM works better and one where hard HRM is more appropriate. Name specific industries.`
+  ],
+  context:[
+    `<b>Upgrade this:</b><br>"Amazon should invest in technology to improve efficiency."<br><br>Rewrite so that Amazon's specific scale, logistics network, or competitive position is essential to the argument.`,
+    `<b>Upgrade this:</b><br>"A small business should use social media marketing."<br><br>Make the argument depend on the specific characteristics of a small, local business — budget, customer base, reach.`,
+    `<b>Upgrade this:</b><br>"The business should expand internationally to increase profits."<br><br>Make the argument specific to a UK luxury fashion brand. The context should drive the reasoning about which markets and why.`
+  ],
+  conclude:[
+    `<b>Write a conclusion for:</b><br>"'Motivation is always the most important factor in achieving increased labour productivity.' To what extent do you agree?"<br><br>Use: Overall → Most Significant → Decisive Condition → Outweighs → Therefore.`,
+    `<b>Write a conclusion for:</b><br>"To what extent is lean production the most effective way for a business to reduce unit costs?"<br><br>Weigh the arguments. Do NOT introduce anything new.`,
+    `<b>Write a conclusion for:</b><br>"'A business should always prioritise growth over profitability.' Do you agree?"<br><br>Identify the decisive condition. Resolve the question.`
+  ],
+  models:[
+    `<b>Upgrade this model dump:</b><br>"Ansoff's Matrix has four strategies: market penetration, market development, product development and diversification. Each has different levels of risk."<br><br>Rewrite so ONE strategy's risk mechanism drives an argument about whether a business should enter a new market.`,
+    `<b>Upgrade this model dump:</b><br>"The Boston Matrix classifies products as stars, cash cows, question marks and dogs based on market share and growth."<br><br>Rewrite so the matrix's mechanism explains WHY a business should invest in a specific product category.`,
+    `<b>Upgrade this model dump:</b><br>"Taylor believed workers are motivated by money. He introduced piece-rate pay and scientific management."<br><br>Weave Taylor's mechanism into an argument about whether a warehouse business should introduce piece-rate pay.`
+  ],
+  compare:[
+    `<b>Compare:</b><br>"Promotion matters for a car brand. Product quality also matters."<br><br>For a specific car segment (budget vs luxury), explain which matters MORE and WHY.`,
+    `<b>Compare:</b><br>"Cash flow management is important. Profitability is also important."<br><br>For a specific type of business (start-up vs established), explain which is the bigger priority and WHY.`,
+    `<b>Compare:</b><br>"Internal recruitment has advantages. External recruitment also has advantages."<br><br>For a tech company launching a new product line, which matters more? Explain the mechanism.`
+  ],
+  data:[
+    `<b>Use this data:</b> Gearing: 62%. Current ratio: 0.8. Revenue growth: +12%. Operating profit margin fell from 14% to 9%.<br><br>The question asks whether this business should invest in expansion. Use at least two figures to build your argument.`,
+    `<b>Use this data:</b> Market share: 8% (down from 12%). Customer retention rate: 65%. Promotion spend as % of revenue: 3% (industry avg: 7%).<br><br>Argue whether this business should increase its promotion budget. Calculate and interpret.`,
+    `<b>Use this data:</b> Output: 50,000 units. Capacity: 80,000 units. Break-even: 35,000 units. Unit cost: £12. Selling price: £18.<br><br>Should this business reduce its selling price by 10% to increase demand? Use the data to argue both sides.`
+  ],
+  intro:[
+    `<b>Write an opening (2-3 sentences) for:</b><br>"'A business should always use a decision tree when making important strategic decisions.' Do you agree?"<br><br>Pick a side. Give your main reason. Name the strongest alternative. State your provisional judgement.`,
+    `<b>Write an opening (2-3 sentences) for:</b><br>"To what extent is motivation always the most important factor in achieving increased labour productivity?"<br><br>Do not describe motivation theories. Take a position, give the reason, acknowledge the alternative, state your judgement.`,
+    `<b>Write an opening (2-3 sentences) for:</b><br>"'Emerging economies are beneficial to UK businesses, but only as potential markets.' Do you agree?"<br><br>Pick a side immediately. No background. No definitions. Position, reason, alternative, judgement.`
+  ]
+};
+
+document.querySelectorAll('.drill-submit').forEach(btn=>{
+  btn.onclick=async function(){
+    const skill=this.dataset.skill;
+    const ta=document.querySelector(`.drill-ta[data-skill="${skill}"]`);
+    const fb=document.querySelector(`.drill-fb[data-skill="${skill}"]`);
+    const input=ta.value.trim();
+    if(!input){alert('Write your response first.');return;}
+    fb.style.display='block';
+    fb.innerHTML='<div class="spin"></div><p class="tiny" style="text-align:center">Checking your answer — takes a few seconds.</p>';
+    const card=document.getElementById('sk-'+skill);
+    const taskText=card.querySelector('.al.al-b').innerText;
+    try{
+      const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:700,system:`You are an AQA A-level Business examiner giving drill feedback. Be supportive but examiner-strict. Respond ONLY with JSON (no markdown, no backticks): {"rating":"Weak|Developing|Strong|Excellent","www":"<what went well - 2-3 sentences>","ebi":"<even better if - 2-3 sentences>","upgrade":"<if not Excellent, write a stronger version in 3-4 sentences showing what a stronger answer looks like>"}`,messages:[{role:"user",content:`SKILL: ${skill}\nTASK: ${taskText}\nSTUDENT RESPONSE: ${input}`}]})});
+      const data=await resp.json();
+      const txt=data.content.map(c=>c.text||'').join('');
+      const r=JSON.parse(txt.replace(/```json|```/g,'').trim());
+      const col={Weak:'al-r',Developing:'al-y',Strong:'al-b',Excellent:'al-g'}[r.rating]||'al-b';
+      fb.innerHTML=`<div class="al ${col}"><b>${r.rating} — What went well</b>${r.www}</div><div class="al al-y mt"><b>Even better if</b>${r.ebi}</div>${r.upgrade?`<div class="al al-g mt"><b>A stronger version</b>${r.upgrade}</div>`:''}`;
+    }catch(err){fb.innerHTML=`<div class="al al-r"><b>Error</b>${err.message||'Could not connect.'}</div>`;}
+  };
+});
+
+document.querySelectorAll('.drill-new').forEach(btn=>{
+  btn.onclick=function(){
+    const skill=this.dataset.skill;
+    const alts=ALT_DRILLS[skill];
+    if(!alts||!alts.length)return;
+    const alt=alts[Math.floor(Math.random()*alts.length)];
+    const card=document.getElementById('sk-'+skill);
+    card.querySelector('.al.al-b').innerHTML=alt;
+    card.querySelector('.drill-ta').value='';
+    card.querySelector('.drill-fb').style.display='none';
+  };
+});
+</script>
+</body>
+</html>
