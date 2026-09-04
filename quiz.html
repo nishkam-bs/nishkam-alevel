@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Knowledge Quiz · AQA A-Level Business</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#1B2A4A;--gold:#C8A951;--bg:#f7f7f5;--card:#fff;--muted:#6b7280;--green:#059669;--red:#dc2626;--blue:#2563eb;--border:#e5e7eb}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:#1f2937;line-height:1.6;min-height:100vh}
+.hdr{background:var(--navy);color:#fff;text-align:center;padding:2rem 1rem 1.5rem}
+.hdr h1{font-family:'DM Serif Display',serif;font-size:1.8rem;font-weight:400;margin-bottom:.25rem}
+.hdr p{color:rgba(255,255,255,.6);font-size:.85rem}
+.wrap{max-width:720px;margin:0 auto;padding:1.5rem 1rem}
+.screen{display:none}.screen.active{display:block}
+.login-card{background:var(--card);border-radius:12px;padding:2rem;max-width:420px;margin:0 auto;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.login-card .icon{width:48px;height:48px;background:var(--gold);border-radius:10px;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);font-weight:700}
+.login-card h2{font-family:'DM Serif Display',serif;text-align:center;font-size:1.4rem;margin-bottom:.25rem}
+.login-card .sub{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:1.5rem}
+label{font-weight:600;font-size:.85rem;display:block;margin-bottom:.3rem}
+input,select{width:100%;padding:.65rem .8rem;border:1px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;margin-bottom:1rem;background:var(--card)}
+input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,169,81,.15)}
+.hint{font-size:.78rem;color:var(--muted);margin-top:-.75rem;margin-bottom:1rem}
+.btn{display:block;width:100%;padding:.75rem;border:none;border-radius:8px;font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;transition:opacity .15s}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-navy{background:var(--navy);color:#fff}
+.btn:hover{opacity:.9}.btn:disabled{opacity:.5;cursor:not-allowed}
+.unit-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.5rem}
+.unit-btn{padding:.9rem .8rem;border:2px solid var(--border);border-radius:10px;background:var(--card);cursor:pointer;text-align:left;transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.unit-btn:hover{border-color:var(--gold);background:#fffbeb}
+.unit-btn .unum{font-weight:700;color:var(--navy);font-size:.95rem;margin-bottom:.15rem}
+.unit-btn .uname{font-size:.82rem;color:var(--muted);line-height:1.3}
+.setup-card{background:var(--card);border-radius:12px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:1rem}
+.setup-card h3{font-family:'DM Serif Display',serif;font-size:1.15rem;margin-bottom:1rem}
+.q-count{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem}
+.q-count label{margin-bottom:0;white-space:nowrap}
+.q-count select{width:auto;margin-bottom:0}
+.quiz-bar{display:flex;justify-content:space-between;align-items:center;background:var(--card);border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.timer{font-weight:700;font-size:1.1rem;color:var(--navy);font-variant-numeric:tabular-nums}
+.timer.warn{color:var(--red)}
+.progress-text{font-size:.85rem;color:var(--muted)}
+.q-card{background:var(--card);border-radius:10px;padding:1.25rem;margin-bottom:.75rem;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.q-num{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.4rem}
+.q-text{font-size:.95rem;font-weight:500;margin-bottom:.75rem;line-height:1.5}
+.q-text code{background:#f3f4f6;padding:.15rem .4rem;border-radius:3px;font-size:.88rem}
+.options{display:flex;flex-direction:column;gap:.4rem}
+.opt{display:flex;align-items:flex-start;gap:.6rem;padding:.6rem .75rem;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;font-size:.88rem}
+.opt:hover{border-color:var(--gold);background:#fffbeb}
+.opt.selected{border-color:var(--navy);background:#eef2ff}
+.opt.correct{border-color:var(--green);background:#ecfdf5}
+.opt.wrong{border-color:var(--red);background:#fef2f2}
+.opt-letter{font-weight:700;color:var(--navy);min-width:1.2rem}
+.opt input{display:none}
+.explain{margin-top:.75rem;padding:.75rem;border-radius:8px;font-size:.85rem;display:none;line-height:1.5}
+.explain.show{display:block}
+.explain.right{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46}
+.explain.wrong{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+.results-card{background:var(--card);border-radius:12px;padding:2rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:1rem}
+.score-ring{width:120px;height:120px;border-radius:50%;border:6px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1rem}
+.score-ring .big{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1}
+.score-ring .of{font-size:.8rem;color:var(--muted)}
+.pct{font-size:1.1rem;font-weight:700;margin-bottom:.25rem}
+.verdict{color:var(--muted);font-size:.9rem;margin-bottom:1.25rem}
+.breakdown{text-align:left;margin-top:1rem}
+.breakdown h4{font-size:.9rem;margin-bottom:.5rem}
+.bk-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid #f3f4f6;font-size:.85rem}
+.bk-row:last-child{border-bottom:none}
+.weak-list{margin-top:1rem;text-align:left}
+.weak-list h4{font-size:.9rem;margin-bottom:.5rem;color:var(--red)}
+.weak-item{font-size:.85rem;padding:.3rem 0;color:#6b7280}
+.review-section{margin-top:1.5rem;text-align:left}
+.review-section h4{font-size:.9rem;margin-bottom:.75rem}
+.rev-q{background:#f9fafb;border-radius:8px;padding:.75rem;margin-bottom:.5rem;font-size:.85rem}
+.rev-q .rev-status{font-weight:700;font-size:.78rem}
+.rev-q .rev-status.c{color:var(--green)}.rev-q .rev-status.w{color:var(--red)}
+.ld-wrap{text-align:center;padding:60px 20px}
+.spin{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 16px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ft{text-align:center;padding:1.5rem;color:var(--muted);font-size:.75rem;margin-top:1rem}
+@media(max-width:600px){.unit-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <h1>Knowledge Quiz</h1>
+  <p>AQA A-Level Business (7132) · Nishkam School West London</p>
+</div>
+<div class="wrap">
+
+<!-- LOGIN -->
+<div class="screen active" id="scrLogin">
+  <div class="login-card">
+    <div class="icon">Q</div>
+    <h2>Knowledge Quiz</h2>
+    <p class="sub">Test yourself on any unit from the specification.</p>
+    <label>Your name</label>
+    <input id="lName" placeholder="e.g. Jasneet">
+    <label>Candidate number</label>
+    <input id="lNum" placeholder="e.g. 1464" maxlength="6">
+    <p class="hint">Your candidate number lets your teacher track progress.</p>
+    <button class="btn btn-gold" onclick="enterSetup()">Start</button>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div class="screen" id="scrSetup">
+  <div class="setup-card">
+    <h3>Choose a unit</h3>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">Pick one unit. All questions come from the AQA specification for that unit.</p>
+    <div class="unit-grid" id="unitGrid"></div>
+    <div class="q-count">
+      <label>Questions</label>
+      <select id="qCount"><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option></select>
+    </div>
+    <button class="btn btn-navy" onclick="startQuiz()" id="startBtn" disabled>Choose a unit above</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="screen" id="scrLoad">
+  <div class="ld-wrap">
+    <div class="spin"></div>
+    <p style="font-weight:700;color:var(--navy);font-size:1rem">Generating your quiz...</p>
+    <p style="color:var(--muted);font-size:.85rem;margin-top:.3rem">This should take a few seconds.</p>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="scrQuiz">
+  <div class="quiz-bar">
+    <span class="progress-text" id="progText">0 / 10 answered</span>
+    <span class="timer" id="timer">10:00</span>
+  </div>
+  <div id="qContainer"></div>
+  <button class="btn btn-navy" onclick="submitQuiz()" style="margin-top:1rem">Submit answers</button>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="scrResults">
+  <div class="results-card">
+    <div class="score-ring" id="scoreRing"><span class="big" id="scoreNum">0</span><span class="of" id="scoreOf">out of 10</span></div>
+    <div class="pct" id="scorePct">0%</div>
+    <div class="verdict" id="verdict"></div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="weak-list" id="weakList"></div>
+  </div>
+  <div class="review-section" id="reviewSection"></div>
+  <button class="btn btn-gold" onclick="resetQuiz()" style="margin-top:1rem">Try another unit</button>
+</div>
+
+</div>
+<div class="ft">Nishkam School West London · Man Neeva, Mat Uchi · AQA A-Level Business (7132)</div>
+
+<script>
+const PROXY='https://nishkam-marker.j-kerrisk.workers.dev';
+const SHEET_URL='https://script.google.com/macros/s/AKfycbxbOyg1Ggz2m3c3wAL5ulRAoPgK_sw7YWrlavz4eIf3hKsOlmlrIrfADTXRvxkXVjtj0A/exec';
+
+/* ═══════════════════════════════════════════════════════
+   SPECIFICATION-ACCURATE UNIT CONTENT (AQA 7132)
+   Every line below comes directly from the specification.
+   Nothing is added. Nothing is invented.
+   ═══════════════════════════════════════════════════════ */
+const UNITS=[
+{id:1,name:'What is business?',code:'3.1',content:`3.1.1 Understanding the nature and purpose of business: why businesses exist; business objectives (profit, growth, survival, cash flow, social and ethical objectives); the relationship between mission and objectives; why businesses set objectives; the measurement and importance of profit (revenue, fixed costs, variable costs, total costs).
+3.1.2 Understanding different business forms: sole traders; private limited companies and public limited companies; private sector and public sector organisations; non-profit organisations; social enterprises; unlimited and limited liability; ordinary share capital; market capitalisation; dividends; the role of shareholders and why they invest; influences on share price and the significance of share price changes; the effects of ownership on mission and objectives.
+3.1.3 Understanding that businesses operate within an external environment: how the external environment can affect costs and demand; competition; market conditions; incomes; interest rates; demographic factors; environmental issues and fair trade.`},
+
+{id:2,name:'Managers, leadership and decision making',code:'3.2',content:`3.2.1 Understanding management, leadership and decision making: the distinction between management and leadership; leadership styles (autocratic, paternalistic, democratic, laissez-faire); Tannenbaum Schmidt continuum; the effectiveness of different styles.
+3.2.2 Understanding management decision making: scientific decision making; decision trees (calculating expected value and net gains); risks, rewards, uncertainty, opportunity cost; influences on decision making (mission, objectives, ethics, external environment, resource constraints).
+3.2.3 Understanding the role and importance of stakeholders: stakeholder needs; stakeholder mapping (power and interest); possible overlap and conflict of stakeholder needs; managing relationships with stakeholders (communication and consultation).`},
+
+{id:3,name:'Marketing management',code:'3.3',content:`3.3.1 Setting marketing objectives: sales volume and sales value; market size; market and sales growth; market share; brand loyalty.
+3.3.2 Understanding markets and customers: primary and secondary marketing research; qualitative and quantitative data; sampling methods (random, stratified, quota); interpreting marketing data (correlation, confidence intervals, extrapolation); interpreting price elasticity of demand and income elasticity of demand data and their impact on revenue; the use of data in marketing decision making.
+3.3.3 Making marketing decisions — segmentation, targeting, positioning: segmentation methods (demographic, geographic, income, behavioural); niche and mass marketing; market mapping.
+3.3.4 Making marketing decisions — using the marketing mix: the 7Ps; product decisions (Boston Matrix, product life cycle, extension strategies, new product development); pricing decisions (penetration, price skimming); promotional mix (branding, social media, viral marketing); distribution/place decisions (multi-channel distribution); people, process and physical environment; influences on an integrated marketing mix; digital marketing and e-commerce.`},
+
+{id:4,name:'Operational management',code:'3.4',content:`3.4.1 Setting operational objectives: costs, quality, speed of response, flexibility, environmental objectives, added value.
+3.4.2 Analysing operational performance: calculating and using labour productivity, unit costs (average costs), capacity, capacity utilisation.
+3.4.3 Making operational decisions to improve performance — increasing efficiency and productivity: the importance of capacity and how to utilise it efficiently; efficiency and labour productivity (how to increase, difficulties); lean production (Just in Time vs Just in Case); choosing the optimal mix of resources (labour intensive vs capital intensive); using technology to improve operational efficiency.
+3.4.4 Making operational decisions to improve performance — improving quality: quality assurance vs quality control; benefits and difficulties of improving quality; consequences of poor quality.
+3.4.5 Making operational decisions to improve performance — managing inventory and supply chains: matching supply to demand (outsourcing, temporary/part-time employees, producing to order); inventory control (interpreting inventory control charts, lead time, re-order levels, buffer levels, re-order quantities); influences on choice of suppliers; managing the supply chain effectively; the value of outsourcing.`},
+
+{id:5,name:'Financial management',code:'3.5',content:`3.5.1 Setting financial objectives: return on investment; revenue, costs and profit objectives; cash flow objectives; the distinction between cash flow and profit; the distinction between gross profit, operating profit and profit for the year.
+3.5.2 Analysing financial performance: constructing and analysing budgets and cash flow forecasts; variance analysis (adverse and favourable); break-even analysis (break-even output, margin of safety, contribution per unit, total contribution); constructing and interpreting break-even charts; effects of changes in price, output and cost; analysing profitability (gross profit margin, operating profit margin, profit for the year margin); analysing timings of cash inflows and outflows (payables and receivables); the use of data for financial decision making.
+3.5.3 Making financial decisions — sources of finance: internal and external sources (debt factoring, overdrafts, retained profits, share capital, loans, venture capital, crowd funding); advantages and disadvantages of different sources.
+3.5.4 Making financial decisions — improving cash flow and profits: methods of improving cash flow; methods of improving profits and profitability; difficulties improving cash flow and profit.`},
+
+{id:6,name:'Human resource management',code:'3.6',content:`3.6.1 Setting human resource objectives: employee engagement, talent development, training, diversity, alignment of values, number/skills/location of employees; soft and hard HRM.
+3.6.2 Analysing human resource performance: calculating and interpreting labour turnover, labour productivity, employee costs as percentage of turnover, labour cost per unit.
+3.6.3 Making human resource decisions — improving organisational design and managing the human resource flow: organisational structures (functional, product-based, regional, matrix); authority, span of control, hierarchy, delegation, centralisation and decentralisation; the value of changing organisational design; human resource flow (HR plan, recruitment, training, redeployment, redundancy).
+3.6.4 Making human resource decisions — improving motivation and engagement: Taylor, Maslow, Herzberg; financial methods of motivation (piece rate, commission, salary schemes, performance-related pay); non-financial methods (empowerment, team working, flexible working, job enrichment, job rotation).
+3.6.5 Making human resource decisions — improving employer-employee relations: employee involvement in decision making; trade unions and works councils; employer-employee communications and relations.`},
+
+{id:7,name:'Analysing the strategic position of a business',code:'3.7',content:`3.7.1 Mission, corporate objectives, functional objectives and strategy: influences on mission; internal and external influences on corporate objectives (short-termism, ownership, environment); links between mission, corporate objectives and strategy; strategy vs tactics; impact of strategic decisions on functional decisions; SWOT analysis.
+3.7.2 Financial ratio analysis: return on capital employed (ROCE); current ratio; gearing; efficiency ratios (payables days, receivables days, inventory turnover); the value of financial ratios; data analysed over time or in comparison.
+3.7.3 Overall performance: analysing non-financial data (operations, HR, marketing); core competences; short- and long-term performance; Elkington's Triple Bottom Line (Profit, People, Planet).
+3.7.4 Political and legal change: competition law, labour market law, environmental legislation; government policy (enterprise, regulators, infrastructure, environment, international trade).
+3.7.5 Economic change: GDP, taxation, exchange rates, inflation, fiscal and monetary policy, open trade vs protectionism.
+3.7.6 Social and technological change: demographic changes; migration; consumer lifestyle and buying behaviour; growth of online businesses; Corporate Social Responsibility (CSR); stakeholder vs shareholder concept; Carroll's CSR pyramid; impact of technological change.
+3.7.7 The competitive environment: Porter's five forces (entry threat/barriers to entry, buyer power, supplier power, rivalry, substitute threat); how five forces shape competitive strategy.
+3.7.8 Investment appraisal: payback, average rate of return (ARR), net present value (NPV); investment criteria, non-financial factors, risk and uncertainty.`},
+
+{id:8,name:'Choosing strategic direction',code:'3.8',content:`3.8.1 Strategic direction — choosing which markets to compete in and what products to offer: Ansoff matrix (market penetration, market development, new product development, diversification); factors influencing strategic direction.
+3.8.2 Strategic positioning — choosing how to compete: Porter's low cost, differentiation and focus strategies; influences on positioning strategy; competitive advantage and difficulties maintaining it.`},
+
+{id:9,name:'Strategic methods: how to pursue strategies',code:'3.9',content:`3.9.1 Assessing a change in scale: organic vs external growth; mergers, takeovers, ventures, franchising; vertical integration (backward and forward), horizontal integration, conglomerate integration; economies of scale (technical, purchasing, managerial); economies of scope; diseconomies of scale; synergy; overtrading; retrenchment; impact of growth/retrenchment on functional areas.
+3.9.2 Assessing innovation: product and process innovation; Kaizen, research and development, intrapreneurship, benchmarking; protecting intellectual property (patents, copyrights); impact of innovation strategy on functional areas.
+3.9.3 Assessing internationalisation and globalisation: reasons for globalisation; importance of emerging economies; methods of entering international markets (export, licensing, alliances, direct investment); factors influencing attractiveness of international markets; off-shoring and re-shoring; managing international business (pressures for local responsiveness, pressures for cost reduction).
+3.9.4 Assessing greater use of digital technology: automation, e-commerce, big data and data mining; pressures to adopt digital technology; the value of digital technology.`},
+
+{id:10,name:'Managing strategic change',code:'3.10',content:`3.10.1 Managing change: causes of and pressures for change (internal, external, incremental, disruptive); Lewin's force field analysis; the value of change; flexible organisations (restructuring, delayering, flexible employment contracts, organic vs mechanistic structures, knowledge and information management); barriers to change (Kotter and Schlesinger's four reasons for resistance); how to overcome barriers (Kotter and Schlesinger's six ways of overcoming resistance).
+3.10.2 Managing organisational culture: Handy's culture types (task, role, power, person culture); influences on organisational culture; reasons for and problems of changing culture.
+3.10.3 Managing strategic implementation: the value of leadership and communications in implementation; organisational structure in implementation; network analysis (understanding and interpreting network diagrams, amending network diagrams, identifying the critical path and total float).
+3.10.4 Problems with strategy and why strategies fail: planned vs emergent strategy; strategic drift; evaluating strategic performance; the value of strategic planning; contingency planning and crisis management.`}
+];
+
+let student={name:'',num:''};
+let selectedUnit=null;
+let questions=[];
+let answers={};
+let timerInterval=null;
+let timeLeft=0;
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+
+function enterSetup(){
+  const name=document.getElementById('lName').value.trim();
+  const num=document.getElementById('lNum').value.trim();
+  if(!name){alert('Please enter your name.');return;}
+  if(!num){alert('Please enter your candidate number.');return;}
+  student={name,num};
+  buildUnitGrid();
+  showScreen('scrSetup');
+}
+
+function buildUnitGrid(){
+  const grid=document.getElementById('unitGrid');
+  grid.innerHTML=UNITS.map(u=>`
+    <div class="unit-btn" onclick="selectUnit(${u.id},this)">
+      <div class="unum">Unit ${u.id}</div>
+      <div class="uname">${u.name}</div>
+    </div>
+  `).join('');
+}
+
+function selectUnit(id,el){
+  selectedUnit=id;
+  document.querySelectorAll('.unit-btn').forEach(b=>{b.style.borderColor='';b.style.background='';});
+  el.style.borderColor='var(--navy)';
+  el.style.background='#eef2ff';
+  const btn=document.getElementById('startBtn');
+  btn.disabled=false;
+  btn.textContent='Start quiz — Unit '+id;
+}
+
+/* ═══════════════════════════════════════════════════════
+   QUESTION GENERATION
+   ═══════════════════════════════════════════════════════ */
+async function startQuiz(){
+  if(!selectedUnit){alert('Please select a unit.');return;}
+  const count=parseInt(document.getElementById('qCount').value);
+  const unit=UNITS.find(u=>u.id===selectedUnit);
+  showScreen('scrLoad');
+
+  const systemPrompt=`You are a question generator for AQA A-Level Business Studies (specification 7132).
+
+YOU MUST ONLY USE CONTENT FROM THE SPECIFICATION TEXT PROVIDED BELOW. Do not invent topics, models, theories, or terminology that are not explicitly listed in the specification content. If it is not in the text below, do not test it.
+
+SPECIFICATION CONTENT FOR UNIT ${unit.id} (${unit.code} — ${unit.name}):
+${unit.content}
+
+BANNED MODELS (removed from the AQA specification — NEVER include these):
+Bowman's Strategic Clock, Blake Mouton Grid, Hackman and Oldham, Kaplan and Norton Balanced Scorecard, Greiner's Growth Model, Bartlett and Ghoshal, Hofstede's National Cultures, Mendelow's Matrix (use "stakeholder mapping: power and interest" instead).
+
+RULES:
+1. Generate EXACTLY ${count} multiple choice questions as a JSON array.
+2. ALL questions must be A-Level standard — not GCSE.
+3. Every question must come from the specification content above. Check each question against the spec text before including it.
+4. Each question MUST test a DIFFERENT aspect of the unit. No two questions should test the same concept or require the same knowledge. Spread across ALL sub-sections of the unit.
+5. Include calculation questions where the specification mentions calculations (break-even, ratios, capacity utilisation, labour productivity, ARR, NPV, payback, etc). Give the data in the question and make the answer one of the four options.
+6. Distractors must be plausible — use common student errors as wrong answers.
+7. Herzberg: pay is a HYGIENE FACTOR not a motivator. If testing this, the correct answer must reflect this.
+8. Do NOT test content from other units — only Unit ${unit.id}.
+
+JSON FORMAT — each object must have:
+{"q":"question text","options":["A answer","B answer","C answer","D answer"],"answer":"A or B or C or D","explanation":"1 sentence explaining why","topic":"sub-topic tested"}
+
+Return ONLY the JSON array. No markdown, no backticks, no explanation outside the array.`;
+
+  try{
+    const resp=await fetch(PROXY,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3500,system:systemPrompt,messages:[{role:'user',content:`Generate ${count} multiple choice questions for Unit ${unit.id}: ${unit.name}. Spread questions across all sub-sections of this unit. Every question must test something different.`}]})
+    });
+    if(!resp.ok) throw new Error('API error: '+resp.status);
+    const data=await resp.json();
+    const text=data.content?.map(c=>c.text||'').join('')||'';
+    const jsonMatch=text.match(/\[[\s\S]*\]/);
+    if(!jsonMatch) throw new Error('No JSON array in response');
+    questions=JSON.parse(jsonMatch[0]);
+    if(!questions.length) throw new Error('Empty questions');
+    // Tag all questions with unit
+    questions.forEach(q=>{q.unit=unit.id;q.unitName=unit.name;});
+    renderQuiz();
+  }catch(e){
+    console.error(e);
+    alert('Something went wrong generating the quiz. Please try again.');
+    showScreen('scrSetup');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER QUIZ
+   ═══════════════════════════════════════════════════════ */
+function renderQuiz(){
+  answers={};
+  const container=document.getElementById('qContainer');
+  timeLeft=questions.length*45;// 45s per question
+
+  container.innerHTML=questions.map((q,i)=>{
+    const letters=['A','B','C','D'];
+    const opts=q.options||[];
+    return `<div class="q-card" id="qc${i}">
+      <div class="q-num">Question ${i+1}</div>
+      <div class="q-text">${esc(q.q)}</div>
+      <div class="options">
+        ${opts.map((o,j)=>`
+          <div class="opt" onclick="pickOpt(${i},${j},this)">
+            <span class="opt-letter">${letters[j]}</span>
+            <span>${esc(o.replace(/^[A-D][.\):\s]+/,''))}</span>
+            <input type="radio" name="q${i}" value="${letters[j]}">
+          </div>
+        `).join('')}
+      </div>
+      <div class="explain" id="exp${i}"></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('progText').textContent=`0 / ${questions.length} answered`;
+  showScreen('scrQuiz');
+  startTimer();
+}
+
+function pickOpt(qi,oi,el){
+  const letters=['A','B','C','D'];
+  answers[qi]=letters[oi];
+  el.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  const answered=Object.keys(answers).filter(k=>answers[k]).length;
+  document.getElementById('progText').textContent=`${answered} / ${questions.length} answered`;
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  updateTimerDisplay();
+  timerInterval=setInterval(()=>{timeLeft--;updateTimerDisplay();if(timeLeft<=0){clearInterval(timerInterval);submitQuiz();}},1000);
+}
+function updateTimerDisplay(){
+  const m=Math.floor(timeLeft/60);const s=timeLeft%60;
+  const el=document.getElementById('timer');
+  el.textContent=`${m}:${s.toString().padStart(2,'0')}`;
+  el.classList.toggle('warn',timeLeft<=60);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SUBMIT & MARK
+   ═══════════════════════════════════════════════════════ */
+function submitQuiz(){
+  clearInterval(timerInterval);
+  let correct=0;
+  const wrongQs=[];
+  const topicScores={};
+
+  questions.forEach((q,i)=>{
+    const userAns=(answers[i]||'').toUpperCase();
+    const correctAns=(q.answer||'').toUpperCase();
+    const isCorrect=userAns===correctAns;
+    if(isCorrect) correct++;
+    else wrongQs.push({idx:i,q:q.q,correct:correctAns,given:userAns,explanation:q.explanation,topic:q.topic});
+
+    const t=q.topic||'General';
+    if(!topicScores[t]) topicScores[t]={correct:0,total:0};
+    topicScores[t].total++;
+    if(isCorrect) topicScores[t].correct++;
+
+    const expEl=document.getElementById('exp'+i);
+    if(expEl){
+      expEl.className='explain show '+(isCorrect?'right':'wrong');
+      expEl.innerHTML=`<strong>${isCorrect?'Correct':'Incorrect'}</strong>${!isCorrect?' — Answer: '+esc(correctAns):''}<br>${esc(q.explanation||'')}`;
+    }
+    const card=document.getElementById('qc'+i);
+    if(card){
+      const opts=card.querySelectorAll('.opt');
+      const letters=['A','B','C','D'];
+      opts.forEach((o,j)=>{
+        if(letters[j]===correctAns) o.classList.add('correct');
+        else if(letters[j]===userAns&&!isCorrect) o.classList.add('wrong');
+      });
+    }
+  });
+
+  renderResults(correct,questions.length,topicScores,wrongQs);
+  logQuizToSheet(correct,questions.length,wrongQs);
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESULTS
+   ═══════════════════════════════════════════════════════ */
+function renderResults(correct,total,topicScores,wrongQs){
+  const pct=Math.round(correct/total*100);
+  document.getElementById('scoreNum').textContent=correct;
+  document.getElementById('scoreOf').textContent='out of '+total;
+  document.getElementById('scorePct').textContent=pct+'%';
+  const ring=document.getElementById('scoreRing');
+  ring.style.borderColor=pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
+
+  let verdict='';
+  if(pct>=90) verdict='Excellent. Very strong knowledge of this unit.';
+  else if(pct>=75) verdict='Good. Solid foundations with a few areas to revisit.';
+  else if(pct>=60) verdict='Decent start. Some gaps to work on.';
+  else verdict='This needs more revision. Focus on the topics below.';
+  document.getElementById('verdict').textContent=verdict;
+
+  const bk=document.getElementById('breakdown');
+  bk.innerHTML='<h4>Score by topic</h4>'+Object.entries(topicScores).map(([t,s])=>{
+    const p=s.total?Math.round(s.correct/s.total*100):0;
+    const col=p>=80?'var(--green)':p>=60?'var(--gold)':'var(--red)';
+    return `<div class="bk-row"><span>${esc(t)}</span><span style="font-weight:700;color:${col}">${s.correct}/${s.total}</span></div>`;
+  }).join('');
+
+  const weak=document.getElementById('weakList');
+  const weakTopics=wrongQs.map(w=>w.topic).filter(Boolean);
+  const topicCounts={};
+  weakTopics.forEach(t=>{topicCounts[t]=(topicCounts[t]||0)+1;});
+  const sorted=Object.entries(topicCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  if(sorted.length){
+    weak.innerHTML='<h4>Topics to revise</h4>'+sorted.map(([t,c])=>`<div class="weak-item">${esc(t)} — ${c} question${c>1?'s':''} wrong</div>`).join('');
+  }else{weak.innerHTML='';}
+
+  const rev=document.getElementById('reviewSection');
+  if(wrongQs.length){
+    rev.innerHTML='<h4>Questions you got wrong</h4>'+wrongQs.map(w=>`
+      <div class="rev-q">
+        <div class="rev-status w">Q${w.idx+1}</div>
+        <div style="margin:.3rem 0">${esc(w.q)}</div>
+        <div style="color:var(--green);font-size:.82rem"><strong>Answer:</strong> ${esc(w.correct)}</div>
+        ${w.explanation?`<div style="color:var(--muted);font-size:.82rem;margin-top:.2rem">${esc(w.explanation)}</div>`:''}
+      </div>
+    `).join('');
+  }else{rev.innerHTML='';}
+
+  showScreen('scrResults');
+}
+
+/* ═══════════════════════════════════════════════════════
+   GOOGLE SHEET LOGGING
+   ═══════════════════════════════════════════════════════ */
+function logQuizToSheet(correct,total,wrongQs){
+  const unit=UNITS.find(u=>u.id===selectedUnit);
+  const pct=Math.round(correct/total*100);
+  const weakTopics=wrongQs.map(w=>w.topic).filter(Boolean).slice(0,3).join(' | ');
+  try{
+    const payload=JSON.stringify({tool:'Knowledge Quiz',name:student.name,candidateNumber:student.num,question:'Unit '+selectedUnit+': '+(unit?unit.name:''),mark:correct,maxMark:total,level:pct+'%',levelLabel:pct>=75?'Strong':'Needs revision',chains:0,endpoint:true,blocker:weakTopics||'None',tip:'',timestamp:new Date().toISOString()});
+    fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:payload}).catch(()=>{});
+  }catch(e){}
+}
+
+function resetQuiz(){
+  questions=[];answers={};selectedUnit=null;
+  clearInterval(timerInterval);
+  buildUnitGrid();
+  document.getElementById('startBtn').disabled=true;
+  document.getElementById('startBtn').textContent='Choose a unit above';
+  showScreen('scrSetup');
+}
+
+function esc(s){if(!s)return '';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+</script>
+</body>
+</html>

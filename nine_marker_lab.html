@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>9-Marker Lab — AQA A-Level Business</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0d1b34;--navy2:#172a4a;--gold:#eeb834;--gold-soft:#fff8e5;
+  --blue:#3a69b4;--green:#288566;--red:#be4848;--cream:#f8f6f0;
+  --ink:#191f2a;--muted:#6a7485;--line:#dfe4ea;--white:#fff;--soft:#f3f5f8;
+  --shadow:0 12px 30px rgba(13,27,52,.08);--radius:16px;
+  --ao1:#534AB7;--ao1-bg:#EEEDFE;
+  --ao2:#185FA5;--ao2-bg:#E6F1FB;
+  --ao3:#E65100;--ao3-bg:#FFF3E0;
+  --eval:#2E7D32;--eval-bg:#E8F5E9;
+  --weak:#C62828;--weak-bg:#FFEBEE;
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.55}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--blue);text-decoration:none}
+.app{min-height:100vh;display:grid;grid-template-columns:260px 1fr}
+aside{background:linear-gradient(180deg,var(--navy),#112442 70%);color:white;padding:24px 18px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+main{padding:32px 38px 80px;max-width:1500px;width:100%;overflow-x:hidden}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.logo{width:46px;height:46px;border-radius:13px;background:var(--gold);display:grid;place-items:center;color:var(--navy);font-weight:900;font-size:18px;text-align:center;line-height:1.1}
+.brand h1{font-size:16px;line-height:1.15;margin:0}.brand span{font-size:11px;color:#aebbd1;display:block;margin-top:2px}
+nav{display:flex;flex-direction:column;gap:4px}
+nav button{width:100%;border:0;background:transparent;color:#dbe4f2;padding:13px 14px;border-radius:11px;text-align:left;font-size:14px;font-weight:600;transition:.15s;display:flex;align-items:center;gap:10px}
+nav button:hover{background:rgba(255,255,255,.08);color:white}
+nav button.on{background:rgba(255,255,255,.12);color:white}
+.side-card{margin-top:auto;padding:15px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.04)}
+.side-card .mini{font-size:10px;color:#b8c5d9;text-transform:uppercase;letter-spacing:.1em}
+.student-tag{margin-top:16px;padding:10px 14px;border:1px solid rgba(255,255,255,.1);border-radius:10px;font-size:12px;color:#a4b3cc;display:flex;align-items:center;gap:8px}
+.student-tag strong{color:var(--gold);font-size:13px}
+.tab{display:none}.tab.on{display:block}
+.eyebrow{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);font-weight:800}
+h2{font-size:30px;font-weight:900;color:var(--navy);margin:5px 0 6px}
+.sub{color:var(--muted);font-size:14px;line-height:1.5}
+h3{font-size:18px;font-weight:800;color:var(--navy);margin:0 0 10px}
+h4{font-size:14px;font-weight:700;color:var(--navy);margin:0 0 6px}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.grid{display:grid;gap:18px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.mt{margin-top:18px}
+label.fl{font-size:12px;font-weight:800;color:var(--navy);display:block;margin-bottom:6px}
+input,textarea,select{width:100%;border:1px solid #ccd3dc;border-radius:11px;background:white;padding:12px 14px;font:inherit;font-size:14px;color:var(--ink);outline:0;transition:.15s}
+input:focus,textarea:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(58,105,180,.12)}
+textarea{min-height:280px;resize:vertical;line-height:1.7}
+.btn{border:0;border-radius:11px;padding:12px 18px;font-weight:800;font-size:14px;transition:.15s}
+.btn-p{background:var(--navy);color:white}.btn-p:hover{background:var(--navy2)}
+.btn-g{background:var(--gold);color:var(--navy)}.btn-g:hover{filter:brightness(1.05)}
+.btn-o{background:var(--soft);color:var(--navy);border:1px solid var(--line)}.btn-o:hover{background:#e8ebf0}
+.btn-sm{padding:8px 13px;font-size:12px;border-radius:9px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ml{margin-left:auto}.tiny{font-size:11px;color:var(--muted)}.muted{color:var(--muted)}
+.qlist{display:grid;gap:8px;max-height:420px;overflow-y:auto;padding-right:6px}
+.qopt{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:white;cursor:pointer;font-size:13px;line-height:1.5;text-align:left;transition:.15s;width:100%}
+.qopt:hover{border-color:var(--blue);background:#f5f8fd}
+.qopt.sel{border-color:var(--gold);background:var(--gold-soft);border-width:2px}
+.qopt .qy{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.upload-zone{border:2px dashed var(--line);border-radius:14px;padding:30px;text-align:center;cursor:pointer;transition:.15s;background:var(--soft)}
+.upload-zone:hover{border-color:var(--blue);background:#f0f4fb}
+.upload-previews{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.upload-previews img{width:60px;height:80px;object-fit:cover;border-radius:8px;border:2px solid var(--line)}
+.mark-num{font-size:64px;font-weight:900;color:var(--navy);letter-spacing:-.04em;line-height:1}
+.mark-level{font-weight:900;font-size:18px;margin-top:8px}
+.mark-bar{height:10px;border-radius:99px;background:#e9edf2;margin:14px auto 0;width:80%;overflow:hidden}
+.mark-bar span{display:block;height:100%;border-radius:99px;transition:width .5s}
+.kpi{font-size:34px;font-weight:900;color:var(--navy);line-height:1}
+.al{padding:15px 16px;border-radius:12px;font-size:13px;line-height:1.6}
+.al b{display:block;margin-bottom:3px;font-size:14px}
+.al-r{background:#fff5f5;border-left:5px solid var(--red)}
+.al-g{background:#f3faf6;border-left:5px solid var(--green)}
+.al-y{background:#fffaf0;border-left:5px solid var(--gold)}
+.al-b{background:#f0f5fc;border-left:5px solid var(--blue)}
+.p-table{width:100%;border-collapse:collapse}
+.p-table td,.p-table th{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
+.p-table th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.spin{width:40px;height:40px;border:4px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 14px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ov{position:fixed;inset:0;background:rgba(8,18,34,.55);display:none;place-items:center;z-index:100;padding:20px}
+.ov.show{display:grid}
+.modal{width:min(540px,100%);background:white;border-radius:20px;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.22)}
+.ld{display:none;text-align:center;padding:50px 20px}.ld.show{display:block}
+/* ─── ANNOTATED ESSAY STYLES ─── */
+.anno-wrap{display:grid;grid-template-columns:1fr 240px;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.anno-essay{padding:24px 28px;border-right:1px solid var(--line);line-height:2;font-size:14px}
+.anno-sidebar{background:var(--soft);padding:20px 14px;position:relative}
+.anno-label{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+.seg{padding:1px 3px;border-radius:3px;transition:background .2s}
+.seg-ao1{background:var(--ao1-bg);border-bottom:2px solid var(--ao1)}
+.seg-ao2{background:var(--ao2-bg);border-bottom:2px solid var(--ao2)}
+.seg-ao3{background:var(--ao3-bg);border-bottom:2px solid var(--ao3)}
+.seg-eval{background:var(--eval-bg);border-bottom:2px solid var(--eval)}
+.seg-weak{background:var(--weak-bg);border-bottom:2px solid var(--weak)}
+.seg:hover{filter:brightness(.95)}
+.seg-num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:800;color:#fff;margin-right:3px;vertical-align:middle;line-height:1;flex-shrink:0}
+.seg-ao1 .seg-num{background:var(--ao1)}.seg-ao2 .seg-num{background:var(--ao2)}.seg-ao3 .seg-num{background:var(--ao3)}.seg-eval .seg-num{background:var(--eval)}.seg-weak .seg-num{background:var(--weak)}
+.anno-num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:800;color:#fff;margin-right:5px;vertical-align:middle;flex-shrink:0}
+.anno-note-ao1 .anno-num{background:var(--ao1)}.anno-note-ao2 .anno-num{background:var(--ao2)}.anno-note-ao3 .anno-num{background:var(--ao3)}.anno-note-eval .anno-num{background:var(--eval)}.anno-note-weak .anno-num{background:var(--weak)}
+.anno-note{border-radius:8px;padding:8px 10px;font-size:11px;line-height:1.5;color:#374151;margin-bottom:10px;border-left:3px solid transparent}
+.anno-note .ao-tag{display:inline-block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.anno-note-ao1{background:var(--ao1-bg);border-left-color:var(--ao1)}.anno-note-ao1 .ao-tag{color:var(--ao1)}
+.anno-note-ao2{background:var(--ao2-bg);border-left-color:var(--ao2)}.anno-note-ao2 .ao-tag{color:var(--ao2)}
+.anno-note-ao3{background:var(--ao3-bg);border-left-color:var(--ao3)}.anno-note-ao3 .ao-tag{color:var(--ao3)}
+.anno-note-eval{background:var(--eval-bg);border-left-color:var(--eval)}.anno-note-eval .ao-tag{color:var(--eval)}
+.anno-note-weak{background:var(--weak-bg);border-left-color:var(--weak)}.anno-note-weak .ao-tag{color:var(--weak)}
+.ao-key{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;margin-bottom:18px}
+.ao-key-item{display:flex;align-items:center;gap:6px}
+.ao-key-swatch{width:14px;height:14px;border-radius:3px;border:2px solid}
+@media(max-width:1050px){.app{grid-template-columns:1fr}aside{height:auto;position:relative;flex-direction:row;align-items:center;gap:12px;padding:14px 16px}aside nav{display:flex;overflow-x:auto;gap:4px;flex:1}.brand{margin-bottom:0}.side-card,.student-tag{display:none}.g4,.g3,.g2{grid-template-columns:1fr 1fr}.anno-wrap{grid-template-columns:1fr}}
+@media(max-width:700px){main{padding:20px 14px}.g4,.g3,.g2{grid-template-columns:1fr}.topbar{flex-direction:column}.anno-wrap{grid-template-columns:1fr}.anno-sidebar{border-top:1px solid var(--line);border-right:none}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div class="ov show" id="loginOv">
+  <div class="modal">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="width:56px;height:56px;border-radius:14px;background:var(--gold);display:inline-grid;place-items:center;font-weight:900;font-size:22px;color:var(--navy);line-height:1.1">9</div>
+      <h2 style="margin-top:12px">9-Marker Lab</h2>
+      <p class="muted" style="margin-top:4px">AQA A-Level Business — Annotated essay feedback</p>
+    </div>
+    <label class="fl">Your name</label>
+    <input id="loginName" placeholder="e.g. Jasneet" />
+    <label class="fl" style="margin-top:14px">Your exam candidate number</label>
+    <input id="loginNum" placeholder="e.g. 1464" maxlength="6" />
+    <p class="tiny" style="margin-top:6px">Your candidate number is used so your teacher can see your progress.</p>
+    <button class="btn btn-g" style="width:100%;margin-top:18px" id="loginBtn">Enter the Lab</button>
+  </div>
+</div>
+
+<div class="app" style="display:none" id="appShell">
+<aside>
+  <div class="brand">
+    <div class="logo">9</div>
+    <div><h1>AQA Business<br>9-Marker Lab</h1><span>Annotated feedback</span></div>
+  </div>
+  <nav>
+    <button class="on" data-t="mark">Mark My Answer</button>
+    <button data-t="feedback">Annotated Feedback</button>
+    <button data-t="train">Exam Technique</button>
+    <button data-t="progress">Progress</button>
+  </nav>
+  <div class="student-tag" id="sideStudent">
+    <strong id="sideName">&mdash;</strong>
+  </div>
+  <div class="side-card">
+    <div class="mini">Nishkam School West London</div>
+    <strong style="font-size:14px;color:#dbe4f2">Man Neeva, Mat Uchi</strong>
+  </div>
+</aside>
+
+<main>
+
+<!-- MARK TAB -->
+<section id="mark" class="tab on">
+  <div class="topbar">
+    <div><div class="eyebrow">9-Marker Lab</div><h2>Mark my answer</h2><div class="sub">Choose a question, write your response, and get annotated feedback showing exactly where your marks come from.</div></div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>1. Choose your question</h3>
+      <label class="fl" style="margin-top:10px">Filter by paper</label>
+      <select id="paperFilter" style="max-width:240px">
+        <option value="all">All questions</option>
+        <option value="p1">Paper 1 (9 marks)</option>
+        <option value="p2">Paper 2 (9 marks)</option>
+        <option value="p3">Paper 3 Q1/Q2 (12 marks)</option>
+      </select>
+      <div class="qlist mt" id="qList"></div>
+      <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
+        <label class="fl">Or type your own question</label>
+        <input id="customQ" placeholder="e.g. Analyse how delayering might affect profit..." />
+        <div class="row mt">
+          <select id="customMarks" style="width:auto;max-width:120px"><option value="9">9 marks</option><option value="12">12 marks</option></select>
+          <button class="btn btn-o btn-sm" id="useCustom">Use this question</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>2. Your answer</h3>
+      <div class="row" style="margin-bottom:10px">
+        <button class="btn btn-o btn-sm mode-btn on" data-m="type">Type</button>
+        <button class="btn btn-o btn-sm mode-btn" data-m="upload">Upload photos</button>
+      </div>
+      <div id="typeMode">
+        <textarea id="essay" placeholder="Write or paste your 9-mark answer here..."></textarea>
+        <div class="row mt"><span class="tiny" id="wc">0 words</span></div>
+      </div>
+      <div id="uploadMode" style="display:none">
+        <div class="upload-zone" id="dropZone">
+          <p style="font-size:24px;margin-bottom:8px">&#128247;</p>
+          <p style="font-weight:700;color:var(--navy)">Upload photos of your handwritten answer</p>
+          <p class="tiny" style="margin-top:4px">Tap to choose photos or drag and drop. Up to 4 pages.</p>
+          <input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
+        </div>
+        <div class="upload-previews" id="previews"></div>
+      </div>
+      <button class="btn btn-g" style="width:100%;margin-top:14px" id="submitBtn">Mark my answer</button>
+    </div>
+  </div>
+</section>
+
+<!-- FEEDBACK TAB -->
+<section id="feedback" class="tab">
+  <div class="topbar">
+    <div><div class="eyebrow">Annotated Feedback</div><h2>How did I do?</h2><div class="sub">Your answer with AO colour-coding and examiner-style margin notes.</div></div>
+  </div>
+  <div class="ld" id="ldPanel"><div class="spin"></div><p style="font-weight:700;color:var(--navy);font-size:16px">Marking your answer...</p><p class="muted" style="margin-top:4px">Reading every sentence. Counting causal links. Checking the endpoint.</p></div>
+  <div id="fbPanel">
+    <p class="muted" style="padding:40px 0;text-align:center">Submit an answer on the Mark tab first. Your annotated feedback will appear here.</p>
+  </div>
+</section>
+
+<!-- TRAIN TAB -->
+<section id="train" class="tab">
+  <div class="topbar">
+    <div><div class="eyebrow">Targeted practice</div><h2>Exam technique</h2><div class="sub">What separates Level 3 from Level 2 on 9-mark and 12-mark questions.</div></div>
+  </div>
+
+  <div class="card">
+    <h3>The structure of a 9-marker</h3>
+    <p style="font-size:13px;line-height:1.7">A 9-mark question tests three things equally: <strong>Knowledge (AO1)</strong> — do you understand the concept? <strong>Application (AO2)</strong> — can you use it in the context given? <strong>Analysis (AO3)</strong> — can you build a chain of reasoning from the concept to the outcome the question asks about?</p>
+    <p style="font-size:13px;line-height:1.7;margin-top:8px">You do not need a conclusion. You do not need evaluation. You need <strong>depth</strong> — one well-developed argument with 5-7 causal links is better than two shallow ones with 2-3 links each.</p>
+  </div>
+
+  <div class="grid g2 mt">
+    <div class="card">
+      <h3>Start points and end points</h3>
+      <p style="font-size:13px;line-height:1.7">Every 9-marker has a <strong style="color:var(--green)">start point</strong> (the concept) and an <strong style="color:var(--red)">end point</strong> (the outcome). Your job is to build a chain between them.</p>
+      <p style="font-size:13px;line-height:1.7;margin-top:8px">If the question asks about <strong>profit</strong> and your chain stops at "sales increase" — you are not finished. You need to explain what happens to profit. Every chain must reach the <strong>exact endpoint</strong> the question asks about.</p>
+    </div>
+    <div class="card">
+      <h3>Chain depth</h3>
+      <p style="font-size:13px;line-height:1.7">This is the single biggest discriminator between Level 2 and Level 3.</p>
+      <div class="grid g2 mt">
+        <div class="al al-r"><b>Level 2 (2-3 links)</b>Delayering reduces costs. This increases profit.</div>
+        <div class="al al-g"><b>Level 3 (5-7 links)</b>Delayering removes a layer of management, which widens the span of control for remaining managers. This means each manager oversees more employees, which could speed up communication because there are fewer layers for decisions to pass through. Faster decision-making may allow the business to respond more quickly to changes in customer demand, which could help it retain customers and maintain revenue. If the salary savings from the removed management layer exceed any short-term disruption costs, this could increase the business's operating profit.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g2 mt">
+    <div class="card">
+      <h3>Models in brackets</h3>
+      <p style="font-size:13px;line-height:1.7">When you use a model or theory, weave it into the chain rather than describing it separately. Write the model name in brackets mid-sentence:</p>
+      <div class="al al-g mt">"...which could satisfy employees' need for recognition and achievement (Maslow — esteem needs), reducing their desire to leave..."</div>
+      <div class="al al-r mt">"Maslow's hierarchy has five levels. The first level is physiological needs..." (This is model dumping. It does not earn AO3 marks.)</div>
+    </div>
+    <div class="card">
+      <h3>Paper 3 Q1/Q2 (12 marks)</h3>
+      <p style="font-size:13px;line-height:1.7">These work the same way as 9-markers, but with case study context. The examiner confirmed in 2026 that <strong>one fully developed argument can earn 12/12</strong>. You do not need two arguments. Depth beats breadth.</p>
+      <p style="font-size:13px;line-height:1.7;margin-top:8px">Use the insert data throughout your chain. Quote numbers. Reference specific details about the business. This is where your AO2 marks come from.</p>
+    </div>
+  </div>
+
+  <div class="card mt">
+    <h3>Errors that cost marks nationally</h3>
+    <div class="grid g3 mt">
+      <div class="al al-r"><b>Herzberg</b>Pay is a hygiene factor, not a motivator. Claiming pay motivates employees is a conceptual error.</div>
+      <div class="al al-r"><b>Maslow</b>Listing five levels is not enough. You must explain the hierarchical mechanism — why satisfying one level leads to the next.</div>
+      <div class="al al-r"><b>Debt factoring</b>Significant national knowledge gap. Make sure you can explain the mechanism, not just the definition.</div>
+    </div>
+    <div class="grid g3 mt">
+      <div class="al al-r"><b>Question drift</b>Re-read the question before each paragraph. If your chain is heading towards "sales" but the question asks about "labour turnover", you are drifting.</div>
+      <div class="al al-r"><b>Assertion</b>"This will increase profit" is not analysis. You need to explain WHY and HOW, step by step.</div>
+      <div class="al al-r"><b>Wrong endpoint</b>Analysing to "motivation" when the question asks about "profit" is an incomplete chain. Always check what the question actually asks.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRESS TAB -->
+<section id="progress" class="tab">
+  <div class="topbar">
+    <div><div class="eyebrow">Your journey</div><h2>Progress</h2><div class="sub">Every answer you submit is tracked. Your teacher can see this too.</div></div>
+  </div>
+  <div class="grid g3">
+    <div class="card" style="text-align:center;padding:20px"><div class="kpi" id="pCount">0</div><p class="tiny mt">Answers marked</p></div>
+    <div class="card" style="text-align:center;padding:20px"><div class="kpi" id="pAvg">&mdash;</div><p class="tiny mt">Average score</p></div>
+    <div class="card" style="text-align:center;padding:20px"><div class="kpi" id="pBest">&mdash;</div><p class="tiny mt">Best mark</p></div>
+  </div>
+  <div class="card mt">
+    <h3>Submission history</h3>
+    <div id="pHist"><p class="muted" style="padding:12px 0">No answers marked yet.</p></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+const PROXY='https://nishkam-marker.j-kerrisk.workers.dev';
+const MODEL='claude-sonnet-4-6';
+
+/* ─── QUESTION BANK ─── */
+const QS=[
+// Paper 1 9-markers
+{s:'p1',y:'2025',m:9,q:'Analyse how this restructuring of Newtown plc in 2024 might affect its speed of response to customer enquiries. [Table: staff 3906\u21923616, span of control 5\u219215, levels of hierarchy 6\u21924]'},
+{s:'p1',y:'2025',m:9,q:'Analyse how a government changing its fiscal policy might affect a business which produces healthcare products.'},
+{s:'p1',y:'2025',m:9,q:'Analyse how adopting an innovation strategy might affect the human resources function of a business.'},
+{s:'p1',y:'2024',m:9,q:'Analyse why a public limited company might prefer to use share capital as a source of finance, rather than a bank loan.'},
+{s:'p1',y:'2024',m:9,q:'Analyse why an underperforming business with a role culture might choose to move towards a power culture.'},
+{s:'p1',y:'2024',m:9,q:'A UK manufacturer is highly geared and exports 60% of its output. Analyse the impact of a significant increase in UK interest rates on this business.'},
+{s:'p1',y:'2023',m:9,q:'Analyse why a large business might choose to introduce a product into a niche market.'},
+{s:'p1',y:'2023',m:9,q:'Product A has income elasticity +0.5 and price elasticity -2.0. During the next year consumer incomes fall and the price of Product A increases. Analyse how the sales revenue for Product A will change over the next year.'},
+{s:'p1',y:'2023',m:9,q:'A business has recently experienced a decline in its level of sales. This led to some redundancies. Analyse how an understanding of Maslow\u2019s hierarchy of needs might help this business to motivate its remaining employees.'},
+{s:'p1',y:'2022',m:9,q:'Analyse why non-profit organisations set financial objectives.'},
+{s:'p1',y:'2022',m:9,q:'Analyse how widening a manager\u2019s span of control might affect labour productivity within the department she manages.'},
+{s:'p1',y:'2020',m:9,q:'Analyse how employing a more diverse workforce might increase the profit of a business.'},
+{s:'p1',y:'2020',m:9,q:'Analyse the implications of changes in receivables days and payables days for Wilson PLC\u2019s cash levels. [Table: receivables and payables days 2018-2019]'},
+{s:'p1',y:'2020',m:9,q:'Analyse the problems that might arise for a small business from the growth of digital technology.'},
+{s:'p1',y:'2019',m:9,q:'Based on a decision tree, the Marketing Manager chooses Option A. Analyse why choosing Option A might not be the best decision. [Decision tree with probabilities and pay-offs]'},
+{s:'p1',y:'2019',m:9,q:'To fund a new project, a business increases the proportion of its long-term funding that is debt. Analyse how this change might affect the level of dividends received by shareholders.'},
+{s:'p1',y:'2019',m:9,q:'Managers in a business have a range of leadership styles. Analyse how these different leadership styles might impact the effectiveness of a strategy to decentralise this business.'},
+{s:'p1',y:'2018',m:9,q:'Analyse how the changes in labour turnover data over time might have affected the ability of BBB plc to provide higher-quality products than its competitors. [Table: average annual labour turnover rates]'},
+{s:'p1',y:'2018',m:9,q:'Analyse how introducing intrapreneurship can improve the financial performance of a business.'},
+{s:'p1',y:'2018',m:9,q:'Analyse how delayering might affect the level of profit of a business.'},
+{s:'p1',y:'2017',m:9,q:'A caf\u00e9 sells Coffee (YED +2.0) and Tea (YED -0.5). Coffee sales volume is several times greater than tea. Analyse how the caf\u00e9\u2019s overall sales volume would be affected by a rise in consumers\u2019 incomes.'},
+{s:'p1',y:'2017',m:9,q:'Use the balance sheet data for ABC Ltd to explain how the use of debt factoring would benefit ABC Ltd. [Balance sheet extracts showing inventories, receivables, cash, payables over 3 years]'},
+// Paper 3 12-markers
+{s:'p3',y:'2025',m:12,q:'Use Lewin\u2019s force field model to analyse why VBM is making major changes now.'},
+{s:'p3',y:'2025',m:12,q:'Analyse the impact of the proposed retrenchment on VBM\u2019s marketing activities in Europe.'},
+{s:'p3',y:'2024',m:12,q:'Analyse how Speed-e-Puds Ltd benefits from operating with a high level of capacity utilisation.'},
+{s:'p3',y:'2024',m:12,q:'Sanjay has a marketing objective of achieving a 15% market share within 3 years. Analyse the factors that influenced Sanjay\u2019s decision to set his marketing objective at a 15% market share.'},
+{s:'p3',y:'2023',m:12,q:'Analyse why Logger Boards Ltd prioritises meeting environmental objectives when making operational decisions.'},
+{s:'p3',y:'2023',m:12,q:'Logger Boards Ltd\u2019s growth has been organic rather than external. Analyse why Bodhi may have preferred organic growth to external growth.'},
+{s:'p3',y:'2022',m:12,q:'Analyse the factors affecting SSN Ltd\u2019s promotional decisions.'},
+{s:'p3',y:'2022',m:12,q:'Analyse how copyright may have been important to the growth of SSN Ltd.'},
+{s:'p3',y:'2020',m:12,q:'Using Lewin\u2019s force field analysis, analyse why Petrenko\u2019s is making changes now.'},
+{s:'p3',y:'2020',m:12,q:'Analyse how improved quality assurance might benefit Petrenko\u2019s.'},
+{s:'p3',y:'2019',m:12,q:'Analyse the usefulness of a SWOT analysis to Coolair Ltd.'},
+{s:'p3',y:'2019',m:12,q:'Analyse why Coolair Ltd might have chosen an emergent strategy rather than a planned strategy.'},
+{s:'p3',y:'2018',m:12,q:'Analyse the importance of branding to DP Ltd.'},
+{s:'p3',y:'2018',m:12,q:'Analyse how DP Ltd might benefit from e-commerce.'},
+{s:'p3',y:'2017',m:12,q:'Analyse, with reference to Kotter and Schlesinger\u2019s work, two barriers to change that KMH plc will face when implementing its new strategy.'},
+{s:'p3',y:'2017',m:12,q:'Analyse, using two financial ratios, the financial constraints faced by KMH plc in attempting to fund the new strategy.'},
+{s:'p3',y:'2026',m:12,q:'Analyse how Danni\u2019s customers may be affected by his decision to change from operating as a sole trader to becoming a private limited company.'},
+{s:'p3',y:'2026',m:12,q:'Analyse how using network analysis can help Danni to ensure customer satisfaction.'},
+// Paper 2 9-markers
+{s:'p2',y:'2017',m:9,q:'Analyse the likely effects of a significant increase in interest rates on the profits of car manufacturers. [Case study context: car manufacturer data provided]'},
+{s:'p2',y:'2018',m:9,q:'Analyse actions Lego managers might take to ensure employees share the culture. [Lego case study]'},
+{s:'p2',y:'2019',m:9,q:'Analyse how the combined market share of the largest four manufacturers in the UK RTE breakfast cereal market might affect the threat of entry by other businesses into this market. [Kellogg\u2019s case study, Appendices A-E]'},
+{s:'p2',y:'2019',m:9,q:'WR employs its taxi drivers on flexible employment contracts. Analyse one advantage and one disadvantage of this for the business. [WeRide case study]'},
+{s:'p2',y:'2019',m:9,q:'Galin invests in research and development and owns a number of patents. Analyse how these two factors help Galin to achieve high profit margins on its new products.'},
+{s:'p2',y:'2019',m:9,q:'Analyse why Galin has chosen a regional organisational structure rather than a functional one.'},
+{s:'p2',y:'2020',m:9,q:'Analyse the challenges the Human Resource manager faces as a result of the patterns of room bookings in Appendix E. [Drake hotel case study]'},
+{s:'p2',y:'2020',m:9,q:'Nari uses a \u2018Just in Time\u2019 approach to manufacturing. Analyse the ways in which this might affect Nari\u2019s profits.'},
+{s:'p2',y:'2020',m:9,q:'The price elasticity of demand for Zani PLC\u2019s products has a value of \u20130.4. Analyse reasons why the price elasticity of demand for Zani PLC\u2019s products might have this value.'},
+{s:'p2',y:'2022',m:9,q:'Analyse how contingency planning might have helped DT maintain competitiveness. [DT case study, disrupted supply chain]'},
+{s:'p2',y:'2023',m:9,q:'Analyse why AJS plc has decided to become more capital intensive. [AJS case study]'},
+{s:'p2',y:'2023',m:9,q:'Simply Bake plc decided to remove palm oil from its products. With reference to Lewin\u2019s force field analysis, analyse why this decision was made.'},
+{s:'p2',y:'2024',m:9,q:'Analyse the likely effects on Biggs of launching a new product. [Biggs sports sponsorship case study, financial data from appendices]'},
+{s:'p2',y:'2025',m:9,q:'Using Appendix D and the other information available, analyse why SCF chose Option 2. Your answer should include quantitative and qualitative information. [SCF case study]'},
+{s:'p2',y:'2025',m:9,q:'Analyse why Dodo sets HR objectives in relation to the number of employees and employee engagement. [Dodo case study]'},
+{s:'p2',y:'2026',m:9,q:'Analyse how Shortcut UK\u2019s regional organisational structure could lead its business customers to become brand loyal. [B2B garden machinery, regional structure, sales reps]'},
+{s:'p2',y:'2026',m:9,q:'Analyse why the UK was an attractive market for Shortcut UK. [American manufacturer, market development strategy]'},
+];
+
+let selQ=null,hist=[],student={name:'',num:''};
+let uploadedImages=[];
+
+/* ─── LOGIN ─── */
+document.getElementById('loginBtn').onclick=()=>{
+  const n=document.getElementById('loginName').value.trim();
+  const num=document.getElementById('loginNum').value.trim();
+  if(!n||!num){alert('Please enter your name and candidate number.');return;}
+  student={name:n,num:num};
+  document.getElementById('loginOv').classList.remove('show');
+  document.getElementById('appShell').style.display='grid';
+  document.getElementById('sideName').textContent=n+' ('+num+')';
+  loadHist();
+};
+function loadHist(){try{const r=localStorage.getItem('n9_'+student.num);if(r)hist=JSON.parse(r);updateProgress();}catch(e){}}
+function saveHist(){try{localStorage.setItem('n9_'+student.num,JSON.stringify(hist));}catch(e){}}
+
+/* ─── QUESTIONS ─── */
+function renderQ(filter){
+  const el=document.getElementById('qList');
+  const f=filter==='all'?QS:QS.filter(q=>q.s===filter);
+  el.innerHTML=f.map((q,i)=>{const idx=QS.indexOf(q);const pLabel={p1:'Paper 1',p2:'Paper 2',p3:'Paper 3'}[q.s]||q.s;return`<button class="qopt${selQ===idx?' sel':''}" data-i="${idx}"><div class="qy">${q.y} \u00b7 ${pLabel} \u00b7 ${q.m} marks</div>${q.q}</button>`;}).join('');
+  el.querySelectorAll('.qopt').forEach(b=>b.onclick=()=>{selQ=parseInt(b.dataset.i);renderQ(document.getElementById('paperFilter').value);});
+}
+document.getElementById('paperFilter').onchange=function(){renderQ(this.value);};
+document.getElementById('useCustom').onclick=()=>{const v=document.getElementById('customQ').value.trim();if(!v)return;selQ=-1;window._cq=v;document.querySelectorAll('.qopt').forEach(x=>x.classList.remove('sel'));};
+renderQ('all');
+
+/* ─── INPUT MODES ─── */
+document.querySelectorAll('.mode-btn').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  document.getElementById('typeMode').style.display=b.dataset.m==='type'?'block':'none';
+  document.getElementById('uploadMode').style.display=b.dataset.m==='upload'?'block':'none';
+});
+document.getElementById('essay').addEventListener('input',()=>{const t=document.getElementById('essay').value.trim();document.getElementById('wc').textContent=(t?t.split(/\s+/).length:0)+' words';});
+
+/* ─── FILE UPLOAD ─── */
+const dropZone=document.getElementById('dropZone');
+const fileInput=document.getElementById('fileInput');
+dropZone.onclick=()=>fileInput.click();
+dropZone.ondragover=e=>{e.preventDefault();dropZone.style.borderColor='var(--blue)';};
+dropZone.ondragleave=()=>{dropZone.style.borderColor='var(--line)';};
+dropZone.ondrop=e=>{e.preventDefault();dropZone.style.borderColor='var(--line)';handleFiles(e.dataTransfer.files);};
+fileInput.onchange=()=>handleFiles(fileInput.files);
+function handleFiles(files){
+  const previews=document.getElementById('previews');
+  for(const f of files){
+    if(uploadedImages.length>=4)break;
+    if(!f.type.startsWith('image/'))continue;
+    const reader=new FileReader();
+    reader.onload=e=>{uploadedImages.push(e.target.result);const img=document.createElement('img');img.src=e.target.result;previews.appendChild(img);};
+    reader.readAsDataURL(f);
+  }
+}
+
+/* ─── TABS ─── */
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>openTab(b.dataset.t));
+function openTab(id){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));document.getElementById(id).classList.add('on');const btn=[...document.querySelectorAll('nav button')].find(b=>b.dataset.t===id);if(btn)btn.classList.add('on');window.scrollTo({top:0,behavior:'smooth'});}
+
+/* ─── MARKING ENGINE — 9/12 MARKER WITH ANNOTATION ─── */
+function getPrompt(question,marks){
+  const mx=parseInt(marks);
+  const is12=mx===12;
+  return `ROLE
+You are a senior AQA A-Level Business examiner marking a ${mx}-mark analyse question.${is12?' This is a Paper 3 question referencing a case study insert.':' This is a Paper 1 or Paper 2 analyse question. Paper 2 questions reference case study extracts and appendices — reward students who use this contextual data.'}
+
+AQA LEVEL DESCRIPTORS (official):
+Level 3 (7-${mx}): A good response overall that focuses on many of the demands of the question. Demonstrates a depth and range of knowledge and understanding. Analysis is well developed and applied effectively to the context.
+Level 2 (4-6): A reasonable response overall that focuses on some of the demands of the question. Demonstrates limited knowledge of a range of issues OR good knowledge of relatively few issues. Analysis is developed and applied to the context.
+Level 1 (1-3): A limited response overall with little focus on the demands of the question. Demonstrates a limited range and depth of knowledge. Analysis with little development and mainly descriptive application.
+
+AO SPLIT: ${is12?'AO1=3, AO2=3, AO3=6':'AO1=3, AO2=3, AO3=3'}
+
+WHAT SEPARATES LEVELS:
+- Chain depth: Level 3 runs 5-7 causal links to the endpoint; Level 2 runs 2-3.
+- Endpoint accuracy: the chain must arrive at what the question specifically asks about.
+- Knowledge: depth AND range vs limited.
+- Application: woven effectively throughout vs bolted on or generic.
+- Model use: integrated in brackets mid-chain, not described separately (model dumping).
+
+COMMON ERRORS TO FLAG:
+- Stopping the chain too early (2-3 links instead of 5-7)
+- Question drift — chain heading to wrong endpoint
+- Model dumping — describing a theory instead of using it in the chain
+- Assertion without mechanism ("this will increase profit" with no causal steps)
+- Herzberg: pay is a hygiene factor, NOT a motivator
+- Maslow: must explain the hierarchical mechanism, not just list five levels
+- Cash flow/profit confusion
+- Revenue/profit confusion
+- PRP/piece rate confusion
+
+HOLISTIC BEST FIT MARKING
+Read the whole response. Award one overall mark out of ${mx} using best fit. Do not pick holes in small details. Look at what the response demonstrates overall. Be positive in marking — reward what is there.
+
+YOUR TASK:
+1. Read the student's answer holistically.
+2. Break the answer into segments at natural sentence boundaries. For each segment, identify:
+   - Which skill it primarily demonstrates:
+     AO1 = Knowledge — definitions, concept explanations, stating relevant theory (purple highlighter)
+     AO2 = Application — using data from the question, applying context, referencing business models/theories in context (blue highlighter)
+     AO3 = Analysis — causal chains, reasoning, explaining why/how something leads to an outcome (orange highlighter)
+     EVAL = Evaluation — weighted judgements, conclusions, "it depends", counter-arguments, considering significance (green highlighter)
+     NONE = does not clearly demonstrate any of the above
+   - Quality: GOOD (adequate or strong), WEAK (needs improvement — assertion, error, drift, repetition, muddled)
+   - A short annotation — the kind of margin note a teacher would write. Examples:
+     "Good — defines the concept clearly"
+     "Chain develops well here — links cost reduction to unit costs"
+     "This is assertion — WHY does this increase profit?"
+     "Model integrated effectively mid-chain"
+     "Chain stops here — you need to reach the endpoint"
+     "Context applied from the question"
+     "Good evaluative point — weighs the significance"
+     "This repeats the previous point without adding depth"
+3. Count the number of genuine causal links in the chain.
+4. Check whether the chain reaches the question's endpoint.
+5. Give overall feedback and a specific improvement suggestion.
+
+SEGMENT RULES:
+- Break at sentence boundaries.
+- Every sentence must appear in exactly one segment.
+- All segment texts joined together must reproduce the full answer.
+- Aim for 5-15 segments depending on answer length.
+- Pick the PRIMARY skill each sentence serves.
+- Quality WEAK should be used when a sentence actively limits marks (assertion, error, drift, repetition, muddled writing).
+- Annotations must sound like a real teacher's handwriting in the margin — short, specific, helpful.
+
+RESPOND WITH ONLY THIS JSON (no markdown, no backticks, no explanation):
+{
+  "mark":${mx > 9 ? '<0-12>' : '<0-9>'},
+  "level":<1-3>,
+  "level_label":"<Good response|Reasonable response|Limited response>",
+  "segments":[
+    {"text":"<exact text from student>","ao":"<AO1|AO2|AO3|EVAL|NONE>","quality":"<GOOD|WEAK>","annotation":"<margin note, max 18 words>"}
+  ],
+  "chain_count":<number of genuine causal links>,
+  "endpoint_hit":<true|false>,
+  "endpoint_note":"<if false: where the chain stopped and what was needed; if true: brief confirmation>",
+  "overall_feedback":"<3-4 sentences: what worked, what to improve, and one specific piece of advice>",
+  "improvement_note":"<one concrete sentence the student could add or change to move up a level>",
+  "blocker":"<the single biggest limitation in this response>",
+  "tip":"<one specific thing to do differently next time>"
+}`;
+}
+
+/* ─── SUBMIT ─── */
+document.getElementById('submitBtn').onclick=()=>{
+  const hasText=document.getElementById('essay').value.trim().length>0;
+  const hasImages=uploadedImages.length>0;
+  if(!hasText&&!hasImages){alert('Please write your answer or upload photos of it.');return;}
+  if(selQ===null&&!window._cq){alert('Please select a question first.');return;}
+  runMark();
+};
+
+async function runMark(){
+  openTab('feedback');
+  document.getElementById('ldPanel').classList.add('show');
+  document.getElementById('fbPanel').style.display='none';
+
+  let qText,marks;
+  if(selQ>=0){const q=QS[selQ];qText=q.q;marks=q.m;}
+  else{qText=window._cq||'';marks=parseInt(document.getElementById('customMarks').value);}
+
+  const essayText=document.getElementById('essay').value.trim();
+  const sysPrompt=getPrompt(qText,marks);
+
+  let messages;
+  if(uploadedImages.length>0&&!essayText){
+    const content=uploadedImages.map(d=>({type:'image',source:{type:'base64',media_type:'image/jpeg',data:d.split(',')[1]}}));
+    content.push({type:'text',text:`Question: ${qText}\n\nThe student's handwritten answer is in the images above. Read it carefully, then mark it and break it into annotated segments.`});
+    messages=[{role:'user',content:content}];
+  }else{
+    messages=[{role:'user',content:`Question: ${qText}\n\nStudent's answer:\n${essayText}`}];
+  }
+
+  try{
+    const resp=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,max_tokens:4000,system:sysPrompt,messages})});
+    if(!resp.ok)throw new Error('API error: '+resp.status);
+    const data=await resp.json();
+    const txt=data.content.map(c=>c.text||'').join('');
+    const fb=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    showFeedback(fb,qText,marks);
+    hist.push({date:new Date().toISOString().slice(0,10),q:qText.slice(0,60),mark:fb.mark,marks:marks,level:fb.level,blocker:fb.blocker,chains:fb.chain_count,endpoint:fb.endpoint_hit});
+    saveHist();updateProgress();
+    logToSheet(fb,qText,marks);
+  }catch(err){
+    document.getElementById('ldPanel').classList.remove('show');
+    document.getElementById('fbPanel').style.display='block';
+    document.getElementById('fbPanel').innerHTML=`<div class="al al-r"><b>Something went wrong</b>${err.message}. Check your internet connection and try again.</div>`;
+  }
+}
+
+/* ─── GOOGLE SHEET LOGGING ─── */
+async function logToSheet(fb,qText,marks){
+  try{
+    const url='https://script.google.com/macros/s/AKfycbxbOyg1Ggz2m3c3wAL5ulRAoPgK_sw7YWrlavz4eIf3hKsOlmlrIrfADTXRvxkXVjtj0A/exec';
+    const payload={tool:'9-Marker Lab',name:student.name,candidateNumber:student.num,question:qText.slice(0,100),mark:fb.mark,maxMark:marks,level:fb.level,levelLabel:fb.level_label||'',chains:fb.chain_count,endpoint:fb.endpoint_hit,blocker:fb.blocker||'',tip:fb.tip||''};
+    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  }catch(e){}
+}
+
+/* ─── RENDER ANNOTATED FEEDBACK ─── */
+function showFeedback(fb,qText,maxMark){
+  document.getElementById('ldPanel').classList.remove('show');
+  document.getElementById('fbPanel').style.display='block';
+  const col={3:'var(--green)',2:'var(--gold)',1:'var(--red)'}[fb.level]||'var(--muted)';
+  const pct=Math.round(fb.mark/maxMark*100);
+
+  let html='';
+
+  // Score + diagnostics row
+  html+=`<div class="grid g3">
+    <div class="card" style="text-align:center;padding:24px 16px">
+      <div class="tiny">MARK</div>
+      <div class="mark-num">${fb.mark}/${maxMark}</div>
+      <div class="mark-level" style="color:${col}">${fb.level_label?fb.level_label.toUpperCase():'LEVEL '+fb.level}</div>
+      <div class="mark-bar"><span style="width:${pct}%;background:${col}"></span></div>
+    </div>
+    <div class="card" style="padding:20px;border-top:4px solid ${fb.endpoint_hit?'var(--green)':'var(--red)'}">
+      <h4>Endpoint</h4>
+      <div style="font-size:18px;font-weight:900;color:${fb.endpoint_hit?'var(--green)':'var(--red)'};margin:6px 0">${fb.endpoint_hit?'Reached':'Not reached'}</div>
+      <p class="tiny">${fb.endpoint_note||''}</p>
+    </div>
+    <div class="card" style="padding:20px;border-top:4px solid var(--blue)">
+      <h4>Chain depth</h4>
+      <div style="font-size:18px;font-weight:900;color:var(--navy);margin:6px 0">${fb.chain_count} link${fb.chain_count!==1?'s':''}</div>
+      <p class="tiny">${fb.chain_count>=5?'Strong chain depth — this is Level 3 territory.':fb.chain_count>=3?'Developing — aim for 5-7 links to reach Level 3.':'Too shallow — build more causal steps between start and endpoint.'}</p>
+    </div>
+  </div>`;
+
+  // AO colour key
+  html+=`<div class="ao-key mt">
+    <div class="ao-key-item"><div class="ao-key-swatch" style="background:var(--ao1-bg);border-color:var(--ao1)"></div>Knowledge (AO1)</div>
+    <div class="ao-key-item"><div class="ao-key-swatch" style="background:var(--ao2-bg);border-color:var(--ao2)"></div>Application (AO2)</div>
+    <div class="ao-key-item"><div class="ao-key-swatch" style="background:var(--ao3-bg);border-color:var(--ao3)"></div>Analysis (AO3)</div>
+    <div class="ao-key-item"><div class="ao-key-swatch" style="background:var(--eval-bg);border-color:var(--eval)"></div>Evaluation</div>
+    <div class="ao-key-item"><div class="ao-key-swatch" style="background:var(--weak-bg);border-color:var(--weak)"></div>Needs work</div>
+  </div>`;
+
+  // ANNOTATED ESSAY
+  if(fb.segments&&fb.segments.length>0){
+    html+=`<div class="anno-wrap mt">
+      <div class="anno-essay">
+        <div class="anno-label">Your answer &mdash; annotated</div>`;
+    fb.segments.forEach((seg,i)=>{
+      let cls='';
+      if(seg.quality==='WEAK') cls='seg seg-weak';
+      else if(seg.ao==='AO1') cls='seg seg-ao1';
+      else if(seg.ao==='AO2') cls='seg seg-ao2';
+      else if(seg.ao==='AO3') cls='seg seg-ao3';
+      else if(seg.ao==='EVAL') cls='seg seg-eval';
+      const num=i+1;
+      html+=`<span class="${cls}" data-seg="${i}" title="${(seg.annotation||'').replace(/"/g,'&quot;')}"><span class="seg-num">${num}</span>${seg.text} </span>`;
+    });
+    html+=`</div><div class="anno-sidebar"><div class="anno-label">Examiner notes</div>`;
+    fb.segments.forEach((seg,i)=>{
+      if(!seg.annotation)return;
+      let ncls='anno-note ';
+      if(seg.quality==='WEAK') ncls+='anno-note-weak';
+      else if(seg.ao==='AO1') ncls+='anno-note-ao1';
+      else if(seg.ao==='AO2') ncls+='anno-note-ao2';
+      else if(seg.ao==='AO3') ncls+='anno-note-ao3';
+      else if(seg.ao==='EVAL') ncls+='anno-note-eval';
+      else ncls+='anno-note-ao1';
+      const tag=seg.quality==='WEAK'?'Needs work':seg.ao==='EVAL'?'Evaluation':seg.ao;
+      const num=i+1;
+      html+=`<div class="${ncls}" data-seg="${i}"><div style="display:flex;align-items:center;gap:4px;margin-bottom:3px"><span class="anno-num">${num}</span><span class="ao-tag">${tag}</span></div><div>${seg.annotation}</div></div>`;
+    });
+    html+=`</div></div>`;
+  }
+
+  // Overall feedback
+  html+=`<div class="grid g2 mt">
+    <div class="card">
+      <h3>Overall feedback</h3>
+      <p style="font-size:14px;line-height:1.8">${fb.overall_feedback||''}</p>
+    </div>
+    <div class="card">
+      <h3>To move up a level</h3>
+      <div class="al al-y">${fb.improvement_note||''}</div>
+      ${fb.blocker?`<div class="al al-r mt"><b>Main focus</b>${fb.blocker}</div>`:''}
+      ${fb.tip?`<div class="al al-b mt"><b>Next time</b>${fb.tip}</div>`:''}
+    </div>
+  </div>`;
+
+  // Try again
+  html+=`<div class="card mt" style="text-align:center;padding:30px">
+    <button class="btn btn-g" onclick="openTab('mark');document.getElementById('essay').value='';uploadedImages=[];document.getElementById('previews').innerHTML='';document.getElementById('wc').textContent='0 words';window.scrollTo({top:0})">Try another question</button>
+  </div>`;
+
+  document.getElementById('fbPanel').innerHTML=html;
+
+  // Hover sync between segments and annotations
+  document.querySelectorAll('[data-seg]').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{
+      const idx=el.dataset.seg;
+      document.querySelectorAll(`[data-seg="${idx}"]`).forEach(x=>x.style.outline='2px solid var(--gold)');
+    });
+    el.addEventListener('mouseleave',()=>{
+      const idx=el.dataset.seg;
+      document.querySelectorAll(`[data-seg="${idx}"]`).forEach(x=>x.style.outline='none');
+    });
+  });
+}
+
+/* ─── PROGRESS ─── */
+function updateProgress(){
+  document.getElementById('pCount').textContent=hist.length;
+  if(hist.length){
+    const avg=Math.round(hist.reduce((s,h)=>s+(h.mark/h.marks)*100,0)/hist.length);
+    document.getElementById('pAvg').textContent=avg+'%';
+    const best=hist.reduce((b,h)=>(h.mark/h.marks)>(b.mark/b.marks)?h:b,hist[0]);
+    document.getElementById('pBest').textContent=best.mark+'/'+best.marks;
+    document.getElementById('pHist').innerHTML='<table class="p-table"><tr><th>Date</th><th>Mark</th><th>Chains</th><th>Endpoint</th><th>Question</th></tr>'+hist.slice().reverse().map(h=>`<tr><td>${h.date}</td><td style="font-weight:800">${h.mark}/${h.marks}</td><td>${h.chains||'—'}</td><td style="color:${h.endpoint?'var(--green)':'var(--red)'}">${h.endpoint?'Yes':'No'}</td><td class="muted" style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.q}...</td></tr>`).join('')+'</table>';
+  }
+}
+</script>
+</body>
+</html>
