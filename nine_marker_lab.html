@@ -557,7 +557,7 @@ async function runMark(){
 /* ─── GOOGLE SHEET LOGGING ─── */
 async function logToSheet(fb,qText,marks){
   try{
-    const url='https://script.google.com/macros/s/AKfycbxbOyg1Ggz2m3c3wAL5ulRAoPgK_sw7YWrlavz4eIf3hKsOlmlrIrfADTXRvxkXVjtj0A/exec';
+    https://script.google.com/macros/s/AKfycbwp1BPFJztzwXXY81prlg0Uo7J34-P7FE3SWKelOEUppM6hzq576Au3ra58xkEI51nP/exec
     const payload={tool:'9-Marker Lab',name:student.name,candidateNumber:student.num,question:qText.slice(0,100),mark:fb.mark,maxMark:marks,level:fb.level,levelLabel:fb.level_label||'',chains:fb.chain_count,endpoint:fb.endpoint_hit,blocker:fb.blocker||'',tip:fb.tip||''};
     await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   }catch(e){}
