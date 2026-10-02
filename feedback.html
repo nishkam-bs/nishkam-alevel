@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personalised Feedback — A-Level Business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--nv:#1a2744;--nd:#0f1a2e;--gd:#c8a84e;--gl:#e8d48a;--cr:#faf8f3;--ww:#f5f2ec;--tx:#2c2c2c;--tl:#6b6b6b;--bd:#e0dcd4;--cb:#fff;--r:6px;--mw:780px;--fd:'EB Garamond',Georgia,serif;--fb:'Inter',Calibri,sans-serif;--gn:#2d7a3a;--am:#9a6b1a;--rd:#b5322a;--gnb:#edf7ef;--amb:#fef8ec;--rdb:#fdf0ef}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}body{font-family:var(--fb);color:var(--tx);background:var(--cr);line-height:1.55;min-height:100%;-webkit-font-smoothing:antialiased}
+.hdr{background:linear-gradient(135deg,var(--nv),#243352);color:#fff;padding:40px 20px 32px;text-align:center}
+.hdr h1{font-family:var(--fd);font-size:1.4rem;font-weight:600;margin-bottom:2px}.hdr p{font-size:.8rem;opacity:.6}
+.hdr a{color:var(--gd);font-size:.78rem;text-decoration:none;display:inline-block;margin-bottom:12px;opacity:.8}
+.hdr a:hover{opacity:1}
+.mn{max-width:var(--mw);margin:0 auto;padding:24px 16px 60px}
+.lc{background:var(--cb);border:1px solid var(--bd);border-radius:var(--r);padding:28px 24px}
+.lc h2{font-family:var(--fd);font-size:1.05rem;color:var(--nv);margin-bottom:14px}
+.fr{margin-bottom:13px}.fr label{display:block;font-size:.76rem;font-weight:600;margin-bottom:4px}
+.fr select,.fr input{width:100%;padding:9px 11px;font-family:var(--fb);font-size:.87rem;border:1px solid var(--bd);border-radius:var(--r);background:var(--cr);color:var(--tx);outline:none}
+.btn{display:block;width:100%;padding:12px;font-family:var(--fb);font-size:.87rem;font-weight:600;background:var(--gd);color:var(--nd);border:none;border-radius:var(--r);cursor:pointer;text-align:center}
+.btn:hover{background:var(--gl)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.err{font-size:.79rem;color:var(--rd);margin-top:6px;display:none}
+.hide{display:none}
+.sp{width:28px;height:28px;border:3px solid var(--bd);border-top-color:var(--gd);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 10px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ld{text-align:center;padding:44px 16px}.ld p{font-size:.83rem;color:var(--tl)}
+.ban{background:linear-gradient(135deg,var(--nv),#243352);color:#fff;border-radius:var(--r);padding:18px 22px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ban h2{font-family:var(--fd);font-size:1.12rem}.badge{font-size:.76rem;font-weight:700;padding:5px 12px;border-radius:16px}
+.bg-astar{background:var(--gd);color:var(--nd)}.bg-a{background:#4a9;color:#fff}.bg-b{background:#5a8;color:#fff}.bg-c{background:var(--am);color:#fff}.bg-d{background:#c66;color:#fff}.bg-e{background:var(--rd);color:#fff}
+.sbar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.st{background:var(--cb);border:1px solid var(--bd);border-radius:var(--r);padding:12px 8px;text-align:center}
+.st .v{font-family:var(--fd);font-size:1.4rem;font-weight:700}.st .l{font-size:.65rem;color:var(--tl);margin-top:1px;text-transform:uppercase;letter-spacing:.04em}
+.st.gn .v{color:var(--gn)}.st.am .v{color:var(--am)}.st.rd .v{color:var(--rd)}.st.nv .v{color:var(--nv)}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.cc{background:var(--cb);border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px;position:relative;overflow:hidden}
+.cc::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%}
+.cc.c-gn::before{background:var(--gn)}.cc.c-am::before{background:var(--am)}.cc.c-rd::before{background:var(--rd)}.cc.c-nv::before{background:var(--nv)}
+.cc h4{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;color:var(--tl)}
+.tag{display:inline-block;font-size:.65rem;font-weight:600;padding:2px 7px;border-radius:8px;margin-bottom:6px}
+.tag-gn{background:var(--gnb);color:var(--gn)}.tag-am{background:var(--amb);color:var(--am)}.tag-rd{background:var(--rdb);color:var(--rd)}
+.cc ul{margin:0 0 0 12px;font-size:.76rem;line-height:1.45}.cc li{margin-bottom:3px}
+.fl{background:var(--cb);border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;margin-bottom:12px}
+.fl h3{font-family:var(--fd);font-size:.92rem;font-weight:600;margin-bottom:8px}
+.fl.f-gn h3{color:var(--gn)}.fl.f-am h3{color:var(--am)}.fl.f-nv h3{color:var(--nv)}
+.fl ul{margin:0 0 0 14px;font-size:.82rem;line-height:1.55}.fl li{margin-bottom:3px}
+.imp{margin-top:20px;text-align:center}
+.ibtn{display:inline-flex;align-items:center;gap:8px;padding:14px 36px;font-family:var(--fb);font-size:.9rem;font-weight:700;background:linear-gradient(135deg,var(--nv),#2a3d66);color:#fff;border:none;border-radius:var(--r);cursor:pointer;box-shadow:0 2px 8px rgba(26,39,68,.2)}
+.ibtn:hover{box-shadow:0 4px 14px rgba(26,39,68,.3)}.ibtn:disabled{opacity:.5;cursor:not-allowed}
+.gw{margin-top:16px}
+.gi{font-size:.82rem;color:var(--tl);margin-bottom:14px;line-height:1.55;text-align:left}
+.qb{border-left:3px solid var(--gd);padding:10px 14px;margin-bottom:10px;background:var(--ww);border-radius:0 var(--r) var(--r) 0;font-size:.83rem;line-height:1.6}
+.qb .qn{font-weight:700;color:var(--nv);margin-bottom:3px;font-size:.8rem}
+.ab{border-left:3px solid var(--gn);padding:10px 14px;margin-bottom:10px;background:var(--gnb);border-radius:0 var(--r) var(--r) 0;font-size:.8rem;line-height:1.6}
+.ab .an{font-weight:600;color:var(--gn);margin-bottom:3px;font-size:.78rem}
+.sabtn{margin-top:10px;padding:10px 20px;font-size:.82rem;font-weight:600;background:var(--gn);color:#fff;border:none;border-radius:var(--r);cursor:pointer}
+.rbtn{display:block;margin:28px auto 0;padding:9px 22px;font-size:.8rem;background:none;color:var(--tl);border:1px solid var(--bd);border-radius:var(--r);cursor:pointer}
+.rbtn:hover{border-color:var(--gd);color:var(--gd)}
+.note{font-size:.76rem;color:var(--tl);text-align:center;margin-top:14px;line-height:1.5}
+.tban{background:#1a3a2a;color:#fff;border-radius:var(--r);padding:16px 20px;margin-bottom:14px}
+.tban h2{font-family:var(--fd);font-size:1.1rem}.tban p{font-size:.78rem;opacity:.7;margin-top:2px}
+.ct{width:100%;border-collapse:collapse;font-size:.76rem;margin-top:8px;table-layout:fixed}
+.ct th{text-align:left;font-weight:600;padding:8px 8px;border-bottom:2px solid var(--bd);font-size:.68rem;color:var(--tl);text-transform:uppercase}
+.ct th:nth-child(1){width:90px}.ct th:nth-child(2){width:42px}.ct th:nth-child(3){width:42px}.ct th:nth-child(4){width:auto}.ct th:nth-child(5){width:60px}
+.ct td{padding:8px 8px;border-bottom:1px solid var(--bd);vertical-align:top}.ct tr:last-child td{border-bottom:none}.hl{background:var(--rdb)}
+@media(max-width:520px){.hdr{padding:28px 14px 24px}.mn{padding:14px 10px 48px}.sbar{grid-template-columns:repeat(2,1fr)}.cg{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <a href="https://nishkam-bs.github.io/nishkam-alevel/">&larr; Back to home</a>
+  <h1>Personalised Feedback</h1>
+  <p>A-Level Business — Nishkam School West London</p>
+</div>
+<div class="mn">
+<div id="loginV"><div class="lc"><h2>Log in</h2>
+<div class="fr"><label>Name</label><select id="ns"><option value="">Choose your name...</option></select></div>
+<div class="fr"><label>Exam number</label><input type="text" id="en" placeholder="e.g. 1263" inputmode="numeric" maxlength="5"></div>
+<div class="fr"><label>Password</label><input type="password" id="pw" placeholder="Your password"></div>
+<button class="btn" onclick="go()">Check my progress</button>
+<div id="err" class="err"></div></div></div>
+<div id="ldV" class="hide"><div class="ld"><div class="sp"></div><p id="ldM">Loading...</p></div></div>
+<div id="resV" class="hide">
+  <div id="stuV" class="hide"></div>
+  <div id="tchV" class="hide"></div>
+  <button class="rbtn" onclick="reset()">Check again</button>
+</div>
+</div>
+<script>
+const WORKER="https://nishkam-marker.j-kerrisk.workers.dev";
+
+/* Published CSV — the single source of A-Level submission data */
+const ALEVEL_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vTlUpRqYLRJd0ll-gFUWp_rWB_Bprrgf0vrqmLp-vpwirzMsfz48L8z0YbOYb39P89Oz1jKfbHsWgQ1/pub?gid=1871655724&single=true&output=csv";
+
+const SS=[
+{sn:"DHILLON",fn:"Sukhchain",ex:"1263",k:"Sukhchain",pw:"brighttiger45",sh:["sukhchain","sukhchain dhillon","dhillon"]},
+{sn:"DOKAL",fn:"Karam",ex:"1267",k:"Karam",pw:"fastcoral27",sh:["karam","karam dokal","dokal"]},
+{sn:"GILL",fn:"Rajan",ex:"1274",k:"Rajan",pw:"brightblaze21",sh:["rajan","rajan gill","gill"]},
+{sn:"GULATI",fn:"Sanchipreet",ex:"1280",k:"Sanchipreet",pw:"fairprism14",sh:["sanchipreet","sanchipreet gulati","gulati"]},
+{sn:"JASSY",fn:"Dilshhan",ex:"1286",k:"Dilshhan",pw:"bluecloud37",sh:["dilshhan","dilshhan jassy","dilshaan","jassy"]},
+{sn:"KAPOOR",fn:"Rashmeet",ex:"1289",k:"Rashmeet",pw:"fastridge87",sh:["rashmeet","rashmeet kapoor","kapoor"]},
+{sn:"KAUR",fn:"Avleen",ex:"1292",k:"Avleen Kaur",pw:"blueblaze35",nt:"Avleen Kaur",sh:["avleen kaur"]},
+{sn:"KAUR",fn:"Tandrika",ex:"1295",k:"Tandrika",pw:"grandprism38",sh:["tandrika","tandrika kaur"]},
+{sn:"KHATRI",fn:"Avleen",ex:"1299",k:"Avleen Khatri",pw:"purehaven45",nt:"Avleen Khatri",sh:["avleen khatri","khatri"]},
+{sn:"KUNDI",fn:"Jeevan",ex:"1301",k:"Jeevan",pw:"bluespark99",sh:["jeevan","jeevan kundi","kundi"]},
+{sn:"NOTAY",fn:"Prabhleen",ex:"1318",k:"Prabhleen",pw:"darkarrow45",sh:["prabhleen","prabhleen notay","notay"]},
+{sn:"SACHDEV",fn:"Sanam",ex:"1327",k:"Sanam",pw:"sharpmaple53",sh:["sanam","sanam sachdev","sachdev"]},
+{sn:"SIDHU",fn:"Jeeval",ex:"1336",k:"Jeeval",pw:"brightcloud58",sh:["jeeval","jeeval sidhu","sidhu"]},
+{sn:"SINGH",fn:"Anhadvir",ex:"1582",k:"Anhadvir",pw:"brightdelta54",sh:["anhadvir","anhadvir singh"]},
+{sn:"SINGH",fn:"Pravneet",ex:"1343",k:"Pravneet",pw:"tallfrost15",sh:["pravneet","pravneet singh"]}
+];
+const TC={name:"Mr Kerrisk",pw:"martinoneill"};
+
+const P={
+"Sukhchain":{g:"B",tot:64,mcq:{www:"Good recall on most content areas",ebi:"Got exchange rates, Herzberg, fiscal policy, delayering and capital vs labour wrong",tag:"am"},calc:{www:"Full marks on all calculation questions",ebi:"No major issues — keep practising to stay sharp",tag:"gn"},ao3:{www:"Developed chains reaching 5+ links on Q19",ebi:"Volume=revenue error on Q21 — you assumed revenue rises when only quantity rises but price fell",tag:"am"},eval:{www:"Showed some weighing of arguments in Q25",ebi:"Missed that improving quality of process can cut costs — a key evaluation point",tag:"am"},app:{www:"Some use of context in 9-markers",ebi:"Models named but not driving the argument — explain the mechanism",tag:"am"},data:{www:"Correctly calculated quantity changes",ebi:"Revenue ≠ volume when price also changes — must calculate price × quantity",tag:"rd"},std:{www:"Consistent work across the paper",ebi:"To reach A: fix the 6 wrong MCQ topics, develop evaluation depth, use models to drive arguments",tag:"am"}},
+"Karam":{g:"A*",tot:79,mcq:{www:"Near-perfect — strongest in class",ebi:"Two wrong in MCQ pack on PED/revenue and YED/scope",tag:"gn"},calc:{www:"Full marks",ebi:"No issues",tag:"gn"},ao3:{www:"Consistently reaching top of Level 3 on 9-markers",ebi:"Volume=revenue error on Q21",tag:"am"},eval:{www:"Q25 reached Level 4 with genuine evaluation",ebi:"Models sometimes name-dropped rather than driving the argument",tag:"am"},app:{www:"Effective use of real business examples",ebi:"Push models from labels to mechanisms",tag:"am"},data:{www:"Good use of calculated data in arguments",ebi:"Revenue ≠ volume trap",tag:"am"},std:{www:"Consistently high quality across all components",ebi:"To stay at the top: fix the volume=revenue error and make models drive your analysis",tag:"gn"}},
+"Rajan":{g:"B",tot:63,mcq:{www:"Perfect score on MCQ Pack 1",ebi:"3 wrong in mock: exchange rates (×2) and critical path",tag:"am"},calc:{www:"Strong on CPU, BEP and cash flow",ebi:"Critical path error: added days to old path instead of recalculating",tag:"am"},ao3:{www:"Some analytical chains established",ebi:"All 9-markers at Level 2 — chains stop at 2-3 links, need 5-7",tag:"rd"},eval:{www:"Q22 essay reached Level 4",ebi:"Q25 conclusion repeated arguments instead of resolving",tag:"am"},app:{www:"Tesla example used in website work",ebi:"Examples need fuller development",tag:"am"},data:{www:"Can calculate individual figures",ebi:"Volume=revenue error on Q21",tag:"rd"},std:{www:"Essays are Level 4 standard",ebi:"9-markers are dragging you down — apply essay depth to shorter answers",tag:"am"}},
+"Sanchipreet":{g:"A",tot:72,mcq:{www:"Solid knowledge base",ebi:"4 wrong in mock: exchange rates, delayering, payback",tag:"am"},calc:{www:"Strong technique",ebi:"Critical path wrong — same common error",tag:"am"},ao3:{www:"Q19 reached 8/9 — well-developed chains",ebi:"Volume=revenue error on Q21",tag:"am"},eval:{www:"Top essay performer — only student to argue quality of process cuts costs",ebi:"Endpoint sometimes implicit rather than explicit",tag:"gn"},app:{www:"Argued market research underpins promotion — key mark scheme point",ebi:"Endpoint needs to be stated explicitly",tag:"am"},data:{www:"Good use of data in arguments",ebi:"Revenue ≠ volume trap",tag:"am"},std:{www:"Strongest essays in the class",ebi:"Fix the 4 MCQ topics and the volume=revenue error",tag:"gn"}},
+"Dilshhan":{g:"B",tot:65,mcq:{www:"14/15 — near-perfect",ebi:"16 wrong in MCQ Pack 1 — marketing and elasticity",tag:"am"},calc:{www:"—",ebi:"Only 2/8 — CPU, BEP, MoS and critical path all need urgent work",tag:"rd"},ao3:{www:"Q20 span of control answer strong at 7/9",ebi:"Other 9-markers at mid-range",tag:"am"},eval:{www:"Q22 reached Level 4",ebi:"Q25 needs stronger conclusion",tag:"am"},app:{www:"Strong application in essays",ebi:"Needs quantitative conclusion",tag:"am"},data:{www:"—",ebi:"Calculations costing you 6 marks — learn CPU → contribution → BEP → MoS",tag:"rd"},std:{www:"MCQs and essays are strong",ebi:"Calculations are the one thing holding you back. Fix this and you jump a grade",tag:"am"}},
+"Rashmeet":{g:"B",tot:66,mcq:{www:"Some strong areas",ebi:"Interest rates, market share, exchange rates, decision trees wrong",tag:"am"},calc:{www:"7/8",ebi:"Critical path wrong",tag:"am"},ao3:{www:"Q19 and Q20 competent",ebi:"Volume=revenue error on Q21",tag:"am"},eval:{www:"Some evaluation attempted",ebi:"Both essays at low Level 3 — arguments lack depth, conclusions repeat",tag:"am"},app:{www:"Orsted example strong in website work",ebi:"Shell paragraph needs sharper evaluation",tag:"am"},data:{www:"Individual calculations mostly correct",ebi:"Market share formula needed. Revenue trap on Q21",tag:"am"},std:{www:"Consistent across the paper",ebi:"Push essays from low L3 to mid L3: develop each argument further",tag:"am"}},
+"Avleen Kaur":{g:"C",tot:56,mcq:{www:"Above average in mock",ebi:"19 wrong in Pack 1 — legal structures, external environment, marketing",tag:"am"},calc:{www:"Cash flow forecast correct",ebi:"CPU, BEP, MoS formula errors — 1/4 on Q16. Critical path wrong",tag:"rd"},ao3:{www:"Some chains established",ebi:"All 9-markers at Level 2 — chains stop after 2-3 links",tag:"rd"},eval:{www:"Some awareness of counter-arguments",ebi:"Both essays at Level 2 — limited range, no real evaluation",tag:"rd"},app:{www:"Heathrow example used",ebi:"Q22 drifted away from marketing — stay on the question topic",tag:"rd"},data:{www:"Can identify relevant data",ebi:"Formula errors on BEP/MoS — learn: contribution = SP − VC, BEP = FC ÷ contribution",tag:"rd"},std:{www:"Knowledge is there (MCQs prove it)",ebi:"Every component needs work. Start with calculations and longer chains",tag:"rd"}},
+"Tandrika":{g:"C",tot:56,mcq:{www:"Some correct",ebi:"7 wrong in mock — exchange rates, fiscal policy, lean, decision trees. 14 wrong in Pack 1",tag:"rd"},calc:{www:"Full marks — strongest area",ebi:"No issues",tag:"gn"},ao3:{www:"Some chains attempted",ebi:"All 9-markers at Level 1-2 — chains don't develop",tag:"rd"},eval:{www:"Q25 reached Level 3",ebi:"Q23 unfinished. Misunderstood limited liability — shareholders ARE protected",tag:"am"},app:{www:"Good use of fast food context",ebi:"Arguments need more real-world context",tag:"am"},data:{www:"Full marks on calculations",ebi:"Apply the same precision to MCQs",tag:"gn"},std:{www:"Calculations prove you can do technical work",ebi:"MCQs and 9-markers are the priority",tag:"am"}},
+"Avleen Khatri":{g:"B",tot:68,mcq:{www:"Solid on most content",ebi:"5 wrong in mock — exchange rates, fiscal policy, decision trees, payback",tag:"am"},calc:{www:"Q16 correct",ebi:"Critical path wrong. Cash flow closing balance error",tag:"am"},ao3:{www:"Best 9-markers in class — only student to get Q21 revenue correct",ebi:"No real weaknesses here",tag:"gn"},eval:{www:"—",ebi:"Q25 scored poorly — no examples, no conclusion. Your analysis is excellent but essays don't show it",tag:"rd"},app:{www:"Strong contextual application in 9-markers",ebi:"Essays need real business examples throughout",tag:"am"},data:{www:"Only student to correctly calculate revenue falls",ebi:"Apply this skill to your essays",tag:"gn"},std:{www:"Your analytical ability is the best in the class",ebi:"Essay structure is the gap. Add examples, write a conclusion, and you jump a grade",tag:"am"}},
+"Jeevan":{g:"E",tot:31,mcq:{www:"Some correct answers showing knowledge",ebi:"7 wrong in mock — break-even, capacity, exchange rates, fiscal, Herzberg, payback",tag:"rd"},calc:{www:"Cash flow forecast correct",ebi:"Formula errors on Q16. Critical path wrong",tag:"rd"},ao3:{www:"Some points made",ebi:"All 9-markers at Level 1 — chains stop after 1-2 links",tag:"rd"},eval:{www:"—",ebi:"Both essays at Level 1 — Q22 unfinished, Q24 no HR flow. Time management critical",tag:"rd"},app:{www:"Some context used",ebi:"Causal chain needs much more development",tag:"rd"},data:{www:"Cash flow technique correct",ebi:"BEP and MoS formulas not secure",tag:"rd"},std:{www:"You completed the mock — building blocks to work with",ebi:"Learn BEP/MoS, attempt every question, build chains to 5 links minimum",tag:"rd"}},
+"Prabhleen":{g:"D",tot:46,mcq:{www:"12/15 — knowledge is clearly there",ebi:"20 wrong in Pack 1 — spread across many topics",tag:"am"},calc:{www:"Q16 and Q17 correct",ebi:"Q18 left blank — 3 marks lost for no reason",tag:"rd"},ao3:{www:"Q19 showed some development",ebi:"Q21 left blank — even a partial answer scores marks",tag:"rd"},eval:{www:"Some arguments made",ebi:"Rubric error — answered both from same pair. Lost ~20 marks to exam management",tag:"rd"},app:{www:"Directly engages with the question",ebi:"Contrast between paragraphs needs work",tag:"am"},data:{www:"Can do individual calculations",ebi:"Left Q18 blank — this is exam management, not knowledge",tag:"rd"},std:{www:"MCQs prove you know more than your grade suggests",ebi:"The issue is exam management: time allocation, question selection, attempting every question",tag:"am"}},
+"Sanam":{g:"B",tot:65,mcq:{www:"Some topics strong",ebi:"6 wrong in mock + 9 in Pack 1. Elasticity is a cluster weakness",tag:"rd"},calc:{www:"Q17 and Q18 correct",ebi:"Q16: formula errors on CPU/BEP/MoS — only 1/4",tag:"rd"},ao3:{www:"Q20 strong at 7/9",ebi:"Volume=revenue error on Q21",tag:"am"},eval:{www:"Q22 reached Level 4",ebi:"Q25 conclusion accepted 'inevitable' despite counter-arguments",tag:"am"},app:{www:"Volkswagen and Tesla examples used well",ebi:"Endpoint drifts — check each paragraph answers the question",tag:"am"},data:{www:"Q17 critical path correct",ebi:"Elasticity calculations need drilling. CPU/BEP/MoS sequence needed",tag:"rd"},std:{www:"Q22 proves you can reach Level 4",ebi:"Fix elasticity, calculation formulas, and conclusion technique",tag:"am"}},
+"Jeeval":{g:"B",tot:59,mcq:{www:"11/15 on mock",ebi:"Exchange rates, delayering, fiscal policy. 12 wrong in Pack 1",tag:"am"},calc:{www:"7/8",ebi:"MoS method wrong on Q16",tag:"am"},ao3:{www:"—",ebi:"Weakest 9-markers in class. All Level 1 despite writing Level 4 essays",tag:"rd"},eval:{www:"Both essays reached Level 3-4",ebi:"No major issues",tag:"gn"},app:{www:"VW case study used",ebi:"Theory-to-impact chain incomplete",tag:"am"},data:{www:"Most calculations correct",ebi:"MoS method: actual output − BEP (in units)",tag:"am"},std:{www:"Your essays prove you can write with depth",ebi:"9-markers are Level 1 while essays are Level 4 — biggest gap in the class",tag:"am"}},
+"Anhadvir":{g:"B",tot:64,mcq:{www:"Strong in Pack 1 (59/60)",ebi:"5 wrong in mock — exchange rates, critical path, fiscal policy, payback",tag:"am"},calc:{www:"Full marks",ebi:"Keep practising",tag:"gn"},ao3:{www:"Competent chains on Q19 and Q20",ebi:"Volume=revenue error on Q21",tag:"am"},eval:{www:"Q25 at Level 3",ebi:"Q23 at Level 2 — limited liability lacked depth",tag:"am"},app:{www:"Strong causal chains on website. Volkswagen context well used",ebi:"Barriers-to-entry argument could be stronger",tag:"am"},data:{www:"Full marks on calculations",ebi:"Revenue ≠ volume — practise price × quantity",tag:"am"},std:{www:"Strong calculations and website performance",ebi:"Essay depth is the gap — develop arguments much further",tag:"am"}},
+"Pravneet":{g:"B",tot:66,mcq:{www:"Solid knowledge",ebi:"4 wrong in mock + 5 in Pack 1. Exchange rates and opportunity cost",tag:"am"},calc:{www:"Full marks",ebi:"No issues",tag:"gn"},ao3:{www:"Q19 and Q20 both 7/9",ebi:"Volume=revenue error on Q21",tag:"am"},eval:{www:"Q22 reached Level 4",ebi:"Q25 conclusion accepted 'inevitable' despite counter-arguments",tag:"am"},app:{www:"SME vs large firms comparison used well",ebi:"Porter innovation argument needs more",tag:"am"},data:{www:"Full marks on calculations",ebi:"Revenue ≠ volume trap. Opportunity cost not secure",tag:"am"},std:{www:"Strong across most areas",ebi:"Fix the conclusion technique — don't accept 'inevitable' when you've argued against it",tag:"am"}}
+};
+
+/* ===== CSV PARSER — handles quoted multiline cells, CRLF, LF ===== */
+function parseCSV(text) {
+  const rows = [];
+  let row = [];
+  let cell = "";
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (i + 1 < text.length && text[i + 1] === '"') {
+          cell += '"'; i++;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        cell += ch;
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ',') {
+        row.push(cell); cell = "";
+      } else if (ch === '\r') {
+        row.push(cell); cell = "";
+        rows.push(row); row = [];
+        if (i + 1 < text.length && text[i + 1] === '\n') i++;
+      } else if (ch === '\n') {
+        row.push(cell); cell = "";
+        rows.push(row); row = [];
+      } else {
+        cell += ch;
+      }
+    }
+  }
+  if (cell.length > 0 || row.length > 0) { row.push(cell); rows.push(row); }
+  return rows;
+}
+
+/* ===== NAME NORMALISATION ===== */
+function norm(val) {
+  if (val == null) return "";
+  return String(val).toLowerCase().trim().replace(/\u00A0/g, " ").replace(/\s+/g, " ").normalize("NFC");
+}
+
+/* ===== FETCH PUBLISHED CSV ===== */
+async function fetchALevel() {
+  const resp = await fetch(ALEVEL_CSV_URL);
+  if (!resp.ok) throw new Error("HTTP " + resp.status);
+  const text = await resp.text();
+  const rows = parseCSV(text);
+
+  /* --- diagnostic logging --- */
+  console.log("CSV characters:", text.length);
+  console.log("Total parsed rows:", rows.length);
+  console.log("First 3:", rows.slice(0, 3));
+  console.log("Last 3:", rows.slice(-3));
+  const sukhRows = rows.filter(r => r.some(cell => String(cell).toLowerCase().includes("sukhchain")));
+  console.log("Sukhchain rows:", sukhRows);
+  console.log("Number of Sukhchain submissions:", sukhRows.length > 0 ? sukhRows.length - (sukhRows[0][0] && sukhRows[0][0].toLowerCase().includes("time") ? 1 : 0) : 0);
+  /* --- end diagnostic logging --- */
+
+  return rows;
+}
+
+/* ===== HEADER-BASED COLUMN MAPPING ===== */
+function buildHeaderMap(headerRow) {
+  const map = { ts:0, nm:1, q:2, marks:3, lv:4, w1:5, w2:6, e1:7, e2:8, tool:9 };
+  if (!headerRow) return map;
+  for (let i = 0; i < headerRow.length; i++) {
+    const h = norm(headerRow[i]);
+    if (h.includes("time")) map.ts = i;
+    else if (h.includes("student") || h === "name") map.nm = i;
+    else if (h.includes("paper") || h.includes("question")) map.q = i;
+    else if (h.includes("mark")) map.marks = i;
+    else if (h.includes("level")) map.lv = i;
+    else if (h.includes("www") && !h.includes("2")) map.w1 = i;
+    else if (h.includes("www") && h.includes("2")) map.w2 = i;
+    else if (h.includes("ebi") && !h.includes("2")) map.e1 = i;
+    else if (h.includes("ebi") && h.includes("2")) map.e2 = i;
+    else if (h.includes("tool")) map.tool = i;
+  }
+  return map;
+}
+
+/* ===== PARSE ALL DATA ROWS ===== */
+function parseAllRows(rows) {
+  if (rows.length < 2) return [];
+  const hm = buildHeaderMap(rows[0]);
+  const data = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r || !r[hm.nm]) continue;
+    const mrRaw = (r[hm.marks] || "").trim();
+    let ma = "", mt = "";
+    const m = mrRaw.match(/(\d+)\s*\/\s*(\d+)/);
+    if (m) { ma = m[1]; mt = m[2]; } else { ma = mrRaw; mt = mrRaw; }
+    data.push({
+      ts:   (r[hm.ts]   || "").trim(),
+      nm:   (r[hm.nm]   || "").trim(),
+      q:    (r[hm.q]    || "").trim(),
+      ma, mt,
+      lv:   (r[hm.lv]   || "").trim(),
+      w1:   (r[hm.w1]   || "").trim(),
+      w2:   (r[hm.w2]   || "").trim(),
+      e1:   (r[hm.e1]   || "").trim(),
+      e2:   (r[hm.e2]   || "").trim(),
+      tool: (r[hm.tool] || "").trim()
+    });
+  }
+  return data;
+}
+
+/* ===== FILTER FOR ONE STUDENT ===== */
+function filterStudent(allData, student) {
+  const searchNames = student.sh || [norm(student.fn)];
+  const examNum = student.ex;
+  const isAmbiguous = norm(student.fn) === "avleen";
+
+  return allData.filter(d => {
+    const n = norm(d.nm);
+
+    // Exact match against any search name
+    for (const sn of searchNames) {
+      if (n === sn) return true;
+    }
+
+    // Partial match — but NOT for ambiguous names (avleen)
+    if (!isAmbiguous) {
+      for (const sn of searchNames) {
+        if (n.includes(sn) || sn.includes(n)) return true;
+      }
+    }
+
+    // Exam number match — check if the name field contains the exam number
+    if (examNum && d.nm.includes(examNum)) return true;
+
+    return false;
+  });
+}
+
+/* ===== UI SETUP ===== */
+const ns = document.getElementById("ns");
+ns.appendChild(Object.assign(document.createElement("option"), {value:"teacher", textContent:"Mr Kerrisk (Teacher)"}));
+SS.forEach((s,i) => { const o = document.createElement("option"); o.value = i; o.textContent = s.fn + " " + s.sn; ns.appendChild(o); });
+
+let curS=null, curP=null, curAL=[], curGC=[], allSheetData=null;
+
+/* ===== MAIN GO ===== */
+async function go() {
+  const idx=ns.value, ex=document.getElementById("en").value.trim(), pw=document.getElementById("pw").value.trim().toLowerCase();
+  document.getElementById("err").style.display="none";
+  if (!idx) { se("Select your name."); return; }
+
+  sh("ldV"); hi("loginV"); lm("Pulling data...");
+
+  // Fetch sheet data (shared between student and teacher views)
+  try {
+    const rows = await fetchALevel();
+    allSheetData = parseAllRows(rows);
+    console.log("Parsed data rows:", allSheetData.length);
+  } catch(e) {
+    console.log("Sheet fetch error:", e.message);
+    allSheetData = [];
+  }
+
+  if (idx === "teacher") {
+    if (pw !== TC.pw) { se("Incorrect password."); hi("ldV"); sh("loginV"); return; }
+    await showTch(allSheetData);
+    return;
+  }
+
+  const s = SS[+idx];
+  if (!ex) { se("Enter your exam number."); hi("ldV"); sh("loginV"); return; }
+  if (s.ex && ex !== s.ex) { se("Exam number doesn't match."); hi("ldV"); sh("loginV"); return; }
+  if (pw !== s.pw) { se("Incorrect password."); hi("ldV"); sh("loginV"); return; }
+
+  const ad = filterStudent(allSheetData, s);
+  console.log(`Filtered: ${ad.length} submissions for ${s.fn}`);
+  console.log("Matched questions:", ad.map(d => d.q));
+
+  const gd = []; // GCSE — add published CSV URL here when available
+  const p = P[s.k];
+  curS=s; curP=p; curAL=ad; curGC=gd;
+
+  lm("Building your feedback...");
+
+  // AI feedback via Cloudflare Worker
+  let fb = null;
+  try {
+    const resp = await fetch(WORKER, {method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({model:"claude-sonnet-4-6", max_tokens:1500,
+        messages:[{role:"user", content:fbPr(s,p,ad,gd)}]})});
+    if (resp.ok) { const j = await resp.json(); fb = (j.content||[]).filter(c=>c.type==="text").map(c=>c.text).join(""); }
+  } catch(e) {}
+
+  render(s, p, ad, gd, fb);
+}
+
+function fbPr(s,p,ad,gd){
+  const allSubs=[...ad,...gd];
+  let t=`You are ${s.fn}'s A-Level Business teacher. Write bullet-pointed feedback based on ALL the data below. Be specific — name exact topics, question types, and what they did or didn't do. No generic comments like "some areas strong" or "keep practising". Every bullet must name a specific topic or skill.\n\n`;
+  t+=`FORMAT:\n## WWW\n- bullet (specific topic or skill they demonstrated, max 20 words)\n(4-6 bullets)\n\n## EBI\n- bullet (specific topic or error, what exactly went wrong)\n(4-6 bullets)\n\n## TARGETS\n- bullet (specific action: name the topic, the tool to use, or the question type to practise)\n(3-5 bullets)\n\n`;
+  t+=`RULES:\n- Every WWW bullet must name the specific topic or skill\n- Every EBI bullet must name the specific error\n- Every TARGET must be a specific action\n- If a weakness from the KAT mock also appears in their submissions, call it out as a pattern\n- Never write "A*" — say "top grade"\n- Bullets only, no paragraphs\n\n`;
+  t+=`=== KAT MOCK DATA ===\nMCQs: ${p.mcq.www}. ${p.mcq.ebi}\nCalculations: ${p.calc.www}. ${p.calc.ebi}\nAnalysis (AO3): ${p.ao3.www}. ${p.ao3.ebi}\nEvaluation: ${p.eval.www}. ${p.eval.ebi}\nApplication: ${p.app.www}. ${p.app.ebi}\nData use: ${p.data.www}. ${p.data.ebi}\nOverall: ${p.std.www}. ${p.std.ebi}\n\n`;
+  if(allSubs.length){
+    t+=`=== ALL SUBMISSIONS (${allSubs.length} total) ===\n`;
+    allSubs.forEach(e=>{
+      t+=`- "${e.q}": ${e.ma}/${e.mt} (${e.lv}) [${e.tool||'unknown'}]`;
+      if(e.w1)t+=`\n  WWW: ${e.w1}`;if(e.w2)t+=` | ${e.w2}`;
+      if(e.e1)t+=`\n  EBI: ${e.e1}`;if(e.e2)t+=` | ${e.e2}`;
+      t+=`\n`;
+    });
+  } else {
+    t+=`No submissions yet. Tell them to start submitting work.\n`;
+  }
+  return t;
+}
+
+function render(s,p,ad,gd,fb){
+  hi("ldV"); sh("resV"); const sv=document.getElementById("stuV"); sv.classList.remove("hide");
+  const allSubs=[...ad,...gd].sort((a,b)=>new Date(a.ts)-new Date(b.ts));
+  const total=allSubs.length;
+
+  let h=`<div class="ban"><h2>${esc(s.fn)} ${esc(s.sn)}</h2><span class="badge bg-${gcl(p.g)}">KAT Grade: ${p.g}</span></div>`;
+  h+=`<div class="sbar" style="grid-template-columns:1fr 1fr">
+    <div class="st nv"><div class="v">${total}</div><div class="l">Submissions</div></div>
+    <div class="st nv"><div class="v">${p.g}</div><div class="l">KAT Grade</div></div>
+  </div>`;
+
+  // Build enriched category data by merging profile + sheet submissions
+  const mcqSubs=allSubs.filter(e=>(e.tool||"").includes("mcq")||(e.q||"").toLowerCase().includes("mcq"));
+  const essaySubs=allSubs.filter(e=>(e.tool||"").includes("essay")||(e.tool||"").includes("marker")||(e.q||"").toLowerCase().includes("extent")||(e.q||"").toLowerCase().includes("legislation")||(e.q||"").toLowerCase().includes("influence"));
+
+  let mcqWww=p.mcq.www, mcqEbi=p.mcq.ebi;
+  if(mcqSubs.length){
+    const sw=mcqSubs.map(e=>e.w1).filter(w=>w&&w!=="—");
+    const se2=mcqSubs.map(e=>e.e1).filter(e=>e&&e!=="—");
+    if(sw.length)mcqWww+=" | Submissions: "+sw.join(". ");
+    if(se2.length)mcqEbi+=" | Submissions: "+se2.join(". ");
+  }
+  let ao3Www=p.ao3.www, ao3Ebi=p.ao3.ebi;
+  let evalWww=p.eval.www, evalEbi=p.eval.ebi;
+  let appWww=p.app.www, appEbi=p.app.ebi;
+  if(essaySubs.length){
+    const ew=essaySubs.map(e=>e.w1).filter(w=>w&&w!=="—");
+    const ee=essaySubs.map(e=>e.e1).filter(e=>e&&e!=="—");
+    if(ew.length)ao3Www+=" | Essays: "+ew.join(". ");
+    if(ee.length)ao3Ebi+=" | Essays: "+ee.join(". ");
+    const ew2=essaySubs.map(e=>e.w2).filter(w=>w&&w!=="—");
+    const ee2=essaySubs.map(e=>e.e2).filter(e=>e&&e!=="—");
+    if(ew2.length)appWww+=" | Essays: "+ew2.join(". ");
+    if(ee2.length)evalEbi+=" | Essays: "+ee2.join(". ");
+  }
+
+  const cats=[
+    {t:"MCQs",www:mcqWww,ebi:mcqEbi,tag:p.mcq.tag},
+    {t:"Calculations",www:p.calc.www,ebi:p.calc.ebi,tag:p.calc.tag},
+    {t:"Analysis (AO3)",www:ao3Www,ebi:ao3Ebi,tag:p.ao3.tag},
+    {t:"Evaluation & Conclusions",www:evalWww,ebi:evalEbi,tag:p.eval.tag},
+    {t:"Application & Models",www:appWww,ebi:appEbi,tag:p.app.tag},
+    {t:"Data in Essays",www:p.data.www,ebi:p.data.ebi,tag:p.data.tag}
+  ];
+  h+=`<div class="cg">`;
+  cats.forEach(c=>{
+    const col=c.tag==="gn"?"c-gn":c.tag==="rd"?"c-rd":"c-am";
+    const tc=c.tag==="gn"?"tag-gn":c.tag==="rd"?"tag-rd":"tag-am";
+    const tt=c.tag==="gn"?"Strong":c.tag==="rd"?"Needs work":"Developing";
+    h+=`<div class="cc ${col}"><h4>${c.t}</h4><span class="tag ${tc}">${tt}</span>`;
+    if(c.www&&c.www!=="—")h+=`<ul style="margin:6px 0 3px 12px;font-size:.76rem;line-height:1.45"><li style="color:var(--gn)">${esc(c.www)}</li></ul>`;
+    if(c.ebi&&c.ebi!=="—")h+=`<ul style="margin:3px 0 0 12px;font-size:.76rem;line-height:1.45"><li style="color:var(--am)">${esc(c.ebi)}</li></ul>`;
+    h+=`</div>`;
+  });
+  h+=`</div>`;
+
+  const sc=p.std.tag==="gn"?"c-gn":p.std.tag==="rd"?"c-rd":"c-nv";
+  h+=`<div class="cc ${sc}" style="margin-bottom:16px"><h4>Overall Standard</h4><ul style="margin:6px 0 0 12px;font-size:.78rem;line-height:1.5"><li style="color:var(--gn)">${esc(p.std.www)}</li><li style="color:var(--am)">${esc(p.std.ebi)}</li></ul></div>`;
+
+  if(total>0){
+    h+=`<div class="fl"><h3>Your submissions</h3><ul>`;
+    allSubs.slice().reverse().slice(0,10).forEach(e=>{
+      const lc=(e.lv||"").toLowerCase()==="good"?"var(--gn)":"var(--am)";
+      h+=`<li><strong>${esc(e.q.length>55?e.q.substring(0,55)+"...":e.q)}</strong> — <span style="color:${lc}">${esc(e.ma)}/${esc(e.mt)} (${esc(e.lv)})</span>`;
+      if(e.w1)h+=`<br><span style="font-size:.75rem;color:var(--gn)">✓ ${esc(e.w1)}</span>`;
+      if(e.e1)h+=`<br><span style="font-size:.75rem;color:var(--am)">→ ${esc(e.e1)}</span>`;
+      h+=`</li>`;
+    });
+    h+=`</ul></div>`;
+  } else {
+    h+=`<div class="fl f-am"><h3>No submissions yet</h3><ul><li>You haven't submitted any work through the website tools yet</li><li>Start using the open essay tool, calculation practice, or knowledge quizzes</li><li>The more you submit, the more specific this feedback becomes</li></ul></div>`;
+  }
+
+  if(fb){const parsed=parseFB(fb);
+    if(parsed.www)h+=`<div class="fl f-gn"><h3>What's going well</h3>${parsed.www}</div>`;
+    if(parsed.ebi)h+=`<div class="fl f-am"><h3>Even better if</h3>${parsed.ebi}</div>`;
+    if(parsed.targets)h+=`<div class="fl f-nv"><h3>Your targets</h3>${parsed.targets}</div>`;
+  } else {
+    h+=`<div class="fl f-gn"><h3>What's going well</h3><ul>`;
+    cats.filter(c=>c.tag==="gn").forEach(c=>{h+=`<li>${esc(c.www)}</li>`});
+    h+=`<li>${esc(p.std.www)}</li></ul></div>`;
+    h+=`<div class="fl f-am"><h3>Even better if</h3><ul>`;
+    cats.filter(c=>c.tag!=="gn").forEach(c=>{h+=`<li>${esc(c.ebi)}</li>`});
+    h+=`</ul></div>`;
+  }
+
+  h+=`<div class="imp"><button class="ibtn" id="ibtn" onclick="gen()">⚡ Improve my grade</button></div>`;
+  h+=`<div id="gw" class="gw hide"></div>`;
+  h+=`<p class="note">The more work you submit, the more detailed this feedback becomes.</p>`;
+  sv.innerHTML=h;
+}
+
+function parseFB(t){const r={www:"",ebi:"",targets:""};const ps=t.split(/##\s*/i);for(const p of ps){const l=p.toLowerCase();if(l.startsWith("www"))r.www=md(p.replace(/^www\s*/i,"").trim());else if(l.startsWith("ebi"))r.ebi=md(p.replace(/^ebi\s*/i,"").trim());else if(l.startsWith("target"))r.targets=md(p.replace(/^targets?\s*/i,"").trim())}return r}
+
+async function gen(){
+  const btn=document.getElementById("ibtn");btn.disabled=true;btn.innerHTML='<span class="sp" style="width:16px;height:16px;border-width:2px;margin:0"></span> Generating...';
+  const s=curS,p=curP,allW=[...curAL,...curGC];
+  let pr=`Create 6 practice questions for ${s.fn}. Target their weak areas:\n`;
+  const weak=[];if(p.mcq.tag!=="gn")weak.push("MCQs: "+p.mcq.ebi);if(p.calc.tag!=="gn")weak.push("Calcs: "+p.calc.ebi);if(p.ao3.tag!=="gn")weak.push("Analysis: "+p.ao3.ebi);if(p.eval.tag!=="gn")weak.push("Eval: "+p.eval.ebi);if(p.app.tag!=="gn")weak.push("App: "+p.app.ebi);if(p.data.tag!=="gn")weak.push("Data: "+p.data.ebi);
+  pr+=weak.join("\n")+"\n\n";
+  if(allW.length){pr+=`Submissions (${allW.length}):\n`;allW.slice(-6).forEach(e=>{pr+=`- "${e.q}": ${e.ma}/${e.mt} (${e.lv})`;if(e.e1)pr+=` EBI:${e.e1}`;pr+=`\n`});pr+="\n"}
+  pr+=`Format:\n## Q1\n[question]\n## A1\n[answer]\n...through Q6/A6\n\nRules:\n- Target weak areas\n- Mix: calculations, retrieval, analysis\n- ONE trap (obvious answer wrong)\n- ONE rearranged calculation\n- ONE model applied to real business\n- Step-by-step answers\n- Use (a),(b),(c) for sub-parts\n- Never write "A*"\n`;
+  const gw=document.getElementById("gw");
+  try{
+    const resp=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:3500,messages:[{role:"user",content:pr}]})});
+    if(resp.ok){const j=await resp.json();const txt=(j.content||[]).filter(c=>c.type==="text").map(c=>c.text).join("");
+      const parsed=parseQA(txt);
+      if(parsed.length){
+        let h=`<p class="gi">Based on your data, here are questions targeting your gaps. Some are deliberately tricky — I'm trying to catch you out. Have a proper go before checking the answers.</p>`;
+        h+=parsed.map((qa,i)=>`<div class="qb"><div class="qn">Question ${i+1}</div>${md(qa.q)}</div>`).join("");
+        h+=`<button class="sabtn" onclick="togA()">Show model answers</button>`;
+        h+=`<div id="ab" class="hide">`+parsed.map((qa,i)=>`<div class="ab"><div class="an">Answer ${i+1}</div>${md(qa.a)}</div>`).join("")+`</div>`;
+        gw.innerHTML=h;gw.classList.remove("hide");
+      }
+    }
+  }catch(e){}
+  btn.innerHTML='⚡ Generate more questions';btn.disabled=false;
+}
+
+function parseQA(t){const r=[];const ps=t.split(/##\s*/);let cq=null;for(const p of ps){const s=p.trim();if(!s)continue;if(/^Q\d/i.test(s)){cq=s.replace(/^Q\d+\s*/i,"").trim()}else if(/^A\d/i.test(s)&&cq){r.push({q:cq,a:s.replace(/^A\d+\s*/i,"").trim()});cq=null}}return r}
+function togA(){const a=document.getElementById("ab");const b=a.previousElementSibling;if(a.classList.contains("hide")){a.classList.remove("hide");b.textContent="Hide model answers"}else{a.classList.add("hide");b.textContent="Show model answers"}}
+
+/* ===== TEACHER VIEW ===== */
+let tchAllData=null;
+async function showTch(allData){
+  hi("ldV"); sh("resV"); const tv=document.getElementById("tchV"); tv.classList.remove("hide");
+  tchAllData=allData;
+
+  // Build per-student data
+  const stuData=SS.map(s=>{
+    const sd=filterStudent(allData,s);
+    const p=P[s.k]||{g:"?",tot:0,std:{www:"",ebi:""},mcq:{ebi:""},calc:{ebi:""},ao3:{ebi:""},eval:{ebi:""}};
+    const essays=sd.filter(d=>(d.tool||"").includes("essay")||(d.q||"").toLowerCase().includes("extent")||(d.q||"").toLowerCase().includes("legislation")||(d.q||"").toLowerCase().includes("influence"));
+    const mcqs=sd.filter(d=>(d.tool||"").includes("mcq"));
+    const quizzes=sd.filter(d=>(d.tool||"").toLowerCase().includes("quiz"));
+    return {s,sd,p,essays,mcqs,quizzes};
+  });
+
+  const totalSubs=allData.length;
+  const activeStudents=stuData.filter(d=>d.sd.length>0).length;
+  const inactiveStudents=stuData.filter(d=>d.sd.length===0);
+  const essayCount=allData.filter(d=>(d.tool||"").includes("essay")).length;
+  const mcqCount=allData.filter(d=>(d.tool||"").includes("mcq")).length;
+  const quizCount=allData.filter(d=>(d.tool||"").toLowerCase().includes("quiz")).length;
+  const avgSubs=totalSubs>0?Math.round(totalSubs/SS.length*10)/10:0;
+
+  // Stats bar
+  let h=`<div class="tban"><h2>Class Overview</h2><p>Year 13 A-Level Business — ${SS.length} students</p></div>`;
+  h+=`<div class="sbar" style="grid-template-columns:repeat(3,1fr)">
+    <div class="st nv"><div class="v">${totalSubs}</div><div class="l">Total submissions</div></div>
+    <div class="st ${activeStudents<SS.length?'am':'gn'}"><div class="v">${activeStudents}/${SS.length}</div><div class="l">Active students</div></div>
+    <div class="st nv"><div class="v">${avgSubs}</div><div class="l">Avg per student</div></div>
+  </div>`;
+  h+=`<div class="sbar" style="grid-template-columns:repeat(3,1fr)">
+    <div class="st nv"><div class="v">${essayCount}</div><div class="l">Essays</div></div>
+    <div class="st nv"><div class="v">${mcqCount}</div><div class="l">MCQ packs</div></div>
+    <div class="st nv"><div class="v">${quizCount}</div><div class="l">Quizzes</div></div>
+  </div>`;
+
+  // Inactive students warning
+  if(inactiveStudents.length){
+    h+=`<div class="fl f-am"><h3>No submissions yet</h3><ul>`;
+    inactiveStudents.forEach(d=>{h+=`<li><strong>${esc(d.s.fn)} ${esc(d.s.sn)}</strong> — KAT: ${d.p.g}. No website or classroom submissions recorded.</li>`});
+    h+=`</ul></div>`;
+  }
+
+  // Per-student table with KAT grade, submissions, key weakness
+  h+=`<div class="fl"><h3>Student progress</h3>`;
+  h+=`<table class="ct"><thead><tr><th>Student</th><th>KAT</th><th>Subs</th><th>Key weakness</th><th>Latest</th></tr></thead><tbody>`;
+  stuData.forEach(d=>{
+    const highlight=d.sd.length===0?"hl":"";
+    h+=`<tr class="${highlight}"><td><strong>${esc(d.s.fn)}</strong></td><td>${d.p.g}</td><td>${d.sd.length}</td><td style="font-size:.72rem;max-width:420px;word-wrap:break-word;white-space:normal;line-height:1.4">${esc(d.p.std.ebi)}</td><td>${d.sd.length?fD(d.sd[d.sd.length-1].ts):'—'}</td></tr>`;
+  });
+  h+=`</tbody></table></div>`;
+
+  // Generate activities buttons
+  h+=`<div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">`;
+  h+=`<button class="ibtn" onclick="genStudentActivities()" id="genStuBtn">📝 Generate student activities</button>`;
+  h+=`<button class="ibtn" onclick="genTeachingActivity()" id="genTchBtn" style="background:linear-gradient(135deg,#1a3a2a,#2a5a3a)">📋 Generate teaching activity</button>`;
+  h+=`</div>`;
+  h+=`<div id="tchGenWrap" class="gw hide"></div>`;
+
+  // Placeholder for AI analysis — renders immediately so page isn't blank
+  h+=`<div id="tchAiWrap"><div class="ld"><div class="sp"></div><p>Generating teaching analysis...</p></div></div>`;
+
+  tv.innerHTML=h;
+
+  // Now fetch AI analysis asynchronously and insert when ready
+  try{
+    let tp=`You are analysing a Year 13 A-Level Business class for their teacher. Give a comprehensive, detailed analysis. Use bullet points throughout. Be specific — name students, name topics, name question numbers where relevant.\n\n`;
+    tp+=`=== CLASS DATA ===\n`;
+    stuData.forEach(d=>{
+      tp+=`\n${d.s.fn} ${d.s.sn} (KAT: ${d.p.g}, ${d.sd.length} submissions):\n`;
+      tp+=`- Calc: ${d.p.calc.ebi}\n- MCQ: ${d.p.mcq.ebi}\n- AO3: ${d.p.ao3.ebi}\n- Eval: ${d.p.eval.ebi}\n- Overall: ${d.p.std.ebi}\n`;
+      if(d.sd.length){
+        d.sd.slice(-3).forEach(sub=>{
+          tp+=`- Submission: "${sub.q}" ${sub.ma}/${sub.mt} (${sub.lv})`;
+          if(sub.e1)tp+=` EBI: ${sub.e1}`;
+          tp+=`\n`;
+        });
+      }
+    });
+    tp+=`\n=== FORMAT ===\nWrite these sections:\n\n## URGENT INTERVENTIONS\nWhich students need immediate support? Name them, explain why, and say what specific action to take. 5-8 bullets.\n\n## CLASS-WIDE GAPS\nWhat topics or skills are weak across the whole class? Be specific — name the topics, the question types, and how many students are affected. 5-8 bullets.\n\n## STRENGTHS\nWhat is the class doing well? Where are students improving? 3-5 bullets.\n\n## PRIORITIES FOR NEXT WEEK\nWhat should you teach or set as homework this week? Name the topic, the question type, and why. 4-6 bullets.\n\nKeep each bullet under 25 words. Be direct. Never write "A*" — say "top grade".\n`;
+    const resp=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:2500,messages:[{role:"user",content:tp}]})});
+    if(resp.ok){
+      const j=await resp.json();const txt=(j.content||[]).filter(c=>c.type==="text").map(c=>c.text).join("");
+      document.getElementById("tchAiWrap").innerHTML=`<div class="fl f-nv"><h3>Teaching analysis</h3>${md(txt)}</div>`;
+    } else {
+      document.getElementById("tchAiWrap").innerHTML=`<p style="font-size:.8rem;color:var(--tl)">Could not generate analysis. Try refreshing.</p>`;
+    }
+  }catch(e){
+    document.getElementById("tchAiWrap").innerHTML=`<p style="font-size:.8rem;color:var(--tl)">Could not generate analysis. Try refreshing.</p>`;
+  }
+}
+
+async function genStudentActivities(){
+  const btn=document.getElementById("genStuBtn");btn.disabled=true;btn.innerHTML='<span class="sp" style="width:16px;height:16px;border-width:2px;margin:0"></span> Generating...';
+  const gw=document.getElementById("tchGenWrap");
+  gw.innerHTML=`<div class="ld"><div class="sp"></div><p>Building personalised questions for each student — this takes a moment...</p></div>`;
+  gw.classList.remove("hide");
+
+  // Build per-student blocks and send in batches of 5 to avoid token limits
+  const stuBlocks=[];
+  SS.forEach(s=>{
+    const p=P[s.k];if(!p)return;
+    const sd=filterStudent(tchAllData||[],s);
+    let block=`${s.fn} ${s.sn} (KAT: ${p.g}):\n- Overall weakness: ${p.std.ebi}\n- Calculations: ${p.calc.ebi}\n- MCQ gaps: ${p.mcq.ebi}\n- AO3/Analysis: ${p.ao3.ebi}\n- Evaluation: ${p.eval.ebi}\n`;
+    if(sd.length){sd.slice(-3).forEach(sub=>{if(sub.e1)block+=`- Recent EBI: ${sub.e1}\n`})}
+    stuBlocks.push({name:s.fn+" "+s.sn,block:block});
+  });
+
+  // Split into batches
+  const batches=[];
+  for(let i=0;i<stuBlocks.length;i+=5){batches.push(stuBlocks.slice(i,i+5))}
+
+  let allHtml="";
+  for(let bi=0;bi<batches.length;bi++){
+    const batch=batches[bi];
+    gw.querySelector("p").textContent=`Generating questions... batch ${bi+1} of ${batches.length}`;
+
+    let pr=`You are an experienced AQA A-Level Business Studies teacher (specification 7132). Generate personalised practice questions for each student below.\n\n`;
+    pr+=`=== STUDENTS IN THIS BATCH ===\n`;
+    batch.forEach(b=>{pr+=`\n${b.block}\n`});
+    pr+=`\n=== INSTRUCTIONS ===\nFor EACH student, produce exactly this:\n\n## [Full name]\n**Focus areas:** [2-3 specific topics from their weakness data]\n\nThen write 10 numbered questions targeting their specific weaknesses. The questions MUST be:\n- AQA A-Level Business Studies exam style (specification 7132)\n- A mix of: 2 definitions/retrieval (1 mark each), 2 MCQ-style traps (1 mark each), 2 calculations with data provided (3-4 marks each), 2 short analysis questions using 'Analyse...' (4-5 marks each), 2 evaluation questions using 'To what extent...' or 'Evaluate...' (9 marks each)\n- Targeted at the specific topics and skills where this student is weakest\n- Based on real AQA exam-style wording and mark tariffs\n\nAfter the 10 questions for each student, write:\n\n### Answers for [name]\nFull model answers for all 10 questions. Calculations must show every step of working. Analysis answers must show a chain of at least 5 links. Evaluation answers must include an argument for, argument against, and a brief conclusion with a 'depends on' condition.\n\nRules:\n- Use AQA command words: State, Explain, Analyse, Evaluate, Calculate\n- Include realistic business data in calculations (revenue, costs, elasticity values, capacity figures)\n- Every question must be clearly answerable from A-Level Business content\n- Never write "A*" — say "top grade"\n- Do not make questions generic — each student's 10 questions must be different from every other student's, targeting THEIR specific gaps\n`;
+
+    try{
+      const resp=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:8000,messages:[{role:"user",content:pr}]})});
+      if(resp.ok){
+        const j=await resp.json();const txt=(j.content||[]).filter(c=>c.type==="text").map(c=>c.text).join("");
+        allHtml+=md(txt);
+      } else {
+        allHtml+=`<p style="color:var(--am)">Batch ${bi+1} failed — try again.</p>`;
+      }
+    }catch(e){
+      allHtml+=`<p style="color:var(--am)">Batch ${bi+1} error: ${e.message||"network issue"}. Try again.</p>`;
+    }
+  }
+
+  gw.innerHTML=`<div class="fl"><h3>Student activities — 10 questions each with answers</h3><p style="font-size:.78rem;color:var(--tl);margin-bottom:10px">Each student has personalised questions targeting their weaknesses, followed by full model answers.</p>${allHtml}</div>`;
+  btn.innerHTML='📝 Generate student activities';btn.disabled=false;
+}
+
+async function genTeachingActivity(){
+  const btn=document.getElementById("genTchBtn");btn.disabled=true;btn.innerHTML='<span class="sp" style="width:16px;height:16px;border-width:2px;margin:0"></span> Generating...';
+  const gw=document.getElementById("tchGenWrap");
+
+  // Find the most common class-wide weaknesses
+  const allWeaks=[];
+  SS.forEach(s=>{const p=P[s.k];if(!p)return;
+    if(p.calc.tag==="rd")allWeaks.push("Calculations: "+p.calc.ebi);
+    if(p.mcq.tag==="rd")allWeaks.push("MCQs: "+p.mcq.ebi);
+    if(p.ao3.tag==="rd")allWeaks.push("AO3: "+p.ao3.ebi);
+    if(p.eval.tag==="rd")allWeaks.push("Eval: "+p.eval.ebi);
+  });
+
+  let pr=`You are an A-Level Business teacher planning a lesson. Based on the class data below, design a 50-minute lesson activity that addresses the biggest class-wide gaps.\n\n`;
+  pr+=`=== CLASS GAPS ===\n`;
+  SS.forEach(s=>{const p=P[s.k];if(!p)return;pr+=`${s.fn}: KAT ${p.g}. Key gap: ${p.std.ebi}\n`});
+  if(tchAllData&&tchAllData.length){
+    const recentEbis=tchAllData.slice(-15).map(d=>d.e1).filter(e=>e&&e!=="—"&&e!=="None");
+    if(recentEbis.length){pr+=`\nRecent submission EBIs:\n`;recentEbis.forEach(e=>{pr+=`- ${e}\n`})}
+  }
+
+  pr+=`\n=== FORMAT ===\nDesign a lesson activity with:\n\n## LESSON FOCUS\nOne sentence: what this lesson targets and why.\n\n## STARTER (5 mins)\nA quick retrieval or diagnostic activity. Give the exact questions.\n\n## MAIN ACTIVITY (30 mins)\nA structured task the whole class does. Give the exact resources, questions, or scenarios. Include differentiation — what the weaker students focus on vs the stronger ones.\n\n## STRETCH (10 mins)\nA harder challenge for students who finish early. Exam-style.\n\n## PLENARY (5 mins)\nHow to close the lesson. Exit ticket or key question.\n\n## RESOURCES NEEDED\nWhat to prepare or print.\n\nRules:\n- Be specific — give actual questions, not "ask students about X"\n- Include numbers and data where relevant\n- Differentiate between weaker and stronger students\n- Focus on the most common gaps across the class\n- Never write "A*"\n`;
+
+  try{
+    const resp=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:4000,messages:[{role:"user",content:pr}]})});
+    if(resp.ok){
+      const j=await resp.json();const txt=(j.content||[]).filter(c=>c.type==="text").map(c=>c.text).join("");
+      gw.innerHTML=`<div class="fl"><h3>Teaching activity</h3><p style="font-size:.78rem;color:var(--tl);margin-bottom:10px">A lesson plan targeting your class's biggest gaps, ready to deliver.</p>${md(txt)}</div>`;
+      gw.classList.remove("hide");
+    }
+  }catch(e){}
+  btn.innerHTML='📋 Generate teaching activity';btn.disabled=false;
+}
+
+/* ===== HELPERS ===== */
+function sh(id){document.getElementById(id).classList.remove("hide")}
+function hi(id){document.getElementById(id).classList.add("hide")}
+function se(m){const e=document.getElementById("err");e.textContent=m;e.style.display="block"}
+function lm(m){document.getElementById("ldM").textContent=m}
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function fD(ts){try{const d=new Date(ts);if(isNaN(d))return ts.substring(0,10);return d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})}catch(e){return ts.substring(0,10)}}
+function gcl(g){return g==="A*"?"astar":g.toLowerCase()}
+function md(t){let h=t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');h=h.replace(/((?:<li>.*?<\/li>\s*(?:<br>)?)+)/g,'<ul>$1</ul>').replace(/<br><\/ul>/g,'</ul>').replace(/<ul><br>/g,'<ul>');return'<p>'+h+'</p>'}
+function reset(){hi("resV");document.getElementById("stuV").classList.add("hide");document.getElementById("tchV").classList.add("hide");sh("loginV");document.getElementById("err").style.display="none";ns.value="";document.getElementById("en").value="";document.getElementById("pw").value=""}
+</script>
+</body>
+</html>
