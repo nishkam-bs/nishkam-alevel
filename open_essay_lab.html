@@ -1207,33 +1207,42 @@ FORMAT YOUR RESPONSE AS HTML:
 // ══════════ SAVE AS PDF ══════════
 function generatePDF(){
   if(!lastFb)return;
-  const{jsPDF}=window.jspdf;
-  const doc=new jsPDF({unit:'mm',format:'a4'});
-  const fb=lastFb;const margin=20;const pw=170;let y=20;
-  function addText(t,s,st,c){doc.setFontSize(s);doc.setFont('helvetica',st||'normal');if(c)doc.setTextColor(...c);else doc.setTextColor(25,31,42);const l=doc.splitTextToSize(t||'',pw);if(y+l.length*s*0.5>270){doc.addPage();y=20;}doc.text(l,margin,y);y+=l.length*s*0.45+3;}
-  function addLine(){doc.setDrawColor(200);doc.line(margin,y,margin+pw,y);y+=5;}
-  doc.setFillColor(13,27,52);doc.rect(0,0,210,38,'F');
-  doc.setFontSize(10);doc.setFont('helvetica','normal');doc.setTextColor(238,184,52);
-  doc.text('AQA A-Level Business — Open Essay Lab',margin,12);
-  doc.setFontSize(18);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);
-  doc.text('Essay Feedback',margin,24);
-  doc.setFontSize(9);doc.setTextColor(180,195,220);
-  doc.text(student.name+' — '+new Date().toLocaleDateString(),margin,32);
-  y=48;
-  addText('Question',10,'bold',[100,110,130]);addText(lastQ,11,'normal');addLine();
-  addText(fb.mark+'/'+(fb._maxMark||16)+' — Level '+fb.level+' ('+(fb.level_label||'')+')',16,'bold',[13,27,52]);y+=3;
-  addText('What you did well',12,'bold',[40,133,102]);(fb.www||[]).slice(0,2).forEach(w=>addText('- '+w,10,'normal'));y+=3;
-  addText('Your main improvement',12,'bold',[190,72,72]);addText(fb.priority||fb.verdict||'',10,'normal');y+=3;
-  addLine();
-  addText('Models: '+(fb.model_detail||''),9,'normal',[80,90,110]);
-  addText('Business examples: '+(fb.application_check||''),9,'normal',[80,90,110]);
-  addText('Conclusion: '+(fb.conclusion_check||''),9,'normal',[80,90,110]);
-  addText('All-businesses test: '+(fb.change_the_business||''),9,'normal',[80,90,110]);y+=3;
-  addLine();addText('Biggest limitation',11,'bold',[190,72,72]);addText(fb.blocker||'',10,'normal');
-  y+=8;doc.setFontSize(8);doc.setTextColor(150);
-  doc.text('Nishkam School West London — Man Neeva, Mat Uchi',margin,280);
-  doc.text('Generated '+new Date().toLocaleString(),margin+pw-50,280);
-  doc.save('feedback_'+student.num+'_'+new Date().toISOString().slice(0,10)+'.pdf');
+  const fb=lastFb;
+  const mx=fb._maxMark||16;
+  const col={5:'#288566',4:'#3a69b4',3:'#c8a84e',2:'#be4848',1:'#be4848'}[fb.level]||'#6a7485';
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Essay Feedback — ${student.name}</title><style>
+body{font-family:Calibri,sans-serif;max-width:700px;margin:30px auto;line-height:1.6;color:#2c2c2c;font-size:14px}
+h1{font-size:22px;color:#0d1b34;border-bottom:2px solid #eeb834;padding-bottom:8px;margin-bottom:16px}
+h2{font-size:16px;color:#0d1b34;margin-top:22px;margin-bottom:8px}
+.mark{text-align:center;padding:20px;margin-bottom:16px}
+.mark .num{font-size:48px;font-weight:900;color:#0d1b34}
+.mark .lev{font-size:16px;font-weight:700;color:${col};margin-top:4px}
+.green{color:#288566}.red{color:#be4848}.navy{color:#0d1b34}
+ul{padding-left:18px;margin:6px 0}li{margin-bottom:4px;font-size:13px}
+.meta{font-size:11px;color:#999;margin-top:30px;border-top:1px solid #eee;padding-top:8px}
+@media print{body{margin:15px;font-size:12px}}
+</style></head><body>
+<h1>Open Essay Feedback</h1>
+<p style="color:#6a7485;margin-bottom:16px">${student.name} — ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</p>
+<h2>Question</h2>
+<p style="font-weight:600">${lastQ}</p>
+<div class="mark"><div class="num">${fb.mark}/${mx}</div><div class="lev">Level ${fb.level} — ${fb.level_label||''}</div></div>
+<h2 class="green">What you did well</h2>
+<ul>${(fb.www||[]).map(w=>'<li>'+w+'</li>').join('')}</ul>
+<h2 class="red">Your main improvement</h2>
+<p>${fb.priority||fb.verdict||''}</p>
+<h2>Quick checks</h2>
+<p><strong>Models:</strong> ${fb.model_detail||''}</p>
+<p><strong>Business examples:</strong> ${fb.application_check||''}</p>
+<p><strong>Conclusion:</strong> ${fb.conclusion_check||''}</p>
+<p><strong>All-businesses test:</strong> ${fb.change_the_business||''}</p>
+<h2 class="red">Biggest limitation</h2>
+<p>${fb.blocker||''}</p>
+<p class="meta">Nishkam School West London — Generated from nishkam-bs.github.io</p>
+</body></html>`);
+  w.document.close();
+  setTimeout(()=>{w.print()},500);
 }
 
 // ── Google Sheet Logging (teacher dashboard) ──
