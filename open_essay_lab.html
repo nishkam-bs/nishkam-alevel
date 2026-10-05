@@ -1249,7 +1249,9 @@ ul{padding-left:18px;margin:6px 0}li{margin-bottom:4px;font-size:13px}
 const SHEET_URL='https://script.google.com/macros/s/AKfycbwp1BPFJztzwXXY81prlg0Uo7J34-P7FE3SWKelOEUppM6hzq576Au3ra58xkEI51nP/exec';
 function logToSheet(data){
   try{
-   etch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({...data,timestamp:new Date().toISOString()})}).catch(()=>{});
+    const params=new URLSearchParams();
+    params.append('payload',JSON.stringify({...data,timestamp:new Date().toISOString()}));
+    fetch(SHEET_URL,{method:'POST',mode:'no-cors',body:params}).catch(()=>{});
   }catch(e){console.log('Sheet log failed:',e);}
 }
 
