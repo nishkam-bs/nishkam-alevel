@@ -438,19 +438,26 @@ function showFeedback(r){
 
 /* ── Log to sheet ── */
 function logRedraft(r, isFull){
-  const params = new URLSearchParams({
-    timestamp: new Date().toISOString(),
-    studentName: currentStudent.name,
-    question: (pdfFileName.replace('.pdf',''))+' (Redraft)',
-    marks: isFull && r.new_mark ? r.new_mark : 'Partial redraft',
-    level: isFull && r.new_level ? r.new_level : '—',
-    www1: r.what_is_better||'',
-    www2: '',
-    ebi1: r.still_to_work_on||'',
-    ebi2: '',
-    tool: 'redraft'
-  });
-  fetch(LOG_URL+'?'+params.toString(),{mode:'no-cors'}).catch(()=>{});
+  try{
+    const data={
+      name:currentStudent.name,
+      candidateNumber:currentStudent.examNum,
+      question:(pdfFileName.replace('.pdf',''))+' (Redraft)',
+      mark:isFull&&r.new_mark?r.new_mark.split('/')[0].trim():'',
+      maxMark:isFull&&r.new_mark&&r.new_mark.includes('/')?r.new_mark.split('/')[1].trim():'',
+      level:isFull&&r.new_level?r.new_level:'',
+      levelLabel:isFull&&r.new_level?r.new_level:'Redraft',
+      www1:r.what_is_better||'',
+      www2:'',
+      ebi1:r.still_to_work_on||'',
+      ebi2:'',
+      tool:'redraft',
+      timestamp:new Date().toISOString()
+    };
+    const params=new URLSearchParams();
+    params.append('payload',JSON.stringify(data));
+    fetch(LOG_URL,{method:'POST',mode:'no-cors',body:params}).catch(()=>{});
+  }catch(e){console.log('Sheet log failed:',e);}
 }
 
 /* ── Reset ── */
