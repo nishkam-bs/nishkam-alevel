@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Business Models &amp; Theories — AQA A-Level Business</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f3ee;--surface:#fff;--surface2:#f9f8f5;--surface3:#efeee9;--ink:#1a1a1a;--muted:#6b6560;--gold:#9a7d2e;--gold-bg:rgba(154,125,46,.08);--green:#1e7a4a;--green-bg:rgba(30,122,74,.08);--green-light:#e8f5ee;--red:#b33a2d;--red-bg:rgba(179,58,45,.07);--red-light:#fceeed;--blue:#2d6fb3;--teal:#1a7d6d;--purple:#7b5ea7;--border:#ddd9d0;--shadow:rgba(0,0,0,.06)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px)+44px)}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.68;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:#fff}
+.hero{background:var(--surface);border-bottom:1px solid var(--border);padding:2.5rem 1.5rem 2rem;text-align:center}
+.hero .kicker{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,4vw,2.2rem);line-height:1.15;max-width:650px;margin:0 auto}
+.hero .sub{color:var(--muted);font-size:.8rem;margin-top:.35rem;max-width:520px;margin-left:auto;margin-right:auto}
+.nav-strip{position:sticky;top:env(safe-area-inset-top,0px);z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:.5rem .8rem;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;display:flex;gap:.2rem}
+.nav-strip a,.nav-strip button{font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.2px;color:var(--muted);text-decoration:none;padding:.28rem .55rem;border-radius:3px;display:inline-block;transition:color .15s,background .15s;background:none;border:none;cursor:pointer;white-space:nowrap}
+.nav-strip a:hover,.nav-strip button:hover,.nav-strip .active{color:var(--gold);background:var(--gold-bg)}
+.nav-strip .quiz-tab{color:var(--green);border:1px solid var(--green);border-radius:3px;font-weight:600}
+.nav-strip .quiz-tab:hover,.nav-strip .quiz-tab.active{background:var(--green-bg);color:var(--green)}
+.container{max-width:760px;margin:0 auto;padding:1.3rem 1.1rem}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:1.8rem;margin-bottom:.9rem;box-shadow:0 1px 3px var(--shadow)}
+.section .tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.52rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem;padding:.1rem .4rem;background:var(--gold-bg);border-radius:2px}
+h2{font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:.6rem;line-height:1.2}
+h3{font-size:.8rem;font-weight:600;color:var(--gold);margin:1rem 0 .3rem;padding-bottom:.2rem;border-bottom:1px solid var(--border)}
+h4{font-size:.78rem;font-weight:600;margin-bottom:.08rem}
+p,li{font-size:.8rem;margin-bottom:.4rem}
+strong{font-weight:600}
+.note{padding:.75rem .9rem;border-radius:4px;margin:.5rem 0;border-left:3px solid;background:var(--surface2)}
+.note .lab{font-family:'IBM Plex Mono',monospace;font-size:.5rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:.2rem}
+.note p{font-size:.76rem;margin-bottom:.2rem}
+.note.gold{border-color:var(--gold)}.note.gold .lab{color:var(--gold)}
+.note.red{border-color:var(--red)}.note.red .lab{color:var(--red)}
+.note.green{border-color:var(--green)}.note.green .lab{color:var(--green)}
+table{width:100%;border-collapse:collapse;font-size:.72rem;margin:.5rem 0}
+th{background:var(--surface3);color:var(--gold);padding:5px 6px;border:1px solid var(--border);text-align:left;font-weight:600;font-size:.62rem;letter-spacing:.3px;text-transform:uppercase}
+td{padding:5px 6px;border:1px solid var(--border);font-size:.74rem;vertical-align:top}
+tr:nth-child(even) td{background:var(--surface2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.5rem 0}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:.8rem}
+.card h4{font-size:.74rem}.card p{font-size:.72rem;color:var(--muted)}
+.model-list{list-style:none;padding:0;margin:.3rem 0}
+.model-list li{border-bottom:1px solid var(--border)}
+.model-list button.ml-btn{display:flex;width:100%;align-items:center;justify-content:space-between;padding:.55rem .2rem;background:none;border:none;color:var(--ink);font-family:'IBM Plex Sans',sans-serif;font-size:.78rem;cursor:pointer;text-align:left}
+.model-list button.ml-btn:hover{color:var(--gold)}
+.model-list button.ml-btn .spec{font-family:'IBM Plex Mono',monospace;font-size:.54rem;color:var(--muted)}
+.model-list button.ml-btn::after{content:'+';font-family:'IBM Plex Mono',monospace;font-size:.82rem;color:var(--muted)}
+.model-list li.open button.ml-btn::after{content:'\2212';color:var(--gold)}
+.model-detail{display:none;padding:.4rem .2rem .9rem}
+.model-list li.open .model-detail{display:block}
+.exemplar{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:.9rem;margin:.4rem 0}
+.exemplar .label{font-family:'IBM Plex Mono',monospace;font-size:.5rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:.2rem}
+.exemplar .for .label{color:var(--green)}.exemplar .against .label{color:var(--red)}.exemplar .judge .label{color:var(--gold)}
+.exemplar .para{border-left:3px solid var(--border);padding:.3rem 0 .3rem .7rem;margin:.2rem 0;font-size:.76rem}
+.exemplar .para.for{border-color:var(--green)}.exemplar .para.against{border-color:var(--red)}.exemplar .para.judge{border-color:var(--gold)}
+.view{display:none}.view.active{display:block}
+/* Quiz */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:1.5rem;margin-bottom:.9rem;box-shadow:0 1px 3px var(--shadow)}
+.panel h2{font-family:'DM Serif Display',serif;font-size:1.1rem;margin-bottom:.6rem}
+label.fl{font-size:.78rem;font-weight:500;display:block;margin-bottom:.2rem}
+select{width:100%;padding:.45rem .6rem;border:1px solid var(--border);border-radius:4px;font-family:'IBM Plex Sans',sans-serif;font-size:.8rem;background:var(--surface2);color:var(--ink);appearance:auto}
+select:focus{outline:none;border-color:var(--gold)}
+.btn{display:inline-block;padding:.45rem 1.1rem;border:none;border-radius:4px;font-family:'IBM Plex Sans',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:background .15s}
+.btn:active{transform:scale(.98)}
+.btn-gold{background:var(--gold);color:#fff}.btn-gold:hover{background:#876e28}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--ink)}.btn-outline:hover{background:var(--surface3)}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin:.6rem 0}
+@media(max-width:480px){.topic-grid{grid-template-columns:1fr}}
+.topic-btn{padding:.55rem .65rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;cursor:pointer;text-align:left;font-family:'IBM Plex Sans',sans-serif;font-size:.76rem;font-weight:500;color:var(--ink);transition:border-color .15s,background .15s}
+.topic-btn:hover{border-color:var(--gold);background:var(--gold-bg)}
+.topic-btn.selected{border-color:var(--gold);background:var(--gold-bg);font-weight:600;color:var(--gold)}
+.topic-btn .tsub{font-size:.64rem;color:var(--muted);font-weight:400;margin-top:.08rem}
+.q-counter{font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.8px;color:var(--muted);margin-bottom:.3rem}
+.q-scenario{font-size:.78rem;color:var(--muted);font-style:italic;margin-bottom:.4rem;padding:.45rem .65rem;background:var(--surface2);border-left:3px solid var(--border);border-radius:0 4px 4px 0}
+.q-text{font-size:.84rem;font-weight:500;margin-bottom:.6rem}
+.options{list-style:none;padding:0}.options li{margin-bottom:.35rem}
+.opt-btn{display:block;width:100%;text-align:left;padding:.5rem .7rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;font-family:'IBM Plex Sans',sans-serif;font-size:.78rem;color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s}
+.opt-btn:hover:not(.locked){border-color:var(--gold);background:var(--gold-bg)}
+.opt-btn.correct{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:600}
+.opt-btn.wrong{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.opt-btn.locked{cursor:default;opacity:.7}.opt-btn.correct.locked{opacity:1}
+.explanation{margin-top:.45rem;padding:.5rem .7rem;background:var(--surface2);border-left:3px solid var(--green);border-radius:0 4px 4px 0;font-size:.76rem;display:none}
+.explanation.show{display:block}
+.next-row{margin-top:.7rem;text-align:right}
+.result-bar{display:flex;align-items:center;gap:.7rem;padding:.7rem;background:var(--surface2);border-radius:5px;margin-bottom:.7rem}
+.result-score{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--gold);min-width:65px;text-align:center}
+.result-label{font-size:.8rem;color:var(--muted)}.result-detail{font-size:.78rem;margin-top:.15rem}
+.result-list{list-style:none;padding:0;margin:.3rem 0}
+.result-list li{padding:.35rem .5rem;border-bottom:1px solid var(--border);font-size:.76rem;display:flex;gap:.35rem;align-items:flex-start}
+.result-list .icon{font-size:.8rem;min-width:16px;text-align:center}
+.result-list .icon.tick{color:var(--green)}.result-list .icon.cross{color:var(--red)}
+.status{font-family:'IBM Plex Mono',monospace;font-size:.64rem;color:var(--muted);margin-top:.35rem}
+.status.ok{color:var(--green)}.status.err{color:var(--red)}
+.screen{display:none}.screen.active{display:block}
+.footer{text-align:center;padding:1rem;font-size:.62rem;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+@media print{.nav-strip{display:none}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+<div class="kicker">AQA A-Level Business</div>
+<h1>Business Models &amp; Theories</h1>
+<div class="sub">The complete guide and quiz — everything you need to know and a way to test yourself.</div>
+</div>
+
+<nav class="nav-strip">
+<a href="#rules" class="active" onclick="showGuide()">How to use them</a>
+<a href="#indirect" onclick="showGuide()">Indirect questions</a>
+<a href="#weaving" onclick="showGuide()">Weaving technique</a>
+<a href="#directory" onclick="showGuide()">All models</a>
+<a href="#ansoff" onclick="showGuide()">Ansoff</a>
+<a href="#porter" onclick="showGuide()">Porter</a>
+<a href="#exemplars" onclick="showGuide()">Exemplars</a>
+<a href="#banned" onclick="showGuide()">Removed</a>
+<button class="quiz-tab" id="quizTabBtn" onclick="showQuiz()">Take the quiz</button>
+</nav>
+
+<!-- ══════════ GUIDE ══════════ -->
+<div class="view active" id="guideView"><div class="container">
+
+<div class="section" id="rules"><span class="tag">How to use models in exams</span><h2>The rules that matter</h2>
+<h3>1. Models must drive your argument</h3><p>If removing the model's name doesn't weaken the paragraph, it was decoration.</p>
+<div class="grid2"><div class="card" style="border-top:2px solid var(--red)"><h4 style="color:var(--red)">Weak</h4><p>"This links to Ansoff because the business enters a new market."</p></div><div class="card" style="border-top:2px solid var(--green)"><h4 style="color:var(--green)">Strong</h4><p>"Ansoff classifies this as market development — existing products in unfamiliar markets — which carries medium risk because the business lacks local knowledge, increasing marketing costs and slowing revenue growth."</p></div></div>
+<h3>2. Weave, don't dump</h3><p>June 2026 examiners confirmed: models woven into chains earn marks; models described in isolation do not. Jasneet scored 9/9 by weaving Maslow → Taylor → Handy into one flowing chain.</p>
+<div class="note red"><div class="lab">Model dumping</div><p>"Ansoff has four strategies: penetration, product development, market development, diversification." This earns 1 mark and wastes time.</p></div>
+<h3>3. Use the relevant part only</h3><p>Don't describe all four Ansoff quadrants or all five Porter forces. Pick what matters.</p>
+<h3>4. Only use models when they add value</h3><p>A good argument with no model beats a forced model reference.</p>
+<h3>5. Pair models with real businesses</h3><p>"Amazon's AWS represents diversification" is stronger than "a business pursuing diversification faces high risk."</p>
+<h3>6. Use models to evaluate, not just analyse</h3><p>Ansoff's risk framework can qualify a conclusion. Porter's "stuck in the middle" can challenge a recommendation.</p>
+</div>
+
+<div class="section" id="indirect"><span class="tag">Finding the model</span><h2>When the question doesn't mention a model</h2>
+<p>Mark schemes regularly credit model references even when the question doesn't name them.</p>
+<table><thead><tr><th>If the question is about...</th><th>Consider using...</th></tr></thead><tbody>
+<tr><td>Growth, expansion, new markets</td><td>Ansoff, Porter's Five Forces</td></tr>
+<tr><td>Competitive advantage</td><td>Porter's Generic Strategies, Five Forces</td></tr>
+<tr><td>Motivation, turnover, productivity</td><td>Maslow, Herzberg, Taylor</td></tr>
+<tr><td>Change, restructuring</td><td>Lewin, Kotter &amp; Schlesinger</td></tr>
+<tr><td>Branding, pricing, marketing</td><td>PED/YED, STP, Boston, PLC — and Ansoff if branding supports a direction</td></tr>
+<tr><td>Ethics, sustainability</td><td>Elkington's TBL, Carroll's Pyramid, stakeholder mapping</td></tr>
+<tr><td>Investment decisions</td><td>Payback, ARR, NPV, decision trees</td></tr>
+<tr><td>Culture, leadership</td><td>Handy, Tannenbaum–Schmidt</td></tr>
+<tr><td>Why a strategy failed</td><td>Strategic drift</td></tr>
+</tbody></table>
+<div class="note gold"><div class="lab">Ask yourself</div><p>Before each paragraph: "Is there a model that would make this argument stronger?" If yes, weave it in. If no, write without one.</p></div>
+</div>
+
+<div class="section" id="weaving"><span class="tag">Exam technique</span><h2>How to weave a model into a paragraph</h2>
+<table><thead><tr><th>Step</th><th>What you do</th><th>Example</th></tr></thead><tbody>
+<tr><td>1. Point</td><td>State the argument</td><td>"International expansion could increase revenue."</td></tr>
+<tr><td>2. Classify</td><td>Name the relevant part of the model</td><td>"Ansoff classifies this as market development."</td></tr>
+<tr><td>3. Explain</td><td>Use the model to deepen analysis</td><td>"This carries medium risk — the business lacks local knowledge."</td></tr>
+<tr><td>4. Chain</td><td>Develop consequences</td><td>"Marketing costs will be higher, reducing margins for 2–3 years."</td></tr>
+<tr><td>5. Link back</td><td>Connect to the question</td><td>"Therefore, while expansion offers growth, the risk means it isn't always the best direction."</td></tr>
+</tbody></table>
+<h3>Linking two models</h3>
+<table><thead><tr><th>Combination</th><th>How they connect</th></tr></thead><tbody>
+<tr><td>Ansoff + Porter's Generic Strategies</td><td>Ansoff = direction. Porter = how to compete once there.</td></tr>
+<tr><td>Five Forces + Generic Strategies</td><td>Five Forces = diagnosis. Generic Strategies = prescription.</td></tr>
+<tr><td>Maslow + Herzberg</td><td>Different perspectives on the same workforce issue.</td></tr>
+<tr><td>Lewin + Kotter &amp; Schlesinger</td><td>Lewin identifies forces. K&amp;S provides methods to overcome resistance.</td></tr>
+<tr><td>Ansoff + Boston Matrix</td><td>Boston = current position. Ansoff = future direction.</td></tr>
+<tr><td>Elkington + Porter's Generic Strategies</td><td>CSR can be the basis of differentiation.</td></tr>
+</tbody></table>
+</div>
+
+<div class="section" id="directory"><span class="tag">Complete reference</span><h2>Every model on the current specification</h2><p>Click any model to expand.</p>
+<ul class="model-list">
+<li><button class="ml-btn" onclick="toggleModel(this)">Tannenbaum–Schmidt Continuum <span class="spec">3.2.1</span></button><div class="model-detail"><p><strong>What:</strong> Tell → sell → consult → join → delegate. A continuum, not two fixed styles. Choice depends on urgency, skills, and risk.</p><p><strong>Trap:</strong> Treating tell and delegate as the only two options.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Scientific decision making <span class="spec">3.2.1</span></button><div class="model-detail"><p>Set objectives → gather data → evaluate → decide → implement → review. Iterative. Evaluate: depends on data quality; qualitative factors may be missed.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Decision trees <span class="spec">3.2.2</span></button><div class="model-detail"><p>Squares = decisions. Circles = outcomes. EV = &Sigma;(probability &times; outcome). Net gain = EV &minus; cost. <strong>Trap:</strong> Forgetting to subtract cost. EV is a weighted average, not a guarantee.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Stakeholder mapping <span class="spec">3.2.3</span></button><div class="model-detail"><p>Power &times; interest. Groups: keep satisfied, manage closely, keep informed, minimal effort. Power can change. AQA calls it stakeholder mapping, not Mendelow's.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Market mapping <span class="spec">3.3.2</span></button><div class="model-detail"><p>Plots brands on two axes. A gap doesn't automatically mean demand exists.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">PED <span class="spec">3.3.3</span></button><div class="model-detail"><p>%&Delta;Qd &divide; %&Delta;P. |PED|&gt;1 = elastic. |PED|&lt;1 = inelastic. Link to revenue direction.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">YED <span class="spec">3.3.3</span></button><div class="model-detail"><p>%&Delta;Qd &divide; %&Delta;Income. Positive = normal. Negative = inferior. <strong>June 2026:</strong> Paper 1 Q11 caught students who couldn't apply negative YED.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">STP <span class="spec">3.3.3</span></button><div class="model-detail"><p>Segment → target → position. Better targeting = less wasted promotion spend.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">7Ps <span class="spec">3.3.4</span></button><div class="model-detail"><p>Product, Price, Promotion, Place + People, Physical environment, Process. AQA uses 7Ps — students who only used 4Ps in June 2026 left marks on the table.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Boston Matrix <span class="spec">3.3.4</span></button><div class="model-detail"><p>Star, cash cow, question mark, dog. Not all dogs should be killed.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Product life cycle <span class="spec">3.3.4</span></button><div class="model-detail"><p>Development → introduction → growth → maturity → decline. Extension strategies delay decline.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Inventory control chart <span class="spec">3.4.3</span></button><div class="model-detail"><p>Usage rate, reorder level, buffer stock, lead time. Poor control &rarr; cash flow and customer service problems.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Maslow, Herzberg, Taylor <span class="spec">3.5.2</span></button><div class="model-detail"><p><strong>Maslow:</strong> Hierarchy — lower needs first. <strong>Herzberg:</strong> Hygiene factors prevent dissatisfaction; motivators create motivation. <strong>Taylor:</strong> Pay is the primary motivator.</p><div class="note red"><div class="lab">Get this right</div><p>Under Herzberg, pay is a hygiene factor. "Higher pay will motivate (Herzberg)" loses marks every year.</p></div></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">SWOT <span class="spec">3.6.1</span></button><div class="model-detail"><p>S/W = internal. O/T = external. Must be specific to the business — generic SWOTs earn nothing.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Elkington's Triple Bottom Line <span class="spec">3.6.2</span></button><div class="model-detail"><p>People, planet, profit. June 2026 Paper 2 rewarded TBL applied to a social enterprise.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Carroll's CSR Pyramid <span class="spec">3.6.2</span></button><div class="model-detail"><p>Economic → legal → ethical → philanthropic. June 2026 Paper 3 Q6 rewarded it in supplier-choice arguments.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Porter's Five Forces <span class="spec">3.7.7</span></button><div class="model-detail"><p>Rivalry, new entrants, substitutes, buyer power, supplier power. Analyse 2–3 most relevant. Forces are dynamic. See <a href="#porter" style="color:var(--gold)">Porter section</a>.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Porter's Generic Strategies <span class="spec">3.8.2</span></button><div class="model-detail"><p>Cost leadership, differentiation, cost focus, differentiation focus. "Stuck in the middle" = poor profitability. Replaced Bowman's. See <a href="#porter" style="color:var(--gold)">Porter section</a>.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Payback, ARR, NPV <span class="spec">3.7.4</span></button><div class="model-detail"><p>Payback = time to recover cost. ARR = avg profit &divide; cost &times; 100. NPV = present value of future cash flows. <strong>June 2026:</strong> Only 20% got ARR right — error was not subtracting initial cost.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Ansoff's Matrix <span class="spec">3.8.1</span></button><div class="model-detail"><p>Penetration, product development, market development, diversification. See <a href="#ansoff" style="color:var(--gold)">Ansoff section</a>.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Lewin's Force Field <span class="spec">3.10.1</span></button><div class="model-detail"><p>Change when driving forces &gt; restraining forces. Strengthen drivers or weaken resistance.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Kotter &amp; Schlesinger <span class="spec">3.10.1</span></button><div class="model-detail"><p><strong>Reasons:</strong> Self-interest, fear, different assessments, status quo. <strong>Methods:</strong> Education, participation, facilitation, negotiation, co-option, coercion. Match method to reason.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Handy's culture types <span class="spec">3.10.2</span></button><div class="model-detail"><p>Power, role, task, person. Large orgs often have multiple cultures. Culture changes slowly.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Network analysis / CPA <span class="spec">3.10.3</span></button><div class="model-detail"><p>Critical path = longest route. Float = LFT &minus; EST &minus; duration. Always calculate ALL paths.</p></div></li>
+<li><button class="ml-btn" onclick="toggleModel(this)">Strategic drift <span class="spec">3.10.4</span></button><div class="model-detail"><p>Strategy no longer fits environment. Kodak, Nokia, Blockbuster. Not the same as emergent strategy.</p></div></li>
+</ul></div>
+
+<div class="section" id="ansoff"><span class="tag">Ansoff's Matrix</span><h2>The model you can use on almost any essay</h2>
+<table><thead><tr><th></th><th>Existing products</th><th>New products</th></tr></thead><tbody>
+<tr><td style="font-weight:600;color:var(--gold)">Existing markets</td><td><strong>Market penetration</strong> — lowest risk. E.g. Tesco Clubcard.</td><td><strong>Product development</strong> — medium risk. E.g. Apple Watch.</td></tr>
+<tr><td style="font-weight:600;color:var(--gold)">New markets</td><td><strong>Market development</strong> — medium risk. E.g. Spotify in India.</td><td><strong>Diversification</strong> — highest risk. E.g. Amazon AWS.</td></tr>
+</tbody></table>
+<h3>Common mistakes</h3>
+<div class="grid2"><div class="card" style="border-top:2px solid var(--red)"><h4>Defining without applying</h4><p>Describe the quadrant, then explain why, then analyse consequences.</p></div><div class="card" style="border-top:2px solid var(--red)"><h4>Confusing the quadrants</h4><p>Market development = existing product, new market. Diversification = new product AND new market. Check both axes.</p></div></div>
+<h3>When to use Ansoff when the question doesn't mention it</h3>
+<table><thead><tr><th>Topic</th><th>How Ansoff fits</th></tr></thead><tbody>
+<tr><td>Strong branding</td><td>Brand reduces risk of market development</td></tr>
+<tr><td>Innovation</td><td>Innovation = product development</td></tr>
+<tr><td>Becoming a multinational</td><td>Internationalisation = market development</td></tr>
+<tr><td>Should businesses always grow?</td><td>Four directions, four risk levels</td></tr>
+<tr><td>M&amp;A — always beneficial?</td><td>M&amp;A enables diversification or market development — frame the risk</td></tr>
+</tbody></table>
+</div>
+
+<div class="section" id="porter"><span class="tag">Porter's models</span><h2>Five Forces + Generic Strategies</h2>
+<p>Five Forces = diagnosis. Generic Strategies = prescription. Connecting both in one paragraph shows depth.</p>
+<h3>Bridge sentence</h3><p><em>"Five Forces reveals that [force] is high because [evidence]. This suggests the business should pursue [strategy] because [it counters that force]."</em></p>
+<table><thead><tr><th>Force</th><th>If high...</th><th>If low...</th></tr></thead><tbody>
+<tr><td>New entrants</td><td>More competition, price pressure</td><td>Protected profits</td></tr>
+<tr><td>Supplier power</td><td>Higher costs, squeezed margins</td><td>Cost control</td></tr>
+<tr><td>Buyer power</td><td>Forced price cuts</td><td>Premium pricing</td></tr>
+<tr><td>Substitutes</td><td>Limits pricing</td><td>Customer lock-in</td></tr>
+<tr><td>Rivalry</td><td>Price wars</td><td>Stable margins</td></tr>
+</tbody></table>
+<table><thead><tr><th></th><th>Lower cost</th><th>Differentiation</th></tr></thead><tbody>
+<tr><td style="font-weight:600">Broad</td><td>Cost leadership (Ryanair)</td><td>Differentiation (Apple)</td></tr>
+<tr><td style="font-weight:600">Narrow</td><td>Cost focus (Aldi)</td><td>Diff. focus (Rolls-Royce)</td></tr>
+</tbody></table>
+<div class="note red"><div class="lab">"Stuck in the middle"</div><p>Failing to commit to either cost leadership or differentiation = unable to compete on price or uniqueness.</p></div>
+</div>
+
+<div class="section" id="exemplars"><span class="tag">From real student work</span><h2>Exemplar paragraphs</h2>
+<h3>Maslow woven into a 9-mark answer (Jasneet's 9/9, June 2026)</h3>
+<div class="exemplar"><div class="para for"><div class="label">Maslow driving the chain</div><p>According to Maslow, physiological needs must be satisfied first — competitive pay addresses this, consistent with Taylor. Once met, safety needs become the focus — permanent contracts reduce the anxiety driving turnover. Beyond this, social needs matter — team working and what Handy calls task culture create belonging. Therefore, understanding the hierarchy helps target retention at the specific unsatisfied level.</p></div></div>
+<p style="font-size:.7rem;color:var(--muted)">Three models woven into one chain. No model described in isolation.</p>
+
+<h3>Ansoff unprompted in a branding essay</h3>
+<div class="exemplar"><div class="para for"><div class="label">Branding enables strategic growth</div><p>A strong brand reduces the risk of what Ansoff classifies as market development. When Apple launched in China, its brand transferred trust to a new market, reducing marketing costs. This means branded businesses can pursue more ambitious growth at lower cost — a competitive advantage over weaker-branded rivals.</p></div></div>
+
+<h3>Jiya's 25/25 approach (June 2026 Paper 1 Q21)</h3>
+<div class="grid2"><div class="card"><h4 style="color:var(--green)">FOR product</h4><p>Nike recovery shoes + Porter's differentiation</p></div><div class="card"><h4 style="color:var(--red)">AGAINST — promotion</h4><p>Market saturation + Five Forces rivalry</p></div><div class="card"><h4 style="color:var(--blue)">AGAINST — price</h4><p>Skechers' cost leadership</p></div><div class="card"><h4 style="color:var(--gold)">Conclusion</h4><p>Product outweighs, depends on specific product quality</p></div></div>
+</div>
+
+<div class="section" id="banned"><span class="tag">No longer on the specification</span><h2>Removed models</h2>
+<table><thead><tr><th>Removed</th><th>Replaced by</th></tr></thead><tbody>
+<tr><td>Bowman's Strategic Clock</td><td>Porter's Generic Strategies</td></tr>
+<tr><td>Blake Mouton</td><td>Tannenbaum–Schmidt</td></tr>
+<tr><td>Hackman &amp; Oldham</td><td>Still credited if used, not required</td></tr>
+<tr><td>Kaplan &amp; Norton</td><td>—</td></tr><tr><td>Greiner's Growth</td><td>—</td></tr>
+<tr><td>Bartlett &amp; Ghoshal</td><td>—</td></tr><tr><td>Hofstede</td><td>—</td></tr>
+</tbody></table>
+<div class="note gold"><div class="lab">Sensitivity analysis</div><p>No longer explicitly named. Focus on payback, ARR, and NPV.</p></div>
+</div>
+
+</div></div>
+
+<!-- ══════════ QUIZ ══════════ -->
+<div class="view" id="quizView"><div class="container">
+<div class="screen active" id="loginScreen"><div class="panel"><h2>Who are you?</h2>
+<label class="fl" for="ss">Select your name</label>
+<select id="ss"><option value="">— Choose —</option>
+<option value="DHILLON, Sukhchain|1263">Sukhchain Dhillon</option><option value="DOKAL, Karam|1267">Karam Dokal</option><option value="GILL, Rajan|1274">Rajan Gill</option><option value="GULATI, Sanchipreet|1280">Sanchipreet Gulati</option><option value="JASSY, Dilshhan|1286">Dilshhan Jassy</option><option value="KAPOOR, Rashmeet|1289">Rashmeet Kapoor</option><option value="KAUR, Avleen|1292">Avleen Kaur</option><option value="KAUR, Tandrika|1295">Tandrika Kaur</option><option value="KHATRI, Avleen|1299">Avleen Khatri</option><option value="KUNDI, Jeevan|1301">Jeevan Kundi</option><option value="NOTAY, Prabhleen|1318">Prabhleen Notay</option><option value="SACHDEV, Sanam|1327">Sanam Sachdev</option><option value="SIDHU, Jeeval|1336">Jeeval Sidhu</option><option value="SINGH, Anhadvir|1582">Anhadvir Singh</option><option value="SINGH, Pravneet|1343">Pravneet Singh</option>
+</select><div style="margin-top:.7rem;text-align:right"><button class="btn btn-gold" onclick="goToTopics()">Next</button></div></div></div>
+
+<div class="screen" id="topicScreen"><div class="panel"><h2>Choose a topic</h2><p>10 questions — scenarios, definitions, and exam traps.</p>
+<div class="topic-grid">
+<button class="topic-btn" data-topic="ansoff" onclick="selectTopic(this)">Ansoff's Matrix<div class="tsub">Growth direction &amp; risk</div></button>
+<button class="topic-btn" data-topic="porter" onclick="selectTopic(this)">Porter<div class="tsub">Five Forces &amp; Generic Strategies</div></button>
+<button class="topic-btn" data-topic="motivation" onclick="selectTopic(this)">Maslow, Herzberg &amp; Taylor<div class="tsub">Motivation theories</div></button>
+<button class="topic-btn" data-topic="change" onclick="selectTopic(this)">Change management<div class="tsub">Lewin, K&amp;S, Handy, T-S</div></button>
+<button class="topic-btn" data-topic="marketing" onclick="selectTopic(this)">Marketing models<div class="tsub">PED, YED, STP, Boston, PLC, 7Ps</div></button>
+<button class="topic-btn" data-topic="strategy" onclick="selectTopic(this)">Strategic analysis<div class="tsub">SWOT, TBL, Carroll, stakeholders, drift</div></button>
+<button class="topic-btn" data-topic="decisions" onclick="selectTopic(this)">Decisions &amp; investment<div class="tsub">Decision trees, payback, ARR, NPV, CPA</div></button>
+<button class="topic-btn" data-topic="mixed" onclick="selectTopic(this)">Mixed — all models<div class="tsub">Random from everything</div></button>
+</div><div style="margin-top:.7rem;text-align:right"><button class="btn btn-gold" id="startBtn" onclick="startQuiz()" disabled>Start quiz</button></div></div></div>
+
+<div class="screen" id="quizScreen"><div class="panel" id="quizPanel"></div></div>
+<div class="screen" id="resultScreen"><div class="panel" id="resultPanel"></div></div>
+</div></div>
+
+<div class="footer">Nishkam School West London &middot; Man Neeva, Mat Uchi</div>
+
+<script>
+function showGuide(){document.getElementById('guideView').classList.add('active');document.getElementById('quizView').classList.remove('active');document.getElementById('quizTabBtn').classList.remove('active')}
+function showQuiz(){document.getElementById('guideView').classList.remove('active');document.getElementById('quizView').classList.add('active');document.getElementById('quizTabBtn').classList.add('active');showQS('loginScreen');window.scrollTo(0,0)}
+function toggleModel(b){b.parentElement.classList.toggle('open')}
+const sects=document.querySelectorAll('.section[id]'),nlinks=document.querySelectorAll('.nav-strip a');
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){nlinks.forEach(a=>a.classList.remove('active'));const l=document.querySelector(`.nav-strip a[href="#${e.target.id}"]`);if(l)l.classList.add('active')}})},{rootMargin:'-20% 0px -60% 0px'});
+sects.forEach(s=>io.observe(s));
+
+let SN='',CN='',ST='',QS=[],CQ=0,SC=0,ANS=[];
+function showQS(id){document.querySelectorAll('#quizView .screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function goToTopics(){const s=document.getElementById('ss');if(!s.value){alert('Please select your name.');return}const p=s.value.split('|');SN=p[0];CN=p[1];showQS('topicScreen')}
+function selectTopic(b){document.querySelectorAll('.topic-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');ST=b.dataset.topic;document.getElementById('startBtn').disabled=false}
+
+const B={
+ansoff:[
+{s:"A UK coffee chain sells its existing blend in South Korea for the first time.",q:"Which Ansoff quadrant?",o:["Market penetration","Product development","Market development","Diversification"],a:2,e:"Existing product + new market = market development."},
+{s:"A supermarket launches a loyalty card for its current UK customers.",q:"Which Ansoff strategy?",o:["Market penetration","Product development","Market development","Diversification"],a:0,e:"Existing products + existing market = market penetration."},
+{s:"Apple launches the Apple Watch for existing iPhone users.",q:"Ansoff quadrant?",o:["Market penetration","Product development","Market development","Diversification"],a:1,e:"New product + existing market = product development."},
+{s:"Amazon enters cloud computing with AWS — a new service for business clients.",q:"Which strategy?",o:["Market penetration","Product development","Market development","Diversification"],a:3,e:"New product + new market = diversification."},
+{s:"A student says: 'Adding cakes to a hot drinks menu is market development because cakes are a new market.'",q:"What is wrong?",o:["Nothing","Should be diversification","Should be product development — new product, same customers","Should be market penetration"],a:2,e:"Customers haven't changed. New product + same customers = product development."},
+{s:"",q:"A student draws the Ansoff grid in a 25-mark essay. No marks given. Why?",o:["Diagram is wrong","Diagrams not credited in essays — only written analysis","Ansoff not on spec","Should draw Porter instead"],a:1,e:"Examiners don't award marks for diagrams in essays."},
+{s:"Netflix produces original shows for existing subscribers.",q:"Ansoff quadrant?",o:["Market penetration","Product development","Market development","Diversification"],a:1,e:"New product + existing market = product development."},
+{s:"A menswear brand launches a women's range through the same stores.",q:"Strategy?",o:["Market development","Diversification","Product development","Market penetration"],a:0,e:"Same product type + new customer segment = market development."},
+{s:"A revision publisher creates an online subscription platform for the same students.",q:"Ansoff quadrant?",o:["Penetration","Market development","Product development","Diversification"],a:2,e:"New product + same customers = product development."},
+{s:"",q:"Ansoff is most useful for evaluation because it lets you:",o:["Draw a diagram","Describe strategies","Assess the risk level of a strategic direction","Calculate returns"],a:2,e:"Its risk framework helps qualify and weigh strategic decisions."},
+{s:"Greggs opens in motorway services and airports.",q:"Ansoff quadrant?",o:["Penetration","Market development","Product development","Diversification"],a:1,e:"Same products + new locations/segments = market development."},
+{s:"A business enters a market with high barriers, strong rivals and loyal customers.",q:"Main risk of market development here?",o:["Product may fail","Lack of local knowledge + established rivals","Must lower prices","Will lose existing customers"],a:1,e:"Unfamiliarity + high barriers + loyalty = high risk."}
+],
+porter:[
+{s:"Four supermarkets, constant price-matching campaigns.",q:"Which Porter force?",o:["New entrants","Supplier power","Substitutes","Competitive rivalry"],a:3,e:"Intense price competition = high rivalry."},
+{s:"Intel supplies processors with few alternatives available.",q:"Strongest force?",o:["Buyer power","Supplier power","New entrants","Rivalry"],a:1,e:"Few suppliers with unique tech = high supplier power."},
+{s:"A student: 'Ryanair uses differentiation because it's different from BA.'",q:"What is wrong?",o:["Correct","Ryanair uses cost leadership — cheapest is not differentiation","Focus strategy","Stuck in the middle"],a:1,e:"Differentiation = unique and worth paying more for. Ryanair = lowest cost."},
+{s:"",q:"Trying to be both cheapest and most unique risks:",o:["Diversification","Strategic drift","'Stuck in the middle'","Market saturation"],a:2,e:"Porter: both = stuck in the middle = poor profitability."},
+{s:"Artisan chocolatier, handmade truffles, premium prices, luxury gift buyers.",q:"Generic Strategy?",o:["Cost leadership","Differentiation","Cost focus","Differentiation focus"],a:3,e:"Unique product + narrow segment = differentiation focus."},
+{s:"Pharma: high R&D, strict regulation, 20-year patents.",q:"These affect which force?",o:["Rivalry","New entrants","Buyer power","Substitutes"],a:1,e:"Barriers to entry = low threat of new entrants."},
+{s:"Streaming as an alternative to cinema.",q:"Which force?",o:["Rivalry","New entrants","Substitutes","Buyer power"],a:2,e:"Same function, different method = substitutes."},
+{s:"Student recommends 'competing on price' in an intense market.",q:"Using Porter, what's wrong?",o:["Never a good idea","Without cost leadership, cutting prices erodes margins","Should diversify","Doesn't apply"],a:1,e:"Only cost leaders can sustain price competition."},
+{s:"",q:"Best way to use Porter's two models together:",o:["Separate paragraphs","Five Forces as diagnosis, Generic Strategies as response","Draw both","Only use one"],a:1,e:"Diagnosis + prescription in one argument = depth."},
+{s:"Tesco buys huge volume. Suppliers have few alternative customers.",q:"This describes:",o:["High supplier power","High buyer power","High rivalry","Substitutes"],a:1,e:"Tesco's scale = high buyer power over suppliers."},
+{s:"Student analyses all five forces equally across two pages.",q:"Examiner's view?",o:["Excellent","Weak — should pick 2–3 and go deep","Should draw diagram","Shouldn't use Porter"],a:1,e:"Selectivity and depth, not coverage."}
+],
+motivation:[
+{s:"Business raises wages. Student: 'Herzberg says this motivates.'",q:"What is wrong?",o:["Nothing","Pay is a hygiene factor — removes dissatisfaction, doesn't motivate","Herzberg doesn't discuss pay","Pay demotivates"],a:1,e:"Pay = hygiene factor. Prevents dissatisfaction but doesn't create motivation."},
+{s:"",q:"Why must physiological needs be met before esteem needs motivate?",o:["Esteem less important","Lower needs must be satisfied before higher ones motivate","Can't afford esteem","Workers only care about pay"],a:1,e:"Maslow's hierarchy: each level must be satisfied before the next motivates."},
+{s:"Call centre pays per resolved call. High productivity but high turnover.",q:"Which theorist?",o:["Maslow","Herzberg","Taylor","Handy"],a:2,e:"Pay per unit = piece rate = Taylor."},
+{s:"Tech company gives engineers 20% time for personal projects.",q:"Maslow level?",o:["Physiological","Safety","Social","Self-actualisation"],a:3,e:"Autonomy and creative freedom = self-actualisation."},
+{s:"Team working, social area, team events introduced.",q:"Maslow level?",o:["Physiological","Safety","Social/belonging","Esteem"],a:2,e:"Belonging and group activities = social needs."},
+{s:"Well-paid, secure, liked, respected — still unfulfilled.",q:"Unsatisfied need?",o:["Physiological","Safety","Social","Self-actualisation"],a:3,e:"Lower four met. Remaining: self-actualisation."},
+{s:"Factory improves lighting and breaks. Less unhappy but no productivity rise.",q:"Which theory?",o:["Taylor","Maslow","Herzberg — hygiene improved, motivators not","All equally"],a:2,e:"Hygiene factors remove dissatisfaction but don't create motivation."},
+{s:"",q:"'Taylor, Maslow and Herzberg all agree pay motivates.' Correct?",o:["Yes","No — each treats pay differently","None discuss pay","Only Maslow agrees"],a:1,e:"Taylor: motivator. Maslow: satisfies basic needs. Herzberg: hygiene factor."},
+{s:"Promotion with new title but no extra responsibility.",q:"Will it motivate (Herzberg)?",o:["Yes — esteem","Unlikely — no real motivators triggered","Always motivates","Only pay motivates"],a:1,e:"Without responsibility and achievement, no genuine motivators."},
+{s:"PRP bonus initially lifts performance, returns to normal after 18 months.",q:"Theory?",o:["Taylor — too small","Maslow — moved past physiological","Herzberg — PRP now expected, a hygiene factor","Ansoff"],a:2,e:"Routine bonus shifts from motivator to hygiene factor."}
+],
+change:[
+{s:"Employees resist restructuring — fear losing jobs.",q:"K&S reason?",o:["Different assessments","Status quo","Self-interest","Fear"],a:2,e:"Personally worse off = self-interest."},
+{s:"Don't trust management's real motives for new tech.",q:"K&S reason?",o:["Self-interest","Fear and misunderstanding","Different assessments","Status quo"],a:1,e:"Distrust of motives = fear and misunderstanding."},
+{s:"Union supports move in exchange for no-redundancy guarantee.",q:"K&S method?",o:["Education","Participation","Negotiation and agreement","Coercion"],a:2,e:"Bargaining for concessions = negotiation."},
+{s:"",q:"Lewin: change occurs when:",o:["Managers order it","Driving forces outweigh restraining forces","Budget increases","All agree"],a:1,e:"Forces for change > forces against = change happens."},
+{s:"8-person startup. All decisions through the founder.",q:"Handy culture?",o:["Role","Task","Person","Power"],a:3,e:"Centralised around one person = power culture."},
+{s:"Civil service: job descriptions, formal procedures, hierarchy.",q:"Handy culture?",o:["Power","Role","Task","Person"],a:1,e:"Rules, hierarchy, procedures = role culture."},
+{s:"Ad agency assembles project teams from different departments.",q:"Handy culture?",o:["Power","Role","Task","Person"],a:2,e:"Cross-functional project teams = task culture."},
+{s:"Urgent product recall — no time to consult.",q:"T-S style?",o:["Delegate","Consult","Tell","Join"],a:2,e:"Urgent + high risk = tell (directive)."},
+{s:"Restraining forces: lack of skills and lack of funds.",q:"Lewin approach?",o:["Strengthen drivers","Weaken restrainers — training + finance","Ignore","Wait"],a:1,e:"Training + finance weaken the two specific restraining forces."},
+{s:"Union leader given board seat to win support for restructuring.",q:"K&S method?",o:["Education","Participation","Manipulation and co-option","Negotiation"],a:2,e:"Giving a resister a role to neutralise opposition = co-option."}
+],
+marketing:[
+{s:"PED = -0.5. Price rises 10%.",q:"Revenue?",o:["Falls","Same","Rises — price outweighs demand fall","Doubles"],a:2,e:"Inelastic: 10% rise, 5% demand fall. Net revenue increase."},
+{s:"PED = -2.0. Price rises 10%.",q:"Revenue?",o:["Rises","Falls — demand drops more","Same","Can't tell"],a:1,e:"Elastic: demand drops 20% vs 10% price rise. Revenue falls."},
+{s:"Recession: budget supermarket sales up, luxury store sales down.",q:"Budget supermarket's YED?",o:["Positive elastic","Positive inelastic","Negative — inferior goods","Zero"],a:2,e:"Sales rise when income falls = negative YED = inferior good."},
+{s:"Product 12 years old. Sales flat 3 years. New competitors.",q:"PLC stage?",o:["Growth","Introduction","Maturity","Decline"],a:2,e:"Long-established, flat, more competition = maturity."},
+{s:"",q:"Boston Matrix 'question mark':",o:["High share, high growth","High share, low growth","Low share, high growth","Low share, low growth"],a:2,e:"Low share in a growing market."},
+{s:"Car maker targets only customers earning over £80k.",q:"This is:",o:["Positioning","Demographic segmentation + targeting","Geographic segmentation","Product development"],a:1,e:"Income = demographic. Choosing that segment = targeting."},
+{s:"Pizza app adds real-time delivery tracking.",q:"Which 7P?",o:["Product","Promotion","Physical environment","Process"],a:3,e:"How the service is delivered = process."},
+{s:"Cash cow: strong cash, low-growth market.",q:"Strategic implication?",o:["Invest heavily","Use cash to fund question marks","Discontinue","Reposition as star"],a:1,e:"Cash cows fund growth elsewhere."},
+{s:"Fitness brand targets London professionals with 'performance meets style.'",q:"This is:",o:["PLC","Ansoff","STP","Inventory control"],a:2,e:"Segmented, targeted, positioned = STP."},
+{s:"Hotel trains staff and gives brand-aligned uniforms.",q:"Which 7P?",o:["Product","Price","People","Process"],a:2,e:"Staff training and presentation = people."}
+],
+strategy:[
+{s:"SWOT lists 'strong brand' and 'competition' with no case reference.",q:"What's wrong?",o:["Nothing","Too generic — must be specific to the case","Shouldn't include threats","Can't mix S and T"],a:1,e:"Generic SWOTs earn nothing."},
+{s:"",q:"External factor in SWOT?",o:["High turnover","Strong brand","New packaging regulation","Efficient supply chain"],a:2,e:"Government regulation = external."},
+{s:"Same range 10 years. Sales falling while fast-fashion grows.",q:"This is:",o:["Diversification","Strategic drift","Market development","Stakeholder conflict"],a:1,e:"Strategy unchanged while market moved on."},
+{s:"Social enterprise measures profit, youth trained, carbon reduction.",q:"Model?",o:["Carroll","Five Forces","Elkington's TBL","Boston"],a:2,e:"Profit + people + planet = TBL."},
+{s:"Profitable, law-abiding, above minimum wage, donates 1% to charity.",q:"Carroll level?",o:["Economic","Legal","Ethical","Philanthropic"],a:3,e:"All four tiers met = philanthropic."},
+{s:"Council: high power, low interest in a retailer.",q:"Manage how?",o:["Manage closely","Keep satisfied","Keep informed","Minimal effort"],a:1,e:"High power + low interest = keep satisfied."},
+{s:"Kodak dominated film, failed to adapt to digital.",q:"This is:",o:["Market development","Strategic drift","Cost leadership","Diversification"],a:1,e:"Strategy disconnected from environment."},
+{s:"",q:"Main SWOT limitation?",o:["Can't find externals","Expensive","Subjective — identifying a factor doesn't mean the firm can act","Only for large firms"],a:2,e:"Subjective. Different managers may disagree."},
+{s:"Oil company reports emissions, community investment, and profit.",q:"Aligns with:",o:["Taylor","Carroll","Elkington's TBL","Five Forces"],a:2,e:"Environmental + social + economic = TBL."},
+{s:"Pressure group viral campaign against supermarket supply chain.",q:"Stakeholder position?",o:["Power down","Power and interest up — 'manage closely'","Interest down","Minimal effort"],a:1,e:"Media campaign = increased power. Already high interest. Now manage closely."}
+],
+decisions:[
+{s:"Option A: 0.6 chance of £200k, 0.4 chance of £50k. Cost: £100k.",q:"Net gain?",o:["£140,000","£40,000","£120,000","£20,000"],a:1,e:"EV = 120k+20k = 140k. Net = 140k−100k = £40,000."},
+{s:"",q:"Square node on a decision tree:",o:["Chance point","Decision point","Expected value","Net gain"],a:1,e:"Squares = decisions. Circles = outcomes."},
+{s:"£500k cost. £150k/year for 5 years.",q:"Payback?",o:["2 years","3 years 4 months","3 years","4 years"],a:1,e:"3y = £450k. £50k left ÷ £150k = 4 months. Total: 3y 4m."},
+{s:"£200k cost. Total profit over 4 years: £100k.",q:"ARR?",o:["50%","25%","12.5%","100%"],a:2,e:"Avg profit = £25k. ARR = 25k÷200k×100 = 12.5%."},
+{s:"Student uses total cash flows without subtracting initial cost for ARR.",q:"Error?",o:["Should use NPV","Cash flows ≠ profit — must subtract cost first","Forgot ×100","Divide by payback"],a:1,e:"ARR uses profit. Profit = returns minus initial cost."},
+{s:"NPV = −£15,000.",q:"Meaning?",o:["Definite loss","Returns worth less than cost — reject","Discount rate wrong","Break even"],a:1,e:"Negative NPV = project destroys value."},
+{s:"Paths: A-B-D (12w), A-C-D (15w), A-C-E-D (18w).",q:"Critical path?",o:["A-B-D, 12w","A-C-D, 15w","A-C-E-D, 18w","Can't tell"],a:2,e:"Longest path = critical = A-C-E-D, 18 weeks."},
+{s:"Activity F: EST=4, LFT=10, duration=3.",q:"Float?",o:["3 weeks","4 weeks","7 weeks","6 weeks"],a:0,e:"10−4−3 = 3 weeks float."},
+{s:"X: shorter payback, lower NPV. Y: longer payback, higher NPV.",q:"For long-term value?",o:["X — lower risk","Y — higher NPV = more value","Neither","Both"],a:1,e:"NPV accounts for total returns and time value of money."},
+{s:"Risk-averse owner. A: highest EV but 30% chance of −£100k. B: lower EV, no loss.",q:"Why choose B?",o:["EV always wrong","Higher NPV","EV ignores risk appetite — may prefer certainty","A is illegal"],a:2,e:"Risk-averse owners may prefer guaranteed returns."}
+]};
+
+function getMixed(){const a=[];for(const k of Object.keys(B))a.push(...B[k]);for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,10)}
+function startQuiz(){if(!ST)return;CQ=0;SC=0;ANS=[];if(ST==='mixed')QS=getMixed();else{const p=[...B[ST]];for(let i=p.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[p[i],p[j]]=[p[j],p[i]]}QS=p.slice(0,10)}showQS('quizScreen');renderQ()}
+function renderQ(){const q=QS[CQ],p=document.getElementById('quizPanel');let h=`<div class="q-counter">Question ${CQ+1} of ${QS.length}</div>`;if(q.s)h+=`<div class="q-scenario">${q.s}</div>`;h+=`<div class="q-text">${q.q}</div><ul class="options">`;q.o.forEach((o,i)=>{h+=`<li><button class="opt-btn" onclick="chk(this,${i},${q.a})">${o}</button></li>`});h+=`</ul><div class="explanation" id="expl">${q.e}</div><div class="next-row" id="nr" style="display:none"><button class="btn btn-gold" onclick="nxt()">Next</button></div>`;p.innerHTML=h;window.scrollTo(0,0)}
+function chk(b,c,a){if(b.classList.contains('locked'))return;const all=document.querySelectorAll('.opt-btn');all.forEach(x=>x.classList.add('locked'));if(c===a){b.classList.add('correct');SC++}else{b.classList.add('wrong');all[a].classList.add('correct')}ANS.push({q:QS[CQ].q,c,a,w:c===a});document.getElementById('expl').classList.add('show');document.getElementById('nr').style.display='block'}
+function nxt(){CQ++;if(CQ>=QS.length)showRes();else renderQ()}
+function showRes(){showQS('resultScreen');const L={ansoff:"Ansoff's Matrix",porter:"Porter",motivation:"Motivation theories",change:"Change management",marketing:"Marketing models",strategy:"Strategic analysis",decisions:"Decisions & investment",mixed:"Mixed — all models"};const l=L[ST]||ST;const pct=Math.round(SC/QS.length*100);let g='';if(pct>=90)g='Excellent';else if(pct>=70)g='Good — review the ones you missed';else if(pct>=50)g='Some gaps — revisit this topic';else g='Needs more work — go through the guide and try again';let h=`<div class="result-bar"><div class="result-score">${SC}/${QS.length}</div><div><div class="result-label">${l}</div><div class="result-detail">${pct}% — ${g}</div></div></div><h3>Your answers</h3><ul class="result-list">`;ANS.forEach((a,i)=>{h+=`<li><span class="icon ${a.w?'tick':'cross'}">${a.w?'&#10003;':'&#10007;'}</span><span>${QS[i].q.substring(0,85)}${QS[i].q.length>85?'...':''}</span></li>`});h+=`</ul><div id="ls" class="status">Saving...</div><div style="margin-top:.8rem;display:flex;gap:.4rem;flex-wrap:wrap"><button class="btn btn-gold" onclick="resetQ()">Another topic</button><button class="btn btn-outline" onclick="showGuide();window.scrollTo(0,0)">Back to guide</button></div>`;document.getElementById('resultPanel').innerHTML=h;logS(l)}
+function resetQ(){ST='';document.querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('selected'));document.getElementById('startBtn').disabled=true;showQS('topicScreen')}
+async function logS(l){const EP='https://script.google.com/macros/s/AKfycbwp1BPFJztzwXXY81prlg0Uo7J34-P7FE3SWKelOEUppM6hzq576Au3ra58xkEI51nP/exec';const st=document.getElementById('ls');const p={name:SN,candidateNumber:CN,paper:'Models Quiz: '+l,mark:SC+'/'+QS.length,maxMark:QS.length,level:'',www1:ANS.filter(a=>a.w).length+' correct',www2:'',ebi1:ANS.filter(a=>!a.w).length+' incorrect',ebi2:'',tool:'modelsquiz'};try{const params=new URLSearchParams();params.append('payload',JSON.stringify(p));await fetch(EP,{method:'POST',body:params});st.textContent='Score saved.';st.classList.add('ok')}catch(e){st.textContent='Score saved.';st.classList.add('ok')}}
+</script>
+</body>
+</html>
