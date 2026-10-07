@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Real-world business examples bank for AQA A-Level Business Studies essays. Topic-organised examples with model connections for Papers 1, 2 and 3."/>
+<title>Real-World Examples Bank — AQA A-Level Business Studies</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0E2A47;--navy-deep:#081A2E;--navy-soft:#1F3F63;
+  --gold:#B08A3E;--gold-soft:#D4B570;
+  --parchment:#FAF7F1;--parchment-warm:#F3ECDB;--paper:#fff;
+  --ink:#1A1A1A;--ink-soft:#444;--muted:#6B6B6B;
+  --rule:#E5DFD2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:var(--parchment);color:var(--ink);line-height:1.6}
+a{color:var(--navy);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+.layout{display:grid;grid-template-columns:300px 1fr;min-height:100vh}
+aside{background:var(--navy);color:#c8d4e6;padding:28px 22px;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;border-right:3px solid var(--navy-deep)}
+.sidebar-brand{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-brand h1{font-family:'DM Serif Display',serif;font-size:20px;color:white;line-height:1.3}
+.sidebar-brand p{font-size:12px;color:var(--gold-soft);margin-top:4px;font-style:italic}
+aside h2{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin:18px 0 8px;font-weight:700}
+aside a{display:block;color:#c8d4e6;padding:8px 12px;border-radius:8px;font-size:14px;font-weight:500;transition:.15s}
+aside a:hover{background:rgba(255,255,255,.07);color:white}
+aside a.active{background:rgba(255,255,255,.1);color:white;font-weight:700}
+.sidebar-footer{margin-top:auto;padding-top:18px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:#8a9bb5;line-height:1.5}
+.sidebar-footer strong{display:block;color:var(--gold-soft);font-size:12px;margin-bottom:2px}
+.hamburger{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--navy);color:white;border:0;width:44px;height:44px;border-radius:10px;font-size:20px}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
+main{max-width:1080px;margin:0 auto;padding:48px 40px 80px}
+.hero{padding:48px 0 36px;border-bottom:1px solid var(--rule);margin-bottom:36px}
+.hero .spec{font-size:13px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.hero h2{font-family:'DM Serif Display',serif;font-size:40px;color:var(--navy);line-height:1.15;margin:8px 0 12px}
+.hero p{font-size:16px;color:var(--ink-soft);max-width:680px;line-height:1.65}
+.back-link{display:inline-block;font-size:13px;color:var(--muted);margin-bottom:12px;font-weight:500}
+.back-link:hover{color:var(--navy)}
+
+/* Topic navigation */
+.topic-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--rule)}
+.topic-btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid var(--rule);background:var(--paper);color:var(--ink-soft);cursor:pointer;transition:.15s}
+.topic-btn:hover{border-color:var(--gold);color:var(--navy)}
+.topic-btn.active{background:var(--navy);color:white;border-color:var(--navy)}
+
+/* Search */
+.search-bar{width:100%;padding:12px 18px;border:1px solid var(--rule);border-radius:10px;font-size:15px;font-family:inherit;background:var(--paper);margin-bottom:28px}
+.search-bar:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(176,138,62,.12)}
+
+/* Section styling */
+.topic-section{margin-bottom:48px;display:none}
+.topic-section.visible{display:block}
+.topic-title{font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);margin-bottom:6px}
+.topic-intro{font-size:14px;color:var(--muted);margin-bottom:20px;max-width:700px}
+
+.sub-heading{font-family:'DM Serif Display',serif;font-size:19px;color:var(--navy-soft);margin:24px 0 12px;padding-top:8px;border-top:1px solid var(--rule)}
+.sub-heading:first-of-type{border-top:none;padding-top:0}
+
+/* Example cards */
+.example-card{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:22px 24px;margin-bottom:14px;transition:.15s}
+.example-card:hover{border-color:var(--gold-soft);box-shadow:0 4px 16px rgba(14,42,71,.06)}
+.example-name{font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px}
+.example-body{font-size:14px;color:var(--ink-soft);line-height:1.6;margin-bottom:10px}
+.example-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;background:var(--parchment-warm);color:var(--navy-soft)}
+.tag.model{background:rgba(176,138,62,.12);color:var(--gold)}
+.tag.paper{background:rgba(14,42,71,.08);color:var(--navy)}
+
+/* How to use section */
+.guidance-section{margin-top:48px;padding-top:36px;border-top:1px solid var(--rule)}
+.guidance-block{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:24px;margin-bottom:16px}
+.guidance-block h4{font-family:'DM Serif Display',serif;font-size:17px;color:var(--navy);margin-bottom:8px}
+.guidance-block p{font-size:14px;color:var(--ink-soft);line-height:1.6;margin-bottom:8px}
+.guidance-block .example-text{background:var(--parchment-warm);padding:14px 18px;border-radius:8px;font-size:13.5px;color:var(--ink);line-height:1.6;margin:8px 0;border-left:3px solid var(--gold)}
+.guidance-block .label{font-size:12px;font-weight:600;color:var(--gold);margin-bottom:4px}
+
+/* Where examples matter */
+.where-section{margin-bottom:40px}
+.where-card{background:var(--navy);border-radius:12px;padding:22px 24px;margin-bottom:12px}
+.where-card h4{font-family:'DM Serif Display',serif;font-size:17px;color:#FFE066;margin-bottom:6px}
+.where-card p{font-size:13.5px;color:#c8d4e6;line-height:1.6}
+
+/* Shortlist section */
+.shortlist{background:var(--parchment-warm);border:1px solid var(--rule);border-radius:14px;padding:28px;margin:32px 0}
+.shortlist h3{font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy);margin-bottom:10px}
+.shortlist p{font-size:14px;color:var(--ink-soft);line-height:1.6;margin-bottom:12px}
+.shortlist-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.shortlist-item{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:14px;text-align:center}
+.shortlist-item strong{font-size:14px;color:var(--navy);display:block;margin-bottom:4px}
+.shortlist-item span{font-size:12px;color:var(--muted)}
+
+footer{margin-top:60px;padding:32px 0;border-top:1px solid var(--rule);display:grid;grid-template-columns:repeat(3,1fr);gap:24px;font-size:13px;color:var(--muted)}
+footer h4{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:8px;font-weight:700}
+footer a{color:var(--muted);display:block;padding:2px 0}footer a:hover{color:var(--navy)}
+.footer-brand{font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy)}
+.footer-motto{color:var(--gold-soft);font-style:italic;font-size:12px}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  aside{position:fixed;left:-320px;z-index:100;width:300px;transition:.3s}
+  aside.open{left:0}
+  .hamburger{display:grid;place-items:center}
+  .scrim.show{display:block;z-index:99}
+  main{padding:32px 18px 60px}
+  .hero h2{font-size:28px}
+  .topic-nav{gap:6px}
+  .shortlist-grid{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<button class="hamburger" id="menuBtn" aria-label="Open menu">&#9776;</button>
+<div class="scrim" id="scrim"></div>
+<div class="layout">
+<aside id="sidebar">
+  <div class="sidebar-brand">
+    <h1>A-Level Business Studies</h1>
+    <p>Man Neeva, Mat Uchi</p>
+  </div>
+  <h2>Overview</h2>
+  <a href="index.html">Home</a>
+  <a href="feedback.html">Personalised Feedback</a>
+  <h2>Study Tools</h2>
+  <a href="marker.html">25-Marker Lab</a>
+  <a href="open_essay_lab.html">Open Essay Lab</a>
+  <a href="nine_marker_lab.html">9-Marker Lab</a>
+  <a href="redraft.html">Redraft</a>
+  <a href="calculations.html">Calculation Practice Lab</a>
+  <a href="quiz.html">Knowledge Quiz</a>
+  <a href="models_and_theories.html">Models &amp; Theories</a>
+  <a href="real-world-examples.html" class="active">Real-World Examples</a>
+  <h2>Specification Units</h2>
+  <a href="#">1. What is business?</a>
+  <a href="#">2. Managers, leadership and decision making</a>
+  <a href="#">3. Decision making to improve marketing</a>
+  <a href="#">4. Decision making to improve operational performance</a>
+  <a href="#">5. Decision making to improve financial performance</a>
+  <a href="#">6. Decision making to improve HR performance</a>
+  <a href="#">7. Analysing the strategic position of a business</a>
+  <a href="#">8. Choosing strategic direction</a>
+  <a href="#">9. Strategic methods</a>
+  <a href="#">10. Managing strategic change</a>
+  <h2>Resources</h2>
+  <a href="#">Past papers</a>
+  <a href="#">Revision guides</a>
+  <div class="sidebar-footer">
+    <strong>Nishkam School West London</strong>
+    Man Neeva, Mat Uchi
+  </div>
+</aside>
+<main>
+  <a href="index.html" class="back-link">&larr; Back to home</a>
+  <div class="hero">
+    <div class="spec">AQA A-Level Business Studies (7132)</div>
+    <h2>Real-World Examples Bank</h2>
+    <p>A bank of businesses you can use in your essays. Each one tells you what the business shows, which models it connects to, and the kind of question it fits. Pick a few you're comfortable with from each topic — you don't need to know them all.</p>
+  </div>
+
+  <!-- WHERE EXAMPLES MATTER -->
+  <div class="where-section">
+    <div class="section-label">Why this matters</div>
+    <div class="section-heading" style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);margin-bottom:16px">Where real-world examples earn you marks</div>
+
+    <div class="where-card">
+      <h4>Paper 1 essays (25 marks)</h4>
+      <p>Completely open — no case study. Real-world examples are the only way to show application. The examiner praised students who used specific businesses in 2025 and 2026. Without them, it is very difficult to reach Level 4 or 5.</p>
+    </div>
+    <div class="where-card">
+      <h4>Paper 2 — "all businesses" questions (16 marks)</h4>
+      <p>The final question in each section usually asks whether something applies to "all businesses." Responses using only the case study business are capped. You need different types of business — large vs small, B2B vs B2C, manufacturing vs service — to reach the top marks.</p>
+    </div>
+    <div class="where-card">
+      <h4>Paper 3 — Q6 (24 marks)</h4>
+      <p>The synoptic essay at the end. The examiner confirmed in June 2026 that students who only used the case study business were capped at Level 4. You must use external businesses to reach the highest marks.</p>
+    </div>
+    <div class="where-card">
+      <h4>9-mark questions</h4>
+      <p>Not essential, but a brief one-sentence reference to a real business can strengthen your argument. The examiner noted that "excellent examples of real-life innovation strategies" improved responses in 2025.</p>
+    </div>
+  </div>
+
+  <!-- YOUR SHORTLIST -->
+  <div class="shortlist">
+    <h3>Build your own shortlist</h3>
+    <p>You don't need to memorise every business below. Pick five or six that you understand well and can apply to multiple topics. Most students who score highly rely on a small number of well-understood examples rather than a long list of superficial ones.</p>
+    <div class="shortlist-grid">
+      <div class="shortlist-item"><strong>Amazon</strong><span>Growth, digital, diversification, innovation, finance, capacity</span></div>
+      <div class="shortlist-item"><strong>Toyota</strong><span>Lean, JIT, quality, kaizen, supply chain, capacity</span></div>
+      <div class="shortlist-item"><strong>Apple</strong><span>Differentiation, innovation, brand, product development, leadership</span></div>
+      <div class="shortlist-item"><strong>Aldi</strong><span>Cost leadership, Five Forces, HR efficiency, growth, segmentation</span></div>
+      <div class="shortlist-item"><strong>Ryanair</strong><span>Cost leadership, capacity, pricing, NCA utilisation, operations</span></div>
+      <div class="shortlist-item"><strong>Unilever</strong><span>MNCs, TBL, CSR, emerging markets, portfolio, globalisation</span></div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <input type="text" class="search-bar" id="searchBar" placeholder="Search for a business, topic or model..."/>
+
+  <!-- TOPIC NAVIGATION -->
+  <div class="topic-nav" id="topicNav">
+    <button class="topic-btn active" data-topic="all">All topics</button>
+    <button class="topic-btn" data-topic="competitive">Competitive advantage</button>
+    <button class="topic-btn" data-topic="growth">Growth strategies</button>
+    <button class="topic-btn" data-topic="hr">HR, motivation &amp; culture</button>
+    <button class="topic-btn" data-topic="operations">Operations</button>
+    <button class="topic-btn" data-topic="marketing">Marketing</button>
+    <button class="topic-btn" data-topic="finance">Finance</button>
+    <button class="topic-btn" data-topic="ethics">Ethics &amp; CSR</button>
+    <button class="topic-btn" data-topic="change">Strategic change</button>
+    <button class="topic-btn" data-topic="digital">Digital &amp; innovation</button>
+    <button class="topic-btn" data-topic="external">External environment</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOPIC 1: COMPETITIVE ADVANTAGE -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="topic-section visible" data-topic="competitive">
+    <div class="topic-title">Competitive advantage</div>
+    <div class="topic-intro">Porter's Generic Strategies and Five Forces. These examples help with any question about how businesses compete, maintain advantage, or respond to competitive pressure.</div>
+
+    <div class="sub-heading">Cost leadership</div>
+
+    <div class="example-card">
+      <div class="example-name">Ryanair</div>
+      <div class="example-body">Europe's largest low-cost airline. Keeps costs down through high capacity utilisation (fast 25-minute turnaround vs 45+ minutes at traditional airlines), one aircraft type (Boeing 737), secondary airports, no frills, and ancillary revenue from baggage and seat selection fees.</div>
+      <div class="example-tags">
+        <span class="tag model">Porter's Generic Strategies</span>
+        <span class="tag">Capacity utilisation</span>
+        <span class="tag">NCA utilisation</span>
+        <span class="tag">Pricing</span>
+        <span class="tag paper">P1 essays · P2 Q3.3 2025</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Aldi</div>
+      <div class="example-body">Discount supermarket with roughly 800 product lines compared with 50,000 at Tesco. Own-label dominance keeps supplier costs low. Small store format reduces property costs. Administration costs around 15% of turnover vs 20% for the big four. Pays above-average wages but employs fewer staff per store — high labour productivity.</div>
+      <div class="example-tags">
+        <span class="tag model">Porter's Generic Strategies</span>
+        <span class="tag model">Porter's Five Forces</span>
+        <span class="tag">Barriers to entry</span>
+        <span class="tag">HR efficiency</span>
+        <span class="tag paper">P1 essays · P2 2017</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Primark</div>
+      <div class="example-body">Fast fashion at very low prices. No online shop — saves logistics and returns costs. High volume, low margin model. Sources from low-cost countries. After the Rana Plaza collapse in 2013, faced major ethical scrutiny over its supply chain.</div>
+      <div class="example-tags">
+        <span class="tag model">Porter's Generic Strategies</span>
+        <span class="tag">Ethics</span>
+        <span class="tag">E-commerce</span>
+        <span class="tag">Place decisions</span>
+        <span class="tag paper">P1 essays</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Differentiation</div>
+
+    <div class="example-card">
+      <div class="example-name">Apple</div>
+      <div class="example-body">Differentiates through product design, ecosystem lock-in (iPhone, Mac, Watch, iCloud), and strong brand loyalty. Charges premium prices. R&amp;D spending around $30bn per year. Customers show very price-inelastic demand because of brand loyalty and switching costs.</div>
+      <div class="example-tags">
+        <span class="tag model">Porter's Generic Strategies</span>
+        <span class="tag model">Ansoff (product development)</span>
+        <span class="tag">Innovation</span>
+        <span class="tag">Brand loyalty</span>
+        <span class="tag">PED</span>
+        <span class="tag paper">P1 essays</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Dyson</div>
+      <div class="example-body">UK manufacturer that differentiates through innovation. Spent 15 years and 5,127 prototypes developing the bagless vacuum. Invests over £7m per week in R&amp;D. Moved manufacturing to Malaysia to reduce costs while maintaining premium positioning.</div>
+      <div class="example-tags">
+        <span class="tag model">Porter's Generic Strategies</span>
+        <span class="tag">Innovation</span>
+        <span class="tag">R&amp;D investment</span>
+        <span class="tag">Offshoring</span>
+        <span class="tag">Entrepreneurship</span>
+        <span class="tag paper">P1 essays</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Rolls-Royce (cars)</div>
+      <div class="example-body">Ultra-premium differentiation based on heritage, craftsmanship, and customisation — not innovation. Proves that differentiation does not always require innovation. Useful for challenging the assumption in Paper 3 2024 Q6 that innovation is essential for differentiation.</div>
+      <div class="example-tags">
+        <span class="tag model">Porter's Generic Strategies</span>
+        <span class="tag">Differentiation without innovation</span>
+        <span class="tag paper">P3 Q6 2024</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Five Forces in action</div>
+
+    <div class="example-card">
+      <div class="example-name">UK supermarket industry</div>
+      <div class="example-body">High rivalry (price wars between Tesco, Sainsbury's, Aldi, Lidl). Low barriers to entry for online (Ocado, Amazon Fresh) but high for physical stores. High buyer power — customers switch easily. Low supplier power — supermarkets dictate terms to farmers.</div>
+      <div class="example-tags">
+        <span class="tag model">Porter's Five Forces</span>
+        <span class="tag">Rivalry</span>
+        <span class="tag">Buyer power</span>
+        <span class="tag">Supplier power</span>
+        <span class="tag paper">P1 essays · P2 2017</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Pharmaceutical industry</div>
+      <div class="example-body">High barriers to entry (patents, regulation, R&amp;D costs of £1bn+ per drug). Low buyer power — patients need specific drugs. When patents expire, generic competition is intense and prices fall sharply. Useful for showing how Five Forces change over time.</div>
+      <div class="example-tags">
+        <span class="tag model">Porter's Five Forces</span>
+        <span class="tag">Barriers to entry</span>
+        <span class="tag">Patents</span>
+        <span class="tag">Regulation as protection</span>
+        <span class="tag paper">P1 essays</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOPIC 2: GROWTH STRATEGIES -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="topic-section visible" data-topic="growth">
+    <div class="topic-title">Growth strategies</div>
+    <div class="topic-intro">Ansoff Matrix, organic vs external growth, integration, MNCs, and franchising. These examples cover how businesses choose to grow, the risks involved, and why growth strategies sometimes fail.</div>
+
+    <div class="sub-heading">Ansoff Matrix</div>
+
+    <div class="example-card">
+      <div class="example-name">Coca-Cola — market penetration</div>
+      <div class="example-body">Increases advertising and promotions to sell more of the same product to existing customers. Also uses seasonal campaigns and partnerships (Coca-Cola x McDonald's) to boost frequency of purchase. The least risky Ansoff strategy.</div>
+      <div class="example-tags">
+        <span class="tag model">Ansoff Matrix</span>
+        <span class="tag">Market penetration</span>
+        <span class="tag">Low risk</span>
+        <span class="tag paper">P1 essays</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Apple Watch — product development</div>
+      <div class="example-body">New product sold to existing customers already in the Apple ecosystem. Medium risk — requires R&amp;D investment and the product might not succeed, but the customer base is already there.</div>
+      <div class="example-tags">
+        <span class="tag model">Ansoff Matrix</span>
+        <span class="tag">Product development</span>
+        <span class="tag paper">P1 2018 essay</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Aldi/Lidl entering the UK — market development</div>
+      <div class="example-body">Expanded from Germany into the UK with the same low-cost model. Medium risk — existing product in a new market. Took decades of slow organic growth to build market share from nothing to a combined 18%+.</div>
+      <div class="example-tags">
+        <span class="tag model">Ansoff Matrix</span>
+        <span class="tag">Market development</span>
+        <span class="tag">Organic growth</span>
+        <span class="tag paper">P1 essays · P2 2017</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Amazon — diversification</div>
+      <div class="example-body">Moved from online retail into cloud computing (AWS — now its most profitable division), streaming (Prime Video), grocery (Whole Foods acquisition), and healthcare. The highest-risk Ansoff strategy, but Amazon's scale and cash reserves reduce the risk.</div>
+      <div class="example-tags">
+        <span class="tag model">Ansoff Matrix</span>
+        <span class="tag">Diversification</span>
+        <span class="tag">Highest risk</span>
+        <span class="tag paper">P1 essays</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Integration</div>
+
+    <div class="example-card">
+      <div class="example-name">Netflix — backward vertical integration</div>
+      <div class="example-body">Produces its own content rather than buying from studios. Reduces supplier power, secures exclusive content, and controls quality. Originally relied on other studios' content, now spends $17bn+ per year on original programming.</div>
+      <div class="example-tags">
+        <span class="tag model">Porter's Five Forces</span>
+        <span class="tag">Backward vertical integration</span>
+        <span class="tag">Supplier power</span>
+        <span class="tag paper">P1 2026 essay</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Tesla — forward vertical integration</div>
+      <div class="example-body">Sells directly to customers through its own showrooms and website, bypassing traditional car dealerships. Controls the customer experience and keeps the full margin. Faced legal challenges in some US states where direct selling was banned.</div>
+      <div class="example-tags">
+        <span class="tag">Forward vertical integration</span>
+        <span class="tag">Distribution</span>
+        <span class="tag paper">P1 2026 essay</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Facebook buying Instagram — horizontal integration</div>
+      <div class="example-body">Acquired a direct competitor in 2012 for $1bn. Increased market share in social media, reduced rivalry, and gained access to a younger demographic. Also acquired WhatsApp for $19bn in 2014.</div>
+      <div class="example-tags">
+        <span class="tag">Horizontal integration</span>
+        <span class="tag">Market share</span>
+        <span class="tag paper">P1 essays</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">MNCs and global expansion</div>
+
+    <div class="example-card">
+      <div class="example-name">Tesco — Fresh &amp; Easy (USA failure)</div>
+      <div class="example-body">Entered the US market in 2007, lost over £1bn, and withdrew by 2013. Did not understand American shopping habits — stores were too small, product range too narrow, branding did not connect. A clear example of why becoming an MNC does not guarantee profit.</div>
+      <div class="example-tags">
+        <span class="tag model">Ansoff (market development)</span>
+        <span class="tag">MNC failure</span>
+        <span class="tag">Cultural differences</span>
+        <span class="tag paper">P1 2025 essay · P2 2017</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Unilever</div>
+      <div class="example-body">Operates in 190+ countries. Adapts products to local markets — different Magnum flavours, different Dove formulations, smaller pack sizes in India. Both a production base and a consumer market in emerging economies. Useful for local responsiveness, MNC advantages, and economies of scale with adaptation.</div>
+      <div class="example-tags">
+        <span class="tag">MNCs</span>
+        <span class="tag">Emerging markets</span>
+        <span class="tag model">Elkington's TBL</span>
+        <span class="tag">Local adaptation</span>
+        <span class="tag paper">P1 essays · P2 2017</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">McDonald's — franchising</div>
+      <div class="example-body">Over 90% of McDonald's restaurants are franchises. Adapts menus to local tastes (McSpicy Paneer in India, Teriyaki Burger in Japan). The franchisor keeps control of quality and brand while the franchisee takes on the financial risk and local management.</div>
+      <div class="example-tags">
+        <span class="tag">Franchising</span>
+        <span class="tag">Globalisation</span>
+        <span class="tag">Cultural adaptation</span>
+        <span class="tag paper">P2 2020 (Zani franchising Q)</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Kraft / Cadbury takeover</div>
+      <div class="example-body">Kraft took over Cadbury in 2010 despite opposition. Closed the Somerdale factory despite promising to keep it open. Job losses followed. Useful for stakeholder conflict in takeovers, cultural clash, and why external growth creates integration problems.</div>
+      <div class="example-tags">
+        <span class="tag">External growth</span>
+        <span class="tag">Stakeholder conflict</span>
+        <span class="tag">Culture clash</span>
+        <span class="tag paper">P1 essays · P3 2022 (takeover Q)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOPIC 3: HR, MOTIVATION & CULTURE -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="topic-section visible" data-topic="hr">
+    <div class="topic-title">HR, motivation and culture</div>
+    <div class="topic-intro">Maslow, Herzberg, Taylor, Handy's cultures, hard and soft HRM. These examples help with any question about how businesses manage their people, motivate employees, or change their organisational culture.</div>
+
+    <div class="sub-heading">Herzberg</div>
+
+    <div class="example-card">
+      <div class="example-name">Google</div>
+      <div class="example-body">Free meals, on-site gyms, and sleep pods are hygiene factors — they prevent dissatisfaction but do not motivate. The real motivation comes from the "20% time" policy (now evolved), where engineers work on their own projects. Gmail and Google Maps both started this way. Shows the distinction between hygiene factors and motivators clearly.<br><br><strong>Remember:</strong> Pay is a hygiene factor in Herzberg's theory — it prevents dissatisfaction but does not motivate. This is the single most common error in AQA exams.</div>
+      <div class="example-tags">
+        <span class="tag model">Herzberg</span>
+        <span class="tag">Hygiene vs motivators</span>
+        <span class="tag">Soft HRM</span>
+        <span class="tag paper">P1 essays · P2 2025</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Amazon warehouses</div>
+      <div class="example-body">High pay relative to competitors (hygiene factor addressed), but reports of intense monitoring, limited autonomy, and repetitive tasks. High labour turnover despite good pay. Shows that addressing hygiene factors alone does not create motivation if motivators — achievement, recognition, responsibility — are absent.</div>
+      <div class="example-tags">
+        <span class="tag model">Herzberg</span>
+        <span class="tag model">Taylor</span>
+        <span class="tag">Hard HRM</span>
+        <span class="tag">Labour turnover</span>
+        <span class="tag paper">P1 essays · P2 2020 (Taylor Q)</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">John Lewis Partnership</div>
+      <div class="example-body">Employee-owned — all staff are "partners" who share profits. Provides both hygiene factors (competitive pay, annual bonus) and motivators (sense of ownership, responsibility, involvement in decisions). Consistently lower labour turnover than competitors.</div>
+      <div class="example-tags">
+        <span class="tag model">Herzberg</span>
+        <span class="tag model">Maslow</span>
+        <span class="tag">Soft HRM</span>
+        <span class="tag">Employee engagement</span>
+        <span class="tag paper">P1 essays</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Maslow</div>
+
+    <div class="example-card">
+      <div class="example-name">NHS during COVID</div>
+      <div class="example-body">Physiological and safety needs were threatened — PPE shortages, infection risk. Even highly motivated healthcare workers found it difficult to focus on higher-level needs when basic safety was compromised. Shows the hierarchical nature of Maslow — you cannot skip levels.</div>
+      <div class="example-tags">
+        <span class="tag model">Maslow</span>
+        <span class="tag">Hierarchy of needs</span>
+        <span class="tag paper">P1 2023 essay · P2</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Taylor</div>
+
+    <div class="example-card">
+      <div class="example-name">Amazon fulfilment centres</div>
+      <div class="example-body">Closely monitored, targets set per hour, performance-related consequences. Standardised processes and measurement. Reflects Taylor's scientific management. But also shows the limits of Taylor — high turnover, negative press, and difficulty attracting workers despite above-average pay.</div>
+      <div class="example-tags">
+        <span class="tag model">Taylor</span>
+        <span class="tag">Scientific management</span>
+        <span class="tag">Piece rate logic</span>
+        <span class="tag paper">P2 2020 (Taylor Q)</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Handy's cultures</div>
+
+    <div class="example-card">
+      <div class="example-name">Any founder-led startup (power culture)</div>
+      <div class="example-body">The founder makes all decisions. Fast decision-making but limits growth as the business gets bigger. As the business grows, shareholders often push for a shift to role culture with clearer procedures — exactly what happened with Zani PLC in the Paper 2 2020 case study.</div>
+      <div class="example-tags">
+        <span class="tag model">Handy</span>
+        <span class="tag">Power culture</span>
+        <span class="tag">Culture change</span>
+        <span class="tag paper">P2 2020 · P3 2022</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Hard vs soft HRM</div>
+
+    <div class="example-card">
+      <div class="example-name">Costco (soft HRM)</div>
+      <div class="example-body">Pays above-average wages, promotes from within, and has low labour turnover (around 6% vs 40%+ at some competitors). Treats employees as assets worth investing in. Higher individual costs but lower recruitment and training costs overall.</div>
+      <div class="example-tags">
+        <span class="tag">Soft HRM</span>
+        <span class="tag model">Herzberg</span>
+        <span class="tag">Productivity</span>
+        <span class="tag paper">P1 2024 essay</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Sports Direct (hard HRM)</div>
+      <div class="example-body">Zero-hours contracts, warehouse workers treated as costs to minimise. High turnover, negative publicity, and reputational damage. Useful for hard HRM, ethics of flexible contracts, and stakeholder conflict.</div>
+      <div class="example-tags">
+        <span class="tag">Hard HRM</span>
+        <span class="tag">Zero-hours contracts</span>
+        <span class="tag">Ethics</span>
+        <span class="tag paper">P1 2022 essay · P2</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Toyota (blend of both)</div>
+      <div class="example-body">Kaizen culture involves workers in continuous improvement — a soft HRM element. But production targets are strict and processes are highly standardised — a hard HRM element. Shows that most real businesses use a mix of both approaches.</div>
+      <div class="example-tags">
+        <span class="tag">Hard and soft HRM</span>
+        <span class="tag model">Kaizen</span>
+        <span class="tag paper">P1 essays</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOPIC 4: OPERATIONS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="topic-section visible" data-topic="operations">
+    <div class="topic-title">Operations</div>
+    <div class="topic-intro">Lean production, JIT, quality (QA vs QC), capacity utilisation, capital vs labour intensive. These examples cover the operations questions that appear across all three papers.</div>
+
+    <div class="sub-heading">Lean production and JIT</div>
+
+    <div class="example-card">
+      <div class="example-name">Toyota</div>
+      <div class="example-body">Originated the Toyota Production System — lean, JIT, kaizen, kanban. Workers can stop the production line if they spot a defect (andon cord). Minimal inventory held. But the 2011 Japanese earthquake exposed the vulnerability of JIT — when supply chains broke, production halted globally for weeks.</div>
+      <div class="example-tags">
+        <span class="tag">Lean production</span>
+        <span class="tag">JIT</span>
+        <span class="tag model">Kaizen</span>
+        <span class="tag">Supply chain risk</span>
+        <span class="tag paper">P1 2024 essay · P2 2020 · P2 2025</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Rolls-Royce (aerospace)</div>
+      <div class="example-body">Cannot fully use lean because of the bespoke, high-precision nature of jet engine manufacturing. Quality cannot be compromised, and each engine is essentially custom-built. Useful for arguing that lean does not suit every business.</div>
+      <div class="example-tags">
+        <span class="tag">Lean limitations</span>
+        <span class="tag">Bespoke manufacturing</span>
+        <span class="tag paper">P1 2024 essay</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Quality assurance vs quality control</div>
+
+    <div class="example-card">
+      <div class="example-name">Boeing 737 MAX</div>
+      <div class="example-body">Quality control failures led to two fatal crashes in 2018 and 2019. Investigations revealed cost-cutting had weakened quality processes. A powerful example of what happens when quality is compromised to reduce costs.</div>
+      <div class="example-tags">
+        <span class="tag">QC failure</span>
+        <span class="tag">Cost vs quality trade-off</span>
+        <span class="tag paper">P1 2025 essay</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Capacity utilisation</div>
+
+    <div class="example-card">
+      <div class="example-name">Ryanair</div>
+      <div class="example-body">Achieves very high capacity utilisation through 25-minute aircraft turnaround (vs 45+ at traditional airlines), single aircraft type, and point-to-point routes. Fixed costs spread over more flights per day means lower unit costs. Central to its cost leadership strategy.</div>
+      <div class="example-tags">
+        <span class="tag">High capacity utilisation</span>
+        <span class="tag">NCA utilisation</span>
+        <span class="tag">Unit costs</span>
+        <span class="tag paper">P2 2025 Q3.3 · P2 2017</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Tesla (early years)</div>
+      <div class="example-body">Struggled with low capacity utilisation during "production hell" in 2018 when ramping up Model 3 production. High fixed costs spread over low output meant very high unit costs. Shows that capacity utilisation problems can threaten even well-funded businesses during growth.</div>
+      <div class="example-tags">
+        <span class="tag">Low capacity utilisation</span>
+        <span class="tag">Scaling challenges</span>
+        <span class="tag paper">P1 essays · P3 2024</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Capital-intensive vs labour-intensive</div>
+
+    <div class="example-card">
+      <div class="example-name">Amazon fulfilment centres (capital-intensive)</div>
+      <div class="example-body">Increasingly automated — robots picking and packing. Reduces labour costs per unit, increases speed and accuracy. But requires massive upfront investment in technology.</div>
+      <div class="example-tags">
+        <span class="tag">Capital-intensive</span>
+        <span class="tag">Technology investment</span>
+        <span class="tag paper">P1 2026 essay</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Care homes, restaurants (labour-intensive)</div>
+      <div class="example-body">Cannot easily replace human interaction with machinery. The person IS the product. Labour costs form a high proportion of turnover. Useful for arguing that some industries must remain labour-intensive.</div>
+      <div class="example-tags">
+        <span class="tag">Labour-intensive</span>
+        <span class="tag">Service sector</span>
+        <span class="tag paper">P1 2026 essay</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOPIC 5: MARKETING -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="topic-section visible" data-topic="marketing">
+    <div class="topic-title">Marketing</div>
+    <div class="topic-intro">Marketing mix (7Ps), segmentation, positioning, branding, and elasticity. These examples cover any question about how businesses reach customers and compete in their markets.</div>
+
+    <div class="sub-heading">Marketing mix (7Ps)</div>
+
+    <div class="example-card">
+      <div class="example-name">Nike</div>
+      <div class="example-body">Product: continuous innovation (Vaporfly, Air Max, recovery shoes). Price: premium pricing enabled by strong brand. Promotion: celebrity endorsement and "Just Do It." Place: direct-to-consumer via Nike app and own stores, reducing reliance on third-party retailers. People and Physical environment in Nike Town flagship stores. Shows all 7Ps working together.</div>
+      <div class="example-tags">
+        <span class="tag">7Ps</span>
+        <span class="tag">Differentiation</span>
+        <span class="tag">Brand loyalty</span>
+        <span class="tag paper">P1 2026 essay</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">ASOS</div>
+      <div class="example-body">Online-only fashion retailer. Place is everything — distribution and delivery speed are the competitive advantage. Useful for place/distribution as the most important element of the mix, and for e-commerce strategy.</div>
+      <div class="example-tags">
+        <span class="tag">Place / distribution</span>
+        <span class="tag">E-commerce</span>
+        <span class="tag paper">P1 2019 essay · P1 2022 essay</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Segmentation and positioning</div>
+
+    <div class="example-card">
+      <div class="example-name">Rolex vs Casio</div>
+      <div class="example-body">Both sell watches but target completely different segments. Rolex: high income, prestige, very price-inelastic demand. Casio: mass market, functional, price-sensitive. Useful for segmentation by income, market mapping, and contrasting positioning strategies.</div>
+      <div class="example-tags">
+        <span class="tag">Segmentation</span>
+        <span class="tag">Market mapping</span>
+        <span class="tag">PED</span>
+        <span class="tag paper">P2 2025 Q2.4</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Elasticity</div>
+
+    <div class="example-card">
+      <div class="example-name">Supermarket own-brand basics (negative YED)</div>
+      <div class="example-body">When incomes rise, people switch to branded products. When incomes fall, demand for own-brand basics increases. An inferior good with negative income elasticity. This is the concept students struggle with most on MCQs — understanding that demand rises when incomes fall.</div>
+      <div class="example-tags">
+        <span class="tag">Negative YED</span>
+        <span class="tag">Inferior goods</span>
+        <span class="tag paper">P1 MCQ Q11 2026 · P1 essays</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Luxury goods (positive YED &gt; 1)</div>
+      <div class="example-body">Designer handbags, premium cars, fine dining. Demand rises more than proportionally when incomes rise and falls sharply in recession. Income elasticity greater than +1 — luxury goods. Useful for showing how economic environment affects different businesses differently.</div>
+      <div class="example-tags">
+        <span class="tag">Positive YED</span>
+        <span class="tag">Luxury goods</span>
+        <span class="tag paper">P1 essays · P2 2020</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOPIC 6: FINANCE -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="topic-section visible" data-topic="finance">
+    <div class="topic-title">Finance</div>
+    <div class="topic-intro">Ratios, investment appraisal, gearing, cash flow, and debt factoring. These examples help with any question about how businesses manage their finances, fund growth, or measure performance.</div>
+
+    <div class="sub-heading">Gearing and financial risk</div>
+
+    <div class="example-card">
+      <div class="example-name">Debenhams</div>
+      <div class="example-body">Collapsed in 2020 with high debt levels. Unable to service debt when revenue fell. Creditors lost out, employees lost jobs. A clear example of what happens when high gearing meets falling sales. Also useful for limited liability — shareholders lost their investment but not personal assets, while creditors and employees suffered more.</div>
+      <div class="example-tags">
+        <span class="tag">High gearing</span>
+        <span class="tag">Cash flow failure</span>
+        <span class="tag">Stakeholder conflict</span>
+        <span class="tag">Limited liability</span>
+        <span class="tag paper">P1 2020 essay · P3 2026</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Cash flow vs profit</div>
+
+    <div class="example-card">
+      <div class="example-name">Carillion</div>
+      <div class="example-body">Collapsed in 2018 despite having a £5bn order book. Profitable on paper but ran out of cash. Long payment terms (90+ days to subcontractors), upfront material costs, and thin margins meant cash flow could not keep up. The most important distinction students must understand for Paper 3.</div>
+      <div class="example-tags">
+        <span class="tag">Cash flow vs profit</span>
+        <span class="tag">Working capital</span>
+        <span class="tag paper">P3 2026 (Danni cash flow Q)</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Investment appraisal</div>
+
+    <div class="example-card">
+      <div class="example-name">Amazon</div>
+      <div class="example-body">Ran at a loss for years, prioritising long-term investment over short-term profit. Invested heavily in warehouses, technology, and AWS infrastructure. NPV of many projects was positive over a long time horizon but negative in the short term. Shows why ARR and payback can be misleading for long-term strategic investments.</div>
+      <div class="example-tags">
+        <span class="tag">Investment appraisal</span>
+        <span class="tag">Long-term vs short-term</span>
+        <span class="tag">NPV</span>
+        <span class="tag paper">P1 essays · P2 2020 · P3</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">HS2</div>
+      <div class="example-body">UK infrastructure project with costs escalating from £32bn to over £100bn. Demonstrates how investment appraisal assumptions — costs, timelines, demand forecasts — can prove inaccurate. Useful for sensitivity analysis and the limitations of quantitative investment appraisal.</div>
+      <div class="example-tags">
+        <span class="tag">Sensitivity analysis</span>
+        <span class="tag">Investment appraisal limitations</span>
+        <span class="tag paper">P1 essays · P3</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOPIC 7: ETHICS & CSR -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="topic-section visible" data-topic="ethics">
+    <div class="topic-title">Ethics, CSR and legislation</div>
+    <div class="topic-intro">Carroll's CSR Pyramid, Elkington's Triple Bottom Line, and the debate over whether businesses act responsibly without being forced to. These examples cover any question about ethics, environment, or legislation.</div>
+
+    <div class="sub-heading">Carroll's CSR Pyramid</div>
+
+    <div class="example-card">
+      <div class="example-name">Patagonia</div>
+      <div class="example-body">Operates at the philanthropic level — donates 1% of revenue to environmental causes, ran a "Don't Buy This Jacket" campaign, and transferred ownership to an environmental trust. Proves that strong CSR can be a competitive advantage, not just a cost.</div>
+      <div class="example-tags">
+        <span class="tag model">Carroll's CSR Pyramid</span>
+        <span class="tag model">Elkington's TBL</span>
+        <span class="tag">CSR as advantage</span>
+        <span class="tag paper">P1 2017 essay · P2 2023</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">BP — Deepwater Horizon</div>
+      <div class="example-body">The 2010 oil spill caused massive environmental and reputational damage. BP met its economic and legal responsibilities but ethical and philanthropic behaviour was questioned. Cost BP over $65bn in fines, clean-up, and compensation. Useful for stakeholder management, reputation, and the cost of ethical failure.</div>
+      <div class="example-tags">
+        <span class="tag model">Carroll's CSR Pyramid</span>
+        <span class="tag">Stakeholder conflict</span>
+        <span class="tag">Reputation</span>
+        <span class="tag paper">P1 essays · P2 2023</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Primark — Rana Plaza</div>
+      <div class="example-body">The 2013 factory collapse in Bangladesh killed over 1,100 garment workers. Primark sourced from the building. Led to significant changes in supply chain auditing. Useful for ethics, supply chain responsibility, and whether businesses only act responsibly when forced to by public pressure.</div>
+      <div class="example-tags">
+        <span class="tag">Supply chain ethics</span>
+        <span class="tag">Stakeholder pressure</span>
+        <span class="tag paper">P2 2023 Q3.4</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Legislation as opportunity</div>
+
+    <div class="example-card">
+      <div class="example-name">Tesla</div>
+      <div class="example-body">Benefits from environmental legislation. Government subsidies for EVs, emission standards that penalise traditional manufacturers — all create demand for Tesla's products. Legislation is an opportunity, not a threat. Useful for challenging "legislation is always damaging" statements.</div>
+      <div class="example-tags">
+        <span class="tag">Legislation as opportunity</span>
+        <span class="tag">Environmental regulation</span>
+        <span class="tag paper">P2 2024 Q3.3 · P3 2025 · P3 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOPIC 8: STRATEGIC CHANGE -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="topic-section visible" data-topic="change">
+    <div class="topic-title">Strategic change</div>
+    <div class="topic-intro">Strategic drift, contingency planning, change management (Kotter &amp; Schlesinger), and leadership. These examples cover the strategic questions that dominate the higher-mark essays.</div>
+
+    <div class="sub-heading">Strategic drift</div>
+
+    <div class="example-card">
+      <div class="example-name">Nokia</div>
+      <div class="example-body">Was the world's largest mobile phone manufacturer. Failed to respond to the smartphone revolution led by Apple's iPhone in 2007. Continued making button phones while the market shifted to touchscreens. The external environment changed dramatically but Nokia's strategy did not — a textbook case of strategic drift.</div>
+      <div class="example-tags">
+        <span class="tag">Strategic drift</span>
+        <span class="tag">Failure to adapt</span>
+        <span class="tag paper">P1 2024 essay</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Blockbuster</div>
+      <div class="example-body">Dominated video rental. Turned down the opportunity to buy Netflix for $50m in 2000. Did not adapt to streaming or digital distribution. Closed almost all stores by 2014. Useful for strategic drift, failure to respond to digital disruption, and contingency planning failure.</div>
+      <div class="example-tags">
+        <span class="tag">Strategic drift</span>
+        <span class="tag">Digital disruption</span>
+        <span class="tag paper">P1 2024 essay · P1 2017 essay</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Contingency planning</div>
+
+    <div class="example-card">
+      <div class="example-name">BA IT failure (2017)</div>
+      <div class="example-body">A power supply issue caused a global IT system failure. Thousands of flights cancelled, 75,000 passengers stranded. BA was criticised for not having adequate contingency plans. Shows that even large businesses can be caught out by events they should have planned for.</div>
+      <div class="example-tags">
+        <span class="tag">Contingency planning</span>
+        <span class="tag">IT failure</span>
+        <span class="tag paper">P1 2023 essay · P2 2018</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">COVID-19</div>
+      <div class="example-body">Tested contingency plans across every industry. Airlines grounded fleets, retailers shifted to online, restaurants pivoted to takeaway. Businesses with flexible operations and strong cash reserves survived better. Useful for the limits of planning for unprecedented events.</div>
+      <div class="example-tags">
+        <span class="tag">Contingency planning</span>
+        <span class="tag">Unprecedented events</span>
+        <span class="tag paper">P1 2023 essay</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Leadership</div>
+
+    <div class="example-card">
+      <div class="example-name">Elon Musk / Tesla</div>
+      <div class="example-body">Visionary, autocratic leadership. Drives innovation through personal involvement and ambitious targets. But critics point to high staff turnover, unpredictable decision-making, and burnout culture. Useful for whether strong leadership is essential for growth, and the trade-offs of autocratic styles.</div>
+      <div class="example-tags">
+        <span class="tag">Leadership</span>
+        <span class="tag model">Tannenbaum-Schmidt</span>
+        <span class="tag paper">P3 2023 Q6 · P1 essays</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Tesco under Terry Leahy vs later CEOs</div>
+      <div class="example-body">Leahy oversaw Tesco's rise to the UK's largest retailer. After his departure, the business experienced strategic drift, an accounting scandal, and loss of market share. Shows that leadership matters — and that leadership succession is a genuine strategic risk.</div>
+      <div class="example-tags">
+        <span class="tag">Leadership succession</span>
+        <span class="tag">Strategic drift</span>
+        <span class="tag paper">P3 2023 Q6</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOPIC 9: DIGITAL & INNOVATION -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="topic-section visible" data-topic="digital">
+    <div class="topic-title">Digital technology and innovation</div>
+    <div class="topic-intro">E-commerce, digital disruption, and innovation strategy. These examples cover questions about how technology changes the way businesses compete.</div>
+
+    <div class="example-card">
+      <div class="example-name">Netflix</div>
+      <div class="example-body">Started as DVD-by-post. Adapted to streaming before competitors did. Now produces its own content — backward vertical integration. Uses data analytics to decide what content to make. A business that successfully responded to change rather than drifting.</div>
+      <div class="example-tags">
+        <span class="tag">Digital transformation</span>
+        <span class="tag">Emergent strategy</span>
+        <span class="tag">Adaptation</span>
+        <span class="tag paper">P1 2017 essay · P1 essays</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Uber</div>
+      <div class="example-body">Disrupted the taxi industry through app-based technology. Flexible employment model (gig economy) — drivers are independent contractors, not employees. Faced regulatory challenges globally. Useful for digital disruption, flexible contracts, ethics, and legislation.</div>
+      <div class="example-tags">
+        <span class="tag">Digital disruption</span>
+        <span class="tag">Gig economy</span>
+        <span class="tag">Legislation</span>
+        <span class="tag paper">P1 2022 essay · P2 2019</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">3M (intrapreneurship)</div>
+      <div class="example-body">Allows employees to spend 15% of their time on personal projects. Post-it Notes were invented this way. Useful for intrapreneurship, innovation culture, and Herzberg's motivators through autonomy and achievement.</div>
+      <div class="example-tags">
+        <span class="tag">Intrapreneurship</span>
+        <span class="tag">Innovation culture</span>
+        <span class="tag model">Herzberg (motivators)</span>
+        <span class="tag paper">P1 9-markers · P1 essays</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Kodak</div>
+      <div class="example-body">Invented the digital camera but chose not to develop it because film was more profitable. When digital eventually disrupted the market, Kodak was too slow. Filed for bankruptcy in 2012. The classic example of a business that had the technology but not the strategic will to use it.</div>
+      <div class="example-tags">
+        <span class="tag">Innovation failure</span>
+        <span class="tag">Strategic drift</span>
+        <span class="tag">Short-term vs long-term</span>
+        <span class="tag paper">P1 2017 essay · P1 2024 essay</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TOPIC 10: EXTERNAL ENVIRONMENT -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="topic-section visible" data-topic="external">
+    <div class="topic-title">External environment</div>
+    <div class="topic-intro">Interest rates, exchange rates, fiscal policy, protectionism, and globalisation. These examples help with any question about how the wider economy affects businesses.</div>
+
+    <div class="sub-heading">Interest rates</div>
+
+    <div class="example-card">
+      <div class="example-name">UK housebuilders (Barratt, Persimmon)</div>
+      <div class="example-body">Very sensitive to interest rate changes. Higher rates mean more expensive mortgages, which directly reduces demand for new homes. Also affects their own borrowing costs for land purchases. Sales volume and profit can swing significantly with even a 0.5% rate change.</div>
+      <div class="example-tags">
+        <span class="tag">Interest rates</span>
+        <span class="tag">Demand sensitivity</span>
+        <span class="tag paper">P1 9-markers · P1 essays</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Exchange rates</div>
+
+    <div class="example-card">
+      <div class="example-name">JLR (Jaguar Land Rover)</div>
+      <div class="example-body">UK-based manufacturer owned by Tata (India). Sells heavily in China and the US. A strong pound makes its cars more expensive abroad, reducing demand. A weak pound boosts competitiveness but increases the cost of imported components. Useful for exchange rate impact on exporters.</div>
+      <div class="example-tags">
+        <span class="tag">Exchange rates</span>
+        <span class="tag">Exports</span>
+        <span class="tag">MNCs</span>
+        <span class="tag paper">P1 9-markers · P2 2018 · P2 2025</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Protectionism</div>
+
+    <div class="example-card">
+      <div class="example-name">UK steel industry</div>
+      <div class="example-body">Has benefited from tariffs on cheap Chinese steel imports. Without protection, UK steel producers would struggle to compete on price. Shows that protectionism can save domestic industries — at least in the short term.</div>
+      <div class="example-tags">
+        <span class="tag">Protectionism</span>
+        <span class="tag">Tariffs</span>
+        <span class="tag paper">P1 2018 essay</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Nissan Sunderland / Brexit</div>
+      <div class="example-body">Brexit created uncertainty about tariff barriers with the EU. Nissan publicly considered whether to continue UK production. Eventually stayed, but the uncertainty affected investment decisions. Useful for protectionism, trade barriers, and MNC location decisions.</div>
+      <div class="example-tags">
+        <span class="tag">Protectionism</span>
+        <span class="tag">Trade barriers</span>
+        <span class="tag">MNC decisions</span>
+        <span class="tag paper">P1 2018 essay</span>
+      </div>
+    </div>
+
+    <div class="sub-heading">Globalisation and emerging markets</div>
+
+    <div class="example-card">
+      <div class="example-name">Coca-Cola in Africa</div>
+      <div class="example-body">One of the first Western brands to invest heavily in Africa. Adapted distribution to reach rural areas using local distributors with bicycles and handcarts. Shows both the opportunities (growing population, rising incomes) and challenges (infrastructure, distribution) of emerging markets.</div>
+      <div class="example-tags">
+        <span class="tag">Emerging markets</span>
+        <span class="tag">Distribution</span>
+        <span class="tag">Adaptation</span>
+        <span class="tag paper">P1 2023 essay · P2 2017</span>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-name">Shein</div>
+      <div class="example-body">Chinese fast-fashion company that grew globally through social media marketing and ultra-low prices. Criticised for labour practices, environmental impact, and intellectual property concerns. Useful for globalisation, ethics in supply chains, and how digital marketing enables rapid international expansion.</div>
+      <div class="example-tags">
+        <span class="tag">Globalisation</span>
+        <span class="tag">Ethics</span>
+        <span class="tag">Digital marketing</span>
+        <span class="tag paper">P1 essays · P2</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- HOW TO USE IN ESSAYS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="guidance-section">
+    <div class="section-label">Exam technique</div>
+    <div class="section-heading" style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);margin-bottom:20px">How to use these in your essays</div>
+
+    <div class="guidance-block">
+      <h4>Keep it brief</h4>
+      <p>You are not writing about the business — you are using it to support your argument. One or two sentences is enough.</p>
+      <div class="label">Good</div>
+      <div class="example-text">"This is similar to what happened at Toyota, where lean production reduced waste and lowered unit costs, but the 2011 earthquake exposed the risk of minimal inventory when supply chains are disrupted."</div>
+      <div class="label">Too long</div>
+      <p>A full paragraph describing Toyota's history, the Toyota Production System, Taiichi Ohno's philosophy, the earthquake, and the recovery. The examiner does not need a case study within your case study.</p>
+    </div>
+
+    <div class="guidance-block">
+      <h4>Make it do a job</h4>
+      <p>Every example should either support your argument or provide a contrast.</p>
+      <div class="label">For analysis</div>
+      <div class="example-text">"For example, Ryanair achieves very high capacity utilisation through fast aircraft turnaround, which spreads fixed costs across more flights and reduces unit costs. This suggests that for low-cost businesses, maximising NCA use is central to their strategy."</div>
+      <div class="label">For evaluation</div>
+      <div class="example-text">"However, this may not apply to all businesses. A luxury hotel, for instance, might deliberately run at lower capacity to maintain exclusivity and justify premium pricing."</div>
+    </div>
+
+    <div class="guidance-block">
+      <h4>Use different types of business</h4>
+      <p>For "all businesses" questions, the examiner wants to see that you can think beyond one type. The strongest answers contrast:</p>
+      <p>Large vs small &middot; Manufacturing vs service &middot; B2B vs B2C &middot; UK vs international &middot; Luxury vs budget &middot; Established vs startup</p>
+    </div>
+
+    <div class="guidance-block">
+      <h4>Connect to models</h4>
+      <p>The most effective use of an example is when it is woven into a model.</p>
+      <div class="label">Weak</div>
+      <div class="example-text">"Aldi uses cost leadership."</div>
+      <div class="label">Strong</div>
+      <div class="example-text">"Aldi's competitive advantage comes from cost leadership, which, according to Porter, is sustained through barriers to entry — in Aldi's case, the difficulty for competitors of replicating its lean operating model with only 800 product lines and minimal staff per store."</div>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <div class="footer-brand">A-Level Business Studies</div>
+      <div class="footer-motto">Man Neeva, Mat Uchi</div>
+      <p style="margin-top:8px">AQA A-Level Business Studies revision resources from Nishkam School West London.</p>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <a href="feedback.html">Personalised Feedback</a>
+      <a href="marker.html">25-Marker Lab</a>
+      <a href="open_essay_lab.html">Open Essay Lab</a>
+      <a href="nine_marker_lab.html">9-Marker Lab</a>
+      <a href="redraft.html">Redraft</a>
+      <a href="concepts.html">Concept Mastery</a>
+      <a href="calculations.html">Calculation Practice Lab</a>
+      <a href="quiz.html">Knowledge Quiz</a>
+      <a href="models_and_theories.html">Models &amp; Theories</a>
+      <a href="real-world-examples.html">Real-World Examples</a>
+    </div>
+    <div>
+      <h4>Nishkam School West London</h4>
+      <p>Man Neeva, Mat Uchi</p>
+    </div>
+  </footer>
+</main>
+</div>
+<script>
+// Sidebar toggle
+const menuBtn=document.getElementById('menuBtn');
+const sidebar=document.getElementById('sidebar');
+const scrim=document.getElementById('scrim');
+menuBtn.onclick=()=>{sidebar.classList.toggle('open');scrim.classList.toggle('show');};
+scrim.onclick=()=>{sidebar.classList.remove('open');scrim.classList.remove('show');};
+
+// Topic filtering
+const topicBtns=document.querySelectorAll('.topic-btn');
+const topicSections=document.querySelectorAll('.topic-section');
+topicBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    topicBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const t=btn.dataset.topic;
+    topicSections.forEach(sec=>{
+      if(t==='all'||sec.dataset.topic===t){sec.classList.add('visible')}
+      else{sec.classList.remove('visible')}
+    });
+  });
+});
+
+// Search
+const searchBar=document.getElementById('searchBar');
+searchBar.addEventListener('input',()=>{
+  const q=searchBar.value.toLowerCase().trim();
+  // Reset topic nav to all
+  topicBtns.forEach(b=>b.classList.remove('active'));
+  document.querySelector('[data-topic="all"]').classList.add('active');
+  topicSections.forEach(sec=>sec.classList.add('visible'));
+
+  const cards=document.querySelectorAll('.example-card');
+  if(!q){cards.forEach(c=>c.style.display='');return;}
+  cards.forEach(c=>{
+    const text=c.textContent.toLowerCase();
+    c.style.display=text.includes(q)?'':'none';
+  });
+  // Hide empty sections
+  topicSections.forEach(sec=>{
+    const visible=sec.querySelectorAll('.example-card[style=""], .example-card:not([style])');
+    const hasVisible=[...sec.querySelectorAll('.example-card')].some(c=>c.style.display!=='none');
+    if(!hasVisible)sec.classList.remove('visible');
+  });
+});
+</script>
+</body>
+</html>
