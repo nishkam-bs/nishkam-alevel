@@ -1,0 +1,1647 @@
+<title>Start Points & End Points</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0f1a2e;
+    --bg-card: #162040;
+    --bg-card-hover: #1a2750;
+    --fg: #e8eaf0;
+    --fg-muted: #9aa3b8;
+    --accent: #d4a843;
+    --accent-light: #e8c76a;
+    --accent-dim: rgba(212,168,67,0.12);
+    --border: rgba(255,255,255,0.08);
+    --start-color: #4ecdc4;
+    --end-color: #ff6b6b;
+    --chain-color: #a78bfa;
+    --paper1: #4ecdc4;
+    --paper2: #f093fb;
+    --paper3: #ffd93d;
+    --radius: 8px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f5f5f0;
+      --bg-card: #ffffff;
+      --bg-card-hover: #fafaf5;
+      --fg: #1a1a2e;
+      --fg-muted: #666680;
+      --accent: #b8860b;
+      --accent-light: #d4a843;
+      --accent-dim: rgba(184,134,11,0.08);
+      --border: rgba(0,0,0,0.08);
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+      color-scheme: light;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f5f5f0;
+    --bg-card: #ffffff;
+    --bg-card-hover: #fafaf5;
+    --fg: #1a1a2e;
+    --fg-muted: #666680;
+    --accent: #b8860b;
+    --accent-light: #d4a843;
+    --accent-dim: rgba(184,134,11,0.08);
+    --border: rgba(0,0,0,0.08);
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    color-scheme: light;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    padding: 0 16px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 2rem 0 0.25rem;
+    text-wrap: balance;
+  }
+  .subtitle {
+    color: var(--fg-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-bar button {
+    background: none;
+    border: none;
+    color: var(--fg-muted);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.65rem 1.1rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-bar button:hover { color: var(--fg); }
+  .tab-bar button.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-bar button .count {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--fg-muted);
+    margin-left: 4px;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .year-group {
+    margin-bottom: 1.5rem;
+  }
+  .year-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--accent-light);
+    margin: 0 0 0.6rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .question-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 0.6rem;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: background 0.15s;
+  }
+  .question-card:hover { background: var(--bg-card-hover); }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .q-number {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--bg);
+    background: var(--accent);
+    border-radius: 4px;
+    padding: 2px 7px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .q-text {
+    flex: 1;
+    font-size: 0.88rem;
+    min-width: 0;
+  }
+  .q-marks {
+    font-size: 0.72rem;
+    color: var(--fg-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .q-chevron {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--fg-muted);
+    transition: transform 0.2s;
+    margin-top: 2px;
+  }
+  .question-card.open .q-chevron { transform: rotate(90deg); }
+
+  .q-answer {
+    display: none;
+    padding: 0 1rem 1rem 1rem;
+  }
+  .question-card.open .q-answer { display: block; }
+
+  .point-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-bottom: 0.7rem;
+  }
+  .point-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .point-label.start {
+    background: rgba(78,205,196,0.15);
+    color: var(--start-color);
+  }
+  .point-label.end {
+    background: rgba(255,107,107,0.15);
+    color: var(--end-color);
+  }
+  .point-label.chain {
+    background: rgba(167,139,250,0.15);
+    color: var(--chain-color);
+  }
+  .point-content {
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+  .point-content strong {
+    color: var(--accent-light);
+  }
+
+  .context-note {
+    font-size: 0.78rem;
+    color: var(--fg-muted);
+    font-style: italic;
+    margin-bottom: 0.6rem;
+    padding: 0.5rem 0.7rem;
+    background: var(--accent-dim);
+    border-radius: 4px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .arrow-chain {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin: 0.5rem 0;
+    padding: 0.6rem 0.7rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+  .arrow-chain .node {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.78rem;
+  }
+  .arrow-chain .node.start-node {
+    background: rgba(78,205,196,0.15);
+    color: var(--start-color);
+  }
+  .arrow-chain .node.mid-node {
+    background: rgba(167,139,250,0.1);
+    color: var(--chain-color);
+  }
+  .arrow-chain .node.end-node {
+    background: rgba(255,107,107,0.15);
+    color: var(--end-color);
+  }
+  .arrow-chain .arr {
+    color: var(--fg-muted);
+    font-size: 0.7rem;
+  }
+
+  .intro-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.84rem;
+    line-height: 1.6;
+  }
+  .intro-box p { margin: 0 0 0.5rem; }
+  .intro-box p:last-child { margin-bottom: 0; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.78rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .legend-dot.s { background: var(--start-color); }
+  .legend-dot.e { background: var(--end-color); }
+  .legend-dot.c { background: var(--chain-color); }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 1.3rem; }
+    .q-header { padding: 0.7rem 0.75rem; }
+    .arrow-chain { font-size: 0.72rem; }
+  }
+</style>
+
+<h1>Start Points & End Points</h1>
+<p class="subtitle">Every 9-mark and 12-mark question · Papers 1, 2 & 3 · 2017–2026</p>
+
+<div class="intro-box">
+  <p>Click any question to see the <strong>start point</strong> (the concept you begin with), the <strong>end point</strong> (where the question needs you to finish), and the <strong>chain</strong> showing how to get from one to the other.</p>
+  <p>For 9-markers: one detailed paragraph, 6–7 developed chains, no conclusion. For 12-markers: one-argument approach with two deep chains of analysis.</p>
+</div>
+
+<div class="legend">
+  <span class="legend-item"><span class="legend-dot s"></span> Start point</span>
+  <span class="legend-item"><span class="legend-dot e"></span> End point</span>
+  <span class="legend-item"><span class="legend-dot c"></span> Chain links</span>
+</div>
+
+<div class="tab-bar" id="tabs">
+  <button class="active" onclick="showTab('p1')">Paper 1 <span class="count">(9m)</span></button>
+  <button onclick="showTab('p2')">Paper 2 <span class="count">(9m)</span></button>
+  <button onclick="showTab('p3-9')">Paper 3 <span class="count">(9m)</span></button>
+  <button onclick="showTab('p3-12')">Paper 3 <span class="count">(12m)</span></button>
+</div>
+
+<!-- ==================== PAPER 1 ==================== -->
+<div class="section active" id="p1">
+
+<!-- 2026 -->
+<div class="year-group">
+<div class="year-heading">2026</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q18</span>
+    <span class="q-text">Analyse how an understanding of Maslow's theory of motivation might help a business to lower its labour turnover.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Maslow's hierarchy</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">identify unmet needs</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">targeted HR policies</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">greater job satisfaction</span>
+      <span class="arr">→</span>
+      <span class="node end-node">lower labour turnover</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Maslow's hierarchy of needs</strong> — five levels from physiological to self-actualisation. Each level must be substantially met before the next motivates.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Lower labour turnover</strong> — fewer staff leaving as a proportion of the workforce. The question is asking you to connect motivational theory to retention.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">If a business understands which level employees are at, it can target the right need. E.g. if pay already meets physiological/safety needs, then improving social needs (teamwork, belonging) or esteem needs (recognition, responsibility) becomes the priority → employees feel more valued → less likely to seek employment elsewhere → labour turnover falls → saves recruitment and training costs.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q19</span>
+    <span class="q-text">A business has operated with poor cash flow and low profit levels for a number of years. It decides to use debt factoring as a source of finance. Analyse the possible impact of this decision on its cash flow and profit level.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Debt factoring</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">immediate cash from receivables</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">improved cash flow</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">but factoring fee reduces revenue received</span>
+      <span class="arr">→</span>
+      <span class="node end-node">cash flow vs profit trade-off</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Debt factoring</strong> — selling receivables (money owed by customers) to a factor at a discount in exchange for immediate cash.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Cash flow and profit level</strong> — you must address BOTH. Cash flow improves immediately but profit may fall due to the factoring cost.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Factoring converts receivables into immediate cash → cash flow improves → business can pay suppliers on time / avoid overdraft charges → BUT the factor takes a percentage (often 2–5%) so total revenue received falls → this reduces profit margin. Also, reliance on factoring may signal financial weakness to stakeholders.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q20</span>
+    <span class="q-text">A business needs to reduce the length of the critical path. Analyse why the business should focus on its human resources function in order to reduce the length of the critical path. [Network diagram provided with activities: Recruit staff, Staff induction, Staff training, Set up factory layout, Install machinery]</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Critical path / HR activities</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">HR activities on critical path</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">reduce duration of HR tasks</span>
+      <span class="arr">→</span>
+      <span class="node end-node">shorter critical path / faster project completion</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Critical path analysis and HR function</strong> — the critical path has zero float. HR activities (recruit staff → induction → training) are ON the critical path, meaning delays to them delay the whole project.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Reduced length of the critical path</strong> — the total project duration falls, meaning the business completes faster and can start generating revenue sooner.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">The network shows HR activities (A: Recruit staff 9 weeks → B: Induction 1 week → C: Training 5 weeks = 15 weeks) are on the critical path. To shorten it, focus on reducing these durations — e.g. faster recruitment (use agencies), condensed induction, or more intensive training → this directly reduces the project duration because these are critical activities with zero float → earlier completion → earlier revenue generation.</span></div>
+  </div>
+</div>
+</div>
+
+<!-- 2025 -->
+<div class="year-group">
+<div class="year-heading">2025</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q18</span>
+    <span class="q-text">Using the data provided, analyse how the organisational structure of Business Y might affect its speed of response to market changes. [Table showing Business X (3 levels, 12 span) vs Business Y (6 levels, 4 span)]</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Tall structure / narrow span</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">many levels of hierarchy</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">slower vertical communication</span>
+      <span class="arr">→</span>
+      <span class="node end-node">slower response to market changes</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Organisational structure of Business Y</strong> — tall hierarchy (6 levels), narrow span of control (4). Use the data from the table.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Speed of response to market changes</strong> — how quickly the business can react when customer needs, competitors, or external conditions shift.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">6 levels means decisions must pass through more layers of management → information distortion is more likely → slower decision-making → business reacts slowly to competitor actions or demand shifts. Also, narrow span of 4 suggests tight supervision → less delegation → less empowerment for lower-level staff to respond autonomously → further delays. Compare to Business X (3 levels, wider span) to develop the analysis.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q19</span>
+    <span class="q-text">Analyse the possible impact of a change in UK fiscal policy on a business that operates in the private healthcare market.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Fiscal policy change</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">tax / spending changes</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">impact on disposable income or NHS funding</span>
+      <span class="arr">→</span>
+      <span class="node end-node">demand / revenue for private healthcare</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Fiscal policy</strong> — government decisions on taxation and public spending. Could be income tax changes, corporation tax, or NHS spending adjustments.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on a private healthcare business</strong> — demand, revenue, profit, or competitiveness relative to the NHS.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">If government cuts income tax → higher disposable income → healthcare is likely income elastic (luxury/normal good, YED > 1) → demand for private healthcare rises → revenue increases. OR if government increases NHS spending → shorter NHS waiting times → private healthcare becomes less attractive → demand falls. The direction of the fiscal change determines the impact.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q20</span>
+    <span class="q-text">Analyse the possible impact of a business's decision to develop an innovation strategy on the role of its human resources (HR) function.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Innovation strategy</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">new skills / roles needed</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">HR must recruit, train, restructure</span>
+      <span class="arr">→</span>
+      <span class="node end-node">changed role of HR function</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Innovation strategy</strong> — a deliberate decision to develop new products, processes, or ways of working to gain competitive advantage.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Role of the HR function</strong> — how HR's responsibilities and priorities change as a result. Think recruitment, training, culture, and workforce planning.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Innovation requires new technical skills → HR must recruit specialists (e.g. R&D staff, data analysts) or retrain existing employees → training budget increases → HR may need to create intrapreneurship programmes or shift to softer HRM (autonomy, creativity) → workforce planning becomes more complex → HR function becomes more strategic rather than purely administrative.</span></div>
+  </div>
+</div>
+</div>
+
+<!-- 2024 -->
+<div class="year-group">
+<div class="year-heading">2024</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q18</span>
+    <span class="q-text">Analyse the possible impact on a business of operating at full capacity utilisation. [Data table provided showing capacity and output]</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Full capacity utilisation</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">fixed costs spread over maximum output</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">lower unit costs / BUT no slack</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on costs, flexibility, quality</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Full capacity utilisation (100%)</strong> — the business is producing at its maximum possible output with existing resources.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on the business</strong> — think costs, flexibility, ability to meet demand spikes, quality, and maintenance.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Fixed costs (rent, machinery) spread over maximum output → lowest possible unit cost → higher profit margins → BUT no spare capacity to accept new orders → may have to turn customers away → risk of machinery breakdowns with no downtime for maintenance → quality may fall under pressure → employees may face stress / overtime → could increase labour turnover.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q19</span>
+    <span class="q-text">Analyse the possible effects of a decrease in interest rates on a business with high gearing.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Lower interest rates + high gearing</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">reduced interest payments</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">lower costs / more retained profit</span>
+      <span class="arr">→</span>
+      <span class="node end-node">improved profitability / investment capacity</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Decrease in interest rates</strong> applied to a <strong>highly geared business</strong> — one with a high proportion of non-current liabilities relative to capital employed.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Effects on the business</strong> — profitability, cash flow, investment decisions, risk exposure.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">High gearing means large loan repayments → when interest rates fall, the cost of servicing that debt drops significantly → operating costs fall → profit margins improve → more cash retained for reinvestment or dividends. Also, lower rates may boost consumer spending → demand rises → revenue increases. The highly geared firm benefits disproportionately compared to a low-geared competitor.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q20</span>
+    <span class="q-text">Analyse the possible impact on a business of introducing lean production methods to reduce its unit costs.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Lean production</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">eliminate waste (time, materials, inventory)</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">lower total costs for same output</span>
+      <span class="arr">→</span>
+      <span class="node end-node">reduced unit costs</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Lean production</strong> — a systematic approach to minimising waste (muda) without sacrificing productivity. Includes JIT, kaizen, cell production.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Unit costs</strong> — the average cost per unit of output. The question asks you to analyse whether lean will actually reduce these.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">JIT reduces stockholding costs (warehousing, insurance, wastage) → kaizen drives continuous small improvements in processes → less rework and fewer defects → total costs fall while output stays the same → unit costs decrease → business can either lower prices to compete or maintain prices for higher profit margins. BUT: lean requires investment in training, reliable suppliers, and culture change — these have short-term costs.</span></div>
+  </div>
+</div>
+</div>
+
+<!-- 2023 -->
+<div class="year-group">
+<div class="year-heading">2023</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q18</span>
+    <span class="q-text">Analyse the possible impact on a niche retailer of a decision to sell its products online.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Online selling decision</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">wider market reach</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">increased sales potential / new costs</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on niche retailer's revenue, costs, brand</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Decision to sell online</strong> — adding an e-commerce channel for a business that currently operates in a niche market (small, specialist segment).</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on the niche retailer</strong> — revenue, costs, market reach, brand identity, competitive position.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Online selling removes geographical limitations → niche retailer can reach customers nationally/globally → potential sales revenue increases significantly → BUT increased competition from other online sellers → may need to invest in website, logistics, delivery infrastructure → could dilute the exclusive/personal feel of the niche brand → risk of losing what made them distinctive.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q19</span>
+    <span class="q-text">Analyse the possible effects on a UK exporter of an increase in the exchange rate value of the pound.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Stronger pound</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">UK exports become more expensive abroad</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">fall in export demand</span>
+      <span class="arr">→</span>
+      <span class="node end-node">lower revenue / profit for UK exporter</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Increase in exchange rate value of the pound</strong> — the pound buys more foreign currency (stronger sterling).</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Effects on a UK exporter</strong> — price competitiveness abroad, demand, revenue, profit.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Stronger pound → UK goods become more expensive in foreign currencies → overseas customers face higher prices → if demand is price elastic, quantity demanded falls significantly → export sales revenue drops → profit falls. BUT: imported raw materials become cheaper → production costs may fall → partially offsets the revenue decline. Net effect depends on how price sensitive overseas customers are.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q20</span>
+    <span class="q-text">Analyse the possible benefits for a business of using Bowman's Strategic Clock to make strategic decisions.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Bowman's Strategic Clock</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">identifies competitive position</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">informs pricing/quality strategy</span>
+      <span class="arr">→</span>
+      <span class="node end-node">better strategic decisions</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Bowman's Strategic Clock</strong> — maps competitive strategies based on price and perceived added value. Eight positions from low price/low value to high price/high value.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Benefits for strategic decision-making</strong> — how using this model helps the business choose the right competitive position.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">The model helps a business map where it sits versus competitors on price and perceived value → identifies whether current strategy is sustainable → reveals strategic options (e.g. move from position 2 'low price' to position 4 'differentiation') → reduces risk of being 'stuck in the middle' with no clear competitive advantage → supports better resource allocation decisions.</span></div>
+  </div>
+</div>
+</div>
+
+<!-- 2022 -->
+<div class="year-group">
+<div class="year-heading">2022</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q18</span>
+    <span class="q-text">Analyse the possible impact of delayering on a large manufacturing business.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Delayering</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">fewer levels of hierarchy</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">wider spans / faster communication</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on costs, speed, motivation</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Delayering</strong> — removing one or more levels of hierarchy from the organisation, creating a flatter structure.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on a large manufacturer</strong> — costs, decision-making speed, staff motivation, control, quality.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Fewer management layers → reduced salary costs (managers are expensive) → faster vertical communication → decisions reach the shop floor quicker → BUT remaining managers have wider spans of control → risk of overload, less supervision → in manufacturing, quality control could suffer if oversight is reduced → could also boost motivation through greater delegation and responsibility.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q19</span>
+    <span class="q-text">Analyse how a rise in interest rates might affect a business that imports raw materials from overseas.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Rise in interest rates</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">higher borrowing costs + stronger pound</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">imports become cheaper / BUT debt costs rise</span>
+      <span class="arr">→</span>
+      <span class="node end-node">net impact on costs and demand</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Rise in interest rates</strong> affecting a business that <strong>imports raw materials</strong> from abroad.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Effects on the importing business</strong> — borrowing costs, exchange rate effects on import costs, consumer demand.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Higher interest rates → pound typically strengthens → imported raw materials become cheaper in £ terms → production costs fall → BUT higher rates also increase the cost of any business loans → and reduce consumer disposable income → lower consumer demand → revenue may fall. So the business benefits from cheaper imports but faces higher finance costs and weaker demand.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q20</span>
+    <span class="q-text">Analyse the possible impact on a growing business of a change from a task culture to a role culture.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Task → role culture (Handy)</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">from flexible teams to defined procedures</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">more consistency / less flexibility</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on growing business</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Culture change: task → role (Handy)</strong>. Task culture = team-based, flexible, project-focused. Role culture = formal job descriptions, clear rules, hierarchy.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on a growing business</strong> — efficiency, consistency, speed of adaptation, employee satisfaction.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">As business grows, task culture becomes hard to maintain (too many ad-hoc teams) → role culture brings clear procedures and accountability → consistency of output improves → easier to manage more employees → BUT innovation may slow as people stick to defined roles → creative employees may feel constrained → risk of bureaucracy slowing response times. This is a common tension for growing firms.</span></div>
+  </div>
+</div>
+</div>
+
+<!-- 2020 -->
+<div class="year-group">
+<div class="year-heading">2020</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q18</span>
+    <span class="q-text">Analyse the possible effects on a business of changing from a democratic to an autocratic leadership style.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Democratic → autocratic</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">less consultation / faster decisions</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">impact on motivation, speed, quality</span>
+      <span class="arr">→</span>
+      <span class="node end-node">effects on business performance</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Change from democratic to autocratic leadership</strong> — from consulting employees on decisions to leader making decisions alone.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Effects on the business</strong> — decision-making speed, employee motivation, quality of decisions, labour turnover.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Autocratic leadership → decisions made faster (no consultation time) → useful in a crisis → BUT employees feel excluded from decision-making → motivation falls (Herzberg: recognition and responsibility are motivators) → may increase labour turnover → loss of ideas from the workforce → could reduce quality of strategic decisions if leader lacks frontline knowledge.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q19</span>
+    <span class="q-text">Analyse the possible effects of a fall in consumer incomes on a business that produces luxury goods.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Fall in consumer incomes</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">luxury goods = high positive YED</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">demand falls more than proportionally</span>
+      <span class="arr">→</span>
+      <span class="node end-node">significant revenue and profit decline</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Fall in consumer incomes</strong> affecting a <strong>luxury goods</strong> producer.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Effects on the luxury business</strong> — demand, revenue, profit, strategic response.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Luxury goods have high positive YED (> +1) → when incomes fall, demand drops by a larger proportion → significant revenue decline → may need to cut production → capacity utilisation falls → unit costs rise → profit squeezed from both sides. May need to consider diversifying into more income-inelastic products or cutting costs to survive the downturn.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q20</span>
+    <span class="q-text">Analyse the possible impact on a business of using market penetration as its main growth strategy.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Market penetration (Ansoff)</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">existing products in existing markets</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">increase market share</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on revenue, risk, competitiveness</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Market penetration</strong> — selling existing products to existing customers/market. The least risky Ansoff strategy.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on the business</strong> — revenue growth, competitive position, long-term sustainability.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Low risk — familiar products and customers → can use promotional offers, loyalty schemes, competitive pricing to grow share → relatively low cost compared to new product development → BUT limited growth potential if market is mature or saturated → may trigger price wars with competitors → revenue growth may be slow → business could become over-reliant on one market. Compare to more risky Ansoff strategies for development.</span></div>
+  </div>
+</div>
+</div>
+
+<!-- 2019 -->
+<div class="year-group">
+<div class="year-heading">2019</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q18</span>
+    <span class="q-text">Analyse the possible impact on a business of a decision to change from a centralised to a decentralised organisational structure.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Centralised → decentralised</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">decision-making pushed down</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">faster local decisions / less consistency</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on speed, motivation, control</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Centralised to decentralised</strong> — shifting decision-making power from senior management to local or regional managers.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on the business</strong> — decision-making speed, local responsiveness, consistency, staff motivation.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Local managers can respond quickly to local market conditions → decisions tailored to regional needs → staff feel more empowered (Herzberg: responsibility as a motivator) → BUT risk of inconsistent decisions across the organisation → may lose economies of scale in purchasing → senior leaders lose direct control → need capable middle managers to make this work.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q19</span>
+    <span class="q-text">Analyse the possible impact on a manufacturer of a decision to use critical path analysis (CPA) when planning a new product launch.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Critical path analysis (CPA)</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">identifies critical activities and float</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">better time and resource management</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on product launch efficiency</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Critical path analysis</strong> — a project management tool that identifies the longest sequence of dependent activities (the critical path) and calculates float on non-critical activities.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on the manufacturer's product launch</strong> — time efficiency, resource allocation, cost management, risk reduction.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">CPA identifies which activities cannot be delayed → manager focuses resources on critical tasks → float on non-critical activities allows flexibility in scheduling → reduces risk of delays to launch → product reaches market faster → first-mover advantage. BUT CPA relies on accurate time estimates — if these are wrong, the plan fails → complex projects may be hard to map accurately.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q20</span>
+    <span class="q-text">Analyse the possible impact on a business of operating with low capacity utilisation.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Low capacity utilisation</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">fixed costs spread over fewer units</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">higher unit costs</span>
+      <span class="arr">→</span>
+      <span class="node end-node">reduced competitiveness / lower profit</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Low capacity utilisation</strong> — the business is producing well below its maximum possible output.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on the business</strong> — unit costs, profitability, competitiveness, but also flexibility.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Fixed costs (rent, equipment depreciation) are spread over fewer units → unit cost rises → either the business raises prices (losing competitiveness) or accepts lower margins → profit falls → BUT spare capacity means the business can accept sudden new orders → maintenance can happen without disrupting production → provides a buffer during demand spikes.</span></div>
+  </div>
+</div>
+</div>
+
+<!-- 2018 -->
+<div class="year-group">
+<div class="year-heading">2018</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q18</span>
+    <span class="q-text">Analyse the possible impact on a business of a decision to widen its span of control.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Wider span of control</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">fewer layers / more subordinates per manager</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">faster decisions / more delegation</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on costs, motivation, control</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Wider span of control</strong> — each manager supervises more subordinates directly.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on the business</strong> — management costs, delegation, communication, employee motivation.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Wider spans mean fewer managers needed → salary costs fall → more delegation required (managers can't closely supervise everyone) → employees gain more responsibility (Herzberg motivator) → BUT risk of managers being overloaded → communication may suffer → quality control harder → works best when staff are skilled and can work independently.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q19</span>
+    <span class="q-text">Analyse the possible impact of introducing piece-rate pay on the employees of a car manufacturing business.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Piece-rate pay</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">paid per unit produced</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">incentive to increase output</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on employees: motivation, quality, stress</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Piece-rate pay</strong> — employees paid based on the number of units they produce. Links to Taylor's scientific management (financial incentives as the main motivator).</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on employees</strong> in car manufacturing — motivation, income, quality of work, wellbeing.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Financial incentive → workers produce more to earn more (Taylor) → labour productivity rises → BUT rush to produce more → quality may decline (serious issue in car manufacturing — safety) → income becomes variable and unpredictable → stress increases → teamwork may suffer as individuals focus on their own output → Herzberg would argue pay is only a hygiene factor — it won't create lasting motivation.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q20</span>
+    <span class="q-text">Analyse the possible impact on a UK manufacturer of a decrease in the exchange rate value of the pound.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Weaker pound</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">exports cheaper / imports dearer</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">export demand rises / input costs increase</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on revenue, costs, profit</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Decrease in the exchange rate value of the pound</strong> — the pound buys less foreign currency (weaker sterling).</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on a UK manufacturer</strong> — export competitiveness, import costs, overall revenue and profit.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Weaker pound → UK exports become cheaper in foreign currencies → more competitive abroad → export demand rises → revenue increases → BUT imported raw materials become more expensive in £ → production costs rise → profit margin squeezed. Net effect depends on proportion of costs from imports versus proportion of revenue from exports.</span></div>
+  </div>
+</div>
+</div>
+
+<!-- 2017 -->
+<div class="year-group">
+<div class="year-heading">2017</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q20</span>
+    <span class="q-text">Analyse the possible impact on a café of a change in the income elasticity of demand for its products. [Data table provided showing income and demand changes]</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Income elasticity of demand</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">sensitivity of demand to income changes</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">revenue impact depends on YED value</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on café's revenue and strategy</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Income elasticity of demand (YED)</strong> — measures how responsive demand is to changes in consumer income. Positive YED = normal good; negative = inferior good; YED > 1 = luxury.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on the café</strong> — how changes in local incomes affect demand, revenue, and what strategy the café should adopt.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Use the data to calculate YED → if YED is high and positive, the café benefits greatly from rising incomes but is vulnerable to recession → if incomes are rising, demand grows more than proportionally → revenue increases → café could expand or raise prices. If incomes fall, demand drops sharply → revenue declines → may need to cut costs or reposition.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q21</span>
+    <span class="q-text">ABC Ltd is considering using debt factoring. Analyse the possible impact of this decision on ABC Ltd. [Balance sheet data provided]</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="arrow-chain">
+      <span class="node start-node">Debt factoring</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">sell receivables for immediate cash</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">improved cash flow / reduced receivables</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on liquidity, profit, balance sheet</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Debt factoring</strong> — selling trade receivables to a factor at a discount for immediate cash. Use the balance sheet data to discuss ABC's financial position.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on ABC Ltd</strong> — cash flow, working capital, profit margin, and how the balance sheet changes.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Receivables are converted to cash → current ratio may stay similar (one current asset replaced by another) BUT receivables days improve dramatically → cash available to pay suppliers or invest → however, factor's fee means ABC receives less than full value → profit margin falls → also frees up management time previously spent chasing debts. Use the actual balance sheet figures to quantify.</span></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ==================== PAPER 2 ==================== -->
+<div class="section" id="p2">
+
+<!-- Paper 2: organised by year, showing context -->
+
+<div class="year-group">
+<div class="year-heading">2026</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS1 9m</span>
+    <span class="q-text">Analyse the possible impact on FreshBox of a decision to switch to a just-in-time (JIT) inventory management system.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: FreshBox is a meal-kit delivery business dealing with perishable ingredients and rapid growth.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">JIT system</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">reduced stockholding</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">lower waste / working capital freed</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on costs, freshness, risk</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>JIT inventory management</strong> — receiving ingredients only when needed for production, minimising stock held.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on FreshBox</strong> — stockholding costs, product freshness, supply chain risk, cash flow.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Perishable ingredients → JIT reduces waste from spoilage → lower costs → fresher products for customers → improved quality/reputation → BUT highly dependent on reliable suppliers delivering on time → any disruption = no stock = orders can't be fulfilled → risky during rapid growth when demand is unpredictable.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS2 9m</span>
+    <span class="q-text">Analyse the possible impact on TechForge of using Herzberg's two-factor theory to improve employee retention.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: TechForge is a tech company losing skilled engineers to competitors, despite competitive salaries.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Herzberg's two-factor theory</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">address motivators not just hygiene factors</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">greater job satisfaction</span>
+      <span class="arr">→</span>
+      <span class="node end-node">improved employee retention</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Herzberg's two-factor theory</strong> — hygiene factors (pay, conditions) prevent dissatisfaction; motivators (achievement, recognition, responsibility) create satisfaction.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Employee retention at TechForge</strong> — reducing the rate at which skilled engineers leave.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Pay is already competitive (hygiene factor met) → so the issue is likely motivators → TechForge should focus on challenging projects, recognition schemes, career progression, autonomy → engineers feel more fulfilled → less likely to leave for competitors → saves recruitment costs (high for specialists) → retains institutional knowledge.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS3 9m</span>
+    <span class="q-text">Analyse the possible impact on GreenWave of proposed environmental legislation that would increase its compliance costs.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: GreenWave is an energy company already positioning itself as environmentally responsible.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">New environmental legislation</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">higher compliance costs</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">cost increase BUT competitive advantage if already compliant</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on costs, reputation, market position</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Environmental legislation</strong> — new legal requirements that increase costs of compliance (equipment, processes, reporting).</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on GreenWave</strong> — costs, competitive position, brand reputation, market share.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Higher compliance costs → operating costs rise → profit margin squeezed in short term → BUT GreenWave is already positioned as environmentally responsible → may already meet many requirements → lower additional cost than competitors → competitors who haven't invested face much higher costs → GreenWave gains competitive advantage → can use this in marketing to attract environmentally conscious consumers.</span></div>
+  </div>
+</div>
+</div>
+
+<!-- Paper 2: 2025 -->
+<div class="year-group">
+<div class="year-heading">2025</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS1 9m</span>
+    <span class="q-text">Analyse the possible impact on Dodo (airline) of using quality objectives to improve its on-time performance.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Dodo is a budget airline with poor punctuality and rising customer complaints.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Quality objectives</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">set targets for on-time performance</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">staff focus / accountability</span>
+      <span class="arr">→</span>
+      <span class="node end-node">improved punctuality → customer satisfaction → revenue</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Quality objectives</strong> — specific, measurable targets related to service quality (e.g. 90% of flights on time).</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on Dodo</strong> — punctuality, customer complaints, reputation, revenue, costs.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Clear targets give staff direction → departments held accountable for delays → processes reviewed and improved → punctuality improves → fewer complaints → reputation recovers → repeat bookings increase → revenue grows → BUT meeting targets may require investment (more ground crew, better maintenance) → short-term costs rise.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS2 9m</span>
+    <span class="q-text">Using Herzberg's two-factor theory, analyse how Seebus could improve the motivation of its bus drivers.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Seebus is a bus company planning training and career development for its drivers, with labour turnover concerns.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Herzberg's two-factor theory</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">motivators vs hygiene factors</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">training = motivator (personal growth)</span>
+      <span class="arr">→</span>
+      <span class="node end-node">improved driver motivation</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Herzberg's two-factor theory</strong> applied to Seebus's bus drivers.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Improved motivation</strong> — leading to better performance, lower turnover, better customer service.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Training and career development are motivators (personal growth, achievement) → drivers who see progression opportunities feel more valued → motivation increases → service quality improves → BUT pay and conditions (hygiene factors) must also be adequate → if basic pay is poor, training alone won't prevent dissatisfaction → both elements needed together.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS3 9m</span>
+    <span class="q-text">Analyse the possible impact on SCF of using a decision tree to choose between two factory location options.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: SCF is relocating to Spain and choosing between two factory sites, using expected monetary values.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Decision tree</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">quantifies options with probabilities</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">calculated expected monetary value (EMV)</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on quality of decision-making</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Decision tree analysis</strong> — a quantitative tool using probabilities and financial outcomes to compare options.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on SCF's decision</strong> — objectivity, stakeholder confidence, limitations of the approach.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Decision tree forces SCF to estimate costs, revenues and probabilities for each factory → EMV gives a quantitative comparison → makes the decision appear more objective → useful for persuading investors/lenders → BUT probabilities are estimates (subjective) → ignores qualitative factors (local workforce skills, proximity to suppliers) → shouldn't be the only basis for the decision.</span></div>
+  </div>
+</div>
+</div>
+
+<!-- Paper 2: 2024 -->
+<div class="year-group">
+<div class="year-heading">2024</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS1 9m</span>
+    <span class="q-text">Analyse the possible reasons why Biggs (sports retailer) might set a target to increase its market share.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Biggs is a sports retailer with growing revenue but lower labour productivity than the industry average. It is sponsoring a football team.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Market share target</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">growth / economies of scale</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">competitive strength / supplier power</span>
+      <span class="arr">→</span>
+      <span class="node end-node">reasons for setting this objective</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Market share as a corporate objective</strong> — choosing to measure success by proportion of total market sales.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Reasons why Biggs would choose this</strong> — strategic benefits of being a larger player in the sports retail market.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Bigger market share → greater purchasing power with suppliers → lower unit costs → can offer more competitive prices → sponsorship deal increases brand awareness → drives more customers in → scale benefits (economies of scale) → also makes the business more attractive for investment or partnerships. Market share growth also signals competitiveness to stakeholders.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS2 9m</span>
+    <span class="q-text">Analyse the possible impact on Soundcheck of its agreement with trade unions to change working practices.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Soundcheck is a music production company that has negotiated new working practices with unions, including flexible contracts.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Union agreement on new practices</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">changes to contracts / flexibility</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">reduced resistance / smoother implementation</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on productivity, costs, employee relations</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Trade union agreement</strong> — a negotiated deal between Soundcheck and its workforce's union representatives about changes to working practices.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on Soundcheck</strong> — employee relations, implementation speed, productivity, labour costs.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Union agreement means workers' concerns addressed → less resistance to change (Kotter & Schlesinger: participation/negotiation) → smoother implementation → flexible contracts allow Soundcheck to match labour to demand → reduces idle time and overtime costs → BUT union may have secured concessions (higher minimum hours, pay rises) → increases fixed labour costs. Overall: better relations reduce conflict risk and enable faster strategic change.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS3 9m</span>
+    <span class="q-text">Analyse the possible impact on WWH of its decision to expand its product portfolio to include new product categories.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: WWH is a household goods company expanding into new product categories to spread risk and grow revenue.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Product portfolio expansion</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">diversification / product development</span>
+      <span class="arr">→</span>
+      <span class="node mid-node">risk spread / new revenue streams</span>
+      <span class="arr">→</span>
+      <span class="node end-node">impact on revenue, risk, brand, operations</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Expanding product portfolio</strong> — adding new product categories (Ansoff: product development or diversification depending on whether the market is new).</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on WWH</strong> — revenue growth, risk diversification, operational complexity, brand coherence.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">New categories → multiple revenue streams → less dependent on one product area → risk spread (Boston Matrix logic: cash cows fund question marks) → BUT requires investment in new supply chains, marketing, staff training → management stretched → brand may lose focus if categories are too diverse → organisational structure may need to change (functional → divisional).</span></div>
+  </div>
+</div>
+</div>
+
+<!-- Paper 2: 2023-2017 abbreviated for size - continuing pattern -->
+<div class="year-group">
+<div class="year-heading">2023</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS1 9m</span>
+    <span class="q-text">Analyse the possible reasons why AJS might benefit from becoming more capital intensive.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: AJS is a manufacturing business considering investing in new technology to replace some manual processes.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Capital intensive production</span><span class="arr">→</span>
+      <span class="node mid-node">more machinery / less labour</span><span class="arr">→</span>
+      <span class="node mid-node">higher productivity / lower unit costs</span><span class="arr">→</span>
+      <span class="node end-node">benefits for AJS's competitiveness</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Capital intensive production</strong> — using more machinery and technology relative to labour.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Benefits for AJS</strong> — productivity, consistency, costs, quality, competitiveness.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Machinery works faster and more consistently → output per hour rises → unit costs fall → quality more consistent (fewer human errors) → can compete on price or reinvest savings → BUT requires large initial investment → redundancies may cause resistance → less flexible if demand changes or product needs customisation.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS2 9m</span>
+    <span class="q-text">Analyse the possible impact on Simply Bake of its decision to remove palm oil from its products.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Simply Bake is a food manufacturer facing pressure from environmental groups about palm oil use.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Removing palm oil</span><span class="arr">→</span>
+      <span class="node mid-node">need alternative ingredients</span><span class="arr">→</span>
+      <span class="node mid-node">cost and taste implications</span><span class="arr">→</span>
+      <span class="node end-node">impact on costs, reputation, sales</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Decision to remove palm oil</strong> — an ethical/environmental decision with operational consequences.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on Simply Bake</strong> — production costs, brand reputation, customer base, competitive position.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Alternative ingredients may cost more → higher production costs → unit costs rise → BUT improved ethical reputation → attracts environmentally conscious consumers → potential for premium pricing → reduces pressure group criticism → long-term brand value increases. Short-term cost vs long-term reputation trade-off.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS3 9m</span>
+    <span class="q-text">Analyse the possible reasons why stakeholder mapping might be useful for Simply Bake when making its strategic decisions.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Simply Bake faces competing demands from shareholders, environmental groups, customers and employees.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Stakeholder mapping</span><span class="arr">→</span>
+      <span class="node mid-node">categorise by power and interest</span><span class="arr">→</span>
+      <span class="node mid-node">prioritise key stakeholders</span><span class="arr">→</span>
+      <span class="node end-node">better strategic decisions</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Stakeholder mapping</strong> — categorising stakeholders by their level of power and interest (Mendelow's matrix).</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Usefulness for Simply Bake's decisions</strong> — managing competing interests, reducing conflict, focusing resources.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Identifies which stakeholders have high power AND high interest → these must be managed closely (e.g. large shareholders, key retailers) → helps Simply Bake decide whose concerns to prioritise on palm oil → avoids wasting resources trying to satisfy every group equally → BUT stakeholder positions can change rapidly (pressure groups can gain media attention quickly) → map needs regular updating.</span></div>
+  </div>
+</div>
+</div>
+
+<!-- 2022 P2 -->
+<div class="year-group">
+<div class="year-heading">2022</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS1 9m</span>
+    <span class="q-text">Analyse the possible impact on DT of the disruption to its supply chain caused by using an unreliable new supplier.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: DT is a manufacturer that switched to a cheaper but less reliable supplier, causing delivery delays and component quality issues.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Unreliable supplier</span><span class="arr">→</span>
+      <span class="node mid-node">supply disruption</span><span class="arr">→</span>
+      <span class="node mid-node">production delays / quality issues</span><span class="arr">→</span>
+      <span class="node end-node">impact on costs, reputation, customer relationships</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Supply chain disruption</strong> — unreliable supplier causing late deliveries and quality problems.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Impact on DT</strong> — production schedule, costs, product quality, customer satisfaction, reputation.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Late deliveries → production line stops → idle time costs money → orders delayed to customers → customer complaints → reputation damaged → customers may switch to competitors → quality issues with components → higher defect rates → increased wastage and returns → short-term cost savings from cheaper supplier wiped out by disruption costs.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS2 9m</span>
+    <span class="q-text">Using Maslow's hierarchy of needs, analyse how the Ocado and Marks & Spencer joint venture might affect employee motivation.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Ocado and M&S formed a joint venture for online grocery delivery, bringing together two different corporate cultures.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Maslow's hierarchy</span><span class="arr">→</span>
+      <span class="node mid-node">joint venture creates uncertainty</span><span class="arr">→</span>
+      <span class="node mid-node">safety/belonging needs threatened</span><span class="arr">→</span>
+      <span class="node end-node">impact on employee motivation</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Maslow's hierarchy</strong> applied to employees during a joint venture between two large companies.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Employee motivation</strong> — how the merger of cultures and uncertainty affects different need levels.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Joint venture creates job insecurity → safety needs (Level 2) threatened → employees worry about redundancies → belonging needs (Level 3) disrupted as teams restructure and cultures clash → hard to focus on esteem/self-actualisation when lower needs unmet → motivation falls → BUT new venture could also create career opportunities (self-actualisation) for those who adapt well.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">CS3 9m</span>
+    <span class="q-text">Analyse the possible benefits for a new tea brand of using market research to identify its target market.</span>
+    <span class="q-marks">9 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: A new brand entering the competitive UK tea market, which is segmented by age, gender and ethical preferences.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Market research</span><span class="arr">→</span>
+      <span class="node mid-node">identify consumer preferences</span><span class="arr">→</span>
+      <span class="node mid-node">targeted marketing mix</span><span class="arr">→</span>
+      <span class="node end-node">benefits for new tea brand</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Market research</strong> — gathering data about consumers, competitors and market trends to inform business decisions.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Benefits for the new tea brand</strong> — targeting accuracy, reduced risk, informed marketing mix, competitive positioning.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Research reveals which segments are underserved (e.g. ethical young consumers) → brand can position itself in a gap → marketing mix tailored to that segment (packaging, price point, channels) → reduces waste on untargeted promotion → higher conversion rate → BUT research costs money → data may become outdated quickly → small sample may not represent the whole market.</span></div>
+  </div>
+</div>
+</div>
+
+</div>
+
+<!-- ==================== PAPER 3: 9-mark ==================== -->
+<div class="section" id="p3-9">
+
+<div class="year-group">
+<div class="year-heading">Note</div>
+<p style="font-size:0.84rem; color:var(--fg-muted); margin:0 0 1rem;">Paper 3 9-mark questions typically appear in Section B (Q3 and Q4 are 16 marks; the 9-mark elements appear as sub-parts within larger questions in some years). The main 9-mark standalone questions in Paper 3 are less common — the 12-mark questions (Q1 and Q2) are the primary short analysis questions. See the Paper 3 (12m) tab for the main analysis questions.</p>
+</div>
+
+</div>
+
+<!-- ==================== PAPER 3: 12-mark ==================== -->
+<div class="section" id="p3-12">
+
+<div class="year-group">
+<div class="year-heading">2025 — VBM (Global fashion manufacturer)</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q1</span>
+    <span class="q-text">Using Lewin's force field analysis, analyse the case for VBM closing its EU marketing offices and centralising marketing in Vietnam.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: VBM is retrenching from EU markets and consolidating operations to its Vietnam base.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Lewin's force field analysis</span><span class="arr">→</span>
+      <span class="node mid-node">driving forces vs restraining forces</span><span class="arr">→</span>
+      <span class="node end-node">case for centralising marketing in Vietnam</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Lewin's force field analysis</strong> — weighing driving forces (pushing for change) against restraining forces (resisting change). Change happens when driving > restraining.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Whether VBM should close EU offices</strong> — build two developed chains showing driving forces outweigh restraining forces (or vice versa).</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content"><strong>Driving forces:</strong> cost savings from closing expensive EU offices → simpler structure → aligns with retrenchment strategy. <strong>Restraining forces:</strong> loss of local EU market knowledge → cultural distance from customers → EU staff redundancies cause resistance. Build two developed analytical chains — one per force — and link each to VBM's specific situation.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q2</span>
+    <span class="q-text">Analyse the reasons why VBM might have decided to downsize its EU marketing team rather than its production workforce in Vietnam.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: VBM is making strategic choices about where to cut — marketing in Europe or production in Vietnam.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Downsizing decision</span><span class="arr">→</span>
+      <span class="node mid-node">compare value of each function</span><span class="arr">→</span>
+      <span class="node end-node">reasons for cutting EU marketing over Vietnam production</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Strategic downsizing choice</strong> — VBM choosing between cutting EU marketing staff or Vietnam production workers.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Reasons for the decision</strong> — relative costs, strategic importance, ease of replacement, impact on core operations.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content">Production is VBM's core activity → without production, there is nothing to sell → EU marketing is a support function that can be centralised or outsourced → EU staff are more expensive (higher wages) → Vietnam production keeps costs low (competitive advantage) → also, marketing can be done digitally from anywhere → production requires physical infrastructure. Two developed chains needed.</span></div>
+  </div>
+</div>
+</div>
+
+<div class="year-group">
+<div class="year-heading">2024 — Speed-e-Puds (Dessert manufacturer)</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q1</span>
+    <span class="q-text">Analyse the possible benefits for Speed-e-Puds of operating at high capacity utilisation.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Speed-e-Puds is a small but growing dessert manufacturer operating near full capacity.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">High capacity utilisation</span><span class="arr">→</span>
+      <span class="node mid-node">fixed costs spread widely</span><span class="arr">→</span>
+      <span class="node mid-node">lower unit costs</span><span class="arr">→</span>
+      <span class="node end-node">benefits: profitability and competitiveness</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>High capacity utilisation</strong> — using a large proportion of maximum output potential.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Benefits for Speed-e-Puds</strong> — unit costs, profit margins, price competitiveness. Build two developed chains.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content"><strong>Chain 1:</strong> Fixed costs (factory rent, equipment) spread over more units → unit cost falls → Speed-e-Puds can price competitively against larger rivals → or maintain prices for higher margins → profit increases. <strong>Chain 2:</strong> High utilisation signals strong demand → confidence for suppliers and lenders → may help negotiate better supplier terms or secure investment for expansion.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q2</span>
+    <span class="q-text">Analyse the possible reasons why Speed-e-Puds might set a target to increase its market share in the dessert market.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Speed-e-Puds operates in a growing dessert market and wants to scale up.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Market share objective</span><span class="arr">→</span>
+      <span class="node mid-node">scale benefits / brand recognition</span><span class="arr">→</span>
+      <span class="node end-node">reasons for targeting market share growth</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Market share target</strong> — a corporate objective focused on growing the firm's proportion of total dessert market sales.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Reasons for this objective</strong> — strategic rationale for a small firm wanting to grow share.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content"><strong>Chain 1:</strong> Dessert market is growing → opportunity to capture share without taking it directly from competitors → grow with the market → secure position before larger firms enter. <strong>Chain 2:</strong> Larger market share → better recognised brand → stronger negotiating position with supermarket buyers → more shelf space → further share growth (virtuous cycle).</span></div>
+  </div>
+</div>
+</div>
+
+<div class="year-group">
+<div class="year-heading">2023 — Logger Boards (Outdoor equipment)</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q1</span>
+    <span class="q-text">Analyse the reasons why Logger Boards might prioritise environmental sustainability in its operations.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Logger Boards makes outdoor equipment using timber and recycled materials, targeting environmentally conscious consumers.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Environmental sustainability</span><span class="arr">→</span>
+      <span class="node mid-node">aligns with brand / customer values</span><span class="arr">→</span>
+      <span class="node end-node">reasons for prioritising this</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Environmental sustainability in operations</strong> — reducing waste, using sustainable materials, minimising carbon footprint.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Reasons Logger Boards would prioritise this</strong> — brand alignment, customer loyalty, long-term cost savings, regulatory compliance.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content"><strong>Chain 1:</strong> Target market is outdoor/environmental enthusiasts → sustainability is core to brand identity → failure to prioritise would undermine USP → lose customers to more ethical competitors. <strong>Chain 2:</strong> Sustainable operations can reduce long-term costs (less waste, efficient resource use) → improves profit margins → also reduces risk of future regulatory penalties as environmental laws tighten.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q2</span>
+    <span class="q-text">Analyse the reasons why Logger Boards should choose organic growth rather than external growth to expand its business.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Logger Boards is considering how to grow — internally through its own expansion or by acquiring/merging with another business.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Organic growth</span><span class="arr">→</span>
+      <span class="node mid-node">lower risk / maintain culture</span><span class="arr">→</span>
+      <span class="node end-node">reasons to prefer organic over external growth</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Organic growth</strong> — expanding using the business's own resources (new products, new stores, increased capacity) rather than through mergers/takeovers.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Why this is better for Logger Boards</strong> — risk, culture, financing, control.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content"><strong>Chain 1:</strong> Organic growth is lower risk → no culture clashes from merging with another business → Logger Boards' distinctive environmental brand stays intact → vital for a niche business. <strong>Chain 2:</strong> Growth funded from retained profits → no need to take on debt or dilute ownership → maintains control and low gearing → sustainable long-term growth. BUT: slower than external growth → competitors may grow faster.</span></div>
+  </div>
+</div>
+</div>
+
+<div class="year-group">
+<div class="year-heading">2022 — SSN (Media/publishing company)</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q1</span>
+    <span class="q-text">Analyse the possible reasons why SSN's promotional strategy has been successful in increasing its subscriber numbers.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: SSN is a digital media company that has grown subscribers through targeted promotion, including copyright-protected content.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Promotional strategy</span><span class="arr">→</span>
+      <span class="node mid-node">brand awareness / unique content</span><span class="arr">→</span>
+      <span class="node end-node">increased subscriber numbers</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Promotional strategy</strong> — the methods SSN has used to communicate with and attract customers.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Why subscribers have increased</strong> — effectiveness of promotion in driving sign-ups.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content"><strong>Chain 1:</strong> Copyright-protected content means SSN offers something exclusive → consumers can't get it elsewhere → creates a strong USP → promotion highlights this exclusivity → drives sign-ups. <strong>Chain 2:</strong> Targeted digital promotion reaches the right audience at lower cost than mass marketing → higher conversion rate → cost-effective subscriber growth.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q2</span>
+    <span class="q-text">Analyse the possible benefits for SSN of using copyright to protect its intellectual property as a source of competitive advantage.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: SSN has valuable original content that competitors would copy without legal protection.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Copyright protection</span><span class="arr">→</span>
+      <span class="node mid-node">prevents competitors copying</span><span class="arr">→</span>
+      <span class="node end-node">sustained competitive advantage</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Copyright</strong> — legal protection of original creative work, preventing others from reproducing it without permission.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Competitive advantage for SSN</strong> — market position, pricing power, barriers to entry.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content"><strong>Chain 1:</strong> Copyright creates a legal barrier to entry → competitors cannot replicate SSN's content → protects market share → allows premium pricing as consumers have no substitute. <strong>Chain 2:</strong> IP becomes an asset on the balance sheet → can be licensed for additional revenue → increases company valuation → attracts investors. Long-term competitive moat.</span></div>
+  </div>
+</div>
+</div>
+
+<div class="year-group">
+<div class="year-heading">2018 — Hopps (Brewery / drinks)</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q1</span>
+    <span class="q-text">Analyse the possible benefits for Hopps of developing a strong brand identity.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Hopps is a growing craft brewery looking to expand nationally and possibly internationally.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Strong brand identity</span><span class="arr">→</span>
+      <span class="node mid-node">recognition and loyalty</span><span class="arr">→</span>
+      <span class="node end-node">benefits: pricing power, repeat purchases, expansion</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Brand identity</strong> — the distinct image, values and personality that customers associate with Hopps.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Benefits for Hopps</strong> — customer loyalty, pricing power, differentiation, growth potential.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content"><strong>Chain 1:</strong> Strong brand → customer loyalty → repeat purchases → predictable revenue → lower marketing costs per sale over time → higher lifetime customer value. <strong>Chain 2:</strong> Brand recognition → easier to enter new markets (supermarkets, online, export) → retailers more willing to stock a known brand → supports Hopps' national expansion plans.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q2</span>
+    <span class="q-text">Analyse the possible benefits for Hopps of using inventory control to manage its stock of raw materials.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: Hopps uses perishable ingredients (hops, malt) and must manage stock carefully as it scales production.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Inventory control</span><span class="arr">→</span>
+      <span class="node mid-node">optimal stock levels</span><span class="arr">→</span>
+      <span class="node end-node">benefits: cost savings, less waste, reliable production</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Inventory control</strong> — systems for managing when to reorder, how much to hold, buffer stock levels, lead times.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Benefits for Hopps</strong> — reduced waste, lower costs, production continuity.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content"><strong>Chain 1:</strong> Perishable ingredients → good inventory control minimises spoilage → reduces waste costs → improves profit margins → crucial for a growing brewery where volumes are increasing. <strong>Chain 2:</strong> Correct reorder levels and buffer stock → production never stops due to stockouts → orders fulfilled on time → customer satisfaction maintained → supports brand reputation during growth.</span></div>
+  </div>
+</div>
+</div>
+
+<div class="year-group">
+<div class="year-heading">2017 — KMH plc (Engineering / manufacturing)</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q1</span>
+    <span class="q-text">Using Kotter and Schlesinger's model, analyse the possible barriers to change that KMH might face when implementing its restructuring plan.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: KMH is a large engineering company restructuring its operations, which involves job cuts and process changes.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Kotter & Schlesinger</span><span class="arr">→</span>
+      <span class="node mid-node">four barriers to change</span><span class="arr">→</span>
+      <span class="node end-node">barriers KMH will face</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>Kotter & Schlesinger's barriers to change</strong> — self-interest, misunderstanding, different assessments, low tolerance for change.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Barriers KMH will face</strong> — which specific barriers apply and why, given the restructuring context.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content"><strong>Chain 1:</strong> Self-interest — employees facing redundancy will resist to protect their jobs → may actively oppose or slow down changes → KMH needs to offer redundancy packages or retraining. <strong>Chain 2:</strong> Misunderstanding — if restructuring is poorly communicated, employees assume the worst → rumours spread → morale drops across the whole business, not just those directly affected → productivity falls.</span></div>
+  </div>
+</div>
+
+<div class="question-card" onclick="this.classList.toggle('open')">
+  <div class="q-header">
+    <span class="q-number">Q2</span>
+    <span class="q-text">Analyse the possible reasons why KMH might struggle to finance its planned expansion, using evidence from the financial data provided.</span>
+    <span class="q-marks">12 marks</span>
+    <svg class="q-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="q-answer">
+    <div class="context-note">Context: KMH has financial data showing gearing, liquidity and profitability ratios that suggest constraints on borrowing.</div>
+    <div class="arrow-chain">
+      <span class="node start-node">Financial data / ratios</span><span class="arr">→</span>
+      <span class="node mid-node">identifies funding constraints</span><span class="arr">→</span>
+      <span class="node end-node">reasons KMH may struggle to finance expansion</span>
+    </div>
+    <div class="point-row"><span class="point-label start">Start</span><span class="point-content"><strong>KMH's financial position</strong> — use the data on gearing, liquidity and profit to assess funding capacity.</span></div>
+    <div class="point-row"><span class="point-label end">End</span><span class="point-content"><strong>Why expansion financing is difficult</strong> — borrowing constraints, weak cash position, lender reluctance.</span></div>
+    <div class="point-row"><span class="point-label chain">Chain</span><span class="point-content"><strong>Chain 1:</strong> High gearing → already heavily reliant on debt → lenders may refuse further loans or charge higher interest → increases financial risk. <strong>Chain 2:</strong> Weak liquidity (low current ratio) → not enough cash to self-fund → internal finance insufficient → yet external finance is risky given the debt levels. Use actual figures from the data to support.</span></div>
+  </div>
+</div>
+</div>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
