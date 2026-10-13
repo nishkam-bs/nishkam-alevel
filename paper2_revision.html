@@ -1,0 +1,955 @@
+<title>Paper 2 Revision</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+  /* Layout: single-column reading layout with sidebar nav on desktop */
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a2e;
+    --surface: #f5f5f0;
+    --border: #d4d4c8;
+    --accent: #2c5f7c;
+    --accent-light: #e8f0f5;
+    --muted: #6b6b6b;
+    --heading: #1a1a2e;
+    --success: #2d7a4f;
+    --warning: #b8860b;
+    --danger: #a33;
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161620;
+      --fg: #e0ddd5;
+      --surface: #1e1e2a;
+      --border: #333345;
+      --accent: #5fa8c8;
+      --accent-light: #1c2a35;
+      --muted: #999;
+      --heading: #e8e5dd;
+      --success: #4daa6f;
+      --warning: #d4a030;
+      --danger: #d66;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161620;
+    --fg: #e0ddd5;
+    --surface: #1e1e2a;
+    --border: #333345;
+    --accent: #5fa8c8;
+    --accent-light: #1c2a35;
+    --muted: #999;
+    --heading: #e8e5dd;
+    --success: #4daa6f;
+    --warning: #d4a030;
+    --danger: #d66;
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    max-width: 960px;
+    margin: 0 auto;
+    padding-block: 2rem;
+    padding-inline: 20px;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--heading);
+    text-wrap: balance;
+    line-height: 1.25;
+  }
+  h1 { font-size: 2rem; margin-block: 0 0.5rem; }
+  h2 { font-size: 1.5rem; margin-block: 2.5rem 0.75rem; border-bottom: 2px solid var(--border); padding-bottom: 0.4rem; }
+  h3 { font-size: 1.15rem; margin-block: 1.5rem 0.5rem; }
+  h4 { font-size: 1rem; margin-block: 1.2rem 0.4rem; font-family: var(--font-body); font-weight: 600; }
+
+  .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; }
+
+  p { margin-block: 0.5rem; }
+  ul, ol { margin-block: 0.5rem; padding-left: 1.4rem; }
+  li { margin-block: 0.3rem; }
+
+  a { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-block: 1.5rem;
+  }
+  .nav-links a {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  .nav-links a:hover { background: var(--accent-light); }
+
+  .info-box {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    padding: 1rem 1.2rem;
+    margin-block: 1rem;
+    border-radius: 0 4px 4px 0;
+  }
+  .warn-box {
+    background: var(--surface);
+    border-left: 3px solid var(--warning);
+    padding: 1rem 1.2rem;
+    margin-block: 1rem;
+    border-radius: 0 4px 4px 0;
+  }
+  .trap-box {
+    background: var(--surface);
+    border-left: 3px solid var(--danger);
+    padding: 1rem 1.2rem;
+    margin-block: 1rem;
+    border-radius: 0 4px 4px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-block: 1rem;
+    font-size: 0.9rem;
+  }
+  th, td {
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  th { background: var(--surface); font-weight: 600; }
+
+  details {
+    margin-block: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  details summary {
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  details summary::before {
+    content: '\25B6';
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  details[open] summary::before { transform: rotate(90deg); }
+  details summary::-webkit-details-marker { display: none; }
+  .details-body { padding: 1rem 1.2rem; }
+
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-block: 0.5rem;
+    transition: opacity 0.15s;
+  }
+  .download-btn:hover { opacity: 0.85; color: #fff; }
+  .download-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+  .year-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .year-header h2 { flex: 1; min-width: 200px; }
+
+  .q-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.3rem 1rem;
+    margin-block: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .q-grid .q-num { font-weight: 600; white-space: nowrap; color: var(--accent); }
+
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .tag-calc { background: #e3f0e8; color: #1a5632; }
+  .tag-analysis { background: #e0ecf5; color: #1a4060; }
+  .tag-evaluate { background: #f5e6e0; color: #6b2a1a; }
+  .tag-explain { background: #f0eadd; color: #5a4a20; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .tag-calc { background: #1a3525; color: #7dca96; }
+    :root:not([data-theme="light"]) .tag-analysis { background: #152535; color: #7ab5d8; }
+    :root:not([data-theme="light"]) .tag-evaluate { background: #351a1a; color: #d89080; }
+    :root:not([data-theme="light"]) .tag-explain { background: #2a2515; color: #c8b878; }
+  }
+  :root[data-theme="dark"] .tag-calc { background: #1a3525; color: #7dca96; }
+  :root[data-theme="dark"] .tag-analysis { background: #152535; color: #7ab5d8; }
+  :root[data-theme="dark"] .tag-evaluate { background: #351a1a; color: #d89080; }
+  :root[data-theme="dark"] .tag-explain { background: #f0eadd; color: #5a4a20; }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin-block: 2rem;
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.25rem; }
+    .q-grid { grid-template-columns: 1fr; }
+    .q-grid .q-num { margin-top: 0.3rem; }
+  }
+</style>
+
+<h1>Paper 2 &mdash; Preparing for the exam</h1>
+<p class="subtitle">AQA A-Level Business (7132/2) &middot; Past papers 2017&ndash;2025 with question-by-question guidance</p>
+
+<p>This page covers every Paper 2 sat since the specification began. For each year you can download the paper and then work through the data, the traps, the hidden models, and how to approach each question.</p>
+<p>Paper 2 is 2 hours, 100 marks. It always has three sections, each built around a different business context. Every section gives you data (figures, tables, charts, appendices) and then asks questions that get progressively harder &mdash; from short calculations and explanations through to 9-mark analysis and 16- or 20-mark evaluation essays.</p>
+
+<div class="nav-links">
+  <a href="#strategy">How Paper 2 works</a>
+  <a href="#y2025">2025</a>
+  <a href="#y2024">2024</a>
+  <a href="#y2023">2023</a>
+  <a href="#y2022">2022</a>
+  <a href="#y2020">2020</a>
+  <a href="#y2019">2019</a>
+  <a href="#y2018">2018</a>
+  <a href="#y2017">2017</a>
+</div>
+
+<!-- ===== STRATEGIC OVERVIEW ===== -->
+<h2 id="strategy">How Paper 2 works</h2>
+
+<h3>Structure</h3>
+<p>Paper 2 always has three sections. Each section is built around a different business. The paper tests topics from Units 3.4&ndash;3.6 of the specification: decision-making, influences on business, and assessing competitiveness.</p>
+
+<table>
+  <tr><th>Section</th><th>What it covers</th><th>Marks</th><th>Rough time</th></tr>
+  <tr><td>Section 1</td><td>Data-heavy case study &mdash; financial ratios, calculations, data interpretation, then a big evaluation question using the appendices</td><td>~34</td><td>~40 min</td></tr>
+  <tr><td>Section 2</td><td>Second business context &mdash; a mix of explain, analyse and evaluate questions with less data</td><td>~34</td><td>~40 min</td></tr>
+  <tr><td>Section 3</td><td>Third business context &mdash; similar structure to Section 2, often with a broader "all businesses" essay at the end</td><td>~32</td><td>~40 min</td></tr>
+</table>
+
+<h3>What separates a top-grade answer on Paper 2</h3>
+<ol>
+  <li><strong>Use the data &mdash; don't just quote it.</strong> If revenue went from &pound;46,994k to &pound;47,569k, don't just say "revenue increased." Calculate the percentage change (1.2%) and explain what it means in context. AQA rewards calculations, not descriptions.</li>
+  <li><strong>Read the question precisely.</strong> If it says "operating profit margin," don't write about operating profit. If it says "legislation," don't write about ethics. If it says "shareholders," don't write about stakeholders in general. Students lose marks every year on this.</li>
+  <li><strong>Triangulate the appendices.</strong> Section 1 usually gives you 4&ndash;6 appendices. The best answers cross-reference them &mdash; for instance, linking a falling profit margin (Appendix A) to rising input costs (Appendix B) and competitive pressure (Appendix C). Don't treat each appendix in isolation.</li>
+  <li><strong>On 9-mark questions, write one well-developed argument.</strong> Don't try to cover three points briefly. One detailed paragraph with 6&ndash;7 connected chains, two pieces of data where a table is provided, and a concluding sentence that starts "Therefore..." and links back to the question.</li>
+  <li><strong>On 16-mark and 20-mark questions, evaluate properly.</strong> Your conclusion must make a judgement about which argument is most significant, what the answer depends on, and whether that factor outweighs the counterargument. Don't just repeat your earlier points. Don't introduce new analysis in your conclusion.</li>
+  <li><strong>On "all businesses" questions, use external examples.</strong> If the question says "for all businesses" or "for any business," you need to discuss businesses beyond the one in the case study. Answers that only use the case study business are capped.</li>
+  <li><strong>Weave in business models where they fit &mdash; but accurately.</strong> If you use Herzberg, remember that pay is a hygiene factor, not a motivator. If you use Porter's Five Forces, explain the mechanism. If you use Ansoff, apply it to the specific growth strategy in the case study. Don't just name-drop theories.</li>
+</ol>
+
+<div class="warn-box">
+  <strong>Common mistakes that cost marks nationally:</strong>
+  <ul style="margin-bottom:0">
+    <li>Confusing cash flow with profit</li>
+    <li>Writing about operating profit when the question says operating profit margin</li>
+    <li>Confusing economies of scale with economies of scope</li>
+    <li>Defaulting to B2C thinking when the business sells to other businesses (B2B)</li>
+    <li>Forgetting currency symbols and units on calculations</li>
+    <li>Reverse percentage errors (subtracting 10% instead of dividing by 1.1)</li>
+    <li>ARR errors (forgetting to subtract initial cost before dividing by number of years)</li>
+  </ul>
+</div>
+
+<h3>Time management</h3>
+<p>You have 120 minutes for 100 marks. That's roughly 1 minute 12 seconds per mark. A 16-mark question deserves about 19 minutes. A 3-mark calculation deserves about 4 minutes. Don't spend 15 minutes on a 4-mark question.</p>
+
+<hr class="section-divider">
+
+<!-- ===== 2025 ===== -->
+<div class="year-header">
+  <h2 id="y2025">June 2025</h2>
+</div>
+<a class="download-btn" href="papers/7132-2-Jun25.pdf" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+  Download Paper (PDF)
+</a>
+
+<h3>The three businesses</h3>
+<table>
+  <tr><th>Section</th><th>Business</th><th>Context</th></tr>
+  <tr><td>1</td><td><strong>SCF</strong></td><td>UK-based manufacturer of computer components. Sells to UK and EU businesses. Falling sales and margins. New CEO plans to move production to Spain.</td></tr>
+  <tr><td>2</td><td><strong>Seebus plc</strong></td><td>Food retailer with 110 UK stores. Higher quality positioning. JIT inventory. Rising employee dissatisfaction and labour turnover.</td></tr>
+  <tr><td>3</td><td><strong>Dodo</strong></td><td>Small, growing low-cost airline. UK to Europe flights. 5,000 permanent staff. Low-cost business model based on asset utilisation.</td></tr>
+</table>
+
+<details>
+  <summary>Section 1 &mdash; SCF: Data analysis and question breakdown</summary>
+  <div class="details-body">
+    <h4>The data you're given</h4>
+    <ul>
+      <li><strong>Appendix A:</strong> Cash flow forecast for Oct&ndash;Nov 2025. Closing balance of &pound;4.30m at end of Oct. Inflows and outflows given. The twist: customers will be given one month's credit from 1 November.</li>
+      <li><strong>Appendix B:</strong> Financial data 2022&ndash;2024. Inventory turnover falling (5.9 &rarr; 5.6 &rarr; 5.2). Operating profit falling (&pound;0.92m &rarr; &pound;0.71m &rarr; &pound;0.63m). Non-current assets rising. Capital employed rising.</li>
+      <li><strong>Appendix C:</strong> Market data showing total UK and EU market sales 2020&ndash;2028 (forecasts from 2026). EU market growing strongly. UK market shrinking. SCF's EU sales growing but UK sales declining.</li>
+      <li><strong>Appendix D:</strong> Decision tree. Option 1: Upgrade UK factory (&pound;2m cost, 0.7 success probability, &pound;5m/&pound;2m payoffs). Option 2: Build Spain factory (&pound;9m cost, 0.4 success probability, &pound;30m/&pound;1m payoffs). Do nothing: &pound;0m.</li>
+      <li><strong>Appendix E:</strong> Economic forecasts 2025&ndash;2028. UK GDP growth low (0.2&ndash;1.3%). EU GDP growth much higher (3.1&ndash;5.1%). UK unemployment rising. UK interest rates 5.2&ndash;6.1%. Pound weakening against euro (&euro;1.18 &rarr; &euro;1.00).</li>
+    </ul>
+
+    <h4>What the story tells you</h4>
+    <p>SCF is a business in decline domestically but with a clear opportunity in Europe. The data is deliberately set up to create a tension: the Spain move is risky (high cost, low probability of success) but the EU market is growing fast while the UK market is shrinking. The economic data supports the move &mdash; EU GDP growth is 3&ndash;5 times UK growth, and the weakening pound makes UK exports more price competitive but also makes operating costs in Spain cheaper when paid in euros from sterling revenues.</p>
+
+    <div class="info-box">
+      <strong>Hidden models:</strong> Porter's Five Forces (buyer power increasing because of mergers reducing number of buyers), Ansoff Matrix (market development &mdash; same products, new geographic market), decision trees, investment appraisal, exchange rate impact on international competitiveness.
+    </div>
+
+    <h4>Question by question</h4>
+
+    <h4>Q1.1 &mdash; Calculate SCF's closing balance for November <span class="tag tag-calc">3 marks</span></h4>
+    <p>The trap here is the credit terms. Previously all customers paid immediately. Now they get one month's credit from 1 November. So November's inflows become &pound;0 from customers (they won't pay until December) but you still have October's customers paying in November (the &pound;3.35m was already forecast assuming immediate payment). Actually, the question says "all customers take advantage of the new payment terms" &mdash; so November inflows = October inflows (&pound;3.24m, from customers who ordered in October and are now paying one month later), November outflows = &pound;3.22m. Opening balance = &pound;4.30m + (&pound;3.24m &minus; &pound;3.11m) = &pound;4.43m. Then November: &pound;4.43m + &pound;3.24m &minus; &pound;3.22m = &pound;4.45m.</p>
+    <p>Check: Show your workings clearly. Include the &pound; sign.</p>
+
+    <h4>Q1.2 &mdash; Explain one possible reason for the change in inventory turnover <span class="tag tag-explain">4 marks</span></h4>
+    <p>Inventory turnover has fallen from 5.9 to 5.2 times. This means SCF is holding stock for longer. Possible reasons: falling sales mean finished goods sit in the warehouse longer; the business may be building up buffer stock because of supply chain concerns (the case study mentions mergers reducing the number of buyers, which could also affect supplier relationships); or efficiency has been declining as the case study states.</p>
+
+    <h4>Q1.3 &mdash; Using Appendix D and other information, analyse why SCF chose Option 2 <span class="tag tag-analysis">9 marks</span></h4>
+    <p><strong>Calculate the expected values:</strong></p>
+    <ul>
+      <li>Option 1: (0.7 &times; &pound;5m) + (0.3 &times; &pound;2m) = &pound;3.5m + &pound;0.6m = &pound;4.1m &minus; &pound;2m cost = <strong>&pound;2.1m net gain</strong></li>
+      <li>Option 2: (0.4 &times; &pound;30m) + (0.6 &times; &pound;1m) = &pound;12m + &pound;0.6m = &pound;12.6m &minus; &pound;9m cost = <strong>&pound;3.6m net gain</strong></li>
+    </ul>
+    <p>Option 2 has a higher expected value. But you also need qualitative reasoning: the EU market is growing 3&ndash;5 times faster than the UK market, some manufacturers will only buy components made in the EU, and the falling pound makes exporting from a euro-zone base more attractive. SCF's UK sales are forecast to decline even without the move. The new CEO's vision is for "ambitious growth" &mdash; Option 1 (upgrading the UK factory) doesn't address the structural problem that buyers are consolidating and preferring EU-based suppliers.</p>
+
+    <h4>Q1.4 &mdash; To what extent do the changes in the economic environment create more threats than opportunities for SCF? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p><strong>Threats from the data:</strong> UK GDP growth is sluggish (0.2&ndash;1.3%), UK unemployment is rising (limiting domestic demand), interest rates are high (5.2&ndash;6.1% &mdash; making borrowing expensive for the Spain investment), and the pound is weakening (increasing costs of any imported materials).</p>
+    <p><strong>Opportunities from the data:</strong> EU GDP growth is strong (3.1&ndash;5.1%, accelerating), a weaker pound makes UK-manufactured goods cheaper for EU buyers (improving price competitiveness), and if SCF moves to Spain it benefits from EU single market access and growing EU demand.</p>
+    <p><strong>For evaluation:</strong> The answer depends on whether SCF stays in the UK or moves to Spain. If it stays, the economic environment is largely threatening &mdash; weak domestic demand, high borrowing costs, and a declining UK market. If it moves to Spain, the same environment actually creates opportunities &mdash; the strong EU economy drives demand, and being inside the EU removes trade barriers. The most significant factor is probably the EU GDP growth because SCF's future revenue depends on winning EU contracts, which is where the market is growing.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 2 &mdash; Seebus plc: Question breakdown</summary>
+  <div class="details-body">
+    <h4>The story</h4>
+    <p>Seebus is a premium food retailer being squeezed: competitors have matched its pay rates, employees are unhappy about shift changes and supervision, and labour turnover has jumped. The CEO wants to fix motivation with career development plans and training &mdash; but hasn't addressed the pay gap or working conditions.</p>
+
+    <h4>Q2.1 &mdash; Calculate the rate of labour turnover <span class="tag tag-calc">3 marks</span></h4>
+    <p>Labour turnover = (Number of staff leaving / Average number employed) &times; 100 = (960 / 6000) &times; 100 = <strong>16%</strong>. Show the formula, the working, and the answer with a % sign.</p>
+
+    <h4>Q2.2 &mdash; Explain one reason why Seebus uses JIT <span class="tag tag-explain">6 marks</span></h4>
+    <p>Seebus sells food &mdash; perishable goods. JIT means stock arrives just before it's needed, reducing waste from unsold items going past their sell-by date. For a food retailer competing on quality, fresh deliveries also mean better quality products on shelves. This supports their differentiation strategy. Link to context: "The company focuses on a smaller range of products" &mdash; which makes JIT more manageable than for a supermarket carrying 30,000 product lines.</p>
+
+    <h4>Q2.3 &mdash; Use Herzberg's theory to analyse why Ajinder's plan may not improve motivation <span class="tag tag-analysis">9 marks</span></h4>
+    <div class="trap-box">
+      <strong>The trap:</strong> Students who say "pay is a motivator according to Herzberg" will lose marks. Pay is a hygiene factor in Herzberg's theory. Its absence causes dissatisfaction, but improving it does not motivate. This is the single most common theory error in the exam.
+    </div>
+    <p>Ajinder's plan offers career development and training &mdash; these are motivators in Herzberg's theory. But the problem is that employees are unhappy about <strong>pay</strong> and <strong>working conditions</strong> (shift patterns, supervision). These are hygiene factors. Herzberg's theory says you must fix hygiene factors first &mdash; if employees feel underpaid relative to competitors and are unhappy with how they're supervised, offering training won't fix the underlying dissatisfaction. The motivators (career development) only work once the hygiene factors are no longer causing dissatisfaction. So Ajinder's plan addresses the wrong level of the problem.</p>
+
+    <h4>Q2.4 &mdash; Should all businesses segment their markets based on income? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>This is an "all businesses" question &mdash; you need external examples. Income segmentation works well for Seebus (premium positioning targeting higher earners), luxury brands, and financial services. But it's less useful for businesses selling necessities (utilities, basic groceries), digital services with flat pricing (streaming), or B2B companies where purchasing decisions are based on specifications rather than income. Your evaluation should consider that income segmentation is one of several bases (geographic, demographic, behavioural, psychographic) and the best one depends on what the business sells and who buys it.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 3 &mdash; Dodo: Question breakdown</summary>
+  <div class="details-body">
+    <h4>The story</h4>
+    <p>Dodo is a low-cost airline &mdash; think Ryanair or easyJet. Its competitive advantage comes from asset utilisation (quick turnaround = more flights per day), cheaper airports, direct bookings (no commission), and unbundling (food, bags, seat choice as extras). The questions focus on HR objectives, quality measures, and whether asset utilisation is the best route to low-cost advantage.</p>
+
+    <h4>Q3.1 &mdash; Analyse why Dodo sets HR objectives for number of employees and employee engagement <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Airlines have complex staffing: pilots and engineers need months of training, so you can't recruit quickly if you're short. Setting targets for employee numbers helps workforce planning &mdash; if Dodo knows it needs X pilots for its planned routes, it can start recruitment and training well in advance. Employee engagement matters because staff (especially cabin crew) are the customer-facing element of the service &mdash; disengaged staff deliver poor service, which damages the brand. Also, many staff work away from HQ, making engagement harder to maintain. Link to context: "Dodo sees its staff as key to the quality of service."</p>
+
+    <h4>Q3.2 &mdash; Analyse how Dodo would benefit from being best for its quality measures <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Punctuality and low complaints directly affect repeat bookings. If Dodo has the highest percentage of on-time flights, it differentiates itself from other budget airlines where delays are common. Fewer complaints means less cost handling them (staff time, compensation) and better online reviews, which is where budget travellers make decisions. For a low-cost airline, reputation for reliability can be the deciding factor between competitors who all offer similar prices.</p>
+
+    <h4>Q3.3 &mdash; To what extent is using non-current assets as fully as possible the best way to gain low-cost advantage? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>This is an "all businesses" question. For Dodo, maximising asset use (quick turnarounds, more flights per day) directly reduces unit costs because the fixed cost of each plane is spread across more flights. But for other businesses, low-cost advantage might come from different sources: economies of scale (a large manufacturer), lean production (a car company), low labour costs (outsourcing), technology (automation replacing manual work), or supply chain efficiency. Your evaluation should argue that asset utilisation is important for capital-intensive industries (airlines, hotels, manufacturing) but less relevant for service businesses with low fixed assets (consultancies, digital businesses). The most significant factor depends on the industry's cost structure.</p>
+  </div>
+</details>
+
+<hr class="section-divider">
+
+<!-- ===== 2024 ===== -->
+<div class="year-header">
+  <h2 id="y2024">June 2024</h2>
+</div>
+<a class="download-btn" href="papers/7132-2-Jun24.pdf" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+  Download Paper (PDF)
+</a>
+
+<h3>The three businesses</h3>
+<table>
+  <tr><th>Section</th><th>Business</th><th>Context</th></tr>
+  <tr><td>1</td><td><strong>Biggs Ltd</strong></td><td>Snack food manufacturer (crisps, nuts). Potato prices up 35%. Market share falling since 2019. Planning new product range + sports sponsorship. Dominated by 6 firms.</td></tr>
+  <tr><td>2</td><td><strong>Soundcheck plc</strong></td><td>Music streaming service. Free + paid tiers. Global market leader but losing money (&pound;26m loss in 2023). High staff costs, rising competition from new entrants who own content.</td></tr>
+  <tr><td>3</td><td><strong>WWH Ltd</strong></td><td>Wood-burning stove manufacturer. Single product. Rising demand due to energy prices. Government environmental regulation threatening the market. Banks refusing further lending.</td></tr>
+</table>
+
+<details>
+  <summary>Section 1 &mdash; Biggs Ltd: Data analysis and question breakdown</summary>
+  <div class="details-body">
+    <h4>The data you're given</h4>
+    <ul>
+      <li><strong>Appendix A:</strong> Financial statements 2022&ndash;2023. Revenue up slightly (&pound;46,994k &rarr; &pound;47,569k). Gross profit <em>down</em> (&pound;22,820k &rarr; &pound;22,289k). Operating profit down (&pound;4,701k &rarr; &pound;4,650k). Payables down (&pound;5,221k &rarr; &pound;5,056k).</li>
+      <li><strong>Appendix B:</strong> Labour productivity indices. Biggs: 104.2 (2020) &rarr; 100.3 (2023). Industry: 104.3 &rarr; 105.9. Biggs is declining while the industry is improving.</li>
+      <li><strong>Appendix C:</strong> Marketing expenditure as % of revenue. Biggs: 12.7% &rarr; 27.4% (2024 forecast). Market leader: 22.4% &rarr; 24%. Industry average: 18.7% &rarr; 18.4%. Biggs massively increasing marketing spend.</li>
+      <li><strong>Appendix D:</strong> Market research (only 27 interviews, conducted in 2021). Children strongly interested in new products. Over-36s much less interested.</li>
+      <li><strong>Appendix E:</strong> Snack purchase vs consumption data. 17&ndash;35 year olds make 53% of purchases but consume 43%. Children consume 46% but only make 19% of purchases.</li>
+    </ul>
+
+    <h4>What the story tells you</h4>
+    <p>Biggs has a cost problem (potato prices up 35%, gross margin falling) and a productivity problem (getting worse while competitors improve). Their response is to launch new products aimed at children through expensive sports sponsorship. But the market research is weak (only 27 interviews, done 3 years ago) and the data shows that children consume snacks but don't buy them &mdash; parents do.</p>
+
+    <h4>Q1.1 &mdash; Calculate Biggs Ltd's payables days ratio for 2023 <span class="tag tag-calc">4 marks</span></h4>
+    <p>Payables days = (Payables / Cost of sales) &times; 365. Cost of sales = Revenue &minus; Gross profit = &pound;47,569k &minus; &pound;22,289k = &pound;25,280k. Payables days = (&pound;5,056k / &pound;25,280k) &times; 365 = <strong>73 days</strong>. Show formula, workings, answer with "days."</p>
+
+    <h4>Q1.2 &mdash; Explain one reason why gross profit margin fell to 46.9% <span class="tag tag-explain">3 marks</span></h4>
+    <p>Potato prices rose by 35% over two years. Potatoes are a key ingredient. This increases cost of sales. If Biggs cannot pass the full cost increase on to consumers (likely given the competitive market with 6 dominant firms), the gross profit margin falls. Note: the question says "fell to 46.9%" &mdash; you can verify: 22,289/47,569 = 46.85%, confirming the figure.</p>
+
+    <h4>Q1.3 &mdash; Analyse how changes in labour productivity may cause Biggs' market share to fall <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Biggs' labour productivity fell from 104.2 to 100.3 (below the 2017 base). The industry average rose to 105.9. This means each Biggs worker produces less output relative to competitors. Higher labour costs per unit &rarr; higher total unit costs &rarr; either higher prices (losing price-competitive customers in a market dominated by 6 firms) or lower margins (reducing funds for marketing and product development). Either way, Biggs becomes less competitive. Competitors with improving productivity can afford to invest more in marketing and NPD while maintaining margins, pulling market share away from Biggs.</p>
+
+    <h4>Q1.4 &mdash; Evaluate whether Biggs' sports sponsorship is a good way to promote its new products <span class="tag tag-evaluate">16 marks</span></h4>
+    <div class="trap-box">
+      <strong>The data trap:</strong> Appendix D (the market research) is based on only 27 interviews, conducted in 2021 &mdash; three years before the launch. This is a tiny, outdated sample. Appendix E shows that 6&ndash;16 year olds consume 46% of snacks but only make 19% of purchases &mdash; so the new products need to appeal to the buyers (17&ndash;35 year olds) as well as the consumers (children).
+    </div>
+    <p>Arguments for: The promotional campaign improves brand perception across all age groups (8.0&ndash;8.3 scores). Children are enthusiastic about the new products (9.9 score). Sports events reach families. The marketing spend increase (to 27.4% of revenue) shows serious commitment.</p>
+    <p>Arguments against: The research has serious limitations (27 interviews, 3 years old). Marketing spend is nearly double the industry average &mdash; this will further squeeze margins that are already under pressure from rising potato costs and falling productivity. The 36+ age group (who may make purchasing decisions for families) scored only 1.8 on intent to try new products.</p>
+    <p>Evaluation: The answer depends on whether Biggs can convert children's enthusiasm into actual purchases by parents. The most significant concern is probably the cost: spending 27.4% of revenue on marketing when gross margins are already falling and productivity is declining may not be sustainable.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 2 &mdash; Soundcheck plc: Question breakdown</summary>
+  <div class="details-body">
+    <h4>The story</h4>
+    <p>Soundcheck moved from Position 1 (low price, low perceived value &mdash; free service) to Position 4 (differentiation &mdash; paid service with better quality) on Bowman's strategic clock. Note: the exam uses Bowman's strategic clock here, but the current AQA spec has replaced it with Porter's Generic Strategies. If a question references a specific model shown in the paper, use it as presented.</p>
+
+    <h4>Q2.1 &mdash; Analyse why Soundcheck changed its positioning strategy <span class="tag tag-analysis">9 marks</span></h4>
+    <p>At Position 1 (low price/low value), revenue came only from advertisers. But costs were rising significantly and the company lost &pound;26m in 2023. Moving to Position 4 adds subscription revenue from paying customers who get better audio, no ads, and exclusive content. This diversifies revenue away from advertising alone. The streaming market is also increasingly competitive with new entrants &mdash; some of whom own their content and can offer the free tier more cheaply. By differentiating through quality and exclusives, Soundcheck creates reasons for customers to stay rather than switching to a free competitor.</p>
+
+    <h4>Q2.2 &mdash; Analyse difficulties turning the 2023 loss into a 2024 profit <span class="tag tag-analysis">9 marks</span></h4>
+    <p>The &pound;26m loss happened during a global economic slowdown. Costs have been "rising significantly" &mdash; including guaranteed salaries of &pound;36,000+ (above industry average). Labour turnover remains high despite high pay, meaning ongoing recruitment and training costs. New competitors with lower costs (they own content rights) are entering both the paid and free markets. To turn a profit, Soundcheck needs to either significantly grow subscribers or cut costs, and both are difficult: a slowdown reduces discretionary spending (streaming subscriptions), and cutting staff costs is hard with trade union agreements in place.</p>
+
+    <h4>Q2.3 &mdash; To what extent does consultation with trade unions enable all businesses to overcome resistance to strategic change? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>Use Kotter and Schlesinger's strategies for managing resistance: education and communication, participation and involvement, facilitation and support, negotiation and agreement (this is where union consultation fits), manipulation/co-optation, and explicit/implicit coercion. Union consultation is one tool among several. It works well for Soundcheck (staff are "supportive of strategic change") but may not work for all businesses &mdash; not all businesses have unionised workforces, and some changes (redundancies, relocation) may not be negotiable. You need external examples: a tech startup with no union, a small business where the owner just decides.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 3 &mdash; WWH Ltd: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q3.1 &mdash; Analyse how WWH Ltd could improve its cashflow <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Current cash flow structure: 25% deposit on order, 75% on fitting, but fitting takes 2 months. So there's a long gap between manufacture (costs incurred) and final payment. Options: increase the deposit percentage (e.g. 50/50), ask for stage payments, reduce the fitting lead time (hire more fitters), negotiate longer payment terms with suppliers. The case study says WWH owns its buildings &mdash; so sale and leaseback is possible to release capital. Banks won't lend more, so debt is not an option.</p>
+
+    <h4>Q3.2 &mdash; Analyse how organisational design may change if WWH develops a product portfolio <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Currently: functional structure, flat, no R&amp;D department, simple. Moving to multiple products would require: R&amp;D capability (new department or function), possibly a product-based divisional structure instead of functional, more layers of management to coordinate different product teams, and new marketing expertise for different markets if diversifying into unrelated products. The flat structure might need to become taller, increasing overhead costs but improving coordination.</p>
+
+    <h4>Q3.3 &mdash; To what extent is environmental legislation always damaging to business? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>For WWH, legislation is threatening &mdash; it could ban their entire product. But for other businesses, environmental legislation creates opportunities: renewable energy companies benefit from emissions targets, recycling businesses benefit from packaging regulations, electric vehicle manufacturers benefit from combustion engine bans. Even for businesses that face costs (fitting filters, changing materials), first movers can gain competitive advantage. Your evaluation: legislation is damaging in the short term for businesses that must change, but can create long-term opportunities and level the playing field (everyone faces the same rules). The most significant factor is whether the business's product is the target of the legislation or just affected by it.</p>
+  </div>
+</details>
+
+<hr class="section-divider">
+
+<!-- ===== 2023 ===== -->
+<div class="year-header">
+  <h2 id="y2023">June 2023</h2>
+</div>
+<a class="download-btn" href="papers/7132-2-Jun23.pdf" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+  Download Paper (PDF)
+</a>
+
+<h3>The three businesses</h3>
+<table>
+  <tr><th>Section</th><th>Business</th><th>Context</th></tr>
+  <tr><td>1</td><td><strong>AJS plc</strong></td><td>Manufacturer of non-recyclable food packaging. Plans &pound;500k investment in new technology. Market for non-recyclable packaging declining. Recyclable packaging market growing fast. Poor HR data vs industry.</td></tr>
+  <tr><td>2</td><td><strong>Homeworking</strong></td><td>General context about the shift to homeworking. Impact on balance sheets, management roles, and Elkington's Triple Bottom Line.</td></tr>
+  <tr><td>3</td><td><strong>Simply Bake plc</strong></td><td>Cake supplier to supermarkets (own-brand). Uses palm oil. Pressure from campaign groups to remove it. Decided to remove palm oil by 2025.</td></tr>
+</table>
+
+<details>
+  <summary>Section 1 &mdash; AJS plc: Data analysis and question breakdown</summary>
+  <div class="details-body">
+    <h4>Key data points</h4>
+    <ul>
+      <li>NPV calculation: cash flows of (&pound;500k), (&pound;50k), &pound;250k, &pound;600k with 10% discount factors</li>
+      <li>Non-recyclable packaging market declining (1250 &rarr; 1050 thousand units, 2016&ndash;2022)</li>
+      <li>Recyclable packaging market booming (50 &rarr; 260 thousand units, 2016&ndash;2022)</li>
+      <li>HR data much worse than industry: 15% labour turnover vs 4% industry, 25 days lost to industrial action vs 5, only 14 applicants per vacancy vs 55</li>
+      <li>Share price fell 15% while top 100 companies rose 8%</li>
+      <li>Gearing at 22% &mdash; relatively low</li>
+    </ul>
+
+    <h4>Q1.1 &mdash; Calculate NPV <span class="tag tag-calc">4 marks</span></h4>
+    <p>Year 0: &minus;&pound;500k &times; 1.00 = &minus;&pound;500k. Year 1: &minus;&pound;50k &times; 0.91 = &minus;&pound;45.5k. Year 2: &pound;250k &times; 0.83 = &pound;207.5k. Year 3: &pound;600k &times; 0.75 = &pound;450k. NPV = &minus;500 &minus; 45.5 + 207.5 + 450 = <strong>&pound;112k</strong> (positive, so worth investing on financial grounds alone).</p>
+
+    <h4>Q1.2 &mdash; Calculate ROCE <span class="tag tag-calc">4 marks</span></h4>
+    <p>ROCE = (Operating profit / Capital employed) &times; 100. Capital employed = Total assets &minus; Current liabilities = (550k + non-current assets implied from gearing) or you can use: Non-current liabilities + Equity. From the data: Gearing = 22%, NCL = &pound;4m, so Capital employed = NCL / Gearing = &pound;4m / 0.22 = &pound;18.18m. ROCE = (&pound;3m / &pound;18.18m) &times; 100 = <strong>16.5%</strong>.</p>
+
+    <h4>Q1.3 &mdash; Analyse why AJS decided to become more capital intensive <span class="tag tag-analysis">9 marks</span></h4>
+    <p>The HR data is terrible: 15% labour turnover (nearly 4 times industry), 25 days lost to industrial action (5 times industry), and only 14 applicants per vacancy (a quarter of the industry average). Becoming more capital intensive reduces reliance on a workforce that is difficult to recruit, expensive to replace, and frequently absent through strikes. Technology can increase consistency and output without the ongoing HR problems. Labour costs are also 40% of turnover (vs 35% industry) &mdash; capital investment could reduce this proportion.</p>
+
+    <h4>Q1.4 &mdash; Would you advise a potential investor to buy shares in AJS? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>The data is deliberately mixed. Against investing: share price fell 15% while the market rose 8%, the core market (non-recyclable packaging) is in long-term decline, HR metrics are poor, and the brand has reputational risk from selling non-recyclable products in an increasingly environmentally conscious market. For investing: NPV is positive (&pound;112k), ROCE is reasonable at 16.5%, gearing is low (22%) meaning capacity to borrow, current ratio is healthy (&pound;550k/&pound;270k = 2.04), and the investment in new technology could improve productivity. Evaluation: the most significant factor is the structural decline of the non-recyclable packaging market. Unless AJS pivots to recyclable packaging (where the market grew from 50 to 260 thousand units), the long-term outlook is poor regardless of financial ratios.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 2 &mdash; Homeworking: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q2.1 &mdash; Calculate percentage change in people working from home <span class="tag tag-calc">3 marks</span></h4>
+    <p>2020: 36% of 32.5m = 11.7m. 2019: 8.7m. Change = (11.7 &minus; 8.7) / 8.7 &times; 100 = <strong>34.5%</strong>.</p>
+
+    <h4>Q2.2 &mdash; Analyse one way the balance sheet might be affected by more homeworking <span class="tag tag-analysis">6 marks</span></h4>
+    <p>If the business reduces office space, non-current assets fall (selling or ending leases on buildings). This reduces total assets and, if the proceeds are used to pay off debt, also reduces non-current liabilities. If the business sells owned property, it receives cash (current assets rise temporarily). Net assets might stay the same if proceeds equal the book value, or there could be a profit/loss on disposal.</p>
+
+    <h4>Q2.3 &mdash; Analyse the impact of homeworking on how managers fulfil their role <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Managers traditionally monitor performance through direct observation. With homeworking, they need to shift to output-based measurement (what did you produce?) rather than input-based (were you at your desk?). This changes the controlling function. The leading function also changes &mdash; motivating remote workers requires different approaches (regular check-ins, virtual team building). Communication shifts from informal (watercooler conversations) to formal (scheduled calls, emails), which can slow decision-making but also create better documentation.</p>
+
+    <h4>Q2.4 &mdash; Would increased homeworking improve performance for businesses using Elkington's Triple Bottom Line? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p><strong>People:</strong> Mixed &mdash; better work-life balance but potential isolation, harder to build team culture. <strong>Planet:</strong> Positive &mdash; fewer commuting journeys reduces carbon emissions, less office energy use. <strong>Profit:</strong> Mixed &mdash; lower property costs but potentially lower productivity if employees are distracted, plus investment needed in technology. This is an "all businesses" question &mdash; homeworking works well in sectors like IT and finance but is impossible in transportation, manufacturing, and retail. The answer depends on the nature of the work.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 3 &mdash; Simply Bake plc: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q3.1 &mdash; Explain why APO's survey may not represent UK consumers <span class="tag tag-explain">4 marks</span></h4>
+    <p>The sample of 100 was drawn from APO's own 400 members &mdash; these are people who already oppose palm oil, so the sample is biased. It's not representative of the general UK population. The sample size is also small relative to the UK population.</p>
+
+    <h4>Q3.2 &mdash; Explain how stakeholder mapping would help Simply Bake respond to APO <span class="tag tag-explain">4 marks</span></h4>
+    <p>Stakeholder mapping (the AQA term &mdash; not "Mendelow's Matrix") plots stakeholders by power and interest. APO has high interest but low power (small group, only 400 members). But Greenpeace and WWF have high interest <em>and</em> high power (large memberships, media influence). Supermarket customers are increasingly interested. This helps Simply Bake decide that APO alone isn't the threat &mdash; the larger campaign groups and customer pressure from supermarkets are the real drivers of change.</p>
+
+    <h4>Q3.3 &mdash; Using Lewin's force field analysis, analyse why Simply Bake decided to remove palm oil <span class="tag tag-analysis">9 marks</span></h4>
+    <p><strong>Driving forces (for change):</strong> High-profile media campaigns, supermarket customer enquiries increasing, Greenpeace and WWF campaigns, reputational risk. <strong>Restraining forces (against change):</strong> Alternative ingredients are difficult and expensive to find, palm oil is cheap (allowing them to meet demand for cheap food). The driving forces became stronger over time (APO criticism in 2018, growing customer enquiries by 2019, media campaigns intensifying). The decision was made in 2020 with a 5-year timeline to 2025 &mdash; suggesting the restraining forces (cost and difficulty) were acknowledged but the driving forces had become too strong to resist.</p>
+
+    <h4>Q3.4 &mdash; To what extent will businesses only act responsibly if forced by governments? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>Simply Bake removed palm oil without government legislation &mdash; driven by pressure groups and customer demand. This suggests businesses can be driven to act responsibly by market forces and reputational concerns, not just laws. But counter-examples exist: many businesses continued polluting until emissions regulations forced them to stop. Some businesses adopt CSR proactively because it builds brand value (e.g. Patagonia, The Body Shop). Others only respond to regulation. The answer depends on the visibility of the issue to consumers, the cost of acting responsibly, and the competitive environment. The most significant factor is probably consumer awareness &mdash; when customers care and can see the issue, businesses are more likely to act voluntarily.</p>
+  </div>
+</details>
+
+<hr class="section-divider">
+
+<!-- ===== 2022 ===== -->
+<div class="year-header">
+  <h2 id="y2022">June 2022</h2>
+</div>
+<a class="download-btn" href="papers/7132-2-Jun22.pdf" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+  Download Paper (PDF)
+</a>
+
+<h3>The three businesses</h3>
+<table>
+  <tr><th>Section</th><th>Business</th><th>Context</th></tr>
+  <tr><td>1</td><td><strong>UK tea market</strong></td><td>Tea sales declining, coffee rising. Black tea vs health tea niche. Brand data (Twinings, PG Tips, Taylors, Tetley, Pukka). PED data: black tea &minus;1.2, health tea &minus;0.5.</td></tr>
+  <tr><td>2</td><td><strong>Ocado &amp; M&amp;S venture</strong></td><td>Joint venture for M&amp;S online food. &pound;1.5bn investment. M&amp;S sold &pound;600m shares and cut dividends by 40%. Ocado share price rose 3%.</td></tr>
+  <tr><td>3</td><td><strong>DT (circuit board manufacturer)</strong></td><td>UK-based, exports to Europe. Supplier closed suddenly. Inventory control chart given. No contingency plan. New supplier more expensive with higher defects.</td></tr>
+</table>
+
+<details>
+  <summary>Section 1 &mdash; UK tea market: Data analysis and question breakdown</summary>
+  <div class="details-body">
+    <h4>Key data</h4>
+    <ul>
+      <li>Black tea PED = &minus;1.2 (price elastic &mdash; a price rise loses more revenue than it gains)</li>
+      <li>Health tea PED = &minus;0.5 (price inelastic &mdash; a price rise increases revenue)</li>
+      <li>Pukka growing fastest (+15.4%), PG Tips declining most (&minus;7.2%)</li>
+      <li>Health tea is a growing niche; 62% of consumers say ethical sourcing is important</li>
+      <li>18&ndash;24 year olds drink less tea; over-65s drink more; women more likely to drink health tea</li>
+    </ul>
+
+    <h4>Q1.4 &mdash; Analyse how PED data affects pricing decisions for black tea vs health tea <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Black tea is price elastic (&minus;1.2): a 10% price rise causes a 12% fall in demand, so revenue falls. To increase sales revenue from black tea, you should reduce prices &mdash; the increase in demand more than offsets the lower price. Health tea is price inelastic (&minus;0.5): a 10% price rise only causes a 5% fall in demand, so revenue rises. To increase sales revenue from health tea, you should increase prices. The different elasticities mean the business should adopt different pricing strategies for each product type. This matters because it affects which products the business should invest in and promote.</p>
+
+    <h4>Q1.5 &mdash; To what extent does the information suggest now is a good time to launch a new tea brand? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>The overall tea market is declining. But the health tea niche is growing and has inelastic demand (meaning higher margins are possible). Pukka grew 15.4% by focusing on organic and ethical teas. Consumer research shows 62% value ethical sourcing. So launching a new health/ethical tea brand could work despite the overall decline. Against: the top 4 brands have high combined market share (calculate this from Appendix B), creating barriers to entry. Twinings and Taylors are already in health tea. Breaking through established brands requires significant marketing investment. The answer depends on where in the market you're entering &mdash; black tea would be a poor choice, but a niche ethical health tea brand targeting younger female consumers has data to support it.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 2 &mdash; Ocado & M&S venture: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q2.3 &mdash; Using Maslow's theory, analyse the impact on motivation of senior managers <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Senior managers from both businesses working together on a &pound;1.5bn venture could satisfy higher-level needs. Esteem: leading a high-profile project gives recognition and status. Self-actualisation: the creative challenge of integrating two businesses and building something new. But Maslow's hierarchy says lower needs must be met first &mdash; if managers fear for job security (safety needs) because roles may be duplicated, higher-level motivation won't work. The key mechanism in Maslow is the hierarchy itself, not just listing the levels.</p>
+
+    <h4>Q2.4 &mdash; Are ventures a good way for all businesses to grow? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>For M&amp;S and Ocado, combining M&amp;S's brand and product range with Ocado's technology and distribution makes sense &mdash; each brings something the other lacks. But ventures can fail: conflicts over strategy, cultural clashes, shared profits. Not all businesses have complementary partners available. Small businesses may lack the resources to contribute equally. Alternative growth methods: organic growth (slower but full control), takeover (more expensive but full ownership), franchising. The answer depends on the strategic fit between partners and whether the shared control is acceptable.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 3 &mdash; DT (circuit boards): Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q3.1&ndash;3.3 &mdash; Inventory control chart calculations</h4>
+    <p>From the chart: Maximum inventory = 6,000. Buffer stock = 750. Reorder level = 2,150. Lead time: the gap between the reorder point and delivery arriving. Read from the x-axis. Reorder quantity = Max &minus; Buffer = 6,000 &minus; 750 = 5,250 units. Daily usage: stock falls from 6,000 to 750 (a drop of 5,250) over a measurable number of days from the chart.</p>
+
+    <h4>Q3.4 &mdash; Explain one impact of a fall in the pound on DT's sales <span class="tag tag-explain">4 marks</span></h4>
+    <p>DT exports all output to Europe and sources components in the UK. A weaker pound makes its products cheaper for EU buyers (prices in euros fall), potentially increasing demand and sales volume. At the same time, UK-sourced components don't become more expensive (they're domestic). So a falling pound is good for DT's competitiveness.</p>
+
+    <h4>Q3.5 &mdash; Analyse how contingency planning might have helped DT <span class="tag tag-analysis">9 marks</span></h4>
+    <p>DT had no contingency plan. When its supplier closed, it couldn't find alternatives quickly enough to fill existing orders. The new supplier was more expensive with higher defects. A contingency plan would have identified alternative suppliers in advance, negotiated standby agreements, or maintained a larger buffer stock of critical components. This would have reduced the disruption to production, maintained quality standards, and avoided the cost increase from the emergency supplier switch.</p>
+
+    <h4>Q3.6 &mdash; To what extent is reliability the most important factor in choosing a supplier? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>For DT, reliability was critical &mdash; the supplier's sudden closure devastated the business. But other factors matter too: price (affects cost competitiveness), quality (DT's new supplier had higher defects), flexibility (can the supplier respond to changes in demand?), ethical sourcing (increasingly important to customers and regulators). This is an "all businesses" question: for a JIT manufacturer, reliability is essential. For a business with large buffer stocks, price might matter more. For a premium brand, quality is paramount. The answer depends on the business's operating model and competitive strategy.</p>
+  </div>
+</details>
+
+<hr class="section-divider">
+
+<!-- ===== 2020 ===== -->
+<div class="year-header">
+  <h2 id="y2020">November 2020</h2>
+</div>
+<a class="download-btn" href="papers/7132-2-Nov20.pdf" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+  Download Paper (PDF)
+</a>
+<p style="font-size:0.85rem;color:var(--muted)">(This paper was sat in autumn 2020 instead of summer due to Covid. No exam was sat in summer 2021.)</p>
+
+<h3>The three businesses</h3>
+<table>
+  <tr><th>Section</th><th>Business</th><th>Context</th></tr>
+  <tr><td>1</td><td><strong>Drake Hotels PLC</strong></td><td>20 budget hotels across UK cities. New CEO (Mary Myers, from upmarket hotel background). Investment proposal for a luxury hotel in Oxford targeting overseas visitors. Seasonal and day-of-week booking variation.</td></tr>
+  <tr><td>2</td><td><strong>Nari</strong></td><td>Asian mobile phone manufacturer. Low prices, rapid product launches. JIT manufacturing with global supply chain (50+ countries). Carroll's CSR pyramid. Protectionism in Europe.</td></tr>
+  <tr><td>3</td><td><strong>Zani PLC</strong></td><td>Luxury jewellery retailer. PED = &minus;0.4. Started with venture capital, had power culture under founder Ted. Grew via franchising.</td></tr>
+</table>
+
+<details>
+  <summary>Section 1 &mdash; Drake Hotels: Data analysis and question breakdown</summary>
+  <div class="details-body">
+    <h4>Key data</h4>
+    <ul>
+      <li>ARR = 12%, NPV = &pound;25m (both positive)</li>
+      <li>Sensitivity analysis: 20% chance of pound being 10% higher than forecast; 30% chance of overseas GDP growth being 1.5% higher</li>
+      <li>Income elasticity of demand = +2 (luxury good &mdash; sensitive to income changes)</li>
+      <li>70% of customers overseas, 8% cost of borrowing</li>
+      <li>Current ratio = 15/18 = 0.83 (below 1 &mdash; liquidity concern)</li>
+      <li>Gearing = 280/(280+170) = 62.2% (high &mdash; already heavily borrowed)</li>
+      <li>Seasonal variation: bookings peak July&ndash;August, lowest September&ndash;December; busiest Friday&ndash;Saturday, quietest Monday&ndash;Wednesday</li>
+    </ul>
+
+    <h4>Q1.1 &mdash; Calculate current ratio and gearing <span class="tag tag-calc">6 marks</span></h4>
+    <p>Current ratio = 15/18 = <strong>0.83:1</strong>. Gearing = NCL / (NCL + Equity) &times; 100 = 280/(280+170) &times; 100 = <strong>62.2%</strong>.</p>
+
+    <h4>Q1.2 &mdash; Using sensitivity analysis, explain one reason for using it <span class="tag tag-explain">4 marks</span></h4>
+    <p>There's a 20% probability that the pound rises 10% above forecast. With 70% of customers overseas, a stronger pound makes UK hotels more expensive for foreign visitors, reducing demand. Income elasticity = +2 means demand is very sensitive to income changes. Sensitivity analysis helps managers understand how risky the investment is &mdash; if the pound does strengthen, the demand forecasts underlying the &pound;25m NPV would be too optimistic.</p>
+
+    <h4>Q1.3 &mdash; Analyse HR challenges from booking patterns <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Bookings vary massively by month (peak in summer, low in winter) and by day (Friday&ndash;Saturday highest, midweek lowest). This creates workforce planning challenges: if you staff for peak demand, you overspend during quiet periods. If you staff for average demand, service quality falls during peaks. Solutions include flexible contracts, zero-hour contracts, seasonal workers &mdash; but these may affect motivation and service quality. The objective is efficiency, but the new CEO comes from an upmarket background where service quality matters.</p>
+
+    <h4>Q1.4 &mdash; Recommend whether Drake should go ahead with the Oxford investment <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>For: ARR of 12% exceeds the 8% cost of borrowing, NPV is positive at &pound;25m. Against: gearing is already 62.2% (the business is heavily borrowed), current ratio is 0.83 (potential liquidity issues if more cash is tied up in a new investment), and the income elasticity of +2 means demand is very sensitive to economic conditions &mdash; luxury hotels are hit hard by recessions. The CEO's background in upmarket hotels explains the strategy but Drake's expertise is in budget hotels. The sensitivity analysis shows there's a 20% chance the pound strengthens, which would reduce demand from overseas visitors who make up 70% of the target market. The answer depends on whether Drake can manage the financial risk given its existing balance sheet position.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 2 &mdash; Nari: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q2.1 &mdash; Carroll's CSR pyramid <span class="tag tag-explain">3 marks</span></h4>
+    <p>The highest level of Carroll's pyramid is philanthropic responsibility &mdash; going beyond what's required to contribute positively to society. Nari invests in local communities, donates to charities, and finances environmental initiatives. This goes beyond legal and ethical obligations.</p>
+
+    <h4>Q2.2 &mdash; How marketing managers might respond to protectionism <span class="tag tag-explain">5 marks</span></h4>
+    <p>European governments have limited how many phones Nari can sell. Marketing responses: focus on higher-value models (if quantity is capped, maximise revenue per unit), shift marketing to non-European markets (Asia is 55% of sales and has more room to grow), develop brand awareness so that within the quota, Nari phones are the ones consumers want.</p>
+
+    <h4>Q2.3 &mdash; Analyse ways JIT might affect Nari's profits <span class="tag tag-analysis">9 marks</span></h4>
+    <p>JIT with components from 50+ countries is high-risk. Benefits: lower storage costs, less capital tied up in stock, reduced waste from obsolescence (phones change every few months). Risks: any disruption in the supply chain (customs delays, shipping problems, supplier failure) stops production. Nari promises 48-hour lead times to retailers with penalties for delays &mdash; so a JIT failure doesn't just increase costs, it triggers price discounts to customers. The profit impact depends on how reliable the global supply chain is.</p>
+
+    <h4>Q2.4 &mdash; To what extent is Taylor's theory a good way to motivate all employees? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>Taylor's theory uses financial incentives (piece rate, performance-related pay) based on the idea that workers are primarily motivated by money. This may work in Nari's supplier factories (repetitive manufacturing tasks where output is measurable). But it ignores Maslow's higher-level needs and Herzberg's motivators (recognition, responsibility, achievement). For creative roles, knowledge workers, or service jobs, Taylor's approach may actually demotivate. External examples: Amazon warehouses use Taylor-style monitoring and targets; Google uses Herzberg-style motivators (interesting work, autonomy). The answer depends on the nature of the work and the employees.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 3 &mdash; Zani PLC: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q3.1 &mdash; Define venture capital <span class="tag tag-explain">2 marks</span></h4>
+    <p>Finance provided by investors (venture capitalists) to start-up or early-stage businesses in exchange for equity (a share of the business). It carries high risk but potentially high returns for the investor.</p>
+
+    <h4>Q3.3 &mdash; Analyse why PED for Zani's products is &minus;0.4 <span class="tag tag-analysis">9 marks</span></h4>
+    <p>PED of &minus;0.4 means demand is price inelastic. Reasons: Zani's products are luxury jewellery with strong brand reputation and unique designs &mdash; there are few close substitutes. Customers are high-income earners for whom the price is a smaller proportion of income. Jewellery purchases are often emotional (gifts, celebrations) where price is less decisive. The unique designs create brand loyalty and reduce the ability to switch to competitors.</p>
+
+    <h4>Q3.4 &mdash; To what extent is franchising a good way for any business to grow? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>For Zani, franchising allowed rapid growth (150 franchises worldwide) without the capital investment of opening 150 company-owned stores. Benefits: franchisees fund their own stores, have local market knowledge, and are motivated by owning their business. Risks: quality control is harder (can Zani ensure all 150 stores maintain the premium brand?), franchisees keep a share of profits, and Zani loses some control over the customer experience. For other businesses: franchising works for standardised models (McDonald's, Subway) but is harder for businesses requiring specialist skills or heavy customisation. Not all businesses have a brand worth franchising. The answer depends on whether the business model is easily replicable and whether the brand is strong enough to attract franchisees.</p>
+  </div>
+</details>
+
+<hr class="section-divider">
+
+<!-- ===== 2019 ===== -->
+<div class="year-header">
+  <h2 id="y2019">June 2019</h2>
+</div>
+<a class="download-btn" href="papers/7132-2-Jun19.pdf" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+  Download Paper (PDF)
+</a>
+
+<h3>The three businesses</h3>
+<table>
+  <tr><th>Section</th><th>Business</th><th>Context</th></tr>
+  <tr><td>1</td><td><strong>UK RTE breakfast cereals</strong></td><td>Market research data on Ready to Eat cereals. Kellogg's dominates. Appendices include brand sales data, advertising spending, consumer survey results. (Note: some appendices reproduced from Mintel &mdash; copyrighted so not fully visible.)</td></tr>
+  <tr><td>2</td><td><strong>WeRide plc</strong></td><td>Taxi business with app. Available in 400+ cities, 60 countries. Flexible employment contracts. Facing stricter regulations. Pivoting to electric bicycle rentals.</td></tr>
+  <tr><td>3</td><td><strong>Galin plc</strong></td><td>Large multinational selling in 10 product categories, 50 brands. Regional organisational structure. Invests 3% in R&amp;D (vs 1% industry average). Owns 55,000 patents. Objective: increase labour productivity.</td></tr>
+</table>
+
+<details>
+  <summary>Section 1 &mdash; RTE cereals: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q1.1 &mdash; Why a fall in advertising spending hasn't necessarily caused lower sales <span class="tag tag-explain">2 marks</span></h4>
+    <p>Correlation doesn't prove causation. Other factors could explain the sales decline: changing consumer preferences (health trends), competition from alternative breakfast options, economic conditions affecting spending, or the advertising might have become more efficient (digital vs traditional).</p>
+
+    <h4>Q1.2 &mdash; How value of sales can increase while volume falls <span class="tag tag-explain">2 marks</span></h4>
+    <p>If the average price per unit increases more than the fall in volume, total value rises. This can happen through premiumisation (launching more expensive products) or price increases exceeding the fall in quantity demanded.</p>
+
+    <h4>Q1.4 &mdash; Analyse how combined market share of top 4 affects threat of entry <span class="tag tag-analysis">9 marks</span></h4>
+    <p>This is a Porter's Five Forces question (threat of new entrants). High combined market share of existing firms creates barriers: established brands have strong customer loyalty, economies of scale in production and distribution, control over shelf space in supermarkets, and large advertising budgets. New entrants would need significant investment to compete, and would struggle to win shelf space from established brands. However, the health tea niche shows that small, focused entrants can find space in growing sub-segments.</p>
+
+    <h4>Q1.5 &mdash; Will market research guarantee high sales for Kellogg's new cereal? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>No research can guarantee sales. The data shows consumer preferences and trends, but: tastes change between research and launch, competitors may respond, the sample may not be representative, and execution (packaging, pricing, distribution, marketing) matters as much as the idea. Market research reduces risk but doesn't eliminate it. The answer depends on the quality of the research, the competitive response, and whether Kellogg's executes the launch effectively.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 2 &mdash; WeRide plc: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q2.1 &mdash; Impact of electric bicycle strategy on market capitalisation <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Market capitalisation = share price &times; number of shares. Moving into electric bicycles could increase share price if investors believe it offers long-term growth (urban mobility trend, sustainability). But the CEO admits short-term profits will be damaged, and profit margins on bicycle rides are lower than taxi rides. Investors concerned about dividends may sell shares, pushing the price down. Net effect depends on whether the market sees this as a visionary pivot or a risky gamble.</p>
+
+    <h4>Q2.2 &mdash; Analyse one advantage and one disadvantage of flexible contracts <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Advantage: demand for taxis varies by time of day and location. Flexible contracts let WeRide scale drivers up/down to match demand, keeping labour costs aligned with revenue. Disadvantage: flexible workers may feel less committed to the company, provide inconsistent service quality, and may work for competing platforms simultaneously &mdash; reducing WeRide's competitive advantage.</p>
+
+    <h4>Q2.3 &mdash; To what extent do legal changes create more threats than opportunities? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>For WeRide, legal changes are threatening: licence limits reduce growth, safety bans remove them from some cities. But legal changes can create opportunities for other businesses: the electric bicycle market benefits from congestion charges and emission zones. For established businesses, regulation can be a barrier to new entrants (compliance costs are proportionally higher for smaller firms). The answer depends on the business's ability to adapt and whether the regulation targets their product or their competitors'.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 3 &mdash; Galin plc: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q3.1 &mdash; Analyse how R&amp;D and patents help Galin achieve high margins <span class="tag tag-analysis">9 marks</span></h4>
+    <p>R&amp;D (3% of revenue, triple the industry average) creates innovative products that competitors can't easily copy. Patents (55,000) provide legal protection, preventing competitors from replicating products for years. This means Galin can charge premium prices because customers can't get the same product elsewhere. The combination creates sustainable differentiation &mdash; a Porter's generic strategy of differentiation supported by ongoing innovation.</p>
+
+    <h4>Q3.2 &mdash; Analyse why Galin chose regional over functional structure <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Galin operates in 6 regions with "major differences" in market conditions, labour markets, and economic factors. A functional structure (marketing, finance, operations as separate global departments) would struggle to respond to these regional differences. A regional structure puts decision-making closer to local markets, allowing product ranges, pricing, and marketing to be tailored. The trade-off is potential duplication of functions across regions, but the benefits of local responsiveness outweigh this for a business operating in such diverse markets.</p>
+
+    <h4>Q3.3 &mdash; To what extent will attempts to increase labour productivity be welcomed by employees? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>Employees might welcome productivity improvements if they lead to profit-sharing, better equipment, or skills development. But productivity drives often mean: more pressure/intensity, automation replacing jobs, reduced breaks, or redundancies. The reaction depends on how productivity is increased (technology vs working harder), how gains are shared (better pay or just higher profits), and the existing relationship between management and workers. External examples: automation in manufacturing (threatening for workers), training programmes (generally welcomed), performance monitoring (often resisted).</p>
+  </div>
+</details>
+
+<hr class="section-divider">
+
+<!-- ===== 2018 ===== -->
+<div class="year-header">
+  <h2 id="y2018">June 2018</h2>
+</div>
+<a class="download-btn" href="papers/7132-2-Jun18.pdf" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+  Download Paper (PDF)
+</a>
+
+<h3>The three businesses</h3>
+<table>
+  <tr><th>Section</th><th>Business</th><th>Context</th></tr>
+  <tr><td>1</td><td><strong>Marks &amp; Spencer plc</strong></td><td>1,433 stores worldwide. Balance sheet data, revenue/profit chart (2013&ndash;17), customer data, online data, board diversity, share price decline. Rival considering a takeover.</td></tr>
+  <tr><td>2</td><td><strong>Lego</strong></td><td>Private limited company owned by Kristiansen family. Investing in China and Mexico. 60% of sales from new products each year. Exchange rate exposure. Strong culture.</td></tr>
+  <tr><td>3</td><td><strong>Global Airways (GA)</strong></td><td>Proposed lower pay for new cabin crew. Trade union (UAS) opposing. Strike action possible. Income elasticity +1.5, target market income falling 2%. Contingency planning.</td></tr>
+</table>
+
+<details>
+  <summary>Section 1 &mdash; M&S: Data analysis and question breakdown</summary>
+  <div class="details-body">
+    <h4>Key data</h4>
+    <ul>
+      <li>Balance sheet: NCA &pound;6,569m, CA &pound;1,723m, CL &pound;2,368m, NCL &pound;2,774m, Equity &pound;3,150m</li>
+      <li>Revenue stable (~&pound;10.3&ndash;10.6bn) but operating profit volatile (peaked &pound;701m, dipped to &pound;584m)</li>
+      <li>Clothing customers: 24.6m but flat growth, visiting 7.2 times/year and declining (&minus;5.3%)</li>
+      <li>Food customers: 20.5m, growing 2%, visiting 22.5 times/year</li>
+      <li>Online revenue &pound;836m, growing 5.6%, weekly visits growing 11%</li>
+      <li>Board diversity: international (12 countries), 70:30 male:female, e-commerce experience only 40%</li>
+      <li>Share price fell from ~600p to ~300p (2015&ndash;2017)</li>
+    </ul>
+
+    <h4>Q1.3 &mdash; Calculate three ratios <span class="tag tag-calc">9 marks</span></h4>
+    <p>ROCE = (691 / (3,150 + 2,774)) &times; 100 = 691/5,924 &times; 100 = <strong>11.67%</strong>. Gearing = 2,774 / (2,774 + 3,150) &times; 100 = <strong>46.79%</strong>. Current ratio = 1,723 / 2,368 = <strong>0.73</strong>.</p>
+
+    <h4>Q1.4 &mdash; Explain two benefits of board diversity <span class="tag tag-explain">6 marks</span></h4>
+    <p>International experience (directors from 12 countries) brings understanding of overseas markets where M&amp;S operates 1,433 stores. This helps with decisions about international expansion, cultural adaptation, and local market conditions. Industry diversity (retail 90%, finance 60%, e-commerce 40%) means the board has a range of expertise, though the low e-commerce representation (40%) is a concern given that online is the fastest-growing channel.</p>
+
+    <h4>Q1.5 &mdash; How useful would the data be to a rival considering a takeover? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>The data is useful: balance sheet shows assets and liabilities, revenue and profit trends show performance, customer data identifies strengths (food) and weaknesses (clothing). But it's limited: it's historical (past performance doesn't predict the future), it doesn't show the price the rival would need to pay (market capitalisation from share price would), it doesn't include competitor data, and it doesn't capture intangible assets like brand value. The share price decline means the business might be cheaper to acquire now, but also raises questions about why it's falling. A rival would need more information: brand valuation, lease commitments, pension liabilities, management contracts.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 2 &mdash; Lego: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q2.1 &mdash; How would decisions differ if Lego were a PLC? <span class="tag tag-analysis">9 marks</span></h4>
+    <p>As a private limited company owned by one family, Lego can prioritise long-term investment over short-term profits. They've invested heavily, reducing dividends. If Lego were a PLC, shareholders might demand higher dividends, creating pressure for short-term profit maximisation at the expense of R&amp;D investment (which accounts for 60% of sales). A PLC board would face quarterly reporting pressure and potential hostile takeover threats. The family ownership allows Lego to maintain its culture and values without external shareholder pressure.</p>
+
+    <h4>Q2.2 &mdash; Actions to ensure employees share the culture <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Recruitment: hire people whose values align with "Creativity, Imagination, Fun, Learning, Quality and Care." Training: induction programmes that immerse new employees in the company values. Leadership: managers who model the culture in daily decisions. Communication: regular sharing of how decisions connect to values. Rewards: recognising employees who demonstrate the values. The key mechanism is that culture is maintained through every touchpoint between the business and its employees, not through a single initiative.</p>
+
+    <h4>Q2.3 &mdash; To what extent do managers of all businesses need to worry about exchange rates? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>For Lego (selling in 130 countries, Danish Krone reporting), exchange rates significantly affect profits. The chart shows the Krone fluctuating against the Euro &mdash; since a "significant proportion" of sales are in Europe, a stronger Krone reduces the value of European revenue when converted back. But not all businesses are exposed: a local restaurant buys and sells domestically. A business that imports materials is affected by different currencies than one that exports. Hedging can reduce risk. The answer depends on the proportion of international trade and whether both costs and revenues are in the same currency.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 3 &mdash; Global Airways: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q3.1 &mdash; How cutting ticket prices might increase operating profit margin <span class="tag tag-explain">5 marks</span></h4>
+    <div class="trap-box">
+      <strong>Read carefully:</strong> This asks about operating profit <em>margin</em>, not operating profit. A price cut normally reduces margin per ticket. The argument is that lower prices increase demand (filling more seats), which spreads fixed costs over more tickets, potentially reducing cost per ticket by more than the price reduction. An aircraft flying half-empty has the same fuel, crew, and airport costs as a full one.</p>
+    </div>
+
+    <h4>Q3.2 &mdash; Using Lewin's force field analysis, analyse one driving and one restraining force <span class="tag tag-analysis">9 marks</span></h4>
+    <p><strong>Driving force:</strong> Income elasticity of +1.5 with target market income falling 2%. This means demand will fall (elastic to income changes), so cutting costs through lower wages for new staff is commercially important to maintain competitiveness as customers become more price-sensitive.</p>
+    <p><strong>Restraining force:</strong> UAS membership at 65% and increasing. A strong union with growing membership is better positioned to organise effective strike action, resist the pay change, and influence other employees. This creates resistance to the proposed change.</p>
+
+    <h4>Q3.3 &mdash; To what extent is contingency planning essential for an airline? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>GA has already done contingency planning &mdash; leasing planes and crew from another airline to maintain 99% of schedule during a potential strike. Airlines face many risks: weather, technical failures, strikes, terrorism, pandemics, volcanic ash. The high fixed costs and reputational importance of reliability make contingency planning essential. But contingency planning is expensive (maintaining standby capacity, insurance, alternative suppliers) and resources spent on contingency could be invested in growth. For a business with lower fixed costs and less reputational sensitivity, the cost-benefit calculation is different. The answer depends on the industry's risk profile and the consequences of failure.</p>
+  </div>
+</details>
+
+<hr class="section-divider">
+
+<!-- ===== 2017 ===== -->
+<div class="year-header">
+  <h2 id="y2017">June 2017</h2>
+</div>
+<a class="download-btn" href="papers/7132-2-Jun17.pdf" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+  Download Paper (PDF)
+</a>
+<p style="font-size:0.85rem;color:var(--muted)">(This was the first ever Paper 2 on the current specification.)</p>
+
+<h3>The three businesses</h3>
+<table>
+  <tr><th>Section</th><th>Business</th><th>Context</th></tr>
+  <tr><td>1</td><td><strong>Discount food retailers</strong></td><td>Aldi/Lidl vs the "big four" (Tesco, Asda, Sainsbury's, Morrisons). Market data, market map, consumer survey, employee cost comparison. Discounters growing market share from 7.3% to 11.9%.</td></tr>
+  <tr><td>2</td><td><strong>Daihatsu</strong></td><td>Japanese car manufacturer offering mass customisation through 3D printing. Capacity utilisation at 78% globally. Predicting price wars.</td></tr>
+  <tr><td>3</td><td><strong>Kento Cola</strong></td><td>UK drinks manufacturer. CSD market facing obesity criticism/taxes. Investing &pound;2.4bn in Africa. Planned merger with South African water/drinks producer. Hofstede's Power Distance, Boston Matrix, Africa vs Europe comparison.</td></tr>
+</table>
+
+<details>
+  <summary>Section 1 &mdash; Discount retailers: Data analysis and question breakdown</summary>
+  <div class="details-body">
+    <h4>Key data</h4>
+    <ul>
+      <li>Total UK food retail: &pound;147bn (2011) &rarr; &pound;157bn (2015, actual), forecast to &pound;164bn (2020)</li>
+      <li>Discount retailers: &pound;9bn (2011) &rarr; &pound;17bn (2015), forecast to &pound;25bn (2020)</li>
+      <li>Discounters: 800 items vs 50,000 for big four; 80:20 food:non-food vs 60:40; admin costs 15% vs 20%; profit margin 3% vs 2%</li>
+      <li>Big four market share: 62.6% (2012) &rarr; 58.1% (2016). Discounters: 7.3% &rarr; 11.9%</li>
+      <li>Aldi: &pound;6,893m turnover, &pound;250m profit, 23,858 employees, avg salary &pound;21,272</li>
+      <li>Tesco: &pound;54,443m turnover, &pound;162m profit, 482,152 employees, avg salary &pound;14,452</li>
+    </ul>
+
+    <h4>Q1.1 &mdash; Calculate discount retailers' market share in 2015 <span class="tag tag-calc">3 marks</span></h4>
+    <p>Market share = (Discount retailer sales / Total market sales) &times; 100 = (&pound;17bn / &pound;157bn) &times; 100 = <strong>10.8%</strong>.</p>
+
+    <h4>Q1.2 &mdash; Explain the meaning of 95% confidence interval <span class="tag tag-explain">3 marks</span></h4>
+    <p>The forecast for 2020 shows a range (&pound;142bn worst case to &pound;185bn best case) with &pound;164bn as the central forecast. The 95% confidence interval means that based on the data, there is a 95% probability that the actual figure will fall within the shaded range. It shows the uncertainty in the forecast &mdash; the wider the interval, the less certain the prediction.</p>
+
+    <h4>Q1.3 &mdash; Using Figure 6 data, explain how discounters manage HR effectively <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Calculate and compare:</p>
+    <ul>
+      <li><strong>Profit per employee:</strong> Aldi = &pound;250m / 23,858 = &pound;10,479. Tesco = &pound;162m / 482,152 = &pound;336. Aldi generates over 31 times more profit per employee.</li>
+      <li><strong>Average salary:</strong> Aldi pays &pound;21,272 vs Tesco's &pound;14,452 &mdash; 47% more. Higher wages can improve recruitment, reduce turnover, increase motivation.</li>
+      <li><strong>Employee costs as % of revenue:</strong> Aldi = &pound;507m / &pound;6,893m = 7.4%. Tesco = &pound;6,968m / &pound;54,443m = 12.8%. Despite paying more per person, Aldi's labour cost ratio is much lower because it operates with fewer staff in simpler stores.</li>
+    </ul>
+    <p>The data supports the view: Aldi pays more per person (attracting better staff), has far fewer staff (simple store layout, limited range = less stacking, less customer service needed), and generates far more profit per employee. This is a lean HR model: fewer, better-paid staff delivering higher productivity.</p>
+
+    <h4>Q1.4 &mdash; Should the big four adopt the discounter model? <span class="tag tag-evaluate">20 marks</span></h4>
+    <p>Arguments for: discounters are growing rapidly (7.3% &rarr; 11.9% market share), have higher profit margins (3% vs 2%) despite lower prices, and lower admin costs (15% vs 20%). The consumer survey shows customers value availability and helpfulness &mdash; areas where a simplified model could still deliver.</p>
+    <p>Arguments against: the big four's strength is range (50,000 items), brand selection, and non-food sales (40% of revenue). Adopting the discounter model would mean abandoning 30,000+ products and the non-food business. Their customer base expects choice and premium brands. The market map shows the big four are positioned differently (higher price, higher perceived benefits) &mdash; moving down-market risks losing existing customers without necessarily winning discount shoppers. A halfway approach (Tesco's "Everyday Value" range, Sainsbury's "Basics") might be more appropriate than wholesale adoption.</p>
+    <p>Evaluation: the most significant factor is probably that the big four have built their businesses around a fundamentally different model. A full switch would destroy their existing competitive advantages. It makes more sense to defend against discounters through selective measures (price-matching, own-brand improvements, cost reduction) while maintaining the differentiation that keeps their core customers.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 2 &mdash; Daihatsu: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q2.1 &mdash; How mass customisation benefits shareholders <span class="tag tag-explain">6 marks</span></h4>
+    <p>Mass customisation through 3D printing lets customers design their own panels cheaply. This can increase demand (competitive advantage), potentially commanding higher prices (customers pay for personalisation), and differentiates Daihatsu in a "fiercely competitive environment." If demand and/or prices rise, revenue increases. If costs are kept low through 3D printing technology, profit margins improve. Higher profits can lead to increased dividends for shareholders and/or a higher share price.</p>
+
+    <h4>Q2.2 &mdash; Analyse effects of interest rate rise on car manufacturers' profits <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Cars are usually bought on credit, often with manufacturer finance. Higher interest rates increase the cost of borrowing for consumers &mdash; reducing demand for new cars (especially at current 78% capacity utilisation). Higher rates also increase the cost of holding inventory and financing operations. With 74 million cars sold globally and only 78% capacity utilisation, manufacturers already have spare capacity. Falling demand would push utilisation lower, increasing unit costs and squeezing margins further.</p>
+
+    <h4>Q2.3 &mdash; To what extent is price cutting a good response to falling capacity utilisation? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>For car manufacturers, price cutting might increase volume and utilisation, spreading fixed costs over more units. But if all manufacturers cut prices, nobody gains market share &mdash; everyone just has lower margins (a price war). Alternative responses: reduce capacity (close factories), diversify into related markets, innovate to create demand for new types of vehicle, or focus on niche markets less affected by overcapacity. The answer depends on the level of competition, the elasticity of demand, and whether the overcapacity is temporary or structural. For industries with high fixed costs (car manufacturing), price cutting can be a rational short-term response, but it's destructive if everyone does it simultaneously.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Section 3 &mdash; Kento Cola: Question breakdown</summary>
+  <div class="details-body">
+    <h4>Q3.1 &mdash; How Power Distance differences affect a UK manager in South Africa <span class="tag tag-analysis">9 marks</span></h4>
+    <p>Note: The current AQA spec has removed Hofstede from the required models, but if the exam provides the data (as here), use it as presented. South Africa's Power Distance (49) is higher than the UK (35). This means South African employees may be more accustomed to hierarchical management and less likely to challenge authority. A UK manager used to a more consultative style may need to adapt &mdash; she might need to give clearer directives rather than seeking consensus, and may find that employees expect more formal communication and clearer chains of command.</p>
+
+    <h4>Q3.2 &mdash; Using the Boston Matrix, analyse actions Kento should take regarding its European portfolio <span class="tag tag-analysis">9 marks</span></h4>
+    <p>From Figure 8: Still water and orange juice are stars (high growth, high market share). Cola is a cash cow (low growth, high market share). Vanilla cola is a question mark (low growth, high market share &mdash; or possibly positioned differently). Mint cola is a dog (low growth, low market share, small revenue). Cherry cola is borderline. Kento should: invest in stars (still water and orange juice &mdash; growing markets), harvest cash from cola (use the profits to fund investment elsewhere), consider divesting mint cola (small revenue, weak position), and make decisions about vanilla and cherry based on growth potential. The planned merger with a South African water and still drinks producer aligns with investing in the star category.</p>
+
+    <h4>Q3.3 &mdash; To what extent is Africa an attractive market for all businesses? <span class="tag tag-evaluate">16 marks</span></h4>
+    <p>For Kento Cola, Africa is attractive: population of 1.2 billion growing at 2.53%, average age 19.5 (young consumers), consumer spending expected to reach &pound;1.7 trillion by 2030, and high GDP growth. But challenges are significant: average income only &pound;1,400/year (vs &pound;29,200 in Europe), only 40% urban (distribution challenge), and countries differ enormously in political stability, infrastructure, and regulation. For premium/luxury brands, the low average income limits the addressable market. For businesses requiring reliable infrastructure (e.g. cold chain logistics, internet-dependent services), the developing infrastructure is a barrier. The answer depends on the product, price point, and the business's ability to adapt to diverse, developing markets. Africa is most attractive for businesses selling affordable consumer goods to young, growing populations.</p>
+  </div>
+</details>
+
+<hr class="section-divider">
+
+<h2>Patterns across all papers</h2>
+<p>Having worked through every Paper 2 since 2017, a few things stand out that are worth keeping in mind as you revise:</p>
+
+<h3>Topics that come up regularly</h3>
+<table>
+  <tr><th>Topic</th><th>Years it appears</th></tr>
+  <tr><td>Financial ratios (ROCE, gearing, current ratio, payables days)</td><td>2018, 2020, 2022, 2023, 2024, 2025</td></tr>
+  <tr><td>Motivation theory (Herzberg, Maslow, Taylor)</td><td>2020, 2022, 2023, 2025</td></tr>
+  <tr><td>Exchange rates / international trade</td><td>2017, 2018, 2020, 2022, 2025</td></tr>
+  <tr><td>Capacity utilisation and operations</td><td>2017, 2023</td></tr>
+  <tr><td>Investment appraisal (NPV, ARR, decision trees)</td><td>2020, 2023, 2025</td></tr>
+  <tr><td>Organisational structure / change management</td><td>2019, 2024, 2025</td></tr>
+  <tr><td>CSR / ethics / stakeholders</td><td>2017, 2020, 2023</td></tr>
+  <tr><td>Inventory management / supply chain</td><td>2020, 2022, 2025</td></tr>
+  <tr><td>Competitive strategy / market positioning</td><td>2017, 2019, 2024</td></tr>
+  <tr><td>Labour turnover / HR objectives</td><td>2023, 2024, 2025</td></tr>
+</table>
+
+<h3>Things to practise</h3>
+<ul>
+  <li><strong>Multi-step calculations</strong> &mdash; not just plugging numbers into a formula, but working out which numbers to use first (e.g. calculating cost of sales from revenue minus gross profit before you can work out payables days)</li>
+  <li><strong>Reading data across multiple appendices</strong> &mdash; the best answers connect data from different sources rather than treating each appendix separately</li>
+  <li><strong>"All businesses" essays</strong> &mdash; have 3&ndash;4 well-known businesses from different sectors ready to use as external examples (a manufacturer, a service business, a retailer, a tech company)</li>
+  <li><strong>Elasticity questions</strong> &mdash; understanding both PED and YED, including negative income elasticity for inferior goods</li>
+  <li><strong>Theory accuracy</strong> &mdash; especially Herzberg (pay is a hygiene factor, not a motivator), Maslow (explain the hierarchy mechanism, don't just list levels), and Porter's Five Forces (explain the mechanism, don't just name the forces)</li>
+</ul>
+
+<p style="color:var(--muted); font-size:0.85rem; margin-top:3rem; border-top:1px solid var(--border); padding-top:1rem;">Nishkam School West London &middot; AQA A-Level Business (7132/2) &middot; Man Neeva, Mat Uchi</p>
