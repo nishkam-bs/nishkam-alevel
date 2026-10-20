@@ -605,7 +605,7 @@ const STAGES = [
 STAGES.forEach(s=>s.items.forEach((it,i)=>{it._id=s.id+'.'+(i+1);}));
 
 /* Tracking only runs on the school site. Everywhere else the course works on its own. */
-const TRACKING_ON=false; // switch to true once the nishkam-tracker Worker is live
+const TRACKING_ON=true;
 const TRACK=TRACKING_ON&&/github\.io$/.test(location.hostname);
 const API='https://nishkam-tracker.alevelnishkam.workers.dev';
 const KEY='endpoint_course_v1';
