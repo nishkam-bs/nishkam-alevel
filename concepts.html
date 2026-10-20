@@ -450,7 +450,7 @@ OUTPUT THIS EXACT HTML STRUCTURE:
 Do NOT include any other HTML. Do NOT wrap in markdown. Go straight into the first <div>.`;
 
   try{
-    const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
       model:"claude-sonnet-4-6",max_tokens:2000,
       system:sysPrompt,
       messages:[{role:"user",content:`Explain the concept: ${name}`}]
@@ -509,7 +509,7 @@ async function runVisual(){
   btn.innerHTML='<div class="ld show"><div class="spin"></div><p style="font-size:13px;color:var(--muted)">Building your visual explanation...</p></div>';
 
   try{
-    const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
       model:"claude-sonnet-4-6",max_tokens:800,
       system:`You are building an animated visual explainer for an AQA A-Level Business concept. Return ONLY valid JSON (no markdown, no backticks).
 
