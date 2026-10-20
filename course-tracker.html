@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Course Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{--bg:#f6f4ee;--bg2:#efece3;--card:#fff;--fg:#17202e;--muted:#5d6676;--line:rgba(23,32,46,.12);--gold:#a8790f;--gold-soft:rgba(168,121,15,.12);
+  --ok:#2f8a4a;--ok-soft:rgba(47,138,74,.14);--amber:#b7791f;--amber-soft:rgba(183,121,31,.15);--end:#c8463c;--end-soft:rgba(200,70,60,.11);--shadow:0 1px 2px rgba(23,32,46,.06),0 8px 28px rgba(23,32,46,.07)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1420;--bg2:#121a28;--card:#172133;--fg:#e9ecf2;--muted:#9aa4b6;--line:rgba(255,255,255,.09);--gold:#e0b553;--gold-soft:rgba(224,181,83,.13);
+  --ok:#5fcf80;--ok-soft:rgba(95,207,128,.14);--amber:#e8b04a;--amber-soft:rgba(232,176,74,.14);--end:#ff7d70;--end-soft:rgba(255,125,112,.12);--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2{font-family:"DM Serif Display",Georgia,serif;font-weight:400;margin:0;line-height:1.15}
+.wrap{max-width:1200px;margin:0 auto;padding:32px max(16px,env(safe-area-inset-right,0px)) 60px max(16px,env(safe-area-inset-left,0px))}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.top h1{font-size:2.2rem}
+.top p{color:var(--muted);margin:4px 0 0}
+.btn{border:0;cursor:pointer;border-radius:999px;padding:9px 18px;font:600 .9rem "IBM Plex Sans",sans-serif;background:var(--fg);color:var(--bg)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+.login{max-width:420px;margin:12vh auto 0}
+.login h1{font-size:1.9rem;margin-bottom:6px}
+.login p{color:var(--muted);margin:0 0 16px}
+input{width:100%;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:11px 13px;font:16px "IBM Plex Sans",sans-serif;margin-bottom:12px}
+.err{color:var(--end);font-size:.9rem;min-height:1.3em;margin-top:8px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.stat b{display:block;font:400 2rem "DM Serif Display",Georgia,serif}
+.stat span{color:var(--muted);font-size:.85rem}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-items:start}
+.side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+th{font-weight:600;font-size:.75rem;color:var(--muted)}
+th.l,td.l{text-align:left}
+td.l button{border:0;background:none;color:var(--fg);font:600 .9rem "IBM Plex Sans",sans-serif;cursor:pointer;padding:0;text-align:left}
+td.l button:hover{text-decoration:underline}
+.cell{display:inline-block;min-width:44px;padding:3px 6px;border-radius:6px;font:600 .78rem "IBM Plex Mono",monospace}
+.cell.p{background:var(--ok-soft);color:var(--ok)}
+.cell.a{background:var(--amber-soft);color:var(--amber)}
+.cell.n{color:var(--line)}
+.muted{color:var(--muted)}
+h2{font-size:1.35rem;margin-bottom:12px}
+.bars{display:grid;gap:8px}
+.barrow{display:grid;grid-template-columns:120px minmax(0,1fr) 44px;gap:10px;align-items:center;font-size:.85rem}
+.barrow .t{height:10px;border-radius:9px;background:var(--line);overflow:hidden}
+.barrow .t i{display:block;height:100%;background:var(--ok);border-radius:9px}
+.miss{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.miss li{display:flex;gap:10px;font-size:.85rem;align-items:baseline}
+.miss .c{font:600 .8rem "IBM Plex Mono",monospace;color:var(--end);min-width:28px}
+.detail{margin-top:20px}
+.attempt{padding:10px 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.attempt:last-child{border-bottom:0}
+.answer{white-space:pre-wrap;background:var(--bg2);border-radius:10px;padding:14px;margin-top:8px;line-height:1.7}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-top:10px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+select{border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:8px 10px;font:inherit}
+[hidden]{display:none!important}
+@media (max-width:900px){.side{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div id="loginView" class="login card">
+  <h1>Course tracker</h1>
+  <p>Start Point/End Point Course. Teacher access only.</p>
+  <form id="lf"><input type="password" id="pw" placeholder="Teacher password" autocomplete="current-password" aria-label="Teacher password"><button class="btn" type="submit">Open</button><div class="err" id="lerr"></div></form>
+</div>
+
+<div id="dash" hidden>
+  <div class="top">
+    <div><h1>Start Point/End Point Course</h1><p id="updated"></p></div>
+    <div style="display:flex;gap:10px"><button class="btn ghost" id="refresh">Refresh</button><button class="btn ghost" id="logout">Sign out</button></div>
+  </div>
+  <div class="stats">
+    <div class="card stat"><b id="sStarted">0</b><span>students started</span></div>
+    <div class="card stat"><b id="sDone">0</b><span>finished all 10 stages</span></div>
+    <div class="card stat"><b id="sAvg">0</b><span>average stages passed</span></div>
+    <div class="card stat"><b id="sWeek">0</b><span>attempts in the last 7 days</span></div>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="card">
+        <div class="filters"><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
+        <div class="tablewrap"><table id="tbl"></table></div>
+        <div class="legend"><span><span class="cell p">8/10</span> passed (best score)</span><span><span class="cell a">5/10</span> tried, not passed yet</span><span>Click a name to see attempts and written answers</span></div>
+      </div>
+      <div class="card detail" id="detail" hidden></div>
+    </div>
+    <div class="side">
+      <div class="card"><h2>Pass rate by stage</h2><div class="bars" id="bars"></div></div>
+      <div class="card"><h2>Most missed questions</h2><ul class="miss" id="miss"></ul><p class="muted" style="font-size:.8rem;margin:12px 0 0">Counts every attempt. The number before the source is stage.question.</p></div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+(function(){
+"use strict";
+const API='https://nishkam-tracker.alevelnishkam.workers.dev';
+const STAGES=[[1,'Read the question',10],[2,'Spot the drift',10],[3,'Build the chain',3],[4,'Find the weak link',6],[5,'Explain the link',9],[6,'Read every word',8],[7,'Use the theory',8],[8,'Numbers in the chain',6],[9,'Against the clock',12],[10,'The real thing',1]];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let token=null,data=null;
+try{token=sessionStorage.getItem('ct_token');}catch(e){}
+
+async function api(path,body){
+  const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok){const e=new Error(d.error||'Something went wrong');e.status=r.status;throw e;}
+  return d;
+}
+$('#lf').onsubmit=async e=>{e.preventDefault();$('#lerr').textContent='';
+  try{const d=await api('/teacher',{password:$('#pw').value});token=d.token;try{sessionStorage.setItem('ct_token',token);}catch(x){}$('#pw').value='';load();}
+  catch(x){$('#lerr').textContent=x.message==='Failed to fetch'?'Could not connect.':x.message;}};
+$('#logout').onclick=()=>{token=null;try{sessionStorage.removeItem('ct_token');}catch(e){}$('#dash').hidden=true;$('#loginView').hidden=false;};
+$('#refresh').onclick=()=>load();
+$('#sort').onchange=()=>render();
+
+async function load(){
+  $('#refresh').disabled=true;
+  try{data=await api('/dashboard',{token});$('#loginView').hidden=true;$('#dash').hidden=false;render();
+    $('#updated').textContent='Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}
+  catch(x){if(x.status===401){$('#logout').click();$('#lerr').textContent='Please sign in again.';}else alert(x.message);}
+  $('#refresh').disabled=false;
+}
+
+function students(){
+  const m={};
+  Object.entries(data.roster).forEach(([exam,name])=>{m[exam]={exam,name,rows:[]};});
+  data.rows.forEach(r=>{(m[r.exam]=m[r.exam]||{exam:r.exam,name:r.name,rows:[]}).rows.push(r);});
+  return Object.values(m).map(s=>{
+    const st={};s.rows.forEach(r=>{const x=st[r.stage]=st[r.stage]||{best:-1,passed:false,tries:0};x.tries++;if(r.score>x.best)x.best=r.score;if(r.passed)x.passed=true;});
+    const passedN=Object.values(st).filter(x=>x.passed).length;
+    const last=s.rows.reduce((a,r)=>r.t>a?r.t:a,'');
+    return Object.assign(s,{st,passedN,last});
+  });
+}
+function render(){
+  const list=students(),sort=$('#sort').value;
+  list.sort(sort==='prog'?(a,b)=>b.passedN-a.passedN||a.name.localeCompare(b.name):sort==='recent'?(a,b)=>(b.last||'').localeCompare(a.last||''):(a,b)=>a.name.localeCompare(b.name));
+  const started=list.filter(s=>s.rows.length);
+  $('#sStarted').textContent=`${started.length} / ${list.length}`;
+  $('#sDone').textContent=list.filter(s=>s.passedN===10).length;
+  $('#sAvg').textContent=list.length?(list.reduce((a,s)=>a+s.passedN,0)/list.length).toFixed(1):'0';
+  const wk=Date.now()-7*86400000;$('#sWeek').textContent=data.rows.filter(r=>Date.parse(r.t)>wk).length;
+
+  $('#tbl').innerHTML=`<thead><tr><th class="l">Student</th>${STAGES.map(s=>`<th title="${esc(s[1])}">${s[0]}</th>`).join('')}<th>Last active</th></tr></thead><tbody>${list.map(s=>`<tr><td class="l"><button data-e="${esc(s.exam)}">${esc(s.name)}</button> <span class="muted">${esc(s.exam)}</span></td>${STAGES.map(([id,,tot])=>{const x=s.st[id];
+    if(!x)return '<td><span class="cell n">·</span></td>';const lab=id===10?(x.passed?'Done':'Tried'):`${x.best}/${tot}`;
+    return `<td><span class="cell ${x.passed?'p':'a'}" title="${x.tries} attempt${x.tries>1?'s':''}">${lab}</span></td>`;}).join('')}<td class="muted">${s.last?ago(s.last):'Not started'}</td></tr>`).join('')}</tbody>`;
+  document.querySelectorAll('#tbl button').forEach(b=>b.onclick=()=>detail(list.find(s=>s.exam===b.dataset.e)));
+
+  $('#bars').innerHTML=STAGES.map(([id,t])=>{const tried=list.filter(s=>s.st[id]).length,p=list.filter(s=>s.st[id]&&s.st[id].passed).length,pct=tried?Math.round(p/tried*100):0;
+    return `<div class="barrow"><span title="${esc(t)}">${id}. ${esc(t)}</span><div class="t"><i style="width:${pct}%"></i></div><span class="muted">${tried?pct+'%':'–'}</span></div>`;}).join('');
+
+  const miss={};data.rows.forEach(r=>r.missed.forEach(m=>{miss[m]=(miss[m]||0)+1;}));
+  const top=Object.entries(miss).sort((a,b)=>b[1]-a[1]).slice(0,15);
+  $('#miss').innerHTML=top.length?top.map(([m,c])=>`<li><span class="c">${c}</span><span>${esc(m)}</span></li>`).join(''):'<li class="muted">Nothing yet.</li>';
+}
+function detail(s){
+  const d=$('#detail');d.hidden=false;
+  const rows=s.rows.slice().sort((a,b)=>b.t.localeCompare(a.t));
+  d.innerHTML=`<h2>${esc(s.name)} <span class="muted" style="font-size:1rem">${esc(s.exam)}</span></h2>${rows.length?rows.map(r=>`<div class="attempt"><b>Stage ${r.stage}</b> · ${r.stage===10?(r.passed?'completed':'not completed'):`${r.score}/${r.total} ${r.passed?'passed':'not passed'}`} · ${Math.round(r.seconds/60)} min · <span class="muted">${new Date(r.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
+    ${r.missed.length?`<div class="muted" style="font-size:.82rem;margin-top:4px">Missed: ${r.missed.map(esc).join('; ')}</div>`:''}${r.answer?`<div class="answer">${esc(r.answer)}</div>`:''}</div>`).join(''):'<p class="muted">No attempts yet.</p>'}`;
+  d.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function ago(t){const m=Math.round((Date.now()-Date.parse(t))/60000);if(m<60)return m+' min ago';const h=Math.round(m/60);if(h<24)return h+' h ago';return Math.round(h/24)+' days ago';}
+if(token)load();
+})();
+</script>
+</body>
+</html>
