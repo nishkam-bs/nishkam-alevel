@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Start Point/End Point Course</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+body{margin:0}
+:root{
+  --bg:#f6f4ee; --bg2:#efece3; --card:#ffffff; --fg:#17202e; --muted:#5d6676; --line:rgba(23,32,46,.12);
+  --gold:#a8790f; --gold-soft:rgba(168,121,15,.12);
+  --start:#0f8a80; --start-soft:rgba(15,138,128,.12);
+  --end:#c8463c; --end-soft:rgba(200,70,60,.11);
+  --chain:#6b4fd8; --chain-soft:rgba(107,79,216,.10);
+  --ok:#2f8a4a; --ok-soft:rgba(47,138,74,.12);
+  --shadow:0 1px 2px rgba(23,32,46,.06),0 8px 28px rgba(23,32,46,.08);
+  --hero1:#fbf7ec; --hero2:#eef3f2; --lock:rgba(23,32,46,.35);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1420; --bg2:#121a28; --card:#172133; --fg:#e9ecf2; --muted:#9aa4b6; --line:rgba(255,255,255,.09);
+  --gold:#e0b553; --gold-soft:rgba(224,181,83,.13);
+  --start:#4fd1c5; --start-soft:rgba(79,209,197,.13);
+  --end:#ff7d70; --end-soft:rgba(255,125,112,.12);
+  --chain:#a996ff; --chain-soft:rgba(169,150,255,.12);
+  --ok:#5fcf80; --ok-soft:rgba(95,207,128,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  --hero1:#111a2a; --hero2:#0d1622; --lock:rgba(255,255,255,.3); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1420; --bg2:#121a28; --card:#172133; --fg:#e9ecf2; --muted:#9aa4b6; --line:rgba(255,255,255,.09);
+  --gold:#e0b553; --gold-soft:rgba(224,181,83,.13);
+  --start:#4fd1c5; --start-soft:rgba(79,209,197,.13);
+  --end:#ff7d70; --end-soft:rgba(255,125,112,.12);
+  --chain:#a996ff; --chain-soft:rgba(169,150,255,.12);
+  --ok:#5fcf80; --ok-soft:rgba(95,207,128,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  --hero1:#111a2a; --hero2:#0d1622; --lock:rgba(255,255,255,.3); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"DM Serif Display",Georgia,"Times New Roman",serif;font-weight:400;line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit}
+.wrap{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+[hidden]{display:none!important}
+
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--bg)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;background:radial-gradient(1200px 520px at 12% 0%,var(--hero1),transparent 70%),radial-gradient(900px 500px at 100% 100%,var(--hero2),transparent 70%),var(--bg);border-bottom:1px solid var(--line)}
+#net{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero .wrap{position:relative;padding-block:72px 64px}
+.kicker{font:500 .78rem "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.hero h1{font-size:clamp(2.5rem,7vw,4.3rem);margin-bottom:18px;max-width:14ch}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p.lead{color:var(--muted);max-width:56ch;font-size:1.05rem}
+.overall{display:flex;align-items:center;gap:16px;margin-top:28px;flex-wrap:wrap}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;width:min(320px,100%)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--start),var(--chain),var(--end));border-radius:99px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.overall span{font:500 .85rem "IBM Plex Mono",monospace;color:var(--muted)}
+
+/* ---------- map ---------- */
+.map{position:relative;padding-block:56px 40px}
+.map svg.path{position:absolute;left:50%;top:40px;transform:translateX(-50%);overflow:visible;pointer-events:none}
+.map svg.path path{fill:none;stroke-width:2.5;stroke-linecap:round}
+.map .track{stroke:var(--line);stroke-dasharray:4 8}
+.map .done-line{stroke:var(--gold)}
+.nodes{position:relative;display:grid;gap:34px}
+.node{position:relative;width:min(400px,100%);perspective:900px}
+.node:nth-child(odd){justify-self:start}
+.node:nth-child(even){justify-self:end}
+.ncard{position:relative;display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow);cursor:pointer;transform-style:preserve-3d;transition:transform .25s ease-out,border-color .25s,box-shadow .25s}
+.ncard:hover{border-color:var(--gold)}
+.ncard .top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ncard .n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:600 .9rem "IBM Plex Mono",monospace;background:var(--gold-soft);color:var(--gold);flex-shrink:0;transform:translateZ(30px)}
+.ncard .st{font:500 .72rem "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-left:auto}
+.ncard h3{font-size:1.4rem;margin-bottom:6px;transform:translateZ(20px)}
+.ncard p{color:var(--muted);font-size:.93rem}
+.node.locked .ncard{cursor:not-allowed;opacity:.55}
+.node.locked .ncard:hover{border-color:var(--line)}
+.node.locked .n{background:var(--line);color:var(--lock)}
+.node.passed .n{background:var(--gold);color:var(--card)}
+.node.passed .st{color:var(--ok)}
+.node.current .ncard{border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-soft),var(--shadow)}
+.node.current .n{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--gold-soft)}50%{box-shadow:0 0 0 10px transparent}}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;border-radius:999px;padding:11px 22px;font-weight:600;font-size:.95rem;background:var(--fg);color:var(--bg);transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s,opacity .2s;text-decoration:none}
+.btn:hover{box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn.small{padding:8px 16px;font-size:.88rem}
+.btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* ---------- stage view ---------- */
+.stagebar{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.stagebar .wrap{display:flex;align-items:center;gap:14px;padding-block:10px}
+.stagebar .back{border:0;background:none;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--muted);padding:6px 0}
+.stagebar .back:hover{color:var(--fg)}
+.stagebar .title{font-weight:600;font-size:.92rem;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats{display:flex;gap:14px;font:500 .8rem "IBM Plex Mono",monospace;color:var(--muted);flex-shrink:0}
+.stats b{color:var(--fg);font-weight:600}
+.pips{display:flex;gap:5px;padding-block:0 12px}
+.pips i{flex:1;height:4px;border-radius:9px;background:var(--line);transition:background .4s}
+.pips i.ok{background:var(--ok)} .pips i.no{background:var(--end)} .pips i.cur{background:var(--gold)}
+
+.stage{padding-block:40px 80px}
+.stage h2{font-size:clamp(1.8rem,4.5vw,2.6rem);margin-bottom:12px}
+.lede{color:var(--muted);max-width:62ch;margin-bottom:24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow)}
+.teach p+p{margin-top:12px}
+.teach ul{margin:12px 0 0;padding-left:20px}
+.teach li+li{margin-top:6px}
+.passline{margin-top:18px;font-size:.9rem;color:var(--muted)}
+.src{font:500 .74rem "IBM Plex Mono",monospace;letter-spacing:.04em;color:var(--muted);margin-bottom:10px;display:block}
+.qbox{padding:16px 18px;border-radius:12px;border-left:4px solid var(--gold);background:var(--gold-soft);font-weight:500;margin-bottom:18px}
+.item{animation:slide .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes slide{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+.fb{margin-top:18px;padding:16px 18px;border-radius:12px;font-size:.95rem;animation:pop .4s ease}
+.fb.ok{background:var(--ok-soft);border:1px solid color-mix(in srgb,var(--ok) 40%,transparent)}
+.fb.no{background:var(--end-soft);border:1px solid color-mix(in srgb,var(--end) 40%,transparent)}
+.fb b.t{display:block;margin-bottom:4px}
+.fb.ok b.t{color:var(--ok)} .fb.no b.t{color:var(--end)}
+.fb .ex{margin-top:10px;font-size:.88rem;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+.next{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+table.d{border-collapse:collapse;width:100%;font-size:.92rem;margin-bottom:16px}
+table.d th,table.d td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+table.d th{font-weight:600;font-size:.82rem;color:var(--muted)}
+table.d td.r,table.d th.r{text-align:right;font-family:"IBM Plex Mono",monospace}
+.tablewrap{overflow-x:auto}
+
+/* spot */
+.qtext{font-size:1.1rem;line-height:2.15}
+.chip{display:inline;border:0;background:transparent;padding:3px 5px;border-radius:6px;cursor:pointer;transition:background .2s,color .2s;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.chip:hover{background:var(--line)}
+.chip.st{background:var(--start-soft);color:var(--start);font-weight:600}
+.chip.en{background:var(--end-soft);color:var(--end);font-weight:600}
+.chip.bad{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.prompt{font-size:.88rem;color:var(--muted);margin-top:10px;min-height:1.5em}
+.prompt b.s{color:var(--start)} .prompt b.e{color:var(--end)}
+
+/* drift + options */
+.ending{font-style:italic;line-height:1.75;padding:16px 18px;border-radius:12px;background:var(--bg2);border:1px solid var(--line)}
+.ending .tail{background:linear-gradient(transparent 60%,var(--gold-soft) 60%);font-style:normal;font-weight:500}
+.choices{display:grid;gap:10px;margin-top:16px}
+.choices.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.opt{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:13px 16px;text-align:left;cursor:pointer;font-size:.95rem;transition:border-color .2s,background .2s,transform .2s}
+.opt:hover:not(:disabled){border-color:var(--fg);transform:translateY(-2px)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--end);background:var(--end-soft)}
+.opt.dim{opacity:.5}
+
+/* build */
+.board{display:grid;gap:9px}
+.anchor{padding:13px 16px;border-radius:12px;font-weight:500;display:flex;gap:12px;align-items:flex-start;font-size:.95rem}
+.anchor b{font:600 .7rem "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;flex-shrink:0;padding-top:3px}
+.anchor.s{background:var(--start-soft);border:1px solid color-mix(in srgb,var(--start) 40%,transparent)} .anchor.s b{color:var(--start)}
+.anchor.e{background:var(--end-soft);border:1px solid color-mix(in srgb,var(--end) 40%,transparent)} .anchor.e b{color:var(--end)}
+.slot{min-height:52px;border:1.5px dashed var(--line);border-radius:12px;display:flex;align-items:flex-start;padding:12px 14px;gap:12px;color:var(--muted);font-size:.92rem;transition:border-color .2s,background .2s}
+.slot .k{font:600 .75rem "IBM Plex Mono",monospace;color:var(--chain);flex-shrink:0;width:16px;padding-top:2px}
+.slot.filled{border-style:solid;border-color:color-mix(in srgb,var(--chain) 40%,transparent);background:var(--card);color:var(--fg);cursor:pointer;animation:drop .45s cubic-bezier(.2,1.4,.4,1)}
+.slot.right{border-color:var(--ok);background:var(--ok-soft)}
+.slot.wrong{border-color:var(--end);background:var(--end-soft)}
+.slot .w{display:block;font-size:.86rem;color:var(--chain);margin-top:5px;font-weight:500}
+@keyframes drop{from{transform:scale(.95);opacity:.3}to{transform:none;opacity:1}}
+.pool{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0 14px}
+.pick{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;text-align:left;cursor:pointer;font-size:.92rem;box-shadow:var(--shadow);transition:transform .2s,opacity .3s,border-color .2s}
+.pick:hover{transform:translateY(-3px);border-color:var(--chain)}
+.pick.used{opacity:.22;pointer-events:none;transform:scale(.97)}
+.attempts{font:500 .8rem "IBM Plex Mono",monospace;color:var(--muted)}
+
+/* weak */
+.sents{display:grid;gap:8px}
+.sent{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px;text-align:left;cursor:pointer;font-size:.95rem;display:flex;gap:12px;transition:border-color .2s,background .2s}
+.sent:hover:not(:disabled){border-color:var(--fg)}
+.sent .k{font:600 .75rem "IBM Plex Mono",monospace;color:var(--muted);flex-shrink:0;padding-top:2px}
+.sent:disabled{cursor:default}
+.sent.right{border-color:var(--end);background:var(--end-soft)}
+.sent.wrong{border-color:var(--line);background:var(--bg2);text-decoration:line-through;text-decoration-color:var(--muted)}
+.sent.fixed{border-color:var(--ok);background:var(--ok-soft)}
+
+/* calc + timer */
+.calcrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.calcrow input.num{width:170px;font:600 1.2rem "IBM Plex Mono",monospace}
+.calcrow .u{font:600 1.05rem "IBM Plex Mono",monospace;color:var(--muted)}
+.cd{height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin-bottom:16px}
+.cd i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--end),var(--gold));transform-origin:left;animation:cd 25s linear forwards}
+@keyframes cd{to{transform:scaleX(0)}}
+@media (prefers-reduced-motion:reduce){.cd i{animation:cd 25s linear forwards!important}}
+
+/* write */
+.plan{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.plan label{display:grid;gap:6px;font-size:.85rem;font-weight:600}
+.plan label.s{color:var(--start)} .plan label.e{color:var(--end)}
+input.txt{width:100%;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:11px 13px;font:16px "IBM Plex Sans",system-ui,sans-serif}
+textarea{width:100%;min-height:300px;resize:vertical;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:16px;font:16px/1.8 "IBM Plex Sans",system-ui,sans-serif}
+input.txt:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px}
+textarea:disabled{opacity:.5}
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.ck{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);transition:border-color .3s,background .3s}
+.ck i{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);flex-shrink:0;margin-top:2px;position:relative;transition:background .3s,border-color .3s}
+.ck.on{border-color:color-mix(in srgb,var(--ok) 45%,transparent);background:var(--ok-soft)}
+.ck.on i{background:var(--ok);border-color:var(--ok)}
+.ck.on i::after{content:"";position:absolute;left:5px;top:2px;width:4px;height:8px;border:solid var(--card);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.ck.warn{border-color:color-mix(in srgb,var(--end) 45%,transparent);background:var(--end-soft)}
+.ck.warn i{border-color:var(--end)}
+.wc{font:500 .8rem "IBM Plex Mono",monospace;color:var(--muted);margin-top:8px}
+.model p{line-height:1.85}
+.hl-s{background:var(--start-soft);color:var(--start);padding:1px 3px;border-radius:4px;font-weight:600}
+.hl-e{background:var(--end-soft);color:var(--end);padding:1px 3px;border-radius:4px;font-weight:600}
+.hl-w{color:var(--chain);font-weight:600}
+.hl-d{border-bottom:2px solid var(--gold)}
+.key{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;color:var(--muted);margin-top:14px}
+.ai{margin-top:18px;white-space:pre-wrap;line-height:1.7}
+
+/* result */
+.result{text-align:center;padding-block:30px}
+.ringbox{position:relative;width:180px;height:180px;margin:0 auto 22px}
+.ringbox svg{transform:rotate(-90deg)}
+.ringbox .bgc{stroke:var(--line)}
+.ringbox .fgc{transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)}
+.ringbox .val{position:absolute;inset:0;display:grid;place-items:center;align-content:center}
+.ringbox .val b{font:400 2.8rem "DM Serif Display",Georgia,serif;line-height:1}
+.ringbox .val span{font:500 .8rem "IBM Plex Mono",monospace;color:var(--muted)}
+.result h2{margin-bottom:10px}
+.result p{color:var(--muted);max-width:52ch;margin:0 auto}
+.result .next{justify-content:center}
+.review{text-align:left;margin-top:30px}
+.review li{margin-bottom:8px;font-size:.92rem}
+#burst{position:fixed;inset:0;pointer-events:none;z-index:30}
+
+footer{padding-block:34px;color:var(--muted);font-size:.85rem;text-align:center;border-top:1px solid var(--line)}
+footer button{border:0;background:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.85rem}
+
+@media (min-width:760px){
+  .node:nth-child(odd) .ncard{transform:rotateY(6deg)}
+  .node:nth-child(even) .ncard{transform:rotateY(-6deg)}
+}
+@media (max-width:759px){
+  .map svg.path{display:none}
+  .node{justify-self:stretch!important;width:100%}
+  .pool,.plan,.checks,.choices.two{grid-template-columns:minmax(0,1fr)}
+  .stats .tm{display:none}
+  .hero .wrap{padding-block:52px 44px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+
+</head>
+<body>
+<canvas id="burst" aria-hidden="true"></canvas>
+
+<!-- ================= MAP VIEW ================= -->
+<div id="mapView">
+  <header class="hero">
+    <canvas id="net" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="kicker">AO3 analysis · AQA A-level Business</div>
+      <h1>Get to the <em>end point</em>, every time</h1>
+      <p class="lead">Most lost analysis marks come from the same few mistakes: chains that stop early, chains that drift to the wrong place, and steps with no reason between them. This course uses real AQA questions and what examiners said went wrong. Pass each stage to unlock the next.</p>
+      <div class="overall"><div class="bar"><i id="overallBar"></i></div><span id="overallTxt">0 of 10 stages passed</span></div>
+    </div>
+  </header>
+  <section class="map">
+    <div class="wrap" style="position:relative">
+      <svg class="path" id="pathSvg" aria-hidden="true"></svg>
+      <div class="nodes" id="nodes"></div>
+    </div>
+  </section>
+  <footer><div class="wrap"><a href="index.html" style="color:var(--muted)">Back to the main site</a><br>Nishkam School West London · Man Neeva, Mat Uchi<br><button id="resetAll">Reset my progress</button></div></footer>
+</div>
+
+<!-- ================= STAGE VIEW ================= -->
+<div id="stageView" hidden>
+  <div class="stagebar">
+    <div class="wrap">
+      <button class="back" id="backBtn">← Course map</button>
+      <div class="title" id="sTitle"></div>
+      <div class="stats"><span>Score <b id="sScore">0</b></span><span>Streak <b id="sStreak">0</b></span><span class="tm"><b id="sTime">0:00</b></span></div>
+    </div>
+    <div class="wrap"><div class="pips" id="pips"></div></div>
+  </div>
+  <main class="stage"><div class="wrap" id="stageBody"></div></main>
+</div>
+
+<script>
+(function(){
+"use strict";
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fine = matchMedia('(pointer: fine)').matches;
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+/* =====================================================================
+   CONTENT
+   ===================================================================== */
+const NEWTOWN_TABLE = `<div class="tablewrap"><table class="d"><thead><tr><th>Feature</th><th class="r">Before 2024</th><th class="r">2024 onwards</th></tr></thead><tbody>
+<tr><td>Number of staff</td><td class="r">3906</td><td class="r">3616</td></tr>
+<tr><td>Average span of control</td><td class="r">5</td><td class="r">15</td></tr>
+<tr><td>Levels of hierarchy</td><td class="r">6</td><td class="r">4</td></tr></tbody></table></div>`;
+const BBB_TABLE = `<div class="tablewrap"><table class="d"><thead><tr><th>Time period</th><th class="r">BBB plc (%)</th><th class="r">Competitors (%)</th></tr></thead><tbody>
+<tr><td>1978–1987</td><td class="r">15</td><td class="r">15</td></tr><tr><td>1988–1997</td><td class="r">12</td><td class="r">18</td></tr>
+<tr><td>1998–2007</td><td class="r">10</td><td class="r">18</td></tr><tr><td>2008–2017</td><td class="r">8</td><td class="r">23</td></tr></tbody></table></div>`;
+
+const STAGES = [
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'spot', title:'Read the question', blurb:'Find the start point and end point in real AQA questions.', pass:8,
+  teach:`<p>Every analysis question has two fixed points. The <b style="color:var(--start)">start point</b> is the thing you are told to analyse. The <b style="color:var(--end)">end point</b> is what your chain has to reach.</p>
+  <p>Examiners keep reporting the same problem: students write a good chain that ends somewhere the question did not ask about. That starts with misreading the question.</p>
+  <p>For each question, tap the start point, then the end point. One wrong tap and the question counts as missed, so read it properly first.</p>`,
+  items:[
+    {src:'AQA June 2018 · Paper 1 · Q20', parts:['Analyse how ',['delayering','s'],' might affect ',['the level of profit','e'],' of a business.'],
+     note:'Saving managers\' salaries is only halfway. Your chain has to keep going until it reaches profit.'},
+    {src:'AQA June 2025 · Paper 1 · Q18', parts:['Analyse how ',['this restructuring of Newtown plc in 2024','s'],' might affect its ',['speed of response to customer enquiries','e'],'.'],
+     note:'Examiner report: "a significant minority tended to focus on other outcomes, rather than the speed of response." Costs and motivation were not the end point.'},
+    {src:'AQA June 2025 · Paper 1 · Q20', parts:['Analyse how ',['adopting an innovation strategy','s'],' might affect ',['the human resources function','e'],' of a business.'],
+     note:'Examiner report: "some answers linked their logic to the impact on employees rather than the role of the HR function." The end point is the HR function: recruitment, training, workforce planning.'},
+    {src:'AQA June 2019 · Paper 1 · Q19', parts:['To fund a new project, a business increases ',['the proportion of its long-term funding that is debt','s'],'. Analyse how this change might affect ',['the level of dividends received by shareholders','e'],'.'],
+     note:'Examiner report: "a number of students tended to drift into arguments relating to share prices." Share price is not dividends.'},
+    {src:'AQA June 2022 · Paper 1 · Q20', parts:['Analyse how ',['widening a manager\'s span of control','s'],' might affect ',['labour productivity','e'],' within the department she manages.'],
+     note:'Span of control is the number of people a manager is directly responsible for. The examiner noted some students wrote about how "controlling" a manager was instead.'},
+    {src:'AQA June 2018 · Paper 1 · Q18', parts:['Analyse how ',['the changes in these data over time','s'],' might have affected ',['the ability of BBB plc to provide higher-quality products than its competitors','e'],'.'],
+     note:'The data was labour turnover for BBB and its competitors. Notice "than its competitors": your end point is quality compared with rivals, not just quality.'},
+    {src:'AQA June 2017 · Paper 2 · Q2.2', parts:['Analyse the likely effects of ',['a significant increase in interest rates','s'],' on ',['the profits of car manufacturers','e'],'.'],
+     note:'"Fewer people buy cars on finance" is a step, not the end. The chain has to finish on profit.'},
+    {src:'AQA June 2025 · Paper 1 · Q19', parts:['Analyse how ',['a government changing its fiscal policy','s'],' might affect ',['a business which produces healthcare products','e'],'.'],
+     note:'Fiscal policy is taxation and government spending. The examiner said it was often confused with monetary policy, so chains started in the wrong place.'},
+    {src:'AQA June 2018 · Paper 1 · Q19', parts:['Analyse how ',['introducing intrapreneurship','s'],' can improve ',['the financial performance','e'],' of a business.'],
+     note:'Financial performance means things like revenue, profit, margins or returns. "Staff feel more creative" is a step on the way.'},
+    {src:'AQA June 2019 · Paper 1 · Q20', parts:['Managers in a business have a range of leadership styles. Analyse how ',['these different leadership styles','s'],' might impact ',['the effectiveness of a strategy to decentralise','e'],' this business.'],
+     note:'The end point is whether decentralisation works. Describing each leadership style is not enough. You have to say how it helps or blocks decentralisation.'}
+  ]},
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'drift', title:'Spot the drift', blurb:'Did the chain finish where the question asked?', pass:8,
+  teach:`<p>A chain can be well explained and still score badly if it finishes in the wrong place. The examiner calls this drifting.</p>
+  <p>You will see a question and the last part of a student's chain. Decide whether it reached the end point or drifted somewhere else.</p>
+  <p>Watch for the traps examiners have reported: profit instead of profit <i>margin</i>, cash flow instead of profit, employees instead of the HR function, share price instead of dividends.</p>`,
+  items:[
+    {src:'AQA June 2025 · Paper 1 · Q18', q:'Analyse how this restructuring of Newtown plc in 2024 might affect its speed of response to customer enquiries.',
+     lead:'...with two fewer levels of hierarchy, Newtown no longer has to pay as many middle managers, ', tail:'so its costs fall and profit is likely to rise.', ok:false,
+     why:'It drifted to profit. A cost saving is real, but the question asked about speed of response to customers.'},
+    {src:'AQA June 2025 · Paper 1 · Q18', q:'Analyse how this restructuring of Newtown plc in 2024 might affect its speed of response to customer enquiries.',
+     lead:'...an enquiry that needs a manager\'s decision now passes through 4 levels instead of 6, ', tail:'so the customer gets an answer sooner because there are fewer points where the enquiry can be held up.', ok:true,
+     why:'This lands on speed of response, and it explains why: fewer layers means fewer delays.'},
+    {src:'AQA June 2025 · Paper 1 · Q20', q:'Analyse how adopting an innovation strategy might affect the human resources function of a business.',
+     lead:'...working on new products means staff have more varied and interesting tasks, ', tail:'so employees feel more valued and their motivation rises.', ok:false,
+     why:'This is the exact drift the examiner described: the impact on employees, not on the role of the HR function.'},
+    {src:'AQA June 2025 · Paper 1 · Q20', q:'Analyse how adopting an innovation strategy might affect the human resources function of a business.',
+     lead:'...the business now needs engineers and designers it does not currently employ, ', tail:'so HR has to plan recruitment for new skills and organise retraining for existing staff, which changes how it spends its time and budget.', ok:true,
+     why:'This stays with the HR function: recruitment, training and workforce planning.'},
+    {src:'AQA June 2019 · Paper 1 · Q19', q:'To fund a new project, a business increases the proportion of its long-term funding that is debt. Analyse how this change might affect the level of dividends received by shareholders.',
+     lead:'...higher gearing makes the business look riskier to investors, ', tail:'so demand for its shares falls and the share price drops.', ok:false,
+     why:'Share price is not dividends. The examiner flagged this drift in the report.'},
+    {src:'AQA June 2019 · Paper 1 · Q19', q:'To fund a new project, a business increases the proportion of its long-term funding that is debt. Analyse how this change might affect the level of dividends received by shareholders.',
+     lead:'...interest has to be paid before any profit is available to shareholders, ', tail:'so profit after interest falls and the directors are likely to cut dividends, at least until the new project starts earning.', ok:true,
+     why:'Reaches dividends, and the "at least until" shows awareness of the short term and long term.'},
+    {src:'Exam-style · based on June 2026 Paper 1', q:'Analyse how using debt factoring might affect the profit of a business.',
+     lead:'...the factor pays the business around 80% of its invoices straight away, ', tail:'so it no longer has to wait 60 days and its cash flow improves.', ok:false,
+     why:'Cash flow, not profit. In 2026 students explained the cash flow effect far better than the profit effect. The factor\'s fee is a cost, so profit is reduced.'},
+    {src:'Exam-style · based on June 2026 Paper 2', q:'Analyse how diversifying into a new market might affect a retailer\'s operating profit margin.',
+     lead:'...the new range adds £5 million of revenue, ', tail:'so operating profit rises from £2 million to £2.25 million.', ok:false,
+     why:'Operating profit is not operating profit margin. Here the margin actually falls, from 10% (2 ÷ 20) to 9% (2.25 ÷ 25). This exact confusion cost marks in June 2026.'},
+    {src:'AQA June 2018 · Paper 1 · Q18', q:'Analyse how the changes in these data over time might have affected the ability of BBB plc to provide higher-quality products than its competitors.',
+     lead:'...BBB\'s labour turnover fell from 15% to 8% while competitors\' rose to 23%, ', tail:'so BBB keeps experienced staff who know its standards and make fewer mistakes, giving it higher quality than rivals who keep training new workers.', ok:true,
+     why:'Reaches quality compared with competitors, which is what "than its competitors" asks for.'},
+    {src:'AQA June 2018 · Paper 1 · Q20', q:'Analyse how delayering might affect the level of profit of a business.',
+     lead:'...the managers who are left now have wider spans of control, ', tail:'so they have more work to do and may feel more stressed.', ok:false,
+     why:'It stopped at a people effect. Stress could lead to profit (through absence or mistakes), but the chain never got there.'}
+  ]},
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'build', title:'Build the chain', blurb:'Order the links. One card is a trap.', pass:2,
+  teach:`<p>Now you build the chain yourself. Each question has five cards but only four belong. One is a trap card: it sounds sensible but takes the chain away from the end point.</p>
+  <p>Tap cards to place them in order. Tap a placed card to send it back. You get two checks per question. To score, you need it right on the first check.</p>`,
+  items:[
+    {src:'AQA June 2025 · Paper 1 · Q18', q:'Analyse how this restructuring of Newtown plc in 2024 might affect its speed of response to customer enquiries.', table:NEWTOWN_TABLE,
+     start:'Span of control rises from 5 to 15 and two levels of hierarchy are removed', end:'Newtown responds to customer enquiries faster',
+     cards:[
+      {id:'A',t:'Each manager now has 15 staff instead of 5, so cannot check every decision',w:'Why? A manager cannot supervise three times as many people as closely.'},
+      {id:'B',t:'Front-line staff are given more authority to deal with enquiries themselves',w:'Why? If managers cannot check everything, the business has to trust staff to decide.'},
+      {id:'C',t:'Fewer enquiries need to be passed up for a manager\'s approval',w:'Why? Staff can answer the customer in the first contact.'},
+      {id:'D',t:'Those that do go up pass through 4 levels instead of 6',w:'Why? Two fewer layers means two fewer places for the enquiry to sit waiting.'}],
+     decoy:{id:'E',t:'With 290 fewer staff, Newtown\'s salary costs fall',w:'Trap: this heads towards costs and profit, the drift the examiner described.'},
+     order:['A','B','C','D']},
+    {src:'AQA June 2019 · Paper 1 · Q19', q:'To fund a new project, a business increases the proportion of its long-term funding that is debt. Analyse how this change might affect the level of dividends received by shareholders.',
+     start:'The business funds the project with more long-term debt', end:'Shareholders receive lower dividends in the short term',
+     cards:[
+      {id:'A',t:'Gearing rises and the business has more interest to pay each year',w:'Why? Interest is owed whether or not the new project is earning yet.'},
+      {id:'B',t:'Interest is paid before profit is available to shareholders, so profit after interest falls',w:'Why? Dividends come from what is left after finance costs and tax.'},
+      {id:'C',t:'Cash also has to be kept back to meet loan repayments',w:'Why? The lender expects repayments on a fixed schedule.'},
+      {id:'D',t:'Directors have less profit and less spare cash to pay out',w:'Why? Paying a dividend needs both profit to pay it from and the cash to pay it with.'}],
+     decoy:{id:'E',t:'Investors see the business as riskier, so the share price falls',w:'Trap: share price is not dividends. This drift was named in the examiner report.'},
+     order:['A','B','C','D']},
+    {src:'AQA June 2022 · Paper 1 · Q20', q:'Analyse how widening a manager\'s span of control might affect labour productivity within the department she manages.',
+     start:'The manager\'s span of control is widened', end:'Labour productivity (output per worker) in her department rises',
+     cards:[
+      {id:'A',t:'She has less time to supervise each worker closely',w:'Why? Her time is spread across more people.'},
+      {id:'B',t:'She delegates more, so workers organise more of their own work',w:'Why? She cannot check every task, so she has to hand over responsibility.'},
+      {id:'C',t:'Skilled workers find the extra responsibility motivating',w:'Why? Herzberg treats responsibility as a motivator. Pay is a hygiene factor, not a motivator.'},
+      {id:'D',t:'Motivated workers put in more effort and waste less time',w:'Why? More effort per hour means more output per worker.'}],
+     decoy:{id:'E',t:'Fewer managers are needed, so the business saves on salaries',w:'Trap: this goes to costs. The question is about productivity in her department.'},
+     order:['A','B','C','D']}
+  ]},
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'weak', title:'Find the weak link', blurb:'One step is wrong or just asserted. Find it and fix it.', pass:5,
+  teach:`<p>A chain is only as strong as its weakest step. Examiners give no credit for a step that is just asserted ("it improves the financial position") or that gets the theory wrong.</p>
+  <p>For each chain, tap the weak step. Then choose the best replacement. You need both right first time to score.</p>
+  <p>The mistakes here are ones examiners have reported in real papers.</p>`,
+  items:[
+    {src:'Exam-style · Herzberg', q:'Analyse how introducing a profit-sharing scheme might affect labour turnover.',
+     s:['A profit-sharing scheme gives staff a bonus linked to the firm\'s profit.','According to Herzberg, pay is a motivator, so staff will be motivated by the bonus.','Staff who are satisfied with their pay are less likely to leave for a better-paid job elsewhere.','Therefore labour turnover is likely to fall.'],
+     bad:1, problem:'Herzberg classes pay as a hygiene factor, not a motivator. Misusing Herzberg like this cost marks on the June 2026 Paper 3.',
+     fixes:['Herzberg treats pay as a hygiene factor, so a bonus may remove a reason for dissatisfaction and stop staff leaving over pay, even if it does not motivate them on its own.','According to Maslow, pay is at the top of the hierarchy, so staff will be fully motivated.','Pay always motivates everyone, so staff will work harder and stay.'], fix:0},
+    {src:'Exam-style · based on June 2025 Paper 1 Q19', q:'Analyse how a government changing its fiscal policy might affect a business which produces healthcare products.',
+     s:['The government increases its spending on the NHS.','This is monetary policy, so interest rates fall.','The NHS places larger orders with its suppliers.','Therefore sales revenue for the healthcare products business is likely to rise.'],
+     bad:1, problem:'Government spending is fiscal policy, not monetary policy. The examiner said this confusion was common.',
+     fixes:['Because interest rates fall, people borrow more to buy healthcare products.','With a bigger budget, the NHS can buy more equipment and medicines, so demand from the public sector rises.','This means the business pays more corporation tax.'], fix:1},
+    {src:'Exam-style · based on June 2026 Paper 1 Q19', q:'Analyse how debt factoring might affect the profit of a business.',
+     s:['The business sells its unpaid invoices to a factoring company.','The factor keeps a fee, so the business receives less than the full value of each invoice.','This means the business has more cash, so its profit goes up.','Therefore debt factoring is likely to reduce the profit the business makes on its sales, even though cash arrives sooner.'],
+     bad:2, problem:'Cash is not profit. Getting cash sooner improves cash flow; the fee is a cost that reduces profit.',
+     fixes:['Customers pay the factor instead, so revenue doubles.','The business can use the cash to pay off its overdraft, so it has no costs at all.','The fee is an extra cost, so the business makes less on each sale than if it had waited for customers to pay in full.'], fix:2},
+    {src:'Exam-style · based on June 2017 Paper 1 Q19', q:'Analyse how break-even analysis might help a start-up business.',
+     s:['Break-even analysis shows the level of output where total revenue equals total costs.','It could help the business understand its financial position.','This means the owner can make better decisions before committing money.','Therefore break-even analysis can reduce the risk of the start-up failing.'],
+     bad:1, problem:'This is an assertion. The examiner quoted almost exactly this sentence as an example of what does not show how break-even helps.',
+     fixes:['The owner can see how many units must be sold each month to cover costs, and check whether that is realistic for a new business with no regular customers yet.','Break-even is the time it takes for the business to start making a profit.','Break-even analysis guarantees the business will make a profit.'], fix:0},
+    {src:'Exam-style · based on June 2026 Paper 1 Q18', q:'Analyse how a warehouse manager could use Maslow\'s hierarchy of needs to reduce labour turnover.',
+     s:['Many warehouse staff are on zero-hours contracts and leave within a few months.','Maslow\'s levels are physiological, safety, social, esteem and self-actualisation.','Offering permanent contracts would give staff a secure income.','Therefore fewer staff would leave, reducing labour turnover.'],
+     bad:1, problem:'Listing the five levels shows knowledge but does nothing for the chain. In 2026 the examiner said recognising the hierarchy was the discriminator.',
+     fixes:['Self-actualisation is the most important need, so the manager should give staff more challenging work.','Maslow says money is the only thing that motivates workers.','Maslow\'s hierarchy suggests safety needs must be met before higher needs matter, so job security is the need the manager should target first.'], fix:2},
+    {src:'Exam-style · based on June 2023 Paper 3', q:'Analyse how growing organically might affect the risk faced by a small manufacturer.',
+     s:['Organic growth means growing in an environmentally friendly, sustainable way.','The business expands at a pace it can fund from its own retained profit.','It does not need large loans or to buy a business it does not understand.','Therefore organic growth keeps its level of risk lower than growth by takeover.'],
+     bad:0, problem:'In 2023 a notable minority thought organic growth meant environmentally friendly growth. It means growing from within.',
+     fixes:['Organic growth means growing from within, for example opening new sites or launching new products, rather than merging with or taking over other businesses.','Organic growth means growing quickly by buying competitors.','Organic growth means using organic and natural materials.'], fix:0}
+  ]},
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'mcq', title:'Explain the link, use the data', blurb:'Pick the "because" and the data use that earns the marks.', pass:7,
+  teach:`<p>Two things separate a good chain from an average one: a real reason between each step, and data that has been worked out rather than copied.</p>
+  <p>Examiners have said it again and again: calculate, don't quote. And watch percentage changes against percentage points, and margin against absolute profit.</p>
+  <p>Use a calculator if you need one.</p>`,
+  items:[
+    {src:'AQA June 2025 · Paper 1 · Q18', table:NEWTOWN_TABLE, prompt:'Which sentence uses the span of control data best?',
+     o:['The average span of control went from 5 to 15.','The average span of control tripled from 5 to 15, so each manager has three times as many staff and cannot check every decision.','The average span of control rose by 10%.'], a:1,
+     why:'The first just quotes the table. The third is wrong: 5 to 15 is a 200% increase. The second works it out and uses it in the chain.'},
+    {src:'AQA June 2018 · Paper 1 · Q18', table:BBB_TABLE, prompt:'BBB\'s labour turnover fell from 15% to 8%. Which statement is correct?',
+     o:['It fell by 7%.','It fell by 7 percentage points, which is a fall of almost half (about 47%).','It fell by 53%.'], a:1,
+     why:'When the figures are already percentages, the difference is in percentage points. 7 ÷ 15 = 0.467, so about a 47% fall.'},
+    {src:'AQA June 2018 · Paper 1 · Q18', table:BBB_TABLE, prompt:'Which sentence makes the best use of the 2008–2017 figures?',
+     o:['BBB\'s turnover is 15% better than its competitors.','Competitors lose staff at nearly three times BBB\'s rate (23% against 8%), so BBB keeps far more experienced workers who know its quality standards.','23 of the competitors\' workers left compared with 8 at BBB.'], a:1,
+     why:'23 ÷ 8 ≈ 2.9. The first is vague (it is a 15 percentage point gap), and the third misreads percentages as numbers of workers.'},
+    {src:'Exam-style · based on June 2026 Paper 2 Q1.1', prompt:'Sales are now £330,000 after a 10% increase. What were sales before the increase?',
+     o:['£297,000','£300,000','£363,000'], a:1,
+     why:'£330,000 is 110% of the original, so divide by 1.1. Subtracting 10% (£297,000) was the most common mistake in June 2026.'},
+    {src:'AQA June 2019 · Paper 1 · Q19', prompt:'Link: "The business takes on more debt" → "Dividends fall". Which "because" turns this into analysis?',
+     o:['because debt is bad for shareholders.','because the share price will fall.','because interest has to be paid before any profit is available to shareholders, leaving less to pay out as dividends.'], a:2,
+     why:'The first is an assertion. The second drifts to share price. The third gives the mechanism.'},
+    {src:'AQA June 2025 · Paper 1 · Q18', prompt:'Link: "Two levels of hierarchy are removed" → "Faster response to customer enquiries". Which reason is strongest?',
+     o:['because flat structures are better.','because communication is quicker.','because an enquiry that needs approval passes through 4 levels instead of 6, so there are two fewer points where it can be held up.'], a:2,
+     why:'"Communication is quicker" is true but generic. The third explains why and uses Newtown\'s data.'},
+    {src:'Exam-style · Herzberg', prompt:'Link: "Workers are given more responsibility" → "Motivation rises". Which reason is accurate?',
+     o:['Herzberg says responsibility is a motivator, so giving staff more control over their work can increase the effort they put in.','Herzberg says responsibility is a hygiene factor, so it stops staff being dissatisfied.','Taylor says workers want responsibility and freedom.'], a:0,
+     why:'Responsibility is one of Herzberg\'s motivators. Taylor argued the opposite: close supervision and pay per unit.'},
+    {src:'Exam-style · based on June 2026 Paper 2 Q1.4', prompt:'Revenue rises from £20m to £25m and operating profit rises from £2m to £2.25m. What happened to the operating profit margin?',
+     o:['It rose, because operating profit rose.','It fell, from 10% to 9%.','It stayed the same.'], a:1,
+     why:'2 ÷ 20 = 10%; 2.25 ÷ 25 = 9%. Profit went up but the margin went down. Mixing these up cost marks in June 2026.'},
+    {src:'AQA June 2025 · Paper 1 · Q18', prompt:'Which final sentence finishes a Newtown answer best?',
+     o:['Therefore the restructuring is good for Newtown.','Therefore Newtown\'s profit is likely to increase.','Therefore the restructuring is likely to speed up Newtown\'s response to customer enquiries, because fewer layers and more authority for front-line staff mean fewer enquiries wait for approval.'], a:2,
+     why:'The first is vague and the second drifts. The third uses the question\'s own words and sums up why.'}
+  ]},
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'mcq', title:'Read every word', blurb:'The small words in the question change the end point.', pass:6,
+  teach:`<p>The end point is not always a single word. Phrases like "<i>than its competitors</i>", "<i>within the department she manages</i>", "<i>all employees</i>" or "<i>guaranteed</i>" are part of what you must reach.</p>
+  <p>Examiners regularly report answers that reached roughly the right place but missed part of the question. Each one here is based on a real question and what the examiner said about it.</p>`,
+  items:[
+    {src:'AQA June 2018 · Paper 1 · Q18', table:BBB_TABLE, prompt:'"...the ability of BBB plc to provide higher-quality products than its competitors." Which final sentence answers the whole question?',
+     o:['Therefore BBB\'s product quality is likely to have improved over time.','Therefore BBB is likely to have been able to provide higher quality than its competitors, because by 2008–2017 it was keeping far more of its experienced staff (8% turnover against 23%).','Therefore BBB\'s staff are likely to be more motivated than competitors\' staff.'], a:1,
+     why:'The first misses "than its competitors". The third drifts to motivation. Only the second compares with rivals and uses both sets of data.'},
+    {src:'AQA June 2022 · Paper 1 · Q20', prompt:'"...labour productivity within the department she manages." Which ending fits?',
+     o:['...so labour productivity across the whole business improves.','...so the workers in her department produce more output per hour.','...so the business needs fewer managers and saves money.'], a:1,
+     why:'The question limits you to her department. The whole business is too wide, and the cost saving is a drift.'},
+    {src:'AQA June 2024 · Paper 1 · Q22', prompt:'Essay: "To what extent is this change guaranteed to increase the motivation of all employees?" Which sentence stays on the question?',
+     o:['This should increase sales volume, because motivated staff serve customers better.','This is likely to motivate the sales team, who are paid commission.','This may motivate staff who value recognition, but not all employees, because those who see pay as a hygiene factor will be unaffected if their pay does not change.'], a:2,
+     why:'The examiner said many answers drifted to sales volume or profit. "All employees" and "guaranteed" are both part of the question, and the third option uses them.'},
+    {src:'AQA June 2019 · Paper 1 · Q24 (examiner report)', prompt:'An essay asked about the effect of mass customisation on operational performance. Which of these is an operational performance measure?',
+     o:['Brand loyalty','Profit','Unit costs'], a:2,
+     why:'The examiner listed unit costs, speed of response, wastage and quality as operational measures, and said answers on profit and brand loyalty did not address the question.'},
+    {src:'AQA June 2019 · Paper 1 · Q18', prompt:'"Using Figure 4, analyse why choosing Option A might not be the best decision." Option A has the highest net gain. Which opening fits the question?',
+     o:['Option A has the highest net gain, so it is the best choice for the business.','Let me first recalculate the net gain for each option to check the figures.','Although A has the highest net gain, it has a high chance of failure and a large initial cost, so there is a real risk of a loss, whereas B cannot make a loss either way.'], a:2,
+     why:'The question asks why A might not be best. The examiner noted students lost time recalculating net gain that was already given.'},
+    {src:'AQA June 2025 · Paper 1 · Q19', prompt:'"...might affect a business which produces healthcare products." Which link uses the context best?',
+     o:['A rise in VAT increases prices, so demand falls.','Many healthcare products are necessities with price-inelastic demand, so the business could pass on a rise in VAT with only a small fall in sales.','Higher interest rates make borrowing more expensive for the business.'], a:1,
+     why:'The examiner said the better answers showed insight into the market, using price and income elasticity. The third option is monetary policy, not fiscal.'},
+    {src:'AQA June 2017 · Paper 2 · Q3.2', prompt:'"...analyse the actions Kento should take regarding its product portfolio in Europe to improve its long term financial performance." Which final step completes the chain?',
+     o:['...so Kento should stop selling the Dog product.','...so cash from the Cash Cows can fund the Question Marks, which could grow into Stars and replace revenue as older products decline, protecting long-term profit.','...so Kento will have a balanced portfolio.'], a:1,
+     why:'The examiner said some answers lacked the final link to financial performance. The first and third stop before they get there.'},
+    {src:'AQA June 2017 · Paper 2 · Q2.2', prompt:'"...the profits of car manufacturers." Which ending is aimed at the right business?',
+     o:['...so car dealerships sell fewer cars and their profit falls.','...so households have less disposable income.','...so manufacturers receive fewer orders, and with high fixed costs in their factories, profit falls more sharply than revenue.'], a:2,
+     why:'Dealers are not manufacturers, and disposable income is a step, not the end. The third reaches manufacturers\' profit and explains why the effect is bigger.'}
+  ]},
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'mcq', title:'Use the theory properly', blurb:'Models earn marks only when they are used accurately inside the chain.', pass:6,
+  teach:`<p>A model or theory works best as one of the links in your chain, not as a paragraph on its own. But it has to be right. A misused theory is a broken link.</p>
+  <p>The examiner credited Porter's Five Forces in integration answers in June 2026. The same year, misusing Herzberg, mixing up PRP with piece rate, and confusing economies of scope with economies of scale all cost students marks.</p>`,
+  items:[
+    {src:'Exam-style · based on June 2026 Paper 1 Q22', prompt:'A supermarket chain takes over a rival. Which link uses Porter\'s Five Forces accurately?',
+     o:['Suppliers now depend on the combined business for a bigger share of their sales, so their bargaining power falls and the supermarket can negotiate lower prices.','With fewer firms, the threat of substitutes rises.','Porter\'s Five Forces shows that integration always increases profit.'], a:0,
+     why:'Horizontal integration reduces rivalry and strengthens the firm against suppliers. Substitutes are other products, not rival firms, and "always" is never safe.'},
+    {src:'Exam-style · based on June 2026 Paper 1 Q11', prompt:'Value own-brand bread has an income elasticity of demand of −0.4. Average incomes rise by 5%. Which link is correct?',
+     o:['Demand rises by about 2%, because people have more money to spend.','Demand falls by about 2%, because as incomes rise some customers switch to premium brands.','Demand falls by 0.4%.'], a:1,
+     why:'−0.4 × 5% = −2%. Negative YED means an inferior good. This was the hardest multiple-choice question in June 2026.'},
+    {src:'Exam-style · price elasticity', prompt:'A firm raises its price by 10%. Its PED is −0.3. Which link is correct?',
+     o:['Quantity demanded falls by about 3%, so revenue rises, because the fall in sales is proportionally smaller than the rise in price.','Revenue falls, because people buy less when price rises.','Quantity demanded falls by 30%.'], a:0,
+     why:'−0.3 × 10% = −3%. With inelastic demand, a price rise increases revenue.'},
+    {src:'Exam-style · Ansoff\'s matrix', prompt:'A UK bakery chain plans to sell kitchen appliances in the USA. Which link uses Ansoff accurately?',
+     o:['This is market development, which is low risk because the products are already known.','This is diversification, the highest-risk option, because the business has no experience of either the product or the customers.','This is product development, the riskiest option on the matrix.'], a:1,
+     why:'New product and new market is diversification. The risk comes from knowing neither.'},
+    {src:'Exam-style · Taylor', prompt:'A factory moves its staff onto piece rate. Which link uses Taylor accurately?',
+     o:['Taylor believed workers want responsibility and freedom, so piece rate will motivate them.','Taylor saw pay as a hygiene factor.','Taylor believed workers are mainly motivated by money, so paying per unit gives each worker a reason to produce more in each hour.'], a:2,
+     why:'Hygiene factors are Herzberg, not Taylor. Responsibility as a motivator is also Herzberg.'},
+    {src:'Exam-style · based on June 2026 Paper 2 Q3.3', prompt:'Which of these describes performance-related pay (PRP)?',
+     o:['A payment for each unit a worker produces.','A bonus or pay rise linked to meeting agreed targets, usually reviewed in an appraisal.','A share of the company\'s profit paid to all staff.'], a:1,
+     why:'The first is piece rate and the third is profit sharing. In June 2026 many students confused PRP with piece rate.'},
+    {src:'Exam-style · based on June 2026 Paper 2 Q1.4', prompt:'A brewer starts making soft drinks using the same bottling line and delivery lorries. Which link is correct?',
+     o:['Economies of scale: it is producing more of the same product, so unit costs fall.','Economies of scope: shared resources are spread over a wider range of products, so the average cost of each product falls.','Diseconomies of scale: the business becomes harder to manage.'], a:1,
+     why:'Scope comes from a wider range of products. Scale comes from more of the same. This mix-up cost marks in June 2026.'},
+    {src:'Exam-style · stakeholder mapping', prompt:'A business is closing a factory. The local council has high power and high interest. Which link uses stakeholder mapping correctly?',
+     o:['The council should be kept closely involved and consulted early, because it could delay the closure through planning decisions.','The council only needs to be monitored with minimal effort.','The council should be kept satisfied but does not need to be informed.'], a:0,
+     why:'High power and high interest means managing them closely. Getting this wrong means the business risks delays it could have avoided.'}
+  ]},
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'calc', title:'Numbers in the chain', blurb:'Work out the figure, then use it as a link.', pass:5,
+  teach:`<p>A calculated figure is one of the strongest links you can put in a chain, but only if it is right. These are the calculations examiners say go wrong most often.</p>
+  <p>Type your answer as a number. You get one try. After each one you will see the working and how the figure could be used in an analysis chain.</p>`,
+  items:[
+    {src:'Exam-style · based on June 2026 Paper 1 Q16', given:'A machine costs <b>£200,000</b>. Total net cash inflows over its 5-year life are <b>£280,000</b>.', prompt:'Calculate the average rate of return (ARR).', unit:'%', ans:8, tol:0.05,
+     traps:[{v:28,m:'You did not subtract the initial cost. Only about a fifth of students got this right in June 2026, and this was the main mistake.'}],
+     work:'Total profit = £280,000 − £200,000 = £80,000. Average annual profit = £80,000 ÷ 5 = £16,000. ARR = £16,000 ÷ £200,000 × 100 = 8%.',
+     use:'In a chain: "an ARR of only 8% is below what the business could earn elsewhere, so the money may be better used..."'},
+    {src:'Exam-style · based on June 2026 Paper 1 Q17', given:'Selling price <b>£16,000</b> per unit. Variable cost <b>£7,000</b> per unit. Fixed costs <b>£360,000</b>. Current output <b>52 units</b>.', prompt:'Calculate the margin of safety.', unit:'units', ans:12, tol:0,
+     traps:[{v:192000,m:'Margin of safety is measured in units, not pounds.'},{v:40,m:'40 is break-even output. You need one more step: actual output minus break-even.'}],
+     work:'Contribution per unit = £16,000 − £7,000 = £9,000. Break-even = £360,000 ÷ £9,000 = 40 units. Margin of safety = 52 − 40 = 12 units.',
+     use:'In a chain: "sales could fall by 12 units, about 23%, before the business makes a loss, so..."'},
+    {src:'AQA June 2019 · Paper 1 · Q17', given:'A business has non-current liabilities of <b>£200,000</b> and a gearing ratio of <b>40%</b>. It then takes out a long-term loan of <b>£100,000</b>.', prompt:'Calculate its new gearing ratio.', unit:'%', ans:50, tol:0.05,
+     traps:[{v:60,m:'You added the loan to non-current liabilities but not to capital employed. The examiner said this was the common mistake.'}],
+     work:'Capital employed = £200,000 ÷ 0.4 = £500,000. After the loan: £300,000 ÷ £600,000 × 100 = 50%.',
+     use:'In a chain: "gearing rises from 40% to 50%, so half of the long-term funding now carries interest, which..."'},
+    {src:'AQA June 2025 · Paper 1 · Q16', given:'Inventories <b>£80m</b>. Receivables <b>£35m</b>. Cash <b>£40m</b>. Payables <b>£70m</b>. Net current assets <b>£85m</b>.', prompt:'Calculate the current ratio (to 2 decimal places).', unit:': 1', ans:2.21, tol:0.006,
+     traps:[{v:1.21,m:'You used net current assets. The examiner said this was the common error: add the current assets together instead.'}],
+     work:'Current assets = 80 + 35 + 40 = £155m. Current ratio = 155 ÷ 70 = 2.21 : 1.',
+     use:'In a chain: "with a current ratio of 2.21, the business can cover its short-term debts more than twice, so..."'},
+    {src:'AQA June 2025 · Paper 1 · Q17', given:'Non-current liabilities <b>£230m</b>. Total equity <b>£190m</b>. ROCE <b>12%</b>.', prompt:'Calculate operating profit.', unit:'£m', pre:true, ans:50.4, tol:0.05,
+     traps:[{v:22.8,m:'You used total equity only. Capital employed is total equity plus non-current liabilities.'}],
+     work:'Capital employed = 190 + 230 = £420m. Operating profit = 12% × £420m = £50.4m.',
+     use:'This is a reverse calculation. The examiner said it was maths, not the formula, that caught students out.'},
+    {src:'AQA June 2025 · Paper 1 · Q18', table:NEWTOWN_TABLE, prompt:'Calculate the percentage fall in Newtown\'s number of staff (to 1 decimal place).', unit:'%', ans:7.4, tol:0.051,
+     traps:[{v:290,m:'290 is the fall in staff numbers. Now divide by the original figure.'},{v:8,m:'Divide by the original number of staff (3906), not the new one.'}],
+     work:'Fall = 3906 − 3616 = 290. 290 ÷ 3906 × 100 = 7.4%.',
+     use:'Useful context, but careful: on the speed-of-response question this figure is more likely to tempt you towards costs than help your chain.'}
+  ]},
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'timed', title:'Against the clock', blurb:'Twelve mixed questions, 25 seconds each.', pass:10,
+  teach:`<p>In the exam you will not have time to think slowly about every end point. This round mixes questions from stages 2, 5, 6 and 7, picked at random each time.</p>
+  <p>You have <b>25 seconds</b> for each one. If the bar runs out, it counts as wrong. You need 10 out of 12.</p>`,
+  items:[]},
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'write', title:'The real thing', blurb:'Write a full 9-mark answer to a real past question.', pass:1,
+  teach:`<p>This is the June 2025 Paper 1 question 18. Most students reached Level 2 or 3. The examiner said the two things that decided the mark were keeping the focus on <b>speed of response</b> and using <b>more than one piece of data</b>.</p>
+  <p>Write one developed argument, about 6 or 7 linked steps. No counter-argument and no separate conclusion. Finish with a sentence starting "Therefore" that uses the words of the question.</p>
+  <p>Write your start point and end point first. The answer box unlocks when you have.</p>`,
+  items:[{src:'AQA June 2025 · Paper 1 · Q18'}]}
+];
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const KEY='endpoint_course_v1';
+let state={best:{},passed:{},draft:'',planS:'',planE:''};
+try{const r=localStorage.getItem(KEY);if(r)state=Object.assign(state,JSON.parse(r));}catch(e){}
+const teacher = location.hash==='#teacher';
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+const isUnlocked=id=>teacher||id===1||!!state.passed[id-1];
+
+/* =====================================================================
+   HERO NETWORK
+   ===================================================================== */
+const cv=$('#net'),cx=cv.getContext('2d');let W,H,pts=[],mouse={x:-999,y:-999},running=true;
+function size(){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);
+  const n=Math.round(Math.min(80,W*H/12000));pts=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,k:Math.random()<.12?'s':Math.random()<.14?'e':'c'}));}
+function draw(){
+  if(!running)return;
+  cx.clearRect(0,0,W,H);const cs={s:css('--start'),e:css('--end'),c:css('--chain')},lc=css('--muted');
+  for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;const dx=p.x-mouse.x,dy=p.y-mouse.y,d=Math.hypot(dx,dy);if(d<120&&d>0){p.x+=dx/d;p.y+=dy/d;}}
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<125){cx.globalAlpha=(1-d/125)*.28;cx.strokeStyle=lc;cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke();}}
+  for(const p of pts){cx.globalAlpha=.75;cx.fillStyle=cs[p.k];cx.beginPath();cx.arc(p.x,p.y,p.k==='c'?1.8:3,0,7);cx.fill();}
+  cx.globalAlpha=1;if(!reduce)requestAnimationFrame(draw);
+}
+size();draw();addEventListener('resize',()=>{size();drawPath();});
+const hero=$('.hero');hero.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;});hero.addEventListener('pointerleave',()=>{mouse.x=mouse.y=-999;});
+
+/* =====================================================================
+   MAP
+   ===================================================================== */
+function renderMap(){
+  const box=$('#nodes');box.innerHTML='';
+  let current=STAGES.find(s=>isUnlocked(s.id)&&!state.passed[s.id]);
+  STAGES.forEach(s=>{
+    const un=isUnlocked(s.id),ps=!!state.passed[s.id];
+    const d=document.createElement('div');d.className='node reveal'+(un?'':' locked')+(ps?' passed':'')+(current&&current.id===s.id?' current':'');
+    const best=state.best[s.id];
+    const cnt=s.type==='timed'?12:s.items.length;const status=!un?'Locked':ps?(s.type==='write'?'Complete':`Passed · ${best}/${cnt}`):(best!=null?`Best ${best}/${cnt}`:'Ready');
+    d.innerHTML=`<button class="ncard" ${un?'':'aria-disabled="true"'}><div class="top"><span class="n">${ps?'✓':s.id}</span><span class="st">${status}</span></div><h3>${esc(s.title)}</h3><p>${esc(s.blurb)}</p></button>`;
+    const c=d.querySelector('.ncard');
+    c.onclick=()=>{if(un)openStage(s.id);else{c.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'none'}],{duration:300});}};
+    if(fine&&!reduce){c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`rotateX(${-y*10}deg) rotateY(${x*14}deg) translateZ(10px)`;});c.addEventListener('pointerleave',()=>c.style.transform='');}
+    box.append(d);
+  });
+  const n=Object.keys(state.passed).filter(k=>state.passed[k]).length;
+  $('#overallBar').style.width=(n/STAGES.length*100)+'%';
+  $('#overallTxt').textContent=n===STAGES.length?'All ten stages passed':`${n} of ${STAGES.length} stages passed`;
+  requestAnimationFrame(()=>{drawPath();$$('.reveal').forEach(el=>io.observe(el));});
+}
+function drawPath(){
+  const svg=$('#pathSvg'),nodes=$$('.node');if(!nodes.length||innerWidth<760){svg.innerHTML='';return;}
+  const wr=svg.parentElement.getBoundingClientRect();
+  const P=nodes.map(n=>{const r=n.getBoundingClientRect();return{x:r.left-wr.left+r.width/2,y:r.top-wr.top+r.height/2};});
+  const w=wr.width,h=P[P.length-1].y+20;svg.setAttribute('width',w);svg.setAttribute('height',h);svg.style.width=w+'px';svg.style.top='0';svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  let d=`M${P[0].x},${P[0].y}`;for(let i=1;i<P.length;i++){const a=P[i-1],b=P[i],my=(a.y+b.y)/2;d+=` C${a.x},${my} ${b.x},${my} ${b.x},${b.y}`;}
+  const passedN=STAGES.filter(s=>state.passed[s.id]).length;
+  let dd=`M${P[0].x},${P[0].y}`;for(let i=1;i<=Math.min(passedN,P.length-1);i++){const a=P[i-1],b=P[i],my=(a.y+b.y)/2;dd+=` C${a.x},${my} ${b.x},${my} ${b.x},${b.y}`;}
+  svg.innerHTML=`<path class="track" d="${d}"/>${passedN?`<path class="done-line" id="doneLine" d="${dd}"/>`:''}`;
+  const dl=$('#doneLine');if(dl&&!reduce){const L=dl.getTotalLength();dl.style.strokeDasharray=L;dl.style.strokeDashoffset=L;dl.getBoundingClientRect();dl.style.transition='stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1)';dl.style.strokeDashoffset=0;}
+}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.1});
+
+/* =====================================================================
+   STAGE ENGINE
+   ===================================================================== */
+let S=null; // current run
+let timerId=null;
+function openStage(id){
+  const st=STAGES.find(s=>s.id===id);
+  if(st.type==='timed'){
+    const pool=[...STAGES[1].items.map(x=>Object.assign({_k:'drift'},x)),...[4,5,6].flatMap(k=>STAGES[k].items).map(x=>Object.assign({_k:'mcq'},x))];
+    st.items=shuffle(pool).slice(0,12);
+  }
+  S={st,i:-1,score:0,streak:0,results:[],t0:0,cd:null};
+  $('#mapView').hidden=true;$('#stageView').hidden=false;running=false;
+  $('#sTitle').textContent=`Stage ${st.id} · ${st.title}`;
+  $('#pips').innerHTML=st.type==='write'?'':st.items.map(()=>'<i></i>').join('');
+  updStats();scrollTo(0,0);
+  const body=$('#stageBody');
+  body.innerHTML=`<div class="item"><div class="src">Stage ${st.id} of ${STAGES.length}</div><h2>${esc(st.title)}</h2>
+    <div class="card teach">${st.teach}${st.type==='write'?'':`<p class="passline">${st.type==='timed'?12:st.items.length} questions. Pass mark: <b>${st.pass}</b>.</p>`}</div>
+    <div class="next"><button class="btn" id="go">${st.type==='write'?'Open the question':'Start'}</button></div></div>`;
+  $('#go').onclick=()=>{S.t0=Date.now();clearInterval(timerId);timerId=setInterval(tick,1000);nextItem();};
+}
+function tick(){if(!S)return;const s=Math.floor((Date.now()-S.t0)/1000);$('#sTime').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+function updStats(){$('#sScore').textContent=S.score;$('#sStreak').textContent=S.streak;$$('#pips i').forEach((p,i)=>{p.className=S.results[i]===true?'ok':S.results[i]===false?'no':i===S.i?'cur':'';});}
+function record(ok){if(S.cd){clearTimeout(S.cd);S.cd=null;const b=$('.cd i');if(b)b.style.animationPlayState='paused';}S.results[S.i]=ok;if(ok){S.score++;S.streak++;}else S.streak=0;updStats();}
+function nextItem(){
+  S.i++;updStats();
+  if(S.i>=S.st.items.length){finish();return;}
+  const it=S.st.items[S.i],body=$('#stageBody');
+  body.innerHTML='';const wrap=document.createElement('div');wrap.className='item';body.append(wrap);
+  scrollTo({top:0,behavior:reduce?'auto':'smooth'});
+  ({spot:itemSpot,drift:itemDrift,build:itemBuild,weak:itemWeak,mcq:itemMcq,write:itemWrite,calc:itemCalc,timed:itemTimed})[S.st.type](it,wrap);
+}
+function nextBtn(wrap,label){const n=document.createElement('div');n.className='next';const b=document.createElement('button');b.className='btn';b.textContent=label||(S.i===S.st.items.length-1?'See my result':'Next');b.onclick=nextItem;n.append(b);wrap.append(n);setTimeout(()=>b.focus({preventScroll:true}),50);
+  b.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});}
+function fb(wrap,ok,title,text,extra){const f=document.createElement('div');f.className='fb '+(ok?'ok':'no');f.innerHTML=`<b class="t">${title}</b>${text}${extra?`<div class="ex">${extra}</div>`:''}`;wrap.append(f);}
+
+/* ---- spot ---- */
+function itemSpot(it,wrap){
+  wrap.innerHTML=`<span class="src">${esc(it.src)}</span><div class="card"><div class="qtext"></div><div class="prompt" aria-live="polite">Tap the <b class="s">start point</b>.</div></div>`;
+  const t=$('.qtext',wrap),pr=$('.prompt',wrap);let stage='s',clean=true;
+  it.parts.forEach(p=>{
+    if(typeof p==='string')p.split(/(\s+)/).forEach(w=>{if(!w.trim()){t.append(w);return;}const b=document.createElement('button');b.className='chip';b.textContent=w;b.dataset.k='x';t.append(b);});
+    else{const b=document.createElement('button');b.className='chip';b.textContent=p[0];b.dataset.k=p[1];t.append(b);}
+  });
+  t.onclick=e=>{const b=e.target.closest('.chip');if(!b||stage==='done')return;
+    if(b.dataset.k===stage){b.classList.add(stage==='s'?'st':'en');
+      if(stage==='s'){stage='e';pr.innerHTML='Now tap the <b class="e">end point</b>.';}
+      else{stage='done';pr.textContent='';record(clean);fb(wrap,clean,clean?'Correct':'Got there, but not first time',esc(it.note));nextBtn(wrap);}}
+    else{clean=false;b.classList.remove('bad');void b.offsetWidth;b.classList.add('bad');
+      pr.innerHTML=stage==='s'?(b.dataset.k==='e'?'That is where the chain finishes. What are you told to analyse?':'Not that. What is the business doing, or what is happening to it?'):'Not that. Where does the question want the chain to finish? Read to the end.';}
+  };
+}
+/* ---- drift ---- */
+function itemDrift(it,wrap){
+  wrap.innerHTML=`<span class="src">${esc(it.src)}</span><div class="qbox">${esc(it.q)}</div><p style="font-size:.88rem;color:var(--muted);margin-bottom:8px">The end of a student's chain:</p><div class="ending">"${esc(it.lead)}<span class="tail">${esc(it.tail)}</span>"</div>
+  <div class="choices two"><button class="opt" data-v="1">Reached the end point</button><button class="opt" data-v="0">Drifted</button></div>`;
+  $$('.opt',wrap).forEach(b=>b.onclick=()=>{const pick=b.dataset.v==='1',ok=pick===it.ok;$$('.opt',wrap).forEach(x=>{x.disabled=true;if((x.dataset.v==='1')===it.ok)x.classList.add('right');else x.classList.add('dim');});if(!ok)b.classList.replace('dim','wrong');
+    record(ok);fb(wrap,ok,ok?'Correct':'Not this time',esc(it.why));nextBtn(wrap);});
+}
+/* ---- build ---- */
+function itemBuild(it,wrap){
+  const all=shuffle([...it.cards,it.decoy]);let placed=[null,null,null,null],checks=0,solved=false;
+  wrap.innerHTML=`<span class="src">${esc(it.src)}</span><div class="qbox">${esc(it.q)}</div>${it.table||''}
+   <div class="board"><div class="anchor s"><b>Start</b>${esc(it.start)}</div>${[0,1,2,3].map(i=>`<div class="slot" data-i="${i}"><span class="k">${i+1}</span><span class="c">Empty</span></div>`).join('')}<div class="anchor e"><b>End</b>${esc(it.end)}</div></div>
+   <div class="pool"></div><div class="next" style="align-items:center"><button class="btn small" data-a="check" disabled>Check my order</button><button class="btn small ghost" data-a="clear">Clear</button><span class="attempts">2 checks left</span></div><div class="fbz"></div>`;
+  const pool=$('.pool',wrap),chk=$('[data-a=check]',wrap);
+  function render(mode){
+    pool.innerHTML='';all.forEach(c=>{const b=document.createElement('button');b.className='pick'+(placed.includes(c.id)?' used':'');b.textContent=c.t;b.onclick=()=>{const i=placed.indexOf(null);if(i<0||solved)return;placed[i]=c.id;render();};pool.append(b);});
+    $$('.slot',wrap).forEach((s,i)=>{const id=placed[i],c=all.find(x=>x.id===id);
+      s.className='slot'+(id?' filled':'')+(mode&&id?(it.order[i]===id?' right':' wrong'):'');
+      s.querySelector('.c').innerHTML=c?`<span>${esc(c.t)}${mode==='solved'?`<span class="w">${esc(c.w)}</span>`:''}</span>`:'Empty';
+      s.onclick=()=>{if(!id||solved)return;placed[i]=null;render();};});
+    chk.disabled=solved||placed.includes(null)||checks>=2;
+  }
+  $('[data-a=clear]',wrap).onclick=()=>{if(solved)return;placed=[null,null,null,null];render();};
+  chk.onclick=()=>{checks++;const right=placed.filter((id,i)=>it.order[i]===id).length;$('.attempts',wrap).textContent=(2-checks)+(2-checks===1?' check left':' checks left');
+    if(right===4){solved=true;render('solved');record(checks===1);fb($('.fbz',wrap),true,checks===1?'Correct first time':'Correct on the second check',`The trap card was: "${esc(it.decoy.t)}". ${esc(it.decoy.w)}`,'Read the "why" under each link. That reasoning is what you write between the steps.');pool.hidden=true;nextBtn(wrap);}
+    else if(checks>=2){solved=true;placed=it.order.slice();render('solved');record(false);fb($('.fbz',wrap),false,'Here is the order',`The trap card was: "${esc(it.decoy.t)}". ${esc(it.decoy.w)}`,'Each step has to make the next one possible. Read the "why" under each link.');pool.hidden=true;nextBtn(wrap);}
+    else{render('check');const decoyIn=placed.includes(it.decoy.id);$('.fbz',wrap).innerHTML=`<div class="fb no"><b class="t">${right} of 4 in the right place</b>${decoyIn?'One of your cards does not belong in this chain at all. ':''}Tap the red ones to send them back and try again.</div>`;}
+  };
+  render();
+}
+/* ---- weak ---- */
+function itemWeak(it,wrap){
+  let phase='find',clean=true;
+  wrap.innerHTML=`<span class="src">${esc(it.src)}</span><div class="qbox">${esc(it.q)}</div><p class="ph" style="font-size:.9rem;color:var(--muted);margin-bottom:10px">Tap the weak step.</p>
+   <div class="sents">${it.s.map((x,i)=>`<button class="sent" data-i="${i}"><span class="k">${i+1}</span><span class="tx">${esc(x)}</span></button>`).join('')}</div><div class="fx"></div>`;
+  $$('.sent',wrap).forEach(b=>b.onclick=()=>{if(phase!=='find')return;const i=+b.dataset.i;
+    if(i===it.bad){phase='fix';$$('.sent',wrap).forEach(x=>x.disabled=true);b.classList.add('right');showFix();}
+    else{clean=false;b.classList.add('wrong');b.disabled=true;$('.ph',wrap).textContent='That step is fine. Look for one that is wrong or just asserted.';}});
+  function showFix(){
+    $('.ph',wrap).innerHTML=`<b style="color:var(--end)">Found it.</b> ${esc(it.problem)}`;
+    const fx=$('.fx',wrap);fx.innerHTML=`<p style="font-size:.9rem;color:var(--muted);margin:20px 0 4px">Which sentence should replace it?</p><div class="choices"></div>`;
+    const ch=$('.choices',fx);const order=shuffle(it.fixes.map((t,i)=>({t,i})));
+    order.forEach(o=>{const b=document.createElement('button');b.className='opt';b.textContent=o.t;b.onclick=()=>{
+      const ok=o.i===it.fix;$$('.opt',ch).forEach(x=>{x.disabled=true;x.classList.add('dim');});b.classList.remove('dim');b.classList.add(ok?'right':'wrong');
+      if(!ok){const r=[...ch.children].find((x,k)=>order[k].i===it.fix);r.classList.remove('dim');r.classList.add('right');}
+      const s=$(`.sent[data-i="${it.bad}"]`,wrap);s.classList.replace('right','fixed');$('.tx',s).textContent=it.fixes[it.fix];
+      const good=ok&&clean;record(good);fb(fx,good,good?'Correct':ok?'Right fix, but you tapped a strong step first':'Not the best replacement',ok?'The chain now holds together. Read it again from the top.':'The green option explains the step accurately and keeps the chain heading to the end point.');nextBtn(wrap);};ch.append(b);});
+  }
+}
+/* ---- mcq ---- */
+function itemMcq(it,wrap){
+  const order=shuffle(it.o.map((t,i)=>({t,i})));
+  wrap.innerHTML=`<span class="src">${esc(it.src)}</span>${it.table||''}<div class="qbox">${esc(it.prompt)}</div><div class="choices"></div>`;
+  const ch=$('.choices',wrap);
+  order.forEach(o=>{const b=document.createElement('button');b.className='opt';b.textContent=o.t;b.dataset.i=o.i;b.onclick=()=>{const ok=o.i===it.a;
+    $$('.opt',ch).forEach((x,k)=>{x.disabled=true;x.classList.add(order[k].i===it.a?'right':'dim');});if(!ok)b.classList.replace('dim','wrong');
+    record(ok);fb(wrap,ok,ok?'Correct':'Not this one',esc(it.why));nextBtn(wrap);};ch.append(b);});
+}
+/* ---- calc ---- */
+function itemCalc(it,wrap){
+  wrap.innerHTML=`<span class="src">${esc(it.src)}</span>${it.table||''}${it.given?`<div class="card" style="margin-bottom:16px">${it.given}</div>`:''}<div class="qbox">${esc(it.prompt)}</div>
+   <div class="calcrow">${it.pre?`<span class="u">£</span>`:''}<input class="txt num" inputmode="decimal" autocomplete="off" aria-label="Your answer"><span class="u">${esc(it.pre?'m':it.unit)}</span><button class="btn small">Check</button></div><div class="fbz"></div>`;
+  const inp=$('.num',wrap),btn=$('.btn',wrap);inp.focus({preventScroll:true});
+  const go=()=>{const raw=inp.value.replace(/[£,%\s]|units?|:\s*1/gi,'');const v=parseFloat(raw);if(isNaN(v)){inp.focus();return;}
+    inp.disabled=true;btn.disabled=true;const ok=Math.abs(v-it.ans)<=it.tol+1e-9;
+    const trap=!ok&&(it.traps||[]).find(t=>Math.abs(t.v-v)<=Math.max(0.06,Math.abs(t.v)*0.001));
+    record(ok);fb($('.fbz',wrap),ok,ok?'Correct':`Not quite. The answer is ${it.pre?'£':''}${it.ans}${it.pre?'m':it.unit==='%'?'%':' '+it.unit}`,(trap?esc(trap.m)+'<br><br>':'')+'<b>Working:</b> '+esc(it.work),esc(it.use));nextBtn(wrap);};
+  btn.onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go();};
+}
+/* ---- timed ---- */
+function itemTimed(it,wrap){
+  (it._k==='drift'?itemDrift:itemMcq)(it,wrap);
+  const bar=document.createElement('div');bar.className='cd';bar.innerHTML='<i></i>';wrap.prepend(bar);
+  S.cd=setTimeout(()=>{S.cd=null;
+    $$('.opt',wrap).forEach(x=>{x.disabled=true;const right=it._k==='drift'?((x.dataset.v==='1')===it.ok):(+x.dataset.i===it.a);x.classList.add(right?'right':'dim');});
+    record(false);fb(wrap,false,'Out of time',esc(it.why));nextBtn(wrap);},25000);
+}
+/* ---- write ---- */
+function itemWrite(it,wrap){
+  $('#pips').innerHTML='';
+  const onSite=/github\.io$|workers\.dev$/.test(location.hostname);
+  wrap.innerHTML=`<span class="src">${esc(it.src)}</span><p style="margin-bottom:10px">The table below shows changes to the structure of Newtown plc.</p>${NEWTOWN_TABLE}
+   <div class="qbox">Analyse how this restructuring of Newtown plc in 2024 might affect its speed of response to customer enquiries. <span style="color:var(--muted);font-weight:400">(9 marks)</span></div>
+   <div class="plan"><label class="s">Start point<input class="txt" id="pS" placeholder="What are you analysing?"></label><label class="e">End point<input class="txt" id="pE" placeholder="Where must the chain finish?"></label></div>
+   <p class="planmsg" style="font-size:.88rem;color:var(--muted);min-height:1.4em" aria-live="polite"></p>
+   <textarea id="ans" placeholder="Write your answer here..." disabled aria-label="Your answer"></textarea><div class="wc">0 words</div>
+   <div class="checks">
+    <div class="ck" data-k="start"><i></i><span>Opens from the restructuring (span of control or levels of hierarchy)</span></div>
+    <div class="ck" data-k="data"><i></i><span>Uses two different pieces of data from the table</span></div>
+    <div class="ck" data-k="calc"><i></i><span>Works something out (tripled, two fewer layers, 7.4% fewer staff...)</span></div>
+    <div class="ck" data-k="links"><i></i><span>At least six linking words between steps</span></div>
+    <div class="ck" data-k="focus"><i></i><span>Keeps coming back to speed of response</span></div>
+    <div class="ck" data-k="end"><i></i><span>Last sentence starts "Therefore" and answers the question</span></div>
+    <div class="ck" data-k="drift" hidden><i></i><span class="dtx"></span></div>
+   </div>
+   <div class="next"><button class="btn small" id="cmp" disabled>Compare with an example</button>${onSite?'<button class="btn small ghost" id="aiBtn" disabled>Get written feedback</button>':''}<button class="btn small ghost" id="doneW" disabled>Finish the course</button></div>
+   <div id="aiOut"></div><div id="mdl"></div>`;
+  const pS=$('#pS'),pE=$('#pE'),ta=$('#ans'),msg=$('.planmsg',wrap);
+  pS.value=state.planS||'';pE.value=state.planE||'';ta.value=state.draft||'';
+  function plan(){state.planS=pS.value;state.planE=pE.value;save();
+    const s=pS.value.toLowerCase(),e=pE.value.toLowerCase();
+    const sOk=/(restructur|span|hierarch|level|layer|delayer)/.test(s), eOk=/(speed|fast|quick|response|respond)/.test(e)&&/(enquir|custom|respon)/.test(e);
+    if(sOk&&eOk){msg.innerHTML='<span style="color:var(--ok)">Good. Keep both in front of you while you write.</span>';ta.disabled=false;}
+    else{ta.disabled=!(state.draft&&sOk&&eOk);msg.textContent=!pS.value&&!pE.value?'':!sOk?'Check your start point: what has Newtown changed?':!eOk?'Check your end point. Look at the last words of the question.':'';}
+  }
+  pS.oninput=pE.oninput=plan;plan();
+  function check(){
+    const v=ta.value,low=v.toLowerCase();state.draft=v;save();
+    const words=(v.match(/\b[\w'-]+\b/g)||[]).length;$('.wc',wrap).textContent=words+' words';
+    const sents=v.split(/(?<=[.!?])\s+/).map(x=>x.trim()).filter(Boolean),last=(sents[sents.length-1]||'').toLowerCase();
+    const first=sents.slice(0,2).join(' ').toLowerCase();
+    const links=(low.match(/\b(because|so|therefore|this means|which means|as a result|meaning|leads to|resulting in|consequently|since|as)\b/g)||[]).length;
+    const dLevels=/\b6\b[^.]{0,40}\b4\b|\bsix\b[^.]{0,40}\bfour\b|two fewer (levels|layers)|levels of hierarchy/.test(low)&&/\b(6|4|six|four|two fewer)\b/.test(low);
+    const dSpan=/\b5\b[^.]{0,40}\b15\b|\bfive\b[^.]{0,40}\bfifteen\b|span of control[^.]{0,40}\b(15|fifteen|tripl|three times)/.test(low);
+    const dStaff=/(3906|3,906|3616|3,616|\b290\b|7\.4)/.test(low);
+    const nData=[dLevels,dSpan,dStaff].filter(Boolean).length;
+    const calc=/(tripl|three times|third|two fewer|7\.4|\b290\b|200%|33%)/.test(low);
+    const focusN=(low.match(/(speed|faster|quicker|sooner|respon|delay|wait)/g)||[]).length;
+    const r={start:/(restructur|span of control|levels? of hierarchy|hierarch|layers?|delayer)/.test(first),data:nData>=2,calc,links:links>=6,focus:focusN>=3,
+      end:/^therefore/.test(last)&&/(speed|respon|faster|quicker)/.test(last)&&/(enquir|custom)/.test(last)};
+    $$('.ck[data-k]',wrap).forEach(c=>{if(c.dataset.k in r)c.classList.toggle('on',!!r[c.dataset.k]);});
+    const dk=$('.ck[data-k="drift"]',wrap);
+    const counter=/\b(however|on the other hand|but this depends|in conclusion|overall,)\b/.test(low);
+    const driftEnd=/(profit|cost|revenue|salar|motivat)/.test(last);
+    if(counter||driftEnd){dk.hidden=false;dk.classList.add('warn');$('.dtx',dk).textContent=driftEnd?'Your last sentence mentions profit, costs or motivation. Is that the end point?':'This looks like a counter-argument or conclusion. A 9-mark answer needs one developed argument only.';}
+    else dk.hidden=true;
+    const all=Object.values(r).every(Boolean)&&!driftEnd;
+    $('#cmp').disabled=words<60;$('#doneW').disabled=!all;if($('#aiBtn'))$('#aiBtn').disabled=words<80;
+  }
+  ta.oninput=check;check();
+  $('#cmp').onclick=()=>{const m=$('#mdl');if(m.innerHTML){m.innerHTML='';$('#cmp').textContent='Compare with an example';return;}
+    $('#cmp').textContent='Hide the example';
+    m.innerHTML=`<div class="card model" style="margin-top:20px"><span class="src">One way to write it</span><p><span class="hl-s">Newtown's restructuring</span> is likely to increase its speed of response to customer enquiries because <span class="hl-d">the average span of control has tripled from 5 to 15</span>. A manager responsible for 15 staff cannot check every decision in the way they could with 5, <span class="hl-w">so</span> front-line staff are likely to be given more authority to deal with customers themselves. <span class="hl-w">This means</span> that a customer who calls with a problem can be given an answer in the first conversation, rather than waiting while the enquiry is passed to a manager. For the enquiries that still need a manager's decision, <span class="hl-d">the levels of hierarchy have fallen from 6 to 4, so there are two fewer layers</span> for the enquiry to travel up and back down. <span class="hl-w">Because</span> every layer is a point where a message can sit waiting to be read or approved, removing two of them takes out a delay at each stage. <span class="hl-w">As a result</span>, the time between a customer making an enquiry and getting a decision should fall. <span class="hl-w">Therefore</span> the restructuring is likely to improve <span class="hl-e">Newtown's speed of response to customer enquiries</span>, because more staff can now answer customers directly and fewer enquiries are held up passing through the hierarchy.</p>
+    <div class="key"><span><span class="hl-s">teal</span> start point</span><span><span class="hl-e">coral</span> end point</span><span><span class="hl-w">purple</span> links</span><span><span class="hl-d">underlined</span> data, worked out</span></div>
+    <p style="margin-top:14px;font-size:.9rem;color:var(--muted)">Notice it stays with one argument and never mentions costs or profit, even though the staff numbers fell.</p></div>`;
+    m.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});};
+  $('#doneW').onclick=()=>{S.score=1;S.results=[true];clearInterval(timerId);finish(true);};
+  const ai=$('#aiBtn');
+  if(ai)ai.onclick=async()=>{
+    ai.disabled=true;ai.textContent='Reading your answer...';const out=$('#aiOut');out.innerHTML='';
+    const SYS=`You are an experienced AQA A-level Business teacher giving feedback on a student's 9-mark answer to: "Analyse how this restructuring of Newtown plc in 2024 might affect its speed of response to customer enquiries." Data: staff 3906 to 3616; average span of control 5 to 15; levels of hierarchy 6 to 4.
+Rules for this question: one fully developed argument is the right approach, so never tell the student to add a second argument, a counter-argument or a conclusion. Focus only on: whether they start from the restructuring, whether every step stays heading to SPEED OF RESPONSE TO CUSTOMER ENQUIRIES (the examiner said many students drifted to other outcomes such as costs or profit), whether there is a reason between each step, whether they use two pieces of data and work something out rather than quoting, and whether the final "Therefore" sentence uses the question's words.
+Do not give a mark or level. Write in plain British English, as a teacher speaking to a Year 13 student. No headings, no bullet symbols other than simple dashes, no emoji. Give: one sentence on what works; then two or three improvements, each quoting a short phrase they wrote ("You wrote: ...") and showing a better version ("You could write: ..."). Keep it under 220 words.`;
+    try{
+      const resp=await fetch('https://nishkam-marker.alevelnishkam.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:900,system:SYS,messages:[{role:'user',content:'Student answer:\n\n'+ta.value}]})});
+      if(!resp.ok)throw new Error('status '+resp.status);
+      const data=await resp.json();const txt=(data.content||[]).map(c=>c.text||'').join('').trim();
+      out.innerHTML=`<div class="card ai" style="margin-top:20px"><span class="src">Feedback</span>${esc(txt)}</div>`;
+    }catch(e){out.innerHTML=`<div class="fb no"><b class="t">Feedback could not load</b>Check your connection and try again.</div>`;}
+    ai.disabled=false;ai.textContent='Get written feedback';
+  };
+}
+
+/* =====================================================================
+   RESULT
+   ===================================================================== */
+function finish(writeDone){
+  clearInterval(timerId);
+  const st=S.st,n=st.items.length,passed=st.type==='write'?!!writeDone:S.score>=st.pass;
+  const prevBest=state.best[st.id]??-1;if(S.score>prevBest)state.best[st.id]=S.score;
+  if(passed)state.passed[st.id]=true;save();
+  const r=74,C=2*Math.PI*r,frac=st.type==='write'?1:S.score/n;
+  const missed=st.type==='write'?[]:st.items.map((it,i)=>S.results[i]?null:(it.src+(it.q?': '+it.q:it.prompt?': '+it.prompt:''))).filter(Boolean);
+  const nextSt=STAGES.find(s=>s.id===st.id+1);
+  let title,text;
+  if(st.type==='write'){title='Course complete';text='You have built a full chain from start point to end point on a real past question. Use the same habit every time: write the start point and end point at the top of your plan before you write anything else.';}
+  else if(passed){title=S.score===n?'Full marks':'Stage passed';text=nextSt?`${esc(nextSt.title)} is now unlocked.`:'';}
+  else{title='Not yet';text=`You need ${st.pass} out of ${n} to pass. Look at the ones you missed below, then try again. The order of the answers changes each time.`;}
+  $('#stageBody').innerHTML=`<div class="item result"><div class="ringbox"><svg width="180" height="180" viewBox="0 0 180 180"><circle class="bgc" cx="90" cy="90" r="${r}" fill="none" stroke-width="10"/><circle class="fgc" id="resRing" cx="90" cy="90" r="${r}" fill="none" stroke-width="10" stroke-linecap="round" stroke="${passed?css('--ok'):css('--end')}" stroke-dasharray="${C}" stroke-dashoffset="${C}"/></svg>
+    <div class="val"><b>${st.type==='write'?'✓':S.score}</b><span>${st.type==='write'?'done':'out of '+n}</span></div></div>
+    <h2>${title}</h2><p>${text}</p>
+    <div class="next"><button class="btn" id="toMap">Back to the course map</button>${!passed&&st.type!=='write'?'<button class="btn ghost" id="again">Try again</button>':''}${passed&&nextSt?'<button class="btn ghost" id="goNext">Go to stage '+nextSt.id+'</button>':''}</div>
+    ${missed.length?`<div class="card review"><span class="src">Have another look at</span><ul>${missed.map(m=>`<li>${esc(m)}</li>`).join('')}</ul></div>`:''}</div>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{$('#resRing').style.strokeDashoffset=C*(1-frac);}));
+  if(passed)burst();
+  $('#toMap').onclick=toMap;
+  if($('#again'))$('#again').onclick=()=>openStage(st.id);
+  if($('#goNext'))$('#goNext').onclick=()=>openStage(nextSt.id);
+  scrollTo(0,0);
+}
+function toMap(){clearInterval(timerId);S=null;$('#stageView').hidden=true;$('#mapView').hidden=false;running=true;draw();renderMap();scrollTo({top:$('.map').offsetTop-20});}
+$('#backBtn').onclick=toMap;
+$('#resetAll').onclick=e=>{const b=e.target;if(b.dataset.sure){state={best:{},passed:{},draft:'',planS:'',planE:''};save();b.textContent='Reset my progress';delete b.dataset.sure;renderMap();}else{b.dataset.sure=1;b.textContent='Tap again to confirm. This clears every stage.';}};
+
+/* particle burst on pass */
+function burst(){
+  if(reduce)return;const c=$('#burst'),x=c.getContext('2d'),d=Math.min(devicePixelRatio||1,2);c.width=innerWidth*d;c.height=innerHeight*d;x.setTransform(d,0,0,d,0,0);
+  const ring=$('.ringbox').getBoundingClientRect(),ox=ring.left+ring.width/2,oy=ring.top+ring.height/2;
+  const cols=[css('--start'),css('--chain'),css('--end'),css('--gold')];
+  const ps=Array.from({length:70},()=>{const a=Math.random()*Math.PI*2,v=2+Math.random()*5;return{x:ox,y:oy,vx:Math.cos(a)*v,vy:Math.sin(a)*v-1.5,l:1,c:cols[Math.random()*4|0],r:2+Math.random()*2.5};});
+  (function f(){x.clearRect(0,0,innerWidth,innerHeight);let alive=false;for(const p of ps){p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.vx*=.985;p.l-=.012;if(p.l>0){alive=true;x.globalAlpha=p.l;x.fillStyle=p.c;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();}}x.globalAlpha=1;if(alive)requestAnimationFrame(f);else x.clearRect(0,0,innerWidth,innerHeight);})();
+}
+
+/* magnetic buttons */
+if(fine&&!reduce)document.addEventListener('pointermove',e=>{const b=e.target.closest('.btn');$$('.btn').forEach(x=>{if(x!==b)x.style.transform='';});if(b&&!b.disabled){const r=b.getBoundingClientRect();b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.15}px,${(e.clientY-r.top-r.height/2)*.22}px)`;}});
+
+renderMap();
+})();
+</script>
+
+</body>
+</html>
