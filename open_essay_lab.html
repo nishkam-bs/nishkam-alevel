@@ -820,7 +820,7 @@ document.getElementById('step2Btn').onclick=async function(){
   document.getElementById('step2Loading').style.display='block';
   document.getElementById('step2Result').innerHTML='';
   try{
-    const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
       model:"claude-sonnet-4-6",max_tokens:2000,
       system:`You are an AQA A-level Business Studies teacher preparing a Year 13 student to answer a specific 16 or 24 mark "all businesses" essay question. The student wants to know what they need to understand before writing.
 
@@ -881,7 +881,7 @@ document.querySelectorAll('.plan-opt').forEach(btn=>{
     document.querySelectorAll('.plan-opt').forEach(x=>{x.classList.remove('btn-g');x.classList.add('btn-o');});
     this.classList.remove('btn-o');this.classList.add('btn-g');
     try{
-      const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
         model:"claude-sonnet-4-6",max_tokens:1500,
         system:`You are an AQA A-level Business teacher helping a Year 13 student plan an "all businesses" essay (16 or 24 marks). These questions require the student to use different types of businesses to test their argument. The student needs help with: ${labels[aspect]}.
 
@@ -1003,7 +1003,7 @@ async function runMark(){
     const body=JSON.stringify({model:"claude-sonnet-4-6",max_tokens:3000,system:sysPrompt,messages});
     const bodySize=new Blob([body]).size;
     if(bodySize>4500000){document.getElementById('ldPanel').classList.remove('show');document.getElementById('fbPanel').style.display='block';document.getElementById('rMark').textContent='Error';document.getElementById('rLevel').textContent='Your photos are too large. Try fewer pages or lower resolution.';return;}
-    const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body});
+    const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body});
     if(!resp.ok){const errTxt=await resp.text().catch(()=>'');throw new Error('Server error '+resp.status);}
     const data=await resp.json();
     const txt=data.content.map(c=>c.text||'').join('');
@@ -1094,7 +1094,7 @@ FORMAT YOUR RESPONSE AS HTML:
   }
 
   try{
-    const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
       model:"claude-sonnet-4-6",max_tokens:1500,
       system:rewritePrompt,
       messages:[{role:"user",content:`QUESTION: ${qText}\n\nSTUDENT'S ESSAY:\n${studentContent}\n\nFEEDBACK RECEIVED:\nMark: ${fb.mark}/${fb._maxMark||16} (Level ${fb.level})\nBlocker: ${fb.blocker}\nEBI: ${(fb.ebi||[]).join('; ')}\n\nNow identify the student's weakest section and rewrite it to show them what they should have done.`}]
@@ -1248,7 +1248,7 @@ document.querySelectorAll('.drill-submit').forEach(btn=>{
     const card=document.getElementById('sk-'+skill);
     const taskText=card.querySelector('.al.al-b').innerText;
     try{
-      const resp=await fetch("https://nishkam-marker.j-kerrisk.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:700,system:`You are an AQA A-level Business examiner giving drill feedback. Be supportive but examiner-strict. Respond ONLY with JSON (no markdown, no backticks): {"rating":"Weak|Developing|Strong|Excellent","www":"<what went well - 2-3 sentences>","ebi":"<even better if - 2-3 sentences>","upgrade":"<if not Excellent, write a stronger version in 3-4 sentences showing what a stronger answer looks like>"}`,messages:[{role:"user",content:`SKILL: ${skill}\nTASK: ${taskText}\nSTUDENT RESPONSE: ${input}`}]})});
+      const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:700,system:`You are an AQA A-level Business examiner giving drill feedback. Be supportive but examiner-strict. Respond ONLY with JSON (no markdown, no backticks): {"rating":"Weak|Developing|Strong|Excellent","www":"<what went well - 2-3 sentences>","ebi":"<even better if - 2-3 sentences>","upgrade":"<if not Excellent, write a stronger version in 3-4 sentences showing what a stronger answer looks like>"}`,messages:[{role:"user",content:`SKILL: ${skill}\nTASK: ${taskText}\nSTUDENT RESPONSE: ${input}`}]})});
       const data=await resp.json();
       const txt=data.content.map(c=>c.text||'').join('');
       const r=JSON.parse(txt.replace(/```json|```/g,'').trim());
