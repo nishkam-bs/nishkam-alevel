@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Models Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   MODELS COURSE
+   Uses only models on the AQA 7132 specification (stakeholder mapping, not
+   Mendelow; none of the removed models). Built on what examiner reports
+   2017–2026 say about using models. "Based on" means the issue comes from
+   the report; the wording of every item is our own. Harbour Hotels and the
+   other businesses are made up for this course.
+   Stage numbers are stored in the tracking sheet as 500 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+const HARBOUR_TABLE=`<p style="font-size:.92rem;margin-bottom:8px">Harbour Hotels Ltd owns four hotels on the south coast. It struggles to keep room and cleaning staff.</p><div class="tablewrap"><table class="d"><thead><tr><th>Room and cleaning staff</th><th class="r">Harbour Hotels</th><th class="r">Local hotel average</th></tr></thead><tbody>
+<tr><td>Hourly pay (£)</td><td class="r">11.90</td><td class="r">12.40</td></tr>
+<tr><td>Labour turnover (%)</td><td class="r">32</td><td class="r">20</td></tr>
+<tr><td>Staff satisfied with their pay (%)</td><td class="r">41</td><td class="r">–</td></tr>
+<tr><td>Staff who feel their work is recognised (%)</td><td class="r">68</td><td class="r">–</td></tr></tbody></table></div>`;
+const HARBOUR_Q='Harbour Hotels is considering a 5% pay rise for its room and cleaning staff. Analyse how this might affect its labour turnover.';
+const WEAK=['The model is old, so it may not apply today.','It is only a theory.','The model is not very useful.'];
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'mcq', title:'Which model fits?', blurb:'Pick the model that helps answer the question, or none at all.', pass:8,
+  teach:`<p>Models earn marks when they help answer the question. The June 2018 Paper 2 report described students who "were often determined to include a business model in their response somewhere", but used it in a way that was "imprecise or not relevant in addressing the question set".</p>
+  <p>For each question, choose the model that would do the most work. Sometimes the right answer is that no model is needed.</p>`,
+  items:[
+    {src:'Exam-style · choosing a model', prompt:'"Should the manufacturer close its UK factory and move production abroad?" Staff and the union are expected to resist strongly. Which model helps most?',
+     o:['Lewin\'s force field analysis','Boston Matrix','Product life cycle','Market mapping'], a:0,
+     why:'The decision depends on whether the forces pushing for the move outweigh the forces against it.'},
+    {src:'Exam-style · choosing a model', prompt:'"Analyse why staff might resist new shift patterns, and how managers could deal with it." Which model helps most?',
+     o:['Kotter and Schlesinger','Ansoff\'s matrix','Porter\'s generic strategies','Decision trees'], a:0,
+     why:'It explains the reasons for resistance and matches a method to each one.'},
+    {src:'Exam-style · choosing a model', prompt:'A business has three products and must decide which one to invest in. Which model helps most?',
+     o:['Boston Matrix','Tannenbaum–Schmidt continuum','Carroll\'s CSR pyramid','Network analysis'], a:0,
+     why:'It compares products by market share and market growth to guide where money goes.'},
+    {src:'Exam-style · choosing a model', prompt:'"Assess the risk of selling an existing product in a new country." Which model helps most?',
+     o:['Ansoff\'s matrix','Handy\'s cultures','Herzberg\'s two-factor theory','Inventory control chart'], a:0,
+     why:'An existing product in a new market is market development, and Ansoff is about the risk of each growth strategy.'},
+    {src:'Exam-style · choosing a model', prompt:'"Why are profit margins low in the budget airline industry?" Which model helps most?',
+     o:['Porter\'s five forces','SWOT analysis','Product life cycle','Tannenbaum–Schmidt continuum'], a:0,
+     why:'Five forces explains profitability across a whole industry: intense rivalry, price-sensitive buyers who can switch easily, and so on.'},
+    {src:'Exam-style · choosing a model', prompt:'A manager must choose between two projects. Each has possible outcomes with estimated probabilities. Which model helps most?',
+     o:['Decision trees','Boston Matrix','Stakeholder mapping','Market mapping'], a:0,
+     why:'A decision tree weights each outcome by its probability to compare the options.'},
+    {src:'Exam-style · choosing a model', prompt:'"How far should employees be involved in decisions about a restructure?" Which model helps most?',
+     o:['Tannenbaum–Schmidt continuum','Porter\'s five forces','Decision trees','Inventory control chart'], a:0,
+     why:'The continuum runs from manager-centred (tell) to employee-centred (delegate).'},
+    {src:'Exam-style · choosing a model', prompt:'A retailer is deciding how far beyond the law to go in treating its overseas suppliers fairly. Which model helps most?',
+     o:['Carroll\'s CSR pyramid','Ansoff\'s matrix','Network analysis','Lewin\'s force field analysis'], a:0,
+     why:'Carroll separates legal responsibilities from ethical ones, which go beyond the law.'},
+    {src:'Exam-style · choosing a model', prompt:'A new store has 12 activities to complete and must open before Christmas. Which model helps most?',
+     o:['Network analysis','Boston Matrix','Elkington\'s triple bottom line','Market mapping'], a:0,
+     why:'It finds the critical path and shows which activities cannot be delayed.'},
+    {src:'Exam-style · choosing a model', prompt:'"Where should a new coffee brand position itself compared with its rivals?" Which model helps most?',
+     o:['Market mapping','Kotter and Schlesinger','Decision trees','Handy\'s cultures'], a:0,
+     why:'A market map shows where rivals sit on the criteria customers care about, and where the gaps are.'},
+    {src:'Based on AQA June 2018 · Paper 2 report', prompt:'"Analyse how a fall in interest rates might affect a house builder with high gearing." Which model helps most?',
+     o:['None is needed: a clear chain on interest costs and on demand for houses does the job','Boston Matrix','Ansoff\'s matrix','Handy\'s cultures'], a:0,
+     why:'Forcing a model in where it does not help is what the 2018 examiner warned against.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'drift', title:'Get the mechanics right', blurb:'The key rule of each model, true or false.', pass:11,
+  labels:TF, showLabel:'True or false?',
+  teach:`<p>Knowing a model's name is not enough. In 2025 the Paper 3 examiner marked down an answer that otherwise developed arguments well, because it showed "no clear understanding of Lewin's model". The examiner's advice was to build real understanding of models during the course: "revision is for reminding you of what you once knew well".</p>
+  <p>Each statement is about how a model works. Decide whether it is true or false.</p>`,
+  items:[
+    {src:'Exam-style · Tannenbaum–Schmidt continuum', q:'Tannenbaum–Schmidt continuum', ok:false,
+     text:'There are two leadership styles: autocratic and democratic.',
+     why:'It is a continuum: tell, sell, consult, join, delegate. The right point on it depends on the situation.'},
+    {src:'Exam-style · decision trees', q:'Decision trees', ok:true,
+     text:'At a chance node, the probabilities must add up to 1.',
+     why:'They cover every possible outcome of that event.'},
+    {src:'Exam-style · decision trees', q:'Decision trees', ok:false,
+     text:'You should choose the option with the best possible outcome.',
+     why:'Choose on expected value, or on net gain (expected value minus the cost), not on the best case.'},
+    {src:'Exam-style · Boston Matrix', q:'Boston Matrix', ok:false,
+     text:'A cash cow needs heavy investment to keep growing.',
+     why:'A cash cow has a high share of a slow-growing market. It generates cash and needs little investment. Stars are the ones that need heavy investment.'},
+    {src:'Exam-style · product life cycle', q:'Product life cycle', ok:false,
+     text:'The product life cycle shows how a product\'s profit changes over time.',
+     why:'It shows sales. Profit depends on costs as well, and is often negative at launch even when sales are rising.'},
+    {src:'Exam-style · Porter\'s five forces', q:'Porter\'s five forces', ok:true,
+     text:'Buyer power is high when there are few buyers and they can switch suppliers easily.',
+     why:'Concentration and switching costs decide how much power buyers have.'},
+    {src:'Exam-style · Porter\'s five forces', q:'Porter\'s five forces', ok:false,
+     text:'A substitute is a rival brand of the same product.',
+     why:'A rival brand is part of competitive rivalry. A substitute does the same job in a different way, such as a train instead of a flight.'},
+    {src:'Based on AQA June 2025 · Paper 3 report', q:'Lewin\'s force field analysis', ok:true,
+     text:'Change happens when the driving forces are stronger than the restraining forces.',
+     why:'It is about how strong the forces are, not how many there are. Managers can strengthen drivers or weaken resistance.'},
+    {src:'Exam-style · Kotter and Schlesinger', q:'Kotter and Schlesinger', ok:false,
+     text:'Managers should always use participation to overcome resistance.',
+     why:'The method should match the reason for resistance and the situation. Participation takes time, which an urgent change may not have.'},
+    {src:'Exam-style · Carroll\'s CSR pyramid', q:'Carroll\'s CSR pyramid', ok:true,
+     text:'Philanthropic responsibilities are discretionary.',
+     why:'Giving to charity or the community is voluntary. Economic and legal responsibilities are the foundation.'},
+    {src:'Exam-style · network analysis', q:'Network analysis', ok:true,
+     text:'An activity on the critical path has zero float.',
+     why:'Any delay to it delays the whole project.'},
+    {src:'Exam-style · Porter\'s generic strategies', q:'Porter\'s generic strategies', ok:false,
+     text:'A business can easily be the lowest-cost producer and the most differentiated brand at the same time.',
+     why:'Porter warns that trying to do both risks being "stuck in the middle", with neither the lowest costs nor a real premium.'},
+    {src:'Exam-style · SWOT analysis', q:'SWOT analysis', ok:false,
+     text:'A SWOT analysis tells a business which strategy to choose.',
+     why:'It supports a strategic choice but does not make it. Managers still have to decide what to do with what it shows.'},
+    {src:'Based on AQA June 2024 · Paper 1 report (Q23)', q:'Strategic drift', ok:true,
+     text:'Strategic drift happens gradually, and the business may still be profitable while it is happening.',
+     why:'That is what makes it dangerous: short-term success can hide a growing gap between the strategy and the market.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'mcq', title:'Herzberg, Maslow and Taylor', blurb:'The motivation theories, used accurately.', pass:7,
+  teach:`<p>Motivation theory turns up on every paper, and the reports show it is often used wrongly. On the June 2026 Paper 3, an answer claiming that Herzberg says a pay rise motivates staff was marked as flawed. On Paper 1 that year, the examiner wanted students to show that Maslow is a hierarchy, not just list the five levels. In 2025 many students thought training was a hygiene factor.</p>
+  <p>Take care with each one. The wrong options are the mistakes students make.</p>`,
+  items:[
+    {src:'Exam-style · Herzberg', prompt:'Which of these is one of Herzberg\'s motivators?',
+     o:['Pay','Working conditions','Recognition for achievement','Job security'], a:2,
+     why:'Motivators come from the job itself: achievement, recognition, responsibility, advancement, the work itself. The others are hygiene factors.'},
+    {src:'Exam-style · Herzberg', prompt:'Which of these is a hygiene factor?',
+     o:['Responsibility','Pay and company policy','Advancement','The work itself'], a:1,
+     why:'Hygiene factors surround the job: pay, policy, supervision, conditions, security.'},
+    {src:'Exam-style · Herzberg', prompt:'According to Herzberg, what happens when hygiene factors are poor?',
+     o:['Staff become dissatisfied','Staff become motivated','Nothing changes','Staff move up the hierarchy of needs'], a:0,
+     why:'Poor hygiene factors cause dissatisfaction. Putting them right removes the dissatisfaction but does not create motivation.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q3)', prompt:'A business raises pay and improves the staff canteen. What would Herzberg predict?',
+     o:['Dissatisfaction falls, but staff are not necessarily more motivated','Staff are strongly motivated to work harder','Staff reach self-actualisation','Productivity doubles'], a:0,
+     why:'Both are hygiene factors. This is the distinction the 2026 examiner was looking for.'},
+    {src:'Based on AQA June 2026 · Paper 1 report (Q18)', prompt:'What makes Maslow\'s theory a hierarchy?',
+     o:['Once a lower level of need is met, the next level up becomes what motivates','There are exactly five needs','Managers rank their staff','Pay is at the top'], a:0,
+     why:'The order matters. In 2026 the stronger answers explained this, rather than just listing the levels.'},
+    {src:'Exam-style · Maslow', prompt:'A new worker on a low wage is worried about paying the rent. Under Maslow, which need is most likely to drive her right now?',
+     o:['Safety and financial security','Esteem','Self-actualisation','Social belonging'], a:0,
+     why:'Lower-level needs come first. Until she feels secure, recognition or personal growth will matter less.'},
+    {src:'Exam-style · Taylor', prompt:'What did Taylor believe about workers?',
+     o:['They are mainly motivated by money, so jobs should be broken into simple tasks and paid by output','They want responsibility and freedom','They are motivated by recognition','Pay is a hygiene factor'], a:0,
+     why:'Responsibility and recognition are Herzberg. Hygiene factors are Herzberg too.'},
+    {src:'Based on AQA November 2020 · Paper 2 report (Q2.4)', prompt:'Where does Taylor\'s approach fit best?',
+     o:['A packing warehouse where each worker\'s output is easy to count','A design studio','A research laboratory','A charity\'s fundraising team'], a:0,
+     why:'Piece rate and close supervision need simple, measurable, repeated tasks. The 2020 examiner said "a surprising number of students were clearly unfamiliar with Taylor".'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q3)', prompt:'A student writes: "Under Herzberg, the bonus will motivate staff to work harder." What is the best correction?',
+     o:['Herzberg treats pay as a hygiene factor, so the bonus may remove dissatisfaction, but motivation comes from things like recognition and responsibility','Herzberg says bonuses are motivators but salaries are not','Herzberg did not write about pay','Use Maslow instead, because pay meets self-actualisation needs'], a:0,
+     why:'The chain stays accurate and can still be useful, for example for reducing labour turnover.'}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'drift', title:'Use it, don\'t just name it', blurb:'Does the model do work in the argument, or is it just dropped in?', pass:8,
+  labels:['The model does work','It is just named'], showLabel:'A sentence from a student\'s answer:',
+  teach:`<p>A model earns credit when it explains a step in your argument. Naming it, describing it or listing its parts earns very little. The June 2023 Paper 2 report said that incomplete knowledge of models such as "Elkington's Triple Bottom Line" or "Lewin's Force Field Analysis" made it hard for some students to answer.</p>
+  <p>Read each sentence. Does the model actually move the argument on?</p>`,
+  items:[
+    {src:'Based on AQA June 2018 · Paper 2 report', q:'Analyse how taking over a rival might affect a supermarket\'s profit margin.', ok:false,
+     text:'Porter\'s five forces is a useful model here.',
+     why:'Named, but it does nothing. Which force, and how does it affect the margin?'},
+    {src:'Based on AQA June 2026 · Paper 1 (Q22)', q:'Analyse how taking over a rival might affect a supermarket\'s profit margin.', ok:true,
+     text:'With one fewer major rival, the supermarket buys a bigger share of each supplier\'s output, so supplier power falls and it can negotiate lower prices, which raises its margin.',
+     why:'The model explains why costs fall. Five forces used like this was credited in the 2026 integration essay.'},
+    {src:'Based on AQA June 2018 · Paper 2 report', q:'Analyse why the café chain\'s staff turnover might fall after a new training scheme.', ok:false,
+     text:'This links to Maslow\'s hierarchy of needs, which has five levels.',
+     why:'A description of the model, not a step in the argument.'},
+    {src:'Based on AQA June 2025 · Paper 2 report (Q2.3)', q:'Analyse why the café chain\'s staff turnover might fall after a new training scheme.', ok:true,
+     text:'Training gives staff a route to promotion, which Herzberg treats as a motivator, so staff who can see a future in the job are less likely to leave.',
+     why:'Accurate, and it explains the link between training and staying.'},
+    {src:'Exam-style · Tannenbaum–Schmidt continuum', q:'Analyse how the choice of leadership style might affect the success of the move to a new site.', ok:true,
+     text:'Using a consult style on the Tannenbaum–Schmidt continuum, managers could ask staff which shift patterns suit them at the new site, so fewer feel forced out and more agree to move.',
+     why:'It picks a point on the continuum and explains what that does in this situation.'},
+    {src:'Exam-style · Tannenbaum–Schmidt continuum', q:'Analyse how the choice of leadership style might affect the success of the move to a new site.', ok:false,
+     text:'Tannenbaum and Schmidt show that there are many different leadership styles.',
+     why:'True, but it does not say which style or what it would do.'},
+    {src:'Exam-style · Boston Matrix', q:'Analyse why the board decided to sell its DVD rental division.', ok:true,
+     text:'The division is a dog in the Boston Matrix: it has a low share of a shrinking market, so the cash tied up in it would earn more in the growing streaming division.',
+     why:'It places the division using both measures and explains the decision.'},
+    {src:'Exam-style · Boston Matrix', q:'Analyse why the board decided to sell its DVD rental division.', ok:false,
+     text:'The Boston Matrix has four boxes: stars, cash cows, problem children and dogs.',
+     why:'A list of the boxes, with no link to this decision.'},
+    {src:'Based on AQA June 2025 · Paper 3 report', q:'Analyse how the move to a new factory could be made to succeed.', ok:false,
+     text:'Lewin\'s force field analysis can be applied to this change.',
+     why:'It says the model could be used, then doesn\'t use it.'},
+    {src:'Based on AQA June 2025 · Paper 3 report', q:'Analyse how the move to a new factory could be made to succeed.', ok:true,
+     text:'The strongest restraining force is staff fear of losing their jobs; if managers guarantee jobs at the new site, that force weakens enough for the cost savings driving the move to win.',
+     why:'It identifies the forces, weighs them and shows how managers can change the balance.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'weak', title:'Spot the misuse', blurb:'One step uses a model wrongly. Find it and fix it.', pass:4,
+  teach:`<p>Each chain uses a people or change model, and one step gets it wrong. Wrong labels, the wrong method for the situation and contradictions all break a chain.</p>
+  <p>Tap the faulty step, then choose the best replacement. Both must be right first time to score.</p>`,
+  items:[
+    {src:'Exam-style · Kotter and Schlesinger', q:'Analyse how managers could overcome staff resistance to a new IT system.',
+     s:['Staff are resisting because they do not understand how the new system will work.','Kotter and Schlesinger would call this resistance caused by self-interest.','The best method is education: training sessions showing staff how the system works.','Once staff can use it confidently, resistance falls and the system is adopted faster.'],
+     bad:1, problem:'Not understanding a change is misunderstanding, not self-interest. Self-interest is when people expect to lose something, such as pay or status.',
+     fixes:['Kotter and Schlesinger would call this resistance caused by misunderstanding.','Kotter and Schlesinger say all resistance comes from self-interest.','Kotter and Schlesinger say this means coercion is needed.'], fix:0},
+    {src:'Exam-style · Kotter and Schlesinger', q:'A factory must cut costs within a month or close. Analyse how managers might deal with staff resisting a new shift system.',
+     s:['The factory has only a month to cut its costs.','Some staff resist because they will lose overtime pay.','Managers should use participation, running workshops so staff can design the new system over the next six months.','If the change is delayed, the factory may close and every job will go.'],
+     bad:2, problem:'The method has to fit the situation. Participation takes time the factory does not have, and the reason here is self-interest (lost overtime).',
+     fixes:['With so little time, negotiation, such as a one-off payment to make up for lost overtime, may win agreement quickly.','Managers should ignore the resistance.','Managers should use manipulation because it is always the fastest method.'], fix:0},
+    {src:'Exam-style · Tannenbaum–Schmidt continuum', q:'After a safety failure, a hospital ward must change a procedure immediately. Analyse which leadership style is most appropriate.',
+     s:['The change is urgent, because patients could be harmed while the old procedure continues.','On the Tannenbaum–Schmidt continuum, a "join" style would be best, letting staff decide together over the coming months.','Senior staff can set the new procedure straight away and check it is followed.','Once the immediate risk is dealt with, managers could consult staff on improving it further.'],
+     bad:1, problem:'The right style depends on the situation. An urgent safety decision needs speed and control, not a slow joint decision.',
+     fixes:['On the Tannenbaum–Schmidt continuum, the urgency means a style near the "tell" end is most appropriate.','On the continuum, delegating is always best because staff know the ward.','The continuum says managers should always consult before any change.'], fix:0},
+    {src:'Exam-style · stakeholder mapping', q:'Analyse how stakeholder mapping could help a council plan a new road.',
+     s:['Local residents are very interested in the plans because the road passes their homes.','Through a well-organised campaign, they have gained the power to delay planning permission.','This moves them into the "manage closely" group on a stakeholder map.','Because residents have low power, the council only needs to keep them informed.'],
+     bad:3, problem:'This contradicts the step before. Stakeholders\' power can change, and these residents now have a lot of it.',
+     fixes:['So the council should consult them early and adapt the plans where it can, to avoid costly delays.','So the council can safely ignore them.','So residents need minimal effort.'], fix:0},
+    {src:'Exam-style · Carroll\'s CSR pyramid', q:'Analyse which of Carroll\'s responsibilities a clothing retailer is meeting.',
+     s:['The retailer makes sure its factory workers are paid the legal minimum wage.','This meets its legal responsibility.','Paying the legal minimum also meets its philanthropic responsibility.','It has also started paying suppliers above the market price so workers earn a living wage, which is an ethical responsibility.'],
+     bad:2, problem:'Doing what the law requires is a legal responsibility only. Philanthropy is voluntary giving, such as donations to the community.',
+     fixes:['Paying the legal minimum on its own does not take it beyond its legal duty.','This puts it at the top of the pyramid.','This is only an economic responsibility.'], fix:0}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'mcq', title:'Strategy models in context', blurb:'Five forces, generic strategies, Boston, Ansoff, SWOT and market maps.', pass:8,
+  teach:`<p>Strategy models do the most work when you apply them to a specific business. In the June 2026 Paper 1 essay on integration, Porter's five forces earned credit when it was used inside the argument. In 2024 the Paper 3 examiner said answers on SWOT improved when they linked to the end point in the question, "to help with strategic planning".</p>
+  <p>Choose the option that applies the model correctly.</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 1 (Q22)', prompt:'A UK supermarket takes over a rival chain. Which of Porter\'s five forces does this most directly weaken?',
+     o:['Competitive rivalry, because there is one fewer major competitor','The threat of substitutes','Buyer power, because shoppers gain choice','The threat of new entrants, because entry becomes easier'], a:0,
+     why:'Horizontal integration removes a competitor. It also tends to reduce supplier power, because the merged business buys more.'},
+    {src:'Exam-style · Porter\'s five forces', prompt:'A chocolate maker buys its main cocoa supplier. Which force does this reduce?',
+     o:['Supplier power','Buyer power','Threat of substitutes','Competitive rivalry'], a:0,
+     why:'Backward vertical integration means it no longer depends on an outside supplier for its key input.'},
+    {src:'Exam-style · Porter\'s five forces', prompt:'Why is buyer power high for a small food producer that sells to the big supermarkets?',
+     o:['A few large buyers take most of its output and could switch to another producer','Supermarkets are in the public sector','Food is a necessity','The producer has strong branding'], a:0,
+     why:'Few buyers plus easy switching gives them the power to push prices down.'},
+    {src:'Exam-style · Porter\'s generic strategies', prompt:'A gym chain charges £20 a month, with no classes and few staff on the gym floor. Which generic strategy is this?',
+     o:['Cost leadership','Differentiation','Focused differentiation','Stuck in the middle'], a:0,
+     why:'It strips out costs so it can profitably charge less than rivals.'},
+    {src:'Exam-style · Porter\'s generic strategies', prompt:'A small brewery sells expensive craft beer, only in its own city. Which generic strategy is this?',
+     o:['Focused differentiation','Cost leadership','Differentiation across the whole market','Market penetration'], a:0,
+     why:'A distinctive product aimed at a narrow market. Market penetration is an Ansoff strategy, not a Porter one.'},
+    {src:'Exam-style · Boston Matrix', prompt:'A product has a high share of a market that has stopped growing. What does the Boston Matrix suggest?',
+     o:['Keep it going with little investment and use its cash to fund other products','Invest heavily to grow it','Sell it immediately','Cut its price to grow the market'], a:0,
+     why:'This is a cash cow.'},
+    {src:'Exam-style · Boston Matrix', prompt:'A new product has a small share of a fast-growing market. What decision does the business face?',
+     o:['Invest heavily to build its share, or withdraw it','Nothing, as it will become a star on its own','Harvest it for cash','Treat it as a cash cow'], a:0,
+     why:'This is a problem child. It needs investment to become a star, and without it the product may end up as a dog.'},
+    {src:'Exam-style · Ansoff\'s matrix', prompt:'A UK supermarket opens stores in Ireland. Why might this market development be lower risk than usual?',
+     o:['Customers, language and shopping habits are similar, and its supply chain is close by','Ansoff says all market development is low risk','Ireland has a bigger market','Supermarkets cannot fail'], a:0,
+     why:'The risk of an Ansoff strategy depends on how different the new market really is.'},
+    {src:'Based on AQA June 2024 · Paper 3 report (Q4)', prompt:'Which use of SWOT analysis earns the most credit?',
+     o:['Linking a strength to an opportunity to justify a particular strategy','Listing two points under each heading','Defining what SWOT stands for','Drawing a SWOT grid'], a:0,
+     why:'SWOT helps when it leads to a decision. The 2024 examiner said analysis was better when it linked to the end point, helping with strategic planning.'},
+    {src:'Exam-style · market mapping', prompt:'A market map shows a gap at high price and low quality. What should the business conclude?',
+     o:['There is probably no demand there: a gap is not always an opportunity','It should launch there straight away','The map must be wrong','Rivals have missed the opportunity'], a:0,
+     why:'A gap can exist because nobody would buy there, or because it would not be profitable.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'build', title:'Build it with a model', blurb:'Put the steps in order. The model is one of the steps.', pass:2,
+  teach:`<p>In each chain the model provides one of the links, the reason one step leads to the next. One card in each set is a trap: it names a model wrongly, or heads away from the end point.</p>
+  <p>Tap cards to place them in order, and tap a placed card to send it back. You get two checks. To score, it must be right first time.</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 1 (Q22)', q:'A UK supermarket with a 24% market share takes over a rival with 9%. Analyse how this might affect its profit margin.',
+     start:'The supermarket takes over a rival, raising its market share from 24% to 33%', end:'Its profit margin rises',
+     cards:[
+      {id:'A',t:'It becomes a much larger customer for each of its suppliers',w:'Why? It is now buying for a third of the grocery market.'},
+      {id:'B',t:'Suppliers depend on it more, so their bargaining power falls',w:'Why? Losing an order this size would hurt them badly. This is supplier power in Porter\'s five forces.'},
+      {id:'C',t:'It negotiates lower prices for the goods it buys',w:'Why? Suppliers accept a lower price rather than lose the contract.'},
+      {id:'D',t:'Its cost of sales falls while its shelf prices stay the same',w:'Why? With one fewer major rival, there is less pressure to pass the saving on.'}],
+     decoy:{id:'E',t:'It gains stores in new towns, so more people know the brand',w:'Trap: possibly true, but it heads towards sales, not the margin.'},
+     order:['A','B','C','D']},
+    {src:'Exam-style · Kotter and Schlesinger', q:'Call centre staff are resisting a new computer system because they fear they will not be able to use it. Analyse how managers could make sure it is introduced on time.',
+     start:'Staff resist because they fear they will not cope with the new system', end:'The new system is introduced on schedule',
+     cards:[
+      {id:'A',t:'Kotter and Schlesinger would see this as fear and misunderstanding, not self-interest',w:'Why? Staff are not losing pay or status; they are worried about coping.'},
+      {id:'B',t:'So the right method is education and facilitation: training before the switch',w:'Why? The method has to match the reason for resistance.'},
+      {id:'C',t:'Staff practise on the system and find they can use it',w:'Why? Training deals directly with the fear.'},
+      {id:'D',t:'Fewer staff hold back or object during the changeover',w:'Why? The reason for resisting has gone.'}],
+     decoy:{id:'E',t:'Managers warn that staff who do not use the system will be disciplined',w:'Trap: coercion may force people to comply, but it does nothing about the fear and can damage trust.'},
+     order:['A','B','C','D']},
+    {src:'Exam-style · Herzberg', q:'A care home has labour turnover of 35%. In exit interviews, staff say their work goes unnoticed. Analyse how a recognition scheme might reduce labour turnover.',
+     start:'The care home introduces a monthly scheme to recognise good work', end:'Labour turnover falls from 35%',
+     cards:[
+      {id:'A',t:'Staff who do good work are noticed and thanked publicly',w:'Why? This is exactly what the exit interviews said was missing.'},
+      {id:'B',t:'Herzberg treats recognition as a motivator, so staff get satisfaction from the job itself',w:'Why? Recognition comes from the work, not the conditions around it.'},
+      {id:'C',t:'Staff feel more valued and more committed to the home',w:'Why? Motivators create real satisfaction, not just less dissatisfaction.'},
+      {id:'D',t:'Fewer staff look for jobs at other care homes',w:'Why? Staff who feel valued have less reason to leave.'}],
+     decoy:{id:'E',t:'The scheme includes a cash bonus, which Herzberg says motivates staff',w:'Trap: Herzberg treats pay as a hygiene factor, not a motivator.'},
+     order:['A','B','C','D']}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'mcq', title:'Evaluate with the model', blurb:'Use the model\'s limits to weigh up, not "it\'s only a theory".', pass:6,
+  teach:`<p>Models also help you evaluate. Every model has limits, and the useful ones are specific: say what the model leaves out and why that matters in this case. "The model is old" or "it is only a theory" earns nothing.</p>
+  <p>Choose the evaluative point that would earn credit.</p>`,
+  items:[
+    {src:'Exam-style · decision trees', prompt:'The decision tree favours Option A by £40,000 in expected value. Which is the strongest evaluative point?',
+     o:['The probabilities are estimates; if the chance of high demand is a little lower, Option B could come out ahead','Decision trees cannot be used when there are more than two options.',WEAK[0],WEAK[1]], a:0,
+     why:'It names the specific weakness and shows how it could change the decision.'},
+    {src:'Exam-style · Boston Matrix', prompt:'A product is classed as a dog. Which is the strongest evaluative point about dropping it?',
+     o:['A dog can still be profitable, or bring customers in to buy other products, so dropping it may cost more than it saves','Dogs always make a loss, so dropping it is certain to raise profit.',WEAK[0],WEAK[1]], a:0,
+     why:'Market share and profit are not the same thing, and the matrix ignores links between products.'},
+    {src:'Exam-style · Lewin\'s force field analysis', prompt:'Managers scored the driving forces higher than the restraining forces. Which is the strongest evaluative point?',
+     o:['The scores are managers\' own judgements, and they may underestimate how strongly staff will resist','Lewin says change only happens when there are no restraining forces at all.',WEAK[0],WEAK[1]], a:0,
+     why:'Forces are hard to measure, and the people scoring them have an interest in the change.'},
+    {src:'Exam-style · SWOT analysis', prompt:'A business bases its five-year plan on a SWOT analysis done last year. Which is the strongest evaluative point?',
+     o:['In a fast-changing market, last year\'s opportunities and threats may already be out of date','SWOT only looks at external factors, so it ignores the business\'s strengths.',WEAK[0],WEAK[1]], a:0,
+     why:'A SWOT is a snapshot of one business at one time.'},
+    {src:'Exam-style · Ansoff\'s matrix', prompt:'A business says its new product is "only" product development, so the risk is moderate. Which is the strongest evaluative point?',
+     o:['The real risk depends on how far the new product is from what it already makes and sells','Product development is always riskier than diversification.',WEAK[0],WEAK[1]], a:0,
+     why:'Ansoff gives the type of risk, but how big it is depends on the business.'},
+    {src:'Exam-style · market mapping', prompt:'A business plans to fill a gap on its market map. Which is the strongest evaluative point?',
+     o:['The gap may be there because there is too little demand to make a profit','Market maps can only use price and quality as the two axes.',WEAK[0],WEAK[1]], a:0,
+     why:'A gap is not automatically an opportunity.'},
+    {src:'Exam-style · Porter\'s five forces', prompt:'Five forces analysis shows the industry is very competitive. Which is the strongest evaluative point about whether this business will do badly?',
+     o:['Five forces looks at the industry, not the business; a firm with a strong brand or lower costs can still do well','Five forces only applies to manufacturing industries.',WEAK[0],WEAK[1]], a:0,
+     why:'The model explains industry profitability and leaves out an individual firm\'s strengths.'},
+    {src:'Exam-style · investment appraisal', prompt:'A project has a positive NPV of £15,000. Which is the strongest evaluative point?',
+     o:['The NPV depends on forecast cash flows and the discount rate chosen; small changes could make it negative','A positive NPV means the project is certain to make a profit every year.',WEAK[0],WEAK[1]], a:0,
+     why:'£15,000 may be small relative to the investment, so sensitivity matters.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'timed', title:'Against the clock', blurb:'Twelve mixed questions, 30 seconds each.', pass:10, poolFrom:[1,2,3,4,6,8], count:12, seconds:30,
+  teach:`<p>Twelve questions drawn at random from stages 1, 2, 3, 4, 6 and 8, with 30 seconds each. In the exam you need to know straight away which model fits and how it works.</p>
+  <p>You get a different set each time.</p>`,
+  items:[]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'write', title:'Use a model in an answer', blurb:'Write a 9-mark answer that uses Herzberg accurately.', pass:1,
+  teach:`<p>This is an exam-style 9-mark question. Use Herzberg, and use him accurately. Pay is a hygiene factor, but that does not make it irrelevant here: think about what removing dissatisfaction does to the number of staff who leave.</p>
+  <p>Write one developed argument, about 6 or 7 linked steps, with no counter-argument and no separate conclusion. Use at least two pieces of data and work something out from them. Finish with a sentence starting "Therefore" that uses the words of the question.</p>
+  <p>Write your start point and end point first. The answer box unlocks when you have.</p>`,
+  items:[{src:'Exam-style · Harbour Hotels', w:{
+    intro:`${HARBOUR_TABLE}<div class="qbox">${HARBOUR_Q} <span style="color:var(--muted);font-weight:400">(9 marks)</span></div>`,
+    plan:[
+      {id:'S',label:'Start point',cls:'s',ph:'What are you analysing?',ok:v=>/(pay|wage|5%|rise)/.test(v),hint:'Check your start point: what is Harbour changing?'},
+      {id:'E',label:'End point',cls:'e',ph:'Where must the chain finish?',ok:v=>/(turnover|leav|stay|retain|retention)/.test(v),hint:'Check your end point. Look at the last words of the question.'}],
+    planOk:'Good. Keep both in front of you while you write.',
+    checks:[
+      {k:'start',label:'Opens from the pay rise',test:x=>/(pay|wage|5%)/.test(x.firstTwo)},
+      {k:'model',label:'Uses Herzberg and hygiene factors',test:x=>/herzberg/.test(x.low)&&/hygiene/.test(x.low)},
+      {k:'data',label:'Uses two different pieces of data from the table',test:x=>{const l=x.low;
+        const a=/(11\.90|12\.40|50p|£0\.50|12\.50|12\.49)/.test(l), b=/(\b32\s?%|\b20\s?%|\b12 (percentage )?points|1\.6 times)/.test(l), c=/(\b41\s?%|\b59\s?%)/.test(l), d=/(\b68\s?%)/.test(l);
+        return [a,b,c,d].filter(Boolean).length>=2;}},
+      {k:'calc',label:'Works something out (new hourly rate, gap to local pay, turnover gap...)',test:x=>/(12\.50|12\.49|50p|£0\.50|10p|£0\.10|\b4%|\b12 (percentage )?points|1\.6 times|\b59\s?%|60p|£0\.60)/.test(x.low)},
+      {k:'links',label:'At least six linking words between steps',test:x=>(x.low.match(/\b(because|so|therefore|this means|which means|as a result|meaning|leads to|resulting in|consequently|since|as)\b/g)||[]).length>=6},
+      {k:'end',label:'Last sentence starts "Therefore" and answers the question',test:x=>/^therefore/.test(x.last)&&/(turnover)/.test(x.last)}],
+    warn:x=>/(pay|wage|rise|bonus)[^.]{0,60}(is a motivator|as a motivator|will motivate|motivates them|motivate staff)|herzberg[^.]{0,60}(pay|wage)[^.]{0,30}motivat(or|e)\b/.test(x.low)&&!/not a motivator|does not motivate|doesn't motivate|won't motivate|will not motivate|rather than motivat/.test(x.low)?{msg:'Check your Herzberg. Pay is a hygiene factor: it removes dissatisfaction, it does not motivate on its own.',block:true}
+      :/(profit|revenue|productivity|customer)/.test(x.last)?{msg:'Your last sentence mentions profit, productivity or customers. The end point is labour turnover.',block:true}
+      :/\b(however|on the other hand|in conclusion|overall,)\b/.test(x.low)?{msg:'This looks like a counter-argument or conclusion. A 9-mark answer needs one developed argument.'}:null,
+    minCompare:60, minAi:80, finishLabel:'Finish the course',
+    model:`<span class="src">One way to write it</span><p><span class="hl-s">A 5% pay rise</span> is likely to reduce Harbour's labour turnover because it would lift hourly pay <span class="hl-d">from £11.90 to about £12.50, moving it from 50p below the local hotel average of £12.40 to around 10p above it</span>. Herzberg treats pay as a hygiene factor, <span class="hl-w">so</span> the rise will not motivate staff to work harder on its own, but it should remove a clear source of dissatisfaction. That matters here, <span class="hl-w">because</span> <span class="hl-d">only 41% of staff are satisfied with their pay, so 59% are not</span>, while <span class="hl-d">68% already feel their work is recognised</span>, which suggests pay rather than recognition is the main problem. <span class="hl-w">As a result</span>, room and cleaning staff who can currently earn more by walking into another hotel in the same town lose that reason to go. <span class="hl-w">This means</span> fewer staff are likely to leave for rival hotels, and Harbour's <span class="hl-d">turnover of 32%, 12 percentage points above the local average of 20%</span>, should start to fall back towards that level. <span class="hl-w">Therefore</span> a 5% pay rise is likely to reduce Harbour Hotels' labour turnover, because it removes the pay dissatisfaction that is most likely to be driving staff to other local hotels.</p>
+      <div class="key"><span><span class="hl-s">teal</span> start point</span><span><span class="hl-e">coral</span> end point</span><span><span class="hl-w">purple</span> links</span><span><span class="hl-d">underlined</span> data, worked out</span></div>
+      <p style="margin-top:14px;font-size:.9rem;color:var(--muted)">Notice that Herzberg is used accurately and still does real work: a hygiene factor can reduce turnover by removing dissatisfaction, even though it does not motivate.</p>`,
+    ai:`You are an experienced AQA A-level Business teacher giving feedback on a student's 9-mark answer to: "Harbour Hotels is considering a 5% pay rise for its room and cleaning staff. Analyse how this might affect its labour turnover."
+Data (room and cleaning staff): hourly pay £11.90 at Harbour vs local hotel average £12.40; labour turnover 32% vs local average 20%; 41% of staff satisfied with their pay; 68% feel their work is recognised. A 5% rise takes pay to about £12.50, roughly 10p above the local average.
+Rules for this question: one fully developed argument is the right approach, so never tell the student to add a counter-argument or conclusion. This course is about USING MODELS, so focus on: whether Herzberg is used accurately (pay is a hygiene factor — it removes dissatisfaction but does not motivate on its own; an answer that says the pay rise motivates staff under Herzberg is a flawed chain, as the June 2026 examiner said); whether the model does real work in the chain rather than being named or described; whether they use at least two pieces of data and work something out (for example the new rate of about £12.50, the 50p gap, 59% not satisfied with pay, 12 points above the local turnover rate); whether every step heads to LABOUR TURNOVER; and whether the final "Therefore" sentence uses the question's words.
+Do not give a mark or level. Write in plain British English, as a teacher speaking to a Year 13 student. No headings, no bullet symbols other than simple dashes, no emoji. Give: one sentence on what works; then two or three improvements, each quoting a short phrase they wrote ("You wrote: ...") and showing a better version ("You could write: ..."). Keep it under 220 words.`,
+    doneTitle:'Course complete',
+    doneText:'You have used a model accurately and made it do work in your argument. In every answer, ask yourself two things: does this model help answer the question, and is each step I take from it true to how the model works?'
+  }}]}
+];
+
+window.COURSE={
+  id:'models', key:'models_course_v1', offset:500, short:'Models',
+  name:'Models Course',
+  hero:{kicker:'Business models · AQA A-level Business',
+    title:'Make the model <em>work</em>',
+    lede:'Examiners reward models that are used accurately and help answer the question. They do not reward a model dropped in for the sake of it, or one that is used wrongly. This course covers the models on the specification: choosing the right one, getting the mechanics right, and making it part of your argument. Pass each stage to unlock the next.'},
+  stages:STAGES
+};
+</script>
+<script src="course-engine.js"></script>
+</body>
+</html>
