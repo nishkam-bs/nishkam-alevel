@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Calculations Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   CALCULATIONS COURSE
+   Most items generate new numbers on every attempt (gen). Traps are the
+   wrong answers examiners report most often. Stored in the sheet as 200 + stage.
+   ===================================================================== */
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const rint=(a,b,step=1)=>a+step*Math.floor(Math.random()*(Math.floor((b-a)/step)+1));
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=x=>Math.round(x*10)/10, r2=x=>Math.round(x*100)/100;
+const DF8=[0.926,0.857,0.794];
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'calc', title:'Percentages', blurb:'Percentage change, percentage points and shares.', pass:5,
+  teach:`<p>Almost every calculation on the papers uses percentages somewhere, and two mistakes come up again and again: dividing by the new figure instead of the original, and mixing up percentage change with percentage points.</p>
+  <p>Type your answer as a number. You get one try per question, and the numbers change every time you try the stage.</p>`,
+  items:[
+    {src:'Core skill · percentage change', gen(){const old=rint(200,800,40),pct=pick([5,10,12.5,15,20,25]),up=Math.random()<.6,nw=old*(1+(up?pct:-pct)/100);
+      return {given:`Revenue ${up?'rose':'fell'} from <b>£${f(old)}k</b> to <b>£${f(nw)}k</b>.`,prompt:`Calculate the percentage ${up?'increase':'fall'} in revenue.`,unit:'%',ans:pct,tol:0.05,
+        traps:[{v:r1(Math.abs(nw-old)/nw*100),m:'You divided by the new figure. Always divide by the original.'}],
+        work:`Change = £${f(Math.abs(nw-old))}k. £${f(Math.abs(nw-old))}k ÷ £${f(old)}k × 100 = ${pct}%.`};}},
+    {src:'Core skill · percentage points', gen(){const a=rint(8,20),b=a+rint(2,6);
+      return {given:`A firm's market share rose from <b>${a}%</b> to <b>${b}%</b>.`,prompt:'By how many percentage points did market share rise?',unit:'percentage points',ans:b-a,tol:0,
+        traps:[{v:r1((b-a)/a*100),m:'That is the percentage change. The question asks for percentage points: just subtract.'}],
+        work:`${b}% − ${a}% = ${b-a} percentage points. (As a percentage change it would be ${r1((b-a)/a*100)}%.)`};}},
+    {src:'Based on AQA June 2018 · Paper 1 · Q18', gen(){const [a,b]=pick([[20,15],[15,9],[12,9],[16,12],[25,20],[10,8]]),pct=r1((a-b)/a*100);
+      return {given:`Labour turnover fell from <b>${a}%</b> to <b>${b}%</b>.`,prompt:'Calculate the percentage fall in labour turnover.',unit:'%',ans:pct,tol:0.05,
+        traps:[{v:a-b,m:`That is the fall in percentage points. The percentage fall divides by the original ${a}%.`}],
+        work:`(${a} − ${b}) ÷ ${a} × 100 = ${pct}%.`};}},
+    {src:'Core skill · market share', gen(){const M=rint(150,600,10),S=rint(6,60),ans=r1(S/M*100);
+      return {given:`A firm's sales are <b>£${S}m</b>. The total market is worth <b>£${M}m</b>.`,prompt:'Calculate the firm\'s market share (to 1 decimal place).',unit:'%',ans,tol:0.051,
+        work:`£${S}m ÷ £${M}m × 100 = ${ans}%.`};}},
+    {src:'AQA June 2018 · Paper 1 · Q17', given:'In 2007, a business had sales of <b>£10 million</b> in a market with a size of <b>£125 million</b>. In 2017 the business\'s sales were <b>£12.6 million</b> and its market share was <b>6%</b>.',
+     prompt:'Calculate the percentage growth in the size of the market between 2007 and 2017.',unit:'%',ans:68,tol:0.05,
+     traps:[{v:26,m:'That is the growth in the business\'s sales. The question asks about the market.'}],
+     work:'2017 market = £12.6m ÷ 0.06 = £210m. Growth = (£210m − £125m) ÷ £125m × 100 = 68%.'},
+    {src:'Core skill · increase by a percentage', gen(){const x=rint(120,900,20),y=pick([5,8,10,15,20,25]);
+      return {given:`Costs of <b>£${f(x)}k</b> rise by <b>${y}%</b>.`,prompt:'Calculate the new level of costs (in £k).',pre:'£',unit:'k',ans:r2(x*(1+y/100)),tol:0.01,
+        traps:[{v:r2(x*y/100),m:'That is just the increase. Add it to the original.'}],
+        work:`£${f(x)}k × ${f(1+y/100)} = £${f(r2(x*(1+y/100)))}k.`};}}
+  ]},
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'calc', title:'Reverse percentages', blurb:'Work back to the original figure. The 2026 trap.', pass:5,
+  teach:`<p>In June 2026 the examiner reported that students "subtracted 10% instead of dividing by 1.1" on Paper 2 question 1.1. It is the most common reverse percentage mistake.</p>
+  <p>If a figure has gone <b>up</b> by 10%, it is now 110% of the original, so divide by 1.1. If it has gone <b>down</b> by 10%, it is 90% of the original, so divide by 0.9.</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 2 · Q1.1', gen(){const O=pick([30,40,45,50,60,80,90]),V=r2(O*1.1);
+      return {given:`A supermarket's revenue in 2025 was <b>£${f(V)}m</b>, which was 10% higher than in 2024.`,prompt:'Calculate revenue in 2024.',pre:true,ans:O,tol:0.01,
+        traps:[{v:r2(V*0.9),m:'You subtracted 10%. This was the main error in June 2026. Divide by 1.1 instead.'}],
+        work:`£${f(V)}m ÷ 1.1 = £${f(O)}m.`};}},
+    {src:'Core skill · after an increase', gen(){const O=pick([200,240,300,360,400,480,500,600]),x=pick([5,15,20,25]),V=O*(1+x/100);
+      return {given:`After a <b>${x}%</b> increase, costs are <b>£${f(V)}k</b>.`,prompt:'Calculate costs before the increase (in £k).',pre:'£',unit:'k',ans:O,tol:0.01,
+        traps:[{v:r2(V*(1-x/100)),m:`You took ${x}% off. Divide by ${f(1+x/100)} instead.`}],
+        work:`£${f(V)}k ÷ ${f(1+x/100)} = £${f(O)}k.`};}},
+    {src:'Core skill · after a fall', gen(){const O=pick([200,250,400,500,600,800]),x=pick([10,20,25]),V=O*(1-x/100);
+      return {given:`After a <b>${x}%</b> fall, sales are <b>£${f(V)}k</b>.`,prompt:'Calculate sales before the fall (in £k).',pre:'£',unit:'k',ans:O,tol:0.01,
+        traps:[{v:r2(V*(1+x/100)),m:`You added ${x}%. Divide by ${f(1-x/100)} instead.`}],
+        work:`£${f(V)}k ÷ ${f(1-x/100)} = £${f(O)}k.`};}},
+    {src:'Core skill · VAT', gen(){const O=pick([15,25,40,60,120,250]),P=O*1.2;
+      return {given:`A product sells for <b>£${f(P)}</b> including VAT at 20%.`,prompt:'Calculate the price before VAT.',pre:'£',ans:O,tol:0.01,
+        traps:[{v:r2(P*0.8),m:'You took 20% off. The price is 120% of the pre-VAT price, so divide by 1.2.'}],
+        work:`£${f(P)} ÷ 1.2 = £${f(O)}.`};}},
+    {src:'Core skill · discount', gen(){const O=pick([40,60,80,120,150,200]),d=pick([20,25,30,40]),S=O*(1-d/100);
+      return {given:`In a sale, a jacket costs <b>£${f(S)}</b> after <b>${d}%</b> off.`,prompt:'Calculate the original price.',pre:'£',ans:O,tol:0.01,
+        traps:[{v:r2(S*(1+d/100)),m:`You added ${d}%. Divide by ${f(1-d/100)} instead.`}],
+        work:`£${f(S)} ÷ ${f(1-d/100)} = £${f(O)}.`};}},
+    {src:'Core skill · two steps', gen(){const O=pick([100,150,200,250,500]),V=r2(O*1.2*0.9);
+      return {given:`Sales rose by <b>20%</b> in 2024, then fell by <b>10%</b> in 2025 to <b>£${f(V)}k</b>.`,prompt:'Calculate sales in 2023 (in £k).',pre:'£',unit:'k',ans:O,tol:0.01,
+        traps:[{v:r2(V/1.1),m:'A 20% rise followed by a 10% fall is not a 10% rise overall. Undo each step: divide by 0.9, then by 1.2.'}],
+        work:`£${f(V)}k ÷ 0.9 = £${f(r2(V/0.9))}k (2024). ÷ 1.2 = £${f(O)}k (2023).`};}}
+  ]},
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'calc', title:'Break-even and margin of safety', blurb:'Contribution, break-even and the units trap.', pass:5,
+  teach:`<p>In June 2026, half the cohort got full marks on the margin of safety question, but over a quarter scored zero. The examiner said students "confuse profit with margin of safety" and gave it in pounds rather than units.</p>
+  <p>Contribution per unit = selling price − variable cost per unit. Break-even output = fixed costs ÷ contribution per unit. Margin of safety = actual output − break-even output, in <b>units</b>.</p>`,
+  items:[
+    {src:'Core skill · contribution', gen(){const V=rint(4,30),P=V+rint(3,25);
+      return {given:`Selling price <b>£${P}</b> per unit. Variable cost <b>£${V}</b> per unit.`,prompt:'Calculate contribution per unit.',pre:'£',ans:P-V,tol:0,work:`£${P} − £${V} = £${P-V}.`};}},
+    {src:'Core skill · break-even output', gen(){const c=pick([4,5,6,8,10,12,15,20,25]),BE=rint(200,2000,50),V=rint(5,30),P=V+c,FC=c*BE;
+      return {given:`Selling price <b>£${P}</b>. Variable cost <b>£${V}</b> per unit. Fixed costs <b>£${f(FC)}</b>.`,prompt:'Calculate break-even output.',unit:'units',ans:BE,tol:0,
+        traps:[{v:r2(FC/P),m:'You divided by the selling price. Divide fixed costs by contribution per unit.'}],
+        work:`Contribution = £${P} − £${V} = £${c}. £${f(FC)} ÷ £${c} = ${f(BE)} units.`};}},
+    {src:'Based on AQA June 2026 · Paper 1 · Q17', gen(){const c=pick([4000,5000,6000,8000,9000]),BE=rint(25,60,5),m=rint(5,20),V=pick([3000,5000,7000]),P=V+c,FC=c*BE,Q=BE+m;
+      return {given:`Selling price <b>£${f(P)}</b> per unit. Variable cost <b>£${f(V)}</b> per unit. Fixed costs <b>£${f(FC)}</b>. Current output <b>${Q} units</b>.`,prompt:'Calculate the margin of safety.',unit:'units',ans:m,tol:0,
+        traps:[{v:m*P,m:'Margin of safety is in units, not pounds.'},{v:BE,m:`${BE} is break-even output. One more step: actual output minus break-even.`},{v:m*c,m:'That is the profit. Margin of safety is in units.'}],
+        work:`Contribution = £${f(c)}. Break-even = £${f(FC)} ÷ £${f(c)} = ${BE} units. Margin of safety = ${Q} − ${BE} = ${m} units.`};}},
+    {src:'Core skill · profit at a level of output', gen(){const V=rint(5,20),P=V+rint(5,15),FC=rint(10,60,5)*1000,Q=rint(3000,9000,500),pr=(P-V)*Q-FC;
+      return {given:`Selling price <b>£${P}</b>. Variable cost <b>£${V}</b> per unit. Fixed costs <b>£${f(FC)}</b>. Output <b>${f(Q)} units</b>.`,prompt:'Calculate profit (use − for a loss).',pre:'£',ans:pr,tol:0,
+        traps:[{v:P*Q-FC,m:'You left out variable costs. Profit = total revenue − (fixed costs + variable costs).'}],
+        work:`Total contribution = (£${P} − £${V}) × ${f(Q)} = £${f((P-V)*Q)}. Profit = £${f((P-V)*Q)} − £${f(FC)} = £${f(pr)}.`};}},
+    {src:'Core skill · change in price', gen(){const c=pick([4,5,6,8,10]),d=pick([1,2,4,5]),k=rint(20,80,5),FC=c*(c+d)*k,V=rint(6,20),P=V+c,BE1=FC/c,BE2=FC/(c+d);
+      return {given:`Selling price <b>£${P}</b>, variable cost <b>£${V}</b> per unit, fixed costs <b>£${f(FC)}</b>. The business raises its price by <b>£${d}</b>.`,prompt:'Calculate the new break-even output.',unit:'units',ans:BE2,tol:0,
+        traps:[{v:BE1,m:'That is break-even at the old price. Contribution per unit has gone up.'}],
+        work:`New contribution = £${P+d} − £${V} = £${c+d}. £${f(FC)} ÷ £${c+d} = ${f(BE2)} units (down from ${f(BE1)}).`};}},
+    {src:'Core skill · margin of safety as a percentage', gen(){const BE=rint(400,1200,50),Q=BE+rint(50,400,25),ans=r1((Q-BE)/Q*100);
+      return {given:`Break-even output is <b>${f(BE)} units</b>. Current output is <b>${f(Q)} units</b>.`,prompt:'Calculate the margin of safety as a percentage of current output (to 1 decimal place).',unit:'%',ans,tol:0.051,
+        traps:[{v:r1((Q-BE)/BE*100),m:'Divide by current output, not by break-even output.'}],
+        work:`(${f(Q)} − ${f(BE)}) ÷ ${f(Q)} × 100 = ${ans}%.`};}}
+  ]},
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'calc', title:'Profit and margins', blurb:'Gross profit, operating profit, and the margin trap.', pass:5,
+  teach:`<p>In June 2026 the examiner flagged two problems on Paper 2: students "confused operating expenses with operating profit" on a multi-step question, and discussed operating profit when the question asked about operating profit <i>margin</i>.</p>
+  <p>Gross profit = revenue − cost of sales. Operating profit = gross profit − operating expenses. Operating profit margin = operating profit ÷ revenue × 100.</p>`,
+  items:[
+    {src:'Core skill · gross profit', gen(){const R=rint(400,2000,20),COS=rint(Math.round(R*.4/10)*10,Math.round(R*.7/10)*10,10);
+      return {given:`Revenue <b>£${f(R)}k</b>. Cost of sales <b>£${f(COS)}k</b>.`,prompt:'Calculate gross profit (in £k).',pre:'£',unit:'k',ans:R-COS,tol:0,work:`£${f(R)}k − £${f(COS)}k = £${f(R-COS)}k.`};}},
+    {src:'Core skill · operating profit', gen(){const R=rint(800,3000,50),COS=Math.round(R*pick([.45,.5,.55,.6])/10)*10,OE=Math.round(R*pick([.2,.25,.3])/10)*10,OP=R-COS-OE;
+      return {given:`Revenue <b>£${f(R)}k</b>. Cost of sales <b>£${f(COS)}k</b>. Operating expenses <b>£${f(OE)}k</b>.`,prompt:'Calculate operating profit (in £k).',pre:'£',unit:'k',ans:OP,tol:0,
+        traps:[{v:R-COS,m:'That is gross profit. Take off operating expenses too.'}],work:`£${f(R)}k − £${f(COS)}k − £${f(OE)}k = £${f(OP)}k.`};}},
+    {src:'Core skill · operating profit margin', gen(){const R=rint(1000,5000,100),OP=Math.round(R*pick([.06,.08,.1,.12,.15,.18])),ans=r1(OP/R*100);
+      return {given:`Revenue <b>£${f(R)}k</b>. Operating profit <b>£${f(OP)}k</b>.`,prompt:'Calculate the operating profit margin (to 1 decimal place).',unit:'%',ans,tol:0.051,
+        work:`£${f(OP)}k ÷ £${f(R)}k × 100 = ${ans}%.`};}},
+    {src:'Based on AQA June 2026 · Paper 2 · Q1.2', gen(){const R=rint(2000,6000,100),COS=Math.round(R*pick([.5,.55,.6])/10)*10,OP=Math.round(R*pick([.08,.1,.12])/10)*10,OE=R-COS-OP;
+      return {given:`Revenue <b>£${f(R)}k</b>. Cost of sales <b>£${f(COS)}k</b>. Operating profit <b>£${f(OP)}k</b>.`,prompt:'Calculate operating expenses (in £k).',pre:'£',unit:'k',ans:OE,tol:0,
+        traps:[{v:R-OP,m:'You only took operating profit off revenue. Cost of sales has to come off too.'},{v:R-COS,m:'That is gross profit. Operating expenses = gross profit − operating profit.'}],
+        work:`Gross profit = £${f(R)}k − £${f(COS)}k = £${f(R-COS)}k. Operating expenses = £${f(R-COS)}k − £${f(OP)}k = £${f(OE)}k.`};}},
+    {src:'Core skill · profit for the year', gen(){const OP=rint(300,1200,10),fin=rint(20,120,5),tax=Math.round((OP-fin)*0.25);
+      return {given:`Operating profit <b>£${f(OP)}k</b>. Net finance costs (interest) <b>£${fin}k</b>. Tax <b>£${f(tax)}k</b>.`,prompt:'Calculate profit for the year (in £k).',pre:'£',unit:'k',ans:OP-fin-tax,tol:0,
+        traps:[{v:OP-tax,m:'You forgot the finance costs. Interest comes off before tax.'}],work:`£${f(OP)}k − £${fin}k − £${f(tax)}k = £${f(OP-fin-tax)}k.`};}},
+    {src:'Based on AQA June 2026 · Paper 2 · Q1.4', gen(){const R1=pick([20,25,30,40]),m1=pick([10,12,8]),P1=R1*m1/100,R2=R1+pick([5,10]),P2=r2(P1*pick([1.05,1.1])),ans=r1(P2/R2*100);
+      return {given:`Revenue rises from <b>£${R1}m</b> to <b>£${R2}m</b>. Operating profit rises from <b>£${f(P1)}m</b> to <b>£${f(P2)}m</b>.`,prompt:'Calculate the new operating profit margin (to 1 decimal place).',unit:'%',ans,tol:0.051,
+        traps:[{v:m1,m:'That is the old margin.'}],work:`£${f(P2)}m ÷ £${R2}m × 100 = ${ans}% (down from ${m1}%). Profit went up, but the margin fell.`,use:'This is the June 2026 trap: operating profit can rise while operating profit margin falls.'};}}
+  ]},
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'calc', title:'Ratios', blurb:'Current ratio, gearing and ROCE, including the reverse ones.', pass:5,
+  teach:`<p>The examiner reports show the formulas are usually known. Marks are lost picking the right numbers: using net current assets instead of adding up current assets (2025), forgetting that a loan also increases capital employed (2019), and reverse calculations (2025).</p>
+  <p>Capital employed = total equity + non-current liabilities. Gearing = non-current liabilities ÷ capital employed × 100. ROCE = operating profit ÷ capital employed × 100.</p>`,
+  items:[
+    {src:'AQA June 2025 · Paper 1 · Q16', given:'Extract from accounts of Righton plc, 2024 (£m): Non-current assets <b>335</b>. Inventories <b>80</b>. Receivables <b>35</b>. Cash <b>40</b>. Payables <b>70</b>. Net current assets <b>85</b>.',
+     prompt:'Calculate the current ratio (to 2 decimal places).',unit:': 1',ans:2.21,tol:0.006,
+     traps:[{v:1.21,m:'You used net current assets. The examiner said this was the common error.'}],work:'Current assets = 80 + 35 + 40 = £155m. 155 ÷ 70 = 2.21 : 1.'},
+    {src:'Core skill · current ratio', gen(){const inv=rint(20,90,5),rec=rint(10,60,5),cash=rint(5,40,5),cl=rint(40,120,5),ans=r2((inv+rec+cash)/cl);
+      return {given:`Inventories <b>£${inv}k</b>. Receivables <b>£${rec}k</b>. Cash <b>£${cash}k</b>. Current liabilities <b>£${cl}k</b>.`,prompt:'Calculate the current ratio (to 2 decimal places).',unit:': 1',ans,tol:0.006,
+        work:`(${inv} + ${rec} + ${cash}) ÷ ${cl} = ${f(inv+rec+cash)} ÷ ${cl} = ${ans} : 1.`};}},
+    {src:'Core skill · gearing', gen(){const ncl=rint(50,400,10),eq=rint(100,600,10),ans=r1(ncl/(ncl+eq)*100);
+      return {given:`Non-current liabilities <b>£${ncl}m</b>. Total equity <b>£${eq}m</b>.`,prompt:'Calculate the gearing ratio (to 1 decimal place).',unit:'%',ans,tol:0.051,
+        traps:[{v:r1(ncl/eq*100),m:'You divided by equity. Divide by capital employed (equity + non-current liabilities).'}],
+        work:`Capital employed = £${eq}m + £${ncl}m = £${ncl+eq}m. £${ncl}m ÷ £${ncl+eq}m × 100 = ${ans}%.`};}},
+    {src:'AQA June 2019 · Paper 1 · Q17', given:'A business has non-current liabilities of <b>£200 000</b> and a gearing ratio of <b>40%</b>. It then takes out a long-term loan of <b>£100 000</b> from the bank.',
+     prompt:'Calculate its new gearing ratio.',unit:'%',ans:50,tol:0.05,
+     traps:[{v:60,m:'You added the loan to non-current liabilities but not to capital employed. This was the common mistake.'}],
+     work:'Capital employed = £200,000 ÷ 0.4 = £500,000. New gearing = £300,000 ÷ £600,000 × 100 = 50%.'},
+    {src:'Core skill · ROCE', gen(){const eq=rint(100,500,10),ncl=rint(50,300,10),OP=Math.round((eq+ncl)*pick([.08,.1,.12,.15,.18])),ans=r1(OP/(eq+ncl)*100);
+      return {given:`Operating profit <b>£${OP}m</b>. Total equity <b>£${eq}m</b>. Non-current liabilities <b>£${ncl}m</b>.`,prompt:'Calculate ROCE (to 1 decimal place).',unit:'%',ans,tol:0.051,
+        traps:[{v:r1(OP/eq*100),m:'You divided by equity only. Capital employed includes non-current liabilities.'}],
+        work:`£${OP}m ÷ (£${eq}m + £${ncl}m) × 100 = ${ans}%.`};}},
+    {src:'AQA June 2025 · Paper 1 · Q17', given:'Righton plc: Non-current liabilities <b>£230m</b>. Total equity <b>£190m</b>. ROCE in 2024 was <b>12%</b>.',
+     prompt:'Calculate its operating profit.',pre:true,ans:50.4,tol:0.05,
+     traps:[{v:22.8,m:'You used total equity only. Capital employed is total equity plus non-current liabilities.'}],
+     work:'Capital employed = £190m + £230m = £420m. Operating profit = 12% × £420m = £50.4m.',use:'The examiner said it was maths, not the formula, that caught students out here.'}
+  ]},
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'calc', title:'Investment appraisal', blurb:'Payback, ARR and NPV, and the ARR trap.', pass:5,
+  teach:`<p>In June 2026 only about a fifth of students got the ARR question fully right. The examiner said the critical error was "not recognising the need to subtract the initial cost". In 2017, many thought payback happened at the end of a year rather than during it.</p>
+  <p>ARR = (total net returns − initial cost) ÷ years ÷ initial cost × 100. NPV = present value of inflows − initial cost.</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 1 · Q16', gen(){const C=pick([100,200,250,400,500]),n=pick([4,5]),arr=pick([6,8,10,12,15]),T=C+C*arr/100*n;
+      return {given:`A machine costs <b>£${C}k</b>. Total net cash inflows over its ${n}-year life are <b>£${f(T)}k</b>.`,prompt:'Calculate the average rate of return (ARR).',unit:'%',ans:arr,tol:0.05,
+        traps:[{v:r1(T/n/C*100),m:'You did not subtract the initial cost. This was the main error in June 2026.'}],
+        work:`Total profit = £${f(T)}k − £${C}k = £${f(T-C)}k. Per year = £${f((T-C)/n)}k. £${f((T-C)/n)}k ÷ £${C}k × 100 = ${arr}%.`};}},
+    {src:'Core skill · payback', gen(){const fr=pick([0.25,0.4,0.5,0.6,0.75,0.8]),y3=pick([40,50,60,80,100]),y1=rint(20,50,5),y2=rint(30,60,5),C=y1+y2+fr*y3,ans=r2(2+fr);
+      return {given:`An investment costs <b>£${f(C)}k</b>. Net cash inflows: year 1 <b>£${y1}k</b>, year 2 <b>£${y2}k</b>, year 3 <b>£${y3}k</b>.`,prompt:'Calculate the payback period in years (to 2 decimal places).',unit:'years',ans,tol:0.01,
+        traps:[{v:3,m:'Payback happens during year 3, not at the end of it. Work out the fraction of year 3 needed.'}],
+        work:`After 2 years: £${y1+y2}k. Still needed: £${f(C-y1-y2)}k. £${f(C-y1-y2)}k ÷ £${y3}k = ${fr}. Payback = ${ans} years.`};}},
+    {src:'Core skill · payback in months', gen(){const fr=pick([0.25,0.5,0.75]),y2=pick([40,60,80,120]),y1=rint(20,60,5),C=y1+fr*y2,ans=12+fr*12;
+      return {given:`An investment costs <b>£${f(C)}k</b>. Net cash inflows: year 1 <b>£${y1}k</b>, year 2 <b>£${y2}k</b>.`,prompt:'Calculate the payback period in months.',unit:'months',ans,tol:0,
+        traps:[{v:24,m:'Payback happens during year 2. Work out how many months of year 2 are needed.'}],
+        work:`After year 1: £${y1}k. Still needed: £${f(C-y1)}k. £${f(C-y1)}k ÷ £${y2}k = ${fr} of a year = ${fr*12} months. Payback = 12 + ${fr*12} = ${ans} months.`};}},
+    {src:'Core skill · net present value', gen(){const I=pick([30,40,50,60]),C=pick([90,100,110,120,140]),pv=Math.round(I*1000*(DF8[0]+DF8[1]+DF8[2])),ans=pv-C*1000;
+      return {given:`A project costs <b>£${f(C*1000)}</b> and brings in <b>£${f(I*1000)}</b> a year for 3 years. Discount factors at 8%: year 1 <b>0.926</b>, year 2 <b>0.857</b>, year 3 <b>0.794</b>.`,prompt:'Calculate the net present value (use − if negative).',pre:'£',ans,tol:2,
+        traps:[{v:I*3000-C*1000,m:'You did not discount the cash flows.'},{v:pv,m:'That is the present value of the inflows. Subtract the initial cost.'}],
+        work:`PV = £${f(I*1000)} × (0.926 + 0.857 + 0.794) = £${f(pv)}. NPV = £${f(pv)} − £${f(C*1000)} = £${f(ans)}.`};}},
+    {src:'Core skill · present value', gen(){const X=pick([10000,20000,25000,50000]),[y,df]=pick([[1,0.909],[2,0.826],[3,0.751]]),ans=Math.round(X*df);
+      return {given:`A business expects to receive <b>£${f(X)}</b> in ${y} year${y>1?'s':''}' time. The discount factor at 10% for year ${y} is <b>${df}</b>.`,prompt:'Calculate the present value.',pre:'£',ans,tol:1,work:`£${f(X)} × ${df} = £${f(ans)}.`};}},
+    {src:'AQA June 2017 · Paper 1 (examiner report)', prompt:'Cumulative net cash flow is −£20,000 at the end of year 2 and +£40,000 at the end of year 3. In which year does payback occur (type the year number)?', unit:'', ans:3, tol:0,
+     traps:[{v:2,m:'At the end of year 2 the investment has not yet been paid back.'}],work:'The cumulative figure turns positive during year 3, so payback happens in year 3. The 2017 examiner noted students saying payback was "after 3 years" rather than during the third year.'}
+  ]},
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'calc', title:'People and operations', blurb:'Labour turnover, productivity, capacity and unit costs.', pass:5,
+  teach:`<p>These calculations are shorter, but they often appear inside longer data questions where you have to pick out the right figures. Read the units carefully.</p>`,
+  items:[
+    {src:'Core skill · labour turnover', gen(){const avg=rint(80,400,10),lv=Math.round(avg*pick([.05,.08,.1,.12,.15,.2])),ans=r1(lv/avg*100);
+      return {given:`<b>${lv}</b> staff left during the year. The average number of staff was <b>${avg}</b>.`,prompt:'Calculate labour turnover (to 1 decimal place).',unit:'%',ans,tol:0.051,work:`${lv} ÷ ${avg} × 100 = ${ans}%.`};}},
+    {src:'Core skill · labour productivity', gen(){const e=rint(20,120,5),p=rint(30,200,5),out=e*p;
+      return {given:`A factory produced <b>${f(out)} units</b> last week with <b>${e}</b> employees.`,prompt:'Calculate labour productivity (units per employee per week).',unit:'units',ans:p,tol:0,work:`${f(out)} ÷ ${e} = ${p} units per employee.`};}},
+    {src:'Core skill · capacity utilisation', gen(){const cap=rint(2000,10000,500),out=Math.round(cap*pick([.6,.72,.8,.85,.9,.95])/10)*10,ans=r1(out/cap*100);
+      return {given:`Maximum capacity is <b>${f(cap)} units</b> a month. Actual output is <b>${f(out)} units</b>.`,prompt:'Calculate capacity utilisation (to 1 decimal place).',unit:'%',ans,tol:0.051,
+        traps:[{v:r1((cap-out)/cap*100),m:'That is spare capacity. Capacity utilisation is output ÷ capacity.'}],work:`${f(out)} ÷ ${f(cap)} × 100 = ${ans}%.`};}},
+    {src:'Core skill · unit cost', gen(){const out=rint(2000,8000,500),tc=out*pick([3.5,4.2,5.6,6.8,7.25]),ans=r2(tc/out);
+      return {given:`Total costs are <b>£${f(tc)}</b> for <b>${f(out)} units</b>.`,prompt:'Calculate the unit cost (to the nearest penny).',pre:'£',ans,tol:0.006,work:`£${f(tc)} ÷ ${f(out)} = £${f(ans)}.`};}},
+    {src:'AQA June 2018 · Paper 1 · Q16', given:'Weekly data for a single-product firm: Total costs <b>£80 000</b>. Profit <b>£20 000</b>. Labour costs = <b>42%</b> of turnover. Labour costs per unit = <b>84 pence</b>. Labour productivity = <b>25 units</b> per employee.',
+     prompt:'Calculate the weekly output of the firm in units.',unit:'units',ans:50000,tol:0,
+     traps:[{v:40000,m:'Turnover is total costs plus profit (£100,000), not total costs.'}],
+     work:'Turnover = £80,000 + £20,000 = £100,000. Labour costs = 42% × £100,000 = £42,000. Output = £42,000 ÷ £0.84 = 50,000 units. (Labour productivity is not needed.)'},
+    {src:'Core skill · change in capacity', gen(){const out=rint(3000,6000,250),cap1=Math.round(out/0.9/50)*50+500,cap2=cap1+rint(1000,3000,500),ans=r1(out/cap2*100);
+      return {given:`A business produces <b>${f(out)} units</b>. It expands its capacity from <b>${f(cap1)}</b> to <b>${f(cap2)} units</b>, but output stays the same.`,prompt:'Calculate the new capacity utilisation (to 1 decimal place).',unit:'%',ans,tol:0.051,
+        traps:[{v:r1(out/cap1*100),m:'That is the old figure. Use the new capacity.'}],work:`${f(out)} ÷ ${f(cap2)} × 100 = ${ans}%.`,use:'In an answer: higher capacity with the same output means fixed costs are spread over relatively fewer units, so unit costs rise.'};}}
+  ]},
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'calc', title:'Markets and elasticity', blurb:'PED, YED and the negative income elasticity trap.', pass:5,
+  teach:`<p>The hardest multiple-choice question in June 2026 tested negative income elasticity. The examiner noted students understand price elasticity well but struggle to apply income elasticity.</p>
+  <p>PED = % change in quantity demanded ÷ % change in price. YED = % change in quantity demanded ÷ % change in income. A negative YED means an inferior good: demand falls as incomes rise.</p>`,
+  items:[
+    {src:'Core skill · calculating PED', gen(){const p=pick([4,5,8,10,20]),e=pick([0.2,0.25,0.4,0.5,1.5,2]),q=r1(p*e);
+      return {given:`A firm raises its price by <b>${p}%</b>. Quantity demanded falls by <b>${q}%</b>.`,prompt:'Calculate the price elasticity of demand (include the sign).',unit:'',ans:-e,tol:0.006,
+        traps:[{v:e,m:'PED for a normal product is negative: price and quantity move in opposite directions. Include the minus sign.'},{v:r2(-p/q),m:'You divided the wrong way round. It is % change in quantity ÷ % change in price.'}],
+        work:`−${q}% ÷ ${p}% = −${e}. ${e<1?'Price inelastic.':'Price elastic.'}`};}},
+    {src:'Core skill · using PED', gen(){const e=pick([0.3,0.4,0.6,1.2,1.5,2]),p=pick([5,10,15,20]),ans=r1(e*p);
+      return {given:`PED is <b>−${e}</b>. The firm raises its price by <b>${p}%</b>.`,prompt:'By what percentage will quantity demanded fall?',unit:'%',ans,tol:0.051,work:`−${e} × ${p}% = −${ans}%. Quantity demanded falls by ${ans}%.`};}},
+    {src:'Core skill · revenue after a price change', gen(){const P=pick([10,20,25,40]),Q=pick([1000,2000,4000,5000]),p=pick([10,20]),e=pick([0.4,0.5,1.5,2]),P2=P*(1+p/100),Q2=Q*(1-e*p/100),ans=Math.round(P2*Q2);
+      return {given:`Price is <b>£${P}</b> and <b>${f(Q)}</b> units are sold. PED is <b>−${e}</b>. Price rises by <b>${p}%</b>.`,prompt:'Calculate the new total revenue.',pre:'£',ans,tol:1,
+        traps:[{v:Math.round(P2*Q),m:'You kept quantity the same. Use PED to work out the new quantity first.'}],
+        work:`New price = £${f(P2)}. Quantity falls by ${f(e*p)}% to ${f(Q2)}. Revenue = £${f(P2)} × ${f(Q2)} = £${f(ans)} (was £${f(P*Q)}).`,use:e<1?'Inelastic demand: revenue rises when price rises.':'Elastic demand: revenue falls when price rises.'};}},
+    {src:'Based on AQA June 2026 · Paper 1 · Q11', gen(){const y=pick([-0.4,-0.5,-0.8,-0.2]),i=pick([2,4,5,10]),ans=r1(y*i);
+      return {given:`Value own-brand bread has an income elasticity of demand of <b>${y}</b>. Average incomes rise by <b>${i}%</b>.`,prompt:'Calculate the percentage change in demand (use − for a fall).',unit:'%',ans,tol:0.051,
+        traps:[{v:-ans,m:'Negative YED means an inferior good: demand falls when incomes rise.'}],work:`${y} × ${i}% = ${ans}%. Demand falls as some customers switch to premium brands.`};}},
+    {src:'Core skill · calculating YED', gen(){const i=pick([2,4,5]),y=pick([0.5,1.5,2,2.5,-0.5]),d=r1(y*i);
+      return {given:`Incomes rise by <b>${i}%</b>. Demand for a product changes by <b>${d>0?'+':''}${d}%</b>.`,prompt:'Calculate income elasticity of demand (include the sign).',unit:'',ans:y,tol:0.006,
+        work:`${d}% ÷ ${i}% = ${y}. ${y<0?'Inferior good.':y>1?'Income elastic (a luxury).':'Normal good, income inelastic.'}`};}},
+    {src:'Core skill · market size from share', gen(){const s=pick([4,5,8,10,12.5,20,25]),S=pick([2,5,10,15,20,30]),ans=r2(S/(s/100));
+      return {given:`A firm's sales are <b>£${S}m</b>, which is a <b>${s}%</b> share of the market.`,prompt:'Calculate the size of the market.',pre:true,ans,tol:0.01,
+        traps:[{v:r2(S*s/100),m:'You multiplied. Market size = sales ÷ market share (as a decimal).'}],work:`£${S}m ÷ ${s/100} = £${f(ans)}m.`};}}
+  ]},
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'mcq', title:'What the number means', blurb:'A figure only earns marks when you say what it shows.', pass:6,
+  teach:`<p>Examiners keep reporting answers where the calculation is right but nothing is done with it, or where the meaning is misread: net gain treated as profit, a high current ratio always seen as good, a positive NPV seen as guaranteed success.</p>
+  <p>Choose the sentence that interprets the figure correctly.</p>`,
+  items:[
+    {src:'Interpretation · liquidity', prompt:'A business has a current ratio of 0.8 : 1. Which sentence is correct?',
+     o:['It is very profitable.','Its current assets do not cover its current liabilities, so it may struggle to pay short-term debts unless it can raise cash quickly.','It has too much stock.'], a:1,
+     why:'Below 1 means current liabilities exceed current assets. It says nothing directly about profit.'},
+    {src:'Interpretation · liquidity', prompt:'A supermarket has a current ratio of 0.6 : 1. Why might this be less worrying than for a manufacturer?',
+     o:['Supermarkets sell for cash every day and turn stock over quickly, so money keeps coming in before suppliers must be paid.','Supermarkets do not have to pay suppliers.','A lower ratio is always better.'], a:0,
+     why:'Context matters. Fast cash sales mean a low ratio is normal for many retailers.'},
+    {src:'Interpretation · gearing', prompt:'A business has gearing of 62%. Interest rates are expected to rise. Which sentence is most useful?',
+     o:['It is highly geared, so rising interest rates will increase its finance costs and reduce profit available for shareholders.','62% is a good score.','It has more equity than debt.'], a:0,
+     why:'Over 50% is generally seen as high gearing. The point is what that means for this business now.'},
+    {src:'Interpretation · ROCE', prompt:'A business earns a ROCE of 4%. It could earn 5% by putting its money in a savings account. What does this suggest?',
+     o:['The business is doing well because it is profitable.','The business is not using its capital as productively as a low-risk alternative would, which shareholders may question.','ROCE should always be 100%.'], a:1,
+     why:'Comparing ROCE with a benchmark, such as interest rates or rivals, is what gives it meaning.'},
+    {src:'Interpretation · NPV', prompt:'A project has an NPV of +£3,000 on a £100,000 investment. Which judgement is best?',
+     o:['It is guaranteed to make money.','It is worth doing in theory, but the margin is so small that a slight shortfall in forecast cash flows could make it unprofitable.','It should be rejected because the NPV is small.'], a:1,
+     why:'Positive means acceptable at that discount rate. Small means sensitive to forecast errors.'},
+    {src:'AQA June 2019 · Paper 1 · Q18 (examiner report)', prompt:'A decision tree shows Option A has a net gain of £1.2m. What did the examiner warn students about?',
+     o:['Treating net gain as if it were the actual profit the business will make.','Calculating it at all.','Using probabilities.'], a:0,
+     why:'Net gain is an average expected outcome. The actual result will be one of the branches, which could be a loss.'},
+    {src:'Interpretation · capacity', prompt:'A hotel runs at 98% capacity utilisation. Which is the strongest point?',
+     o:['It is very efficient, so there are no problems.','Fixed costs are spread over many guests, keeping unit costs low, but there is little room for extra bookings and little time for maintenance.','It should cut prices.'], a:1,
+     why:'High utilisation is good for unit costs but has real drawbacks. That is the balance examiners reward.'},
+    {src:'Interpretation · units', prompt:'A student writes "the margin of safety is 12". What is missing?',
+     o:['Nothing.','The unit. It should be 12 units. Examiners note that missing units and currency symbols cost marks.','A percentage sign.'], a:1,
+     why:'Always label answers with £, %, units or years. The June 2026 reports flagged this on Papers 1 and 2.'}
+  ]},
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Final timed round', blurb:'Ten mixed calculations, 90 seconds each.', pass:8, poolFrom:[1,2,3,4,5,6,7,8], count:10, seconds:90,
+  teach:`<p>This round mixes calculations from every stage, with new numbers each time. You have <b>90 seconds</b> for each one, which is roughly exam pace for a 4-mark calculation.</p>
+  <p>Use a calculator. You need 8 out of 10 to finish the course.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'calc', key:'calc_course_v1', offset:200, short:'Calculations',
+  name:'Calculations Course',
+  hero:{kicker:'Quantitative skills · AQA A-level Business',
+    title:'Get the <em>number</em> right, then use it',
+    lede:'Calculation marks are usually lost through method, not understanding: dividing by the wrong figure, forgetting to subtract the cost, giving pounds instead of units. Every stage here targets errors named in AQA examiner reports, and the numbers change every time you try.'},
+  doneText:'You have worked through every calculation type on the specification and the traps examiners report most often. Keep the habit: write the formula, show your working, and label your answer with £, %, units or years.',
+  stages:STAGES
+};
+</script>
+<script src="course-engine.js"></script>
+</body>
+</html>

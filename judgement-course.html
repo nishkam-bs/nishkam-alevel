@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Judgement Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   JUDGEMENT COURSE (AO4)
+   Built from AQA examiner reports 2017–2026. Stage numbers are stored in the
+   tracking sheet as 100 + stage, so they never mix with the other courses.
+   ===================================================================== */
+const LEAN_Q='Will the introduction of lean production always lead to lower unit costs? Justify your view.';
+const MNC_Q='A UK business\'s domestic market has stopped growing. The business has decided to become a multinational corporation. To what extent is this decision likely to increase profits?';
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'drift', title:'Summary or judgement?', blurb:'Tell a real judgement from a conclusion that just repeats.', pass:8,
+  labels:['A real judgement','Not a judgement yet'], showLabel:'A student\'s conclusion:',
+  teach:`<p>On the long questions, 7 of 16, 8 of 20 and 9 of 24 marks on Paper 3 are for evaluation. Examiners keep writing the same thing about weaker answers: they "simply summarised when attempting to evaluate, rather than genuinely trying to weigh up their arguments."</p>
+  <p>A real judgement answers the question, says which side carries more weight and why, and says what the answer depends on. A summary just lists both sides again.</p>
+  <p>Read each conclusion and decide which it is.</p>`,
+  items:[
+    {src:'AQA June 2024 · Paper 1 · Q24', q:LEAN_Q, ok:false,
+     text:'Overall, lean production has advantages such as less waste and lower stock costs, but it also has disadvantages such as supply chain risk and training costs. So it can lower unit costs, but it may not.',
+     why:'This lists both sides again and sits on the fence. Nothing is weighed and there is no condition.'},
+    {src:'AQA June 2024 · Paper 1 · Q24', q:LEAN_Q, ok:true,
+     text:'Lean production will usually lower unit costs for a high-volume manufacturer with reliable suppliers, because the savings on stock and defects apply to every unit made. It will not always do so: where the supply chain is long or fragile, one stoppage can leave fixed costs spread over far fewer units. The answer depends mainly on how reliable the suppliers are.',
+     why:'It answers "always" directly, says why one side usually wins, and names the condition that decides it.'},
+    {src:'AQA June 2025 · Paper 1 · Q21', q:MNC_Q, ok:false,
+     text:'In conclusion, becoming a multinational could increase profits through new markets and economies of scale, but there are risks like exchange rates and cultural differences. Therefore it is likely to increase profits to some extent.',
+     why:'"To some extent" is not a judgement. Which matters more, the new markets or the risks, and why?'},
+    {src:'AQA June 2025 · Paper 1 · Q21', q:MNC_Q, ok:true,
+     text:'Becoming a multinational is only likely to increase profits if the business takes a real advantage abroad with it. A stagnant UK market is a strong reason to look overseas, but without a lower cost base or a stronger brand than local rivals, the extra revenue may not cover the higher cost of running operations in another country. So the decision is most likely to raise profits in the long run for a business with a clear competitive advantage, and least likely for one that is simply escaping a flat home market.',
+     why:'It weighs the reason to go against the cost of going and says exactly when the decision would pay off.'},
+    {src:'AQA June 2025 · Paper 1 · Q22', q:'The marketing department of a business wishes to increase its market share in a growing market. To what extent is market research the most important activity of the marketing department in order to achieve this objective?', ok:false,
+     text:'Market research is important, but other activities such as pricing and promotion are also important, so it depends on the business.',
+     why:'"It depends on the business" is the classic empty ending. Depends on what about the business?'},
+    {src:'AQA June 2024 · Paper 1 · Q22', q:'To what extent is this change guaranteed to increase the motivation of all employees?', ok:true,
+     text:'The change is not guaranteed to motivate all employees. It is likely to motivate staff who value recognition and responsibility, but for workers who are mainly unhappy about pay or job security, Herzberg suggests this will do little until those hygiene factors are fixed. So how far it works depends on what is currently causing dissatisfaction in that workforce.',
+     why:'It tackles both "guaranteed" and "all", uses theory to weigh, and gives a specific condition.'},
+    {src:'Based on AQA June 2023 Paper 3 (examiner commentary)', q:'To what extent should Logger Boards focus on its existing customers?', ok:false,
+     text:'Overall, Logger should focus on existing customers. It should also increase sales by launching a social media campaign and offering discounts to new customers in Europe.',
+     why:'The examiner criticised a conclusion like this: it "drifts from the question", which did not ask how Logger should increase sales, and it adds ideas that were never analysed.'},
+    {src:'AQA June 2018 · Paper 1 · Q24', q:'Are demographic factors now more significant than economic factors in influencing the performance of UK businesses? Justify your view.', ok:true,
+     text:'For most UK businesses economic factors are still more significant, because changes in interest rates and incomes hit demand within months. Demographic change matters more for businesses whose market is defined by age, such as care homes or student housing, where an ageing population shifts demand permanently. So the answer depends on how closely a business\'s customers are tied to one age group.',
+     why:'It makes a call, explains why it usually holds, and shows where it does not. That is the "depends on" the examiner rewards.'},
+    {src:'AQA June 2019 · Paper 1 · Q22', q:'A competitive advantage can be achieved through low-cost or through differentiation. Which of these types of competitive advantage is it easier for a UK business to maintain? Justify your view.', ok:false,
+     text:'Both types of competitive advantage have strengths and weaknesses. Low cost can be copied and differentiation can be expensive. Every business is different, so it is impossible to say which is easier.',
+     why:'Refusing to decide is not a judgement. The question says "justify your view", so you must have one.'},
+    {src:'AQA June 2024 · Paper 1 · Q23', q:'To what extent does rapid change in the external environment mean that strategic drift is inevitable for a business?', ok:true,
+     text:'Rapid change makes strategic drift more likely but not inevitable. Drift happens when a business keeps the same strategy while its market moves on, so the deciding factor is not how fast the environment changes but how quickly the business notices and responds. A business that scans its environment and is willing to change its strategy can avoid drift even in a fast-moving market.',
+     why:'It challenges "inevitable" and identifies the real deciding factor.'}
+  ]},
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'mcq', title:'What does it depend on?', blurb:'Find the condition that actually decides the answer.', pass:6,
+  teach:`<p>"It depends" only earns credit when you say what it depends on and why that factor decides it. The June 2026 Paper 3 examiner was pleased to see "depends on" conclusions, but the condition has to be specific to the question.</p>
+  <p>For each one, choose the condition that does the most work.</p>`,
+  items:[
+    {src:'AQA June 2024 · Paper 1 · Q24', prompt:LEAN_Q+' Which "depends on" is most useful?',
+     o:['It depends on the business.','It depends on how reliable the business\'s suppliers are, because just-in-time only cuts costs if materials arrive when they are needed.','It depends on whether the managers like lean production.'], a:1,
+     why:'Lean relies on suppliers. If deliveries fail, production stops and unit costs rise.'},
+    {src:'AQA June 2025 · Paper 1 · Q21', prompt:MNC_Q+' Which "depends on" is most useful?',
+     o:['It depends on whether the business has an advantage over local rivals in the new market, such as lower costs or a stronger brand.','It depends on the economy.','It depends on how big the business is.'], a:0,
+     why:'Without an advantage over local firms, entering a new market adds cost without guaranteeing the revenue to cover it.'},
+    {src:'AQA June 2025 · Paper 1 · Q22', prompt:'Is market research the most important marketing activity for increasing market share in a growing market? Which "depends on" is most useful?',
+     o:['It depends on how much the business already knows about why customers are switching in this market.','It depends on the marketing budget.','It depends on the 4Ps.'], a:0,
+     why:'Research matters most when the business does not yet understand its customers. If it already does, promotion or distribution may matter more.'},
+    {src:'AQA June 2018 · Paper 1 · Q23', prompt:'Will UK businesses experience a fall in profit if governments adopt more protectionist policies? Which "depends on" is most useful?',
+     o:['It depends on Brexit.','It depends on whether the business mainly exports, imports its inputs, or competes with imports in the UK.','It depends on the exchange rate.'], a:1,
+     why:'Protectionism hurts exporters and importers of materials but can help firms that compete with imports at home.'},
+    {src:'Exam-style · Paper 3 style', prompt:'Should a small manufacturer finance expansion with a bank loan rather than new share capital? Which "depends on" is most useful?',
+     o:['It depends on what the bank says.','It depends on whether the owners want to keep control and how confident they are that profits will cover the interest.','It depends on interest rates in general.'], a:1,
+     why:'The real trade-off is control against the risk of fixed repayments. Interest rates matter only through that second point.'},
+    {src:'Exam-style · Paper 2 style', prompt:'Will a 10% price rise increase a coffee chain\'s revenue? Which "depends on" is most useful?',
+     o:['It depends on price elasticity of demand: if demand is price inelastic, revenue will rise.','It depends on what competitors think.','It depends on the quality of the coffee.'], a:0,
+     why:'PED decides the direction of the revenue change. Quality and competitors only matter through their effect on PED.'},
+    {src:'AQA June 2017 · Paper 2 · Q3.3', prompt:'Is Africa an attractive market for all businesses wanting to sell their products internationally? Which "depends on" is most useful?',
+     o:['It depends on the product: low-cost everyday goods suit a young, fast-growing population with low average incomes better than luxury goods do.','It depends on the weather.','It depends on the business.'], a:0,
+     why:'The data showed a young, fast-growing population with low average incomes. That favours some products and rules out others.'},
+    {src:'Exam-style · Paper 1 style', prompt:'Will delayering improve a business\'s performance? Which "depends on" is most useful?',
+     o:['It depends on whether the remaining managers can cope with wider spans of control, which depends on how skilled and self-motivated the staff are.','It depends on how many managers there are.','It depends on the cost of redundancy.'], a:0,
+     why:'Delayering works when staff can work with less supervision. The redundancy cost is a one-off, so it rarely decides the long-run outcome.'}
+  ]},
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'spot', title:'Attack the big word', blurb:'Find the word in the question that you must challenge.', pass:7, seq:['s'],
+  prompts:{s:'Tap the word or phrase you should challenge.',wrongS:'Not that. Look for the word that makes the claim absolute or makes you rank things.',wrongSE:'Not that one.'},
+  teach:`<p>Many AQA essay titles contain a word that makes the claim easy to challenge: <i>always</i>, <i>guaranteed</i>, <i>all</i>, <i>inevitable</i>, <i>the most important</i>. The mark schemes say that challenging these supports evaluation.</p>
+  <p>Tap the word or phrase in each question that your judgement must deal with head-on.</p>`,
+  items:[
+    {src:'AQA June 2024 · Paper 1 · Q24', parts:['Will the introduction of lean production ',['always','s'],' lead to lower unit costs? Justify your view.'],
+     note:'"Always" means one clear exception is enough to disagree. Then explain when it does work.'},
+    {src:'AQA June 2024 · Paper 1 · Q22', parts:['To what extent is this change ',['guaranteed','s'],' to increase the motivation of all employees?'],
+     note:'"Guaranteed" is the main target. "All employees" is the second: show that different groups respond differently.'},
+    {src:'AQA June 2024 · Paper 1 · Q23', parts:['To what extent does rapid change in the external environment mean that strategic drift is ',['inevitable','s'],' for a business?'],
+     note:'"Inevitable" invites you to show how a business can avoid drift. The examiner noted many students misunderstood strategic drift itself.'},
+    {src:'AQA June 2025 · Paper 1 · Q22', parts:['To what extent is market research ',['the most important','s'],' activity of the marketing department in order to achieve this objective?'],
+     note:'"The most important" means you must compare it with something else and rank them.'},
+    {src:'AQA June 2018 · Paper 1 · Q22', parts:['Do you believe that this is a ',['more risky','s'],' strategy than market development? Justify your view.'],
+     note:'A comparison question. Your judgement must say which is riskier and why, not just describe the risks of each.'},
+    {src:'AQA June 2019 · Paper 1 · Q22', parts:['Which of these types of competitive advantage is it ',['easier','s'],' for a UK business to maintain? Justify your view.'],
+     note:'"Easier to maintain" is the test. Not which is better, but which lasts longer against competitors.'},
+    {src:'AQA June 2017 · Paper 2 · Q3.3', parts:['To what extent is Africa an attractive market for ',['all businesses','s'],' wanting to sell their products internationally?'],
+     note:'"All businesses" means you need different types of business. One example cannot answer it.'},
+    {src:'AQA June 2019 · Paper 2 · Q1.5 (examiner report)', parts:['The question asked whether the use of market research will ',['guarantee','s'],' high sales.'],
+     note:'The examiner wrote that the question "clearly asks whether the use of market research will guarantee high sales, not how will it help."'}
+  ]},
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'build', title:'Build the judgement', blurb:'Put a conclusion in order. One card does not belong.', pass:2,
+  teach:`<p>A good conclusion moves in a clear order: answer the question, say what carries most weight and why, say what it depends on, then finish by answering the question again in its own words.</p>
+  <p>This is a way of ordering your thinking, not a formula to copy. The 2024 examiner warned that formulaic conclusions "can hinder as often as they can help."</p>
+  <p>One card in each set does not belong in a conclusion. You get two checks per question.</p>`,
+  items:[
+    {src:'AQA June 2024 · Paper 1 · Q24', q:LEAN_Q,
+     start:'Conclusion begins', end:'Conclusion ends',
+     cards:[
+      {id:'A',t:'Lean production will usually lower unit costs, but not always.',w:'Answer the question straight away, including the word "always".'},
+      {id:'B',t:'The savings on stock and defects carry more weight for a high-volume manufacturer, because they apply to every unit made.',w:'Say which side carries more weight and why.'},
+      {id:'C',t:'This depends mainly on supplier reliability: one failed delivery can stop production while fixed costs carry on.',w:'Name the condition that decides it, and why.'},
+      {id:'D',t:'So lean production lowers unit costs for most manufacturers most of the time, but not for those that cannot rely on their suppliers.',w:'Finish by answering the question in its own words.'}],
+     decoy:{id:'E',t:'Lean production also improves the business\'s environmental image with customers.',w:'Trap: a new argument. The examiner says adding new issues in a conclusion harms the answer.'},
+     order:['A','B','C','D']},
+    {src:'AQA June 2025 · Paper 1 · Q21', q:MNC_Q,
+     start:'Conclusion begins', end:'Conclusion ends',
+     cards:[
+      {id:'A',t:'Becoming a multinational is likely to increase profits only for some businesses.',w:'Answer directly.'},
+      {id:'B',t:'Access to growing markets outweighs the extra costs where the business has a real advantage over local rivals.',w:'Weigh the two sides and say why one wins.'},
+      {id:'C',t:'Without that advantage, the higher costs of operating abroad may exceed the extra revenue.',w:'Show when the other side wins.'},
+      {id:'D',t:'So the decision is most likely to raise profits for a business with a clear cost or brand advantage it can take overseas.',w:'Finish by answering the question.'}],
+     decoy:{id:'E',t:'Firstly, multinationals can benefit from economies of scale, and secondly they can spread risk across countries.',w:'Trap: this just repeats earlier arguments as a list. That is summarising, not judging.'},
+     order:['A','B','C','D']},
+    {src:'Based on AQA June 2017 · Paper 3 · Q4 (examiner report)', q:'Which is the bigger threat to KMH: the power of buyers or the likelihood of new entrants?',
+     start:'Conclusion begins', end:'Conclusion ends',
+     cards:[
+      {id:'A',t:'Buyer power is the bigger threat to KMH.',w:'The examiner said students must "decide which is the bigger threat and explain why", not just analyse both.'},
+      {id:'B',t:'A few large buyers can push prices down right now, while new entrants take years to build up.',w:'Weigh them on timescale and certainty.'},
+      {id:'C',t:'This would change if barriers to entry fell, for example if new technology cut start-up costs.',w:'Say what would change the answer.'},
+      {id:'D',t:'So, as things stand, buyer power poses the greater threat to KMH\'s profits.',w:'Finish with a clear answer.'}],
+     decoy:{id:'E',t:'However, the data on buyer numbers might not be accurate, so we cannot be sure.',w:'Trap: in June 2026 the examiner rejected answers that questioned the accuracy of the data given.'},
+     order:['A','B','C','D']}
+  ]},
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'weak', title:'Fix the conclusion', blurb:'Find the sentence that loses marks and replace it.', pass:5,
+  teach:`<p>Each conclusion below has one sentence that would cost marks. They are all mistakes examiners have reported: new arguments, repeating, questioning the data, exaggerating, and drifting from the question.</p>
+  <p>Tap the weak sentence, then choose the best replacement. Both must be right first time to score.</p>`,
+  items:[
+    {src:'Based on AQA June 2025 · Paper 3 (examiner report)', q:'To what extent should the business choose Option A rather than Option B?',
+     s:['Overall, Option A is the better choice.','Its higher forecast profit outweighs the extra risk because the business has enough cash to survive a slow first year.','Another benefit of Option A is that it would also improve staff motivation.','Therefore Option A is the better choice, as long as sales reach at least 80% of the forecast.'],
+     bad:2, problem:'A new argument in the conclusion. The 2025 examiner warned that adding issues here "will harm the quality of your overall response".',
+     fixes:['Option B\'s lower risk matters less here, because the main danger it avoids, running out of cash, is unlikely given the business\'s reserves.','Option A would also mean the business can enter new markets later.','Option B is also good in many ways.'], fix:0},
+    {src:'Based on AQA June 2026 · Paper 3 (examiner report)', q:'To what extent is the fall in profit caused by the rise in material costs?',
+     s:['The rise in material costs is the main cause of the fall in profit.','Material costs rose by 18% while revenue was flat, which explains most of the £40,000 fall.','However, the cost figures may not be accurate, so this cannot be certain.','The smaller cause was the loss of one contract, which only accounts for about £8,000.'],
+     bad:2, problem:'In June 2026 the examiner rejected answers that questioned the accuracy of the data when the question was about that data.',
+     fixes:['The figures are probably made up for the exam.','The cost rise matters more because it affects every job, while the lost contract was a one-off.','Material costs might go down next year.'], fix:1},
+    {src:'Based on AQA June 2026 · Paper 3 (examiner report)', q:'To what extent will the cash flow problem threaten the survival of the business?',
+     s:['The cash flow problem is a real threat, but not an immediate one.','The business has an overdraft facility that covers the gap for the next three months.','Because of this, the business will definitely collapse within weeks.','Its survival depends on whether the large customer pays on time in March.'],
+     bad:2, problem:'Exaggeration. The 2026 examiner penalised hyperbole and rewarded answers that kept the effect in proportion. It also contradicts the previous sentence.',
+     fixes:['Because of this, the threat is serious but manageable in the short term.','Because of this, the business is completely safe forever.','Because of this, the owner should sell the business.'], fix:0},
+    {src:'Based on AQA June 2023 · Paper 3 (examiner commentary)', q:'To what extent should Logger Boards focus on its existing customers?',
+     s:['On balance, Logger should focus on its existing customers.','They provide most of its income and are cheaper to keep than new customers are to win.','To increase sales, Logger should launch a social media campaign aimed at Europe.','This depends on whether existing customers are still growing their orders.'],
+     bad:2, problem:'The examiner said a conclusion like this "drifts from the question – which did not ask how Logger should increase sales."',
+     fixes:['Logger should also cut its prices.','Focusing on new customers would be riskier because Logger has no track record with them, so the cost of winning them is less certain.','Logger is a good business.'], fix:1},
+    {src:'AQA June 2024 · Paper 1 · Q24', q:LEAN_Q,
+     s:['Lean production will usually lower unit costs, but not always.','In the first paragraph I explained JIT, in the second I explained kaizen, and in the third I explained the risks.','The savings on stock apply to every unit, so for a high-volume firm they outweigh the training costs.','It depends on supplier reliability, because a single failed delivery can stop the line.'],
+     bad:1, problem:'Describing what you wrote is not weighing it. Examiners say weaker conclusions "summarised" instead of judging.',
+     fixes:['The training costs are a one-off, while the stock savings repeat every year, which is why the savings usually win.','Lean production was first used by Toyota.','In conclusion, there are many points on both sides.'], fix:0},
+    {src:'AQA June 2018 · Paper 1 · Q22', q:'A UK business has decided to achieve higher growth through new product development. Do you believe that this is a more risky strategy than market development? Justify your view.',
+     s:['New product development is usually the riskier strategy.','Market development sells a product the business already knows how to make, so only one thing is new.','Both strategies have risks, so it is hard to decide.','However, if the business knows its home customers very well, NPD may be less risky than entering an unfamiliar foreign market.'],
+     bad:2, problem:'Sitting on the fence after you have already made a judgement weakens it. The question says "justify your view".',
+     fixes:['Both are on Ansoff\'s matrix.','With NPD the product itself is untested, and most new products fail, so the chance of losing the investment is higher.','I think both could work.'], fix:1}
+  ]},
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'mcq', title:'Why it outweighs', blurb:'Pick the reason that really shows one side carries more weight.', pass:6,
+  teach:`<p>Saying one argument "outweighs" another is not enough. You need a reason. The strongest reasons compare the two sides on something you can measure or reason about:</p>
+  <ul><li>size of the effect, ideally in proportion (for example, as a share of profit)</li><li>how likely it is</li><li>how long it lasts</li><li>whether it can be reversed</li></ul>
+  <p>Choose the reason that does this best.</p>`,
+  items:[
+    {src:'Exam-style · proportion', prompt:'New regulations add £1.2m a year to costs for a firm with revenue of £60m and operating profit of £4m. Which judgement uses the figures best?',
+     o:['£1.2m is a large amount of money, so the regulation is very damaging.','£1.2m is only 2% of revenue, so it hardly matters.','£1.2m is 30% of operating profit, so even though it is a small share of revenue, it is a serious threat to profitability.'], a:2,
+     why:'Compare the cost with profit, not revenue. 1.2 ÷ 4 = 30%. The 2026 examiner rewarded this kind of proportional thinking.'},
+    {src:'Exam-style · timescale', prompt:'Delayering cuts salary costs by £300,000 a year but costs £400,000 in one-off redundancy pay. Which reason best shows the savings outweigh the cost?',
+     o:['The savings are bigger.','The redundancy cost is paid once, while the savings repeat every year, so the business is better off from the second year onwards.','Redundancy is bad for morale.'], a:1,
+     why:'£300k × 2 = £600k > £400k. Comparing one-off with recurring is a strong way to weigh.'},
+    {src:'Exam-style · likelihood', prompt:'Option A could earn £5m (40% chance). Option B could earn £2m (90% chance). Which reason best supports choosing B for a cash-poor business?',
+     o:['B is cheaper.','A has a higher possible payoff.','B is much more likely to succeed, and a business with little cash cannot afford the 60% chance that A fails.'], a:2,
+     why:'This weighs likelihood against the firm\'s ability to absorb failure. That is a judgement, not just a description.'},
+    {src:'Exam-style · reversibility', prompt:'Which reason best shows that a price cut is a lower-risk response than building a new factory?',
+     o:['A price cut can be reversed within weeks if it does not work, whereas a factory is a large sunk cost that cannot easily be undone.','A price cut is cheaper.','Factories take time to build.'], a:0,
+     why:'Reversibility is a strong test of risk. The other options are true but do not explain why one is less risky.'},
+    {src:'AQA June 2018 · Paper 1 · Q23', prompt:'"Protectionism will reduce the profits of UK businesses." Which judgement is strongest?',
+     o:['It will reduce profits for all businesses because trade becomes harder.','It will reduce profits most for exporters and firms that import their materials, but could raise profits for UK firms that compete with imports, so the overall effect depends on where a business sits in the supply chain.','Protectionism is bad for the economy.'], a:1,
+     why:'It weighs different businesses differently. "All businesses" answers like the first are exactly what examiners mark down.'},
+    {src:'Exam-style · short term vs long term', prompt:'Investing in staff training will cut profit this year but should improve productivity. Which judgement is strongest?',
+     o:['Training is always worth it.','Training reduces profit, so it should be avoided.','The cost falls this year while the productivity gain lasts as long as staff stay, so training is worthwhile if labour turnover is low.'], a:2,
+     why:'It weighs short term against long term and links the condition (labour turnover) to the reason.'},
+    {src:'Exam-style · data contradicts the argument', prompt:'A business argues its new loyalty scheme raised sales. Sales rose 3%, but the market grew 8%. Which judgement is strongest?',
+     o:['Sales rose 3%, so the scheme worked.','Sales grew more slowly than the market, so the business actually lost market share. The scheme has not been effective so far.','The data may be wrong.'], a:1,
+     why:'Comparing with the market is the key move. Never question the accuracy of data you have been given.'},
+    {src:'Exam-style · biggest factor', prompt:'A café\'s profit fell 25%. Rent rose by £6,000 and coffee bean costs rose by £14,000. Which is the main cause, and why?',
+     o:['Rent, because it is a fixed cost.','Coffee beans, because the increase is more than twice as large, and it rises with every cup sold.','Both are equally important.'], a:1,
+     why:'£14,000 against £6,000. The examiner said analysing both causes "is not the same as making a judgement on which is the main cause".'}
+  ]},
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'mcq', title:'Know when to judge', blurb:'Which questions need a conclusion, and what kind?', pass:5,
+  teach:`<p>Not every question needs a judgement. Writing one where it is not needed wastes time. Missing one where it is needed caps your mark.</p>
+  <p>These come from the specification and from what examiners have said in their reports.</p>`,
+  items:[
+    {src:'AQA June 2024 · Paper 3 (examiner report)', prompt:'Do the 12-mark questions (Q1 and Q2) on Paper 3 need a conclusion?',
+     o:['Yes, always end with a judgement.','No. The examiner said a conclusion or judgement is not required for questions 1 or 2 on that paper.','Only if you have time.'], a:1,
+     why:'The 2024 examiner wrote that a conclusion "is not required for questions 1 or 2 on this paper" and that some students\' conclusions were not answering the question set.'},
+    {src:'Course rule · 9-mark questions', prompt:'What should the last sentence of a 9-mark "Analyse..." answer do?',
+     o:['Give a balanced conclusion with both sides.','Start with "Therefore" and link the chain back to the question\'s wording. No counter-argument.','Introduce a second argument.'], a:1,
+     why:'9-markers are analysis, not evaluation. One developed argument, finished with a "Therefore" sentence.'},
+    {src:'AQA November 2020 · Paper 3 (examiner report)', prompt:'On Paper 3, how many marks are for evaluation (AO4) on a 24-mark question?',
+     o:['3','9','16'], a:1,
+     why:'The report says AO4 accounts for 7, 8 or 9 marks on 16, 20 and 24-mark questions, so a missing conclusion "severely restricts the maximum mark".'},
+    {src:'AQA June 2023 · Paper 3 (examiner commentary)', prompt:'A Level 2 answer had snippets of judgement as each point was introduced but no final conclusion. What did the examiner say would most improve it?',
+     o:['More arguments.','A longer introduction.','Adding a final judgement weighing up the two sides.'], a:2,
+     why:'"The clearest and most effective improvement would be the addition of a final judgement, weighing up the two sides of the argument presented."'},
+    {src:'AQA June 2023 · Paper 3 (examiner commentary)', prompt:'A conclusion is well written but is based on a calculation the student got wrong earlier. What happens?',
+     o:['It still scores well because the conclusion is good.','It will not score well. The examiner said "no matter how good the conclusion, if it is based on flawed analysis, it will not score well."','The examiner ignores the earlier mistake.'], a:1,
+     why:'Your judgement is only as strong as the analysis underneath it.'},
+    {src:'AQA June 2023 · Paper 3 (examiner commentary)', prompt:'What did the examiner say great evaluation should do?',
+     o:['Tie together the issues raised earlier in the answer.','Introduce a fresh idea to impress the examiner.','Repeat the introduction.'], a:0,
+     why:'"Great evaluation can be seen as tying together all of the issues raised earlier in the answer." Conclusions should be unique to your answer.'},
+    {src:'AQA June 2017 · Paper 3 (examiner report)', prompt:'A question asks which of two factors is the main cause of a fall in profit. A student analyses both carefully but never says which is bigger. What is the problem?',
+     o:['None, the analysis is thorough.','Analysing both "is not the same as making a judgement on which is the main cause". They must decide and defend it.','They should have analysed three factors.'], a:1,
+     why:'The 2017 examiner: students "need to think about the judgement they have to make in these questions, be clear what their judgement is and defend it."'}
+  ]},
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'calc', title:'Judge with numbers', blurb:'Work out the figure that should drive your judgement.', pass:4,
+  teach:`<p>The strongest judgements use a number you have worked out. Examiners keep noting a "lack of relevant calculations to support arguments and/or conclusions."</p>
+  <p>Type your answer as a number. You get one try. After each one you will see how the figure could be used in a judgement.</p>`,
+  items:[
+    {src:'Based on AQA June 2019 · Paper 1 · Q18', given:'Option A costs <b>£2m</b>. It has a 60% chance of earning <b>£5m</b> and a 40% chance of earning <b>£0.5m</b>.', prompt:'Calculate the expected net gain of Option A.', unit:'£m', pre:true, ans:1.2, tol:0.01,
+     traps:[{v:3.2,m:'That is the expected value before the cost is taken off. Net gain = expected value − cost.'}],
+     work:'Expected value = (0.6 × £5m) + (0.4 × £0.5m) = £3m + £0.2m = £3.2m. Net gain = £3.2m − £2m = £1.2m.',
+     use:'In a judgement: "Option A has the higher expected net gain, but if it fails the business loses £1.5m, which a firm with little cash may not survive."'},
+    {src:'Based on AQA June 2019 · Paper 1 · Q18', given:'Option B costs <b>£0.5m</b>. It has a 90% chance of earning <b>£1.5m</b> and a 10% chance of earning <b>£0.8m</b>.', prompt:'Calculate the expected net gain of Option B (to 2 decimal places).', unit:'£m', pre:true, ans:0.93, tol:0.006,
+     traps:[{v:1.43,m:'That is before the £0.5m cost is taken off.'}],
+     work:'Expected value = (0.9 × £1.5m) + (0.1 × £0.8m) = £1.35m + £0.08m = £1.43m. Net gain = £1.43m − £0.5m = £0.93m.',
+     use:'The 2019 examiner rewarded answers showing B "cannot make a loss either way" while A carries a probable significant loss. B\'s worst case is still +£0.3m.'},
+    {src:'Exam-style · investment appraisal', given:'A project costs <b>£100,000</b> and brings in <b>£40,000</b> a year for 3 years. Discount factors at 8%: year 1 <b>0.926</b>, year 2 <b>0.857</b>, year 3 <b>0.794</b>.', prompt:'Calculate the net present value.', pre:'£', unit:'', ans:3080, tol:2,
+     traps:[{v:20000,m:'You did not discount the cash flows. £120,000 − £100,000 ignores the time value of money.'},{v:103080,m:'That is the present value of the inflows. Now subtract the £100,000 cost.'}],
+     work:'Present value = £40,000 × (0.926 + 0.857 + 0.794) = £40,000 × 2.577 = £103,080. NPV = £103,080 − £100,000 = £3,080.',
+     use:'In a judgement: "the NPV is positive but only £3,080, so a small shortfall in forecast sales would make the project lose money."'},
+    {src:'Exam-style · payback', given:'An investment costs <b>£150,000</b>. Net cash inflows: year 1 <b>£40,000</b>, year 2 <b>£50,000</b>, year 3 <b>£80,000</b>.', prompt:'Calculate the payback period in years (to 2 decimal places).', unit:'years', ans:2.75, tol:0.01,
+     traps:[{v:3,m:'Payback happens during year 3, not at the end of it. Work out what fraction of year 3 is needed.'}],
+     work:'After 2 years: £40,000 + £50,000 = £90,000. Still needed: £60,000. £60,000 ÷ £80,000 = 0.75 of year 3. Payback = 2.75 years (2 years 9 months).',
+     use:'In a judgement: "payback of 2 years 9 months is inside the business\'s 3-year target, but only just, so a delay to sales would push it over."'},
+    {src:'Exam-style · proportion', given:'New regulations add <b>£1.2m</b> a year to costs. Revenue is <b>£60m</b>. Operating profit is <b>£4m</b>.', prompt:'What percentage of operating profit is the extra cost?', unit:'%', ans:30, tol:0.05,
+     traps:[{v:2,m:'That is the cost as a share of revenue. Compare it with profit to judge how serious it is.'}],
+     work:'£1.2m ÷ £4m × 100 = 30%.',
+     use:'In a judgement: "although the cost is only 2% of revenue, it would wipe out 30% of operating profit, so it is a serious threat unless it can be passed on in prices."'}
+  ]},
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'timed', title:'Against the clock', blurb:'Twelve mixed questions, 35 seconds each.', pass:10, poolFrom:[1,2,6,7], count:12, seconds:35,
+  teach:`<p>In the exam you will make judgements under time pressure. This round mixes questions from stages 1, 2, 6 and 7, picked at random each time.</p>
+  <p>You have <b>35 seconds</b> for each one. If the bar runs out, it counts as wrong. You need 10 out of 12.</p>`,
+  items:[]},
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'write', title:'Write the conclusion', blurb:'Write the conclusion to a real 25-mark question.', pass:1,
+  teach:`<p>This is the June 2024 Paper 1 question 24. The arguments are already written for you. Your job is the conclusion only.</p>
+  <p>Answer the question, weigh the two sides, say what it depends on, and finish by answering the question again. Do not add a new argument. Aim for roughly 80 to 150 words.</p>`,
+  items:[{src:'AQA June 2024 · Paper 1 · Q24', w:{
+    intro:`<div class="qbox">${LEAN_Q} <span style="color:var(--muted);font-weight:400">(25 marks)</span></div>
+      <div class="card" style="margin-bottom:14px"><span class="src">Argument for (already written)</span><p>Lean production cuts waste at every stage. With just-in-time, a manufacturer such as Toyota holds very little stock, so it saves on warehousing and on stock going out of date. Kaizen means workers keep finding small improvements, so defects and rework fall. Because these savings apply to every unit made, unit costs fall, especially for high-volume producers.</p></div>
+      <div class="card" style="margin-bottom:18px"><span class="src">Argument against (already written)</span><p>Lean production depends on suppliers delivering exactly on time. During the 2021 semiconductor shortage, car makers relying on just-in-time had to halt production lines. When output stops, fixed costs are spread over fewer units, so unit costs rise. Lean also needs staff training and reliable local suppliers, which a small business making short runs may not have, so the savings may never appear.</p></div>`,
+    placeholder:'Write your conclusion here...',
+    checks:[
+      {k:'answer',label:'First sentence answers the question, including "always"',test:x=>/(not always|won't always|will not always|doesn't always|does not always|usually|in most cases|mostly|generally|often|not necessarily)/.test(x.first)},
+      {k:'weigh',label:'Says which side carries more weight',test:x=>/(outweigh|more significant|more important|matters more|carries more|bigger|greater|stronger|main reason|most significant|most important)/.test(x.low)},
+      {k:'why',label:'Gives a reason for that weighting',test:x=>/\b(because|since|as)\b/.test(x.low)},
+      {k:'depends',label:'Says what it depends on',test:x=>/(depends|as long as|provided|unless|only if|only when|only for|if the|where the|when the)/.test(x.low)},
+      {k:'context',label:'Uses the arguments\' context (suppliers, stock, Toyota, defects...)',test:x=>/(supplier|supply|stock|toyota|defect|waste|semiconductor|chip|volume|training)/.test(x.low)},
+      {k:'end',label:'Last sentence answers the question (unit costs)',test:x=>/unit cost/.test(x.last)}],
+    warn:x=>/(furthermore|moreover|in addition|another (reason|factor|benefit|advantage|point)|also improves|environment)/.test(x.low)?{msg:'Is this a new argument? A conclusion should weigh what you have already written, not add to it.',block:true}
+      :/(will always|always lead to lower|always lowers)/.test(x.first)?{msg:'Your first sentence agrees that it "always" works. The argument against shows an exception, so "always" is hard to defend.',block:true}
+      :x.words>200?{msg:'This is long for a conclusion. Aim for roughly 80 to 150 words.'}
+      :/(on one hand|firstly|secondly)/.test(x.low)?{msg:'This reads like a summary of the arguments. Weigh them instead.'}:null,
+    minCompare:40, minAi:50,
+    model:`<span class="src">One way to write it</span><p>Lean production will usually lower unit costs, but not always. For a high-volume manufacturer with reliable suppliers, the savings from holding less stock and making fewer defects apply to every unit, so they <span class="hl-w">outweigh</span> the one-off cost of training staff. The argument against matters most where the supply chain is long or fragile: the 2021 chip shortage showed that when deliveries stop, output falls while fixed costs carry on, so unit costs rise sharply. Which effect wins <span class="hl-w">depends mainly on</span> how reliable the business's suppliers are. So lean production is likely to lower unit costs for most manufacturers most of the time, but a business that cannot rely on its suppliers may find the risk of disruption outweighs the savings.</p>
+      <p style="margin-top:14px;font-size:.9rem;color:var(--muted)">Notice it adds nothing new. Every idea comes from the two arguments above, and the first and last sentences both answer the question.</p>`,
+    ai:`You are an experienced AQA A-level Business teacher giving feedback on a student's CONCLUSION ONLY to the 25-mark question: "Will the introduction of lean production always lead to lower unit costs? Justify your view."
+The student was given two arguments. For: JIT and kaizen cut stock, waste and defects, so unit costs fall, especially for high-volume producers like Toyota. Against: lean depends on suppliers delivering on time (the 2021 semiconductor shortage halted car production lines, so fixed costs were spread over fewer units and unit costs rose); training costs; small short-run businesses may not see the savings.
+Judge the conclusion only on: whether it answers the question directly including the word "always"; whether it says which side carries more weight AND why; whether it gives a specific "depends on" condition linked to the arguments; whether it stays proportionate; whether it avoids adding any new argument (the AQA examiner says new issues in conclusions harm the answer); whether the last sentence answers the question. Do not reward formulaic phrasing for its own sake; the examiner has warned that formulaic conclusions can hinder.
+Do not give a mark or level. Write in plain British English, as a teacher speaking to a Year 13 student. No headings, no emoji. Give one sentence on what works, then two or three improvements, each quoting a short phrase they wrote ("You wrote: ...") and showing a better version ("You could write: ..."). Keep it under 220 words.`,
+    doneTitle:'Course complete',
+    doneText:'You can now tell a summary from a judgement and build one that weighs both sides. Use the same habit on every 16, 20, 24 and 25-mark answer: decide your answer before you start writing, and make sure every conclusion weighs, explains and says what it depends on.'
+  }}]}
+];
+
+window.COURSE={
+  id:'judgement', key:'judgement_course_v1', offset:100, short:'Judgement',
+  name:'Judgement Course',
+  hero:{kicker:'AO4 evaluation · AQA A-level Business',
+    title:'Make the <em>call</em>, then defend it',
+    lede:'Evaluation is a big share of the marks on every long question, and examiners keep saying the same thing: conclusions summarise instead of weighing up. This course uses real AQA questions and examiner comments to train you to make a judgement and defend it. Pass each stage to unlock the next.'},
+  stages:STAGES
+};
+</script>
+<script src="course-engine.js"></script>
+</body>
+</html>

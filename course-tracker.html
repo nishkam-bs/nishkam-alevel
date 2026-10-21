@@ -88,7 +88,7 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
   <div class="grid2">
     <div>
       <div class="card">
-        <div class="filters"><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
+        <div class="filters"><select id="course" aria-label="Choose course"><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
         <div class="tablewrap"><table id="tbl"></table></div>
         <div class="legend"><span><span class="cell p">8/10</span> passed (best score)</span><span><span class="cell a">5/10</span> tried, not passed yet</span><span>Click a name to see attempts and written answers</span></div>
       </div>
@@ -106,7 +106,15 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
 (function(){
 "use strict";
 const API='https://nishkam-tracker.alevelnishkam.workers.dev';
-const STAGES=[[1,'Read the question',10],[2,'Spot the drift',10],[3,'Build the chain',3],[4,'Find the weak link',6],[5,'Explain the link',9],[6,'Read every word',8],[7,'Use the theory',8],[8,'Numbers in the chain',6],[9,'Against the clock',12],[10,'The real thing',1]];
+const COURSES={
+  0:{name:'Start Point/End Point Course',stages:[[1,'Read the question',10],[2,'Spot the drift',10],[3,'Build the chain',3],[4,'Find the weak link',6],[5,'Explain the link',9],[6,'Read every word',8],[7,'Use the theory',8],[8,'Numbers in the chain',6],[9,'Against the clock',12],[10,'The real thing',1]]},
+  100:{name:'Judgement Course',stages:[[1,'Summary or judgement?',10],[2,'What does it depend on?',8],[3,'Attack the big word',8],[4,'Build the judgement',3],[5,'Fix the conclusion',6],[6,'Why it outweighs',8],[7,'Know when to judge',7],[8,'Judge with numbers',5],[9,'Against the clock',12],[10,'Write the conclusion',1]]},
+  200:{name:'Calculations Course',stages:[[1,'Percentages',6],[2,'Reverse percentages',6],[3,'Break-even',6],[4,'Profit and margins',6],[5,'Ratios',6],[6,'Investment appraisal',6],[7,'People and operations',6],[8,'Markets and elasticity',6],[9,'What the number means',8],[10,'Final timed round',10]]}
+};
+let OFF=0,STAGES=COURSES[0].stages,WRITE_STAGE=10;
+/* rows in the sheet: stage 1-10 = Start/End, 101-110 = Judgement, 201-210 = Calculations */
+const courseOf=st=>st>=100?Math.floor(st/100)*100:0;
+function rowsFor(){return data.rows.filter(r=>courseOf(r.stage)===OFF).map(r=>Object.assign({},r,{stage:r.stage-OFF}));}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let token=null,data=null;
@@ -124,6 +132,7 @@ $('#lf').onsubmit=async e=>{e.preventDefault();$('#lerr').textContent='';
 $('#logout').onclick=()=>{token=null;try{sessionStorage.removeItem('ct_token');}catch(e){}$('#dash').hidden=true;$('#loginView').hidden=false;};
 $('#refresh').onclick=()=>load();
 $('#sort').onchange=()=>render();
+$('#course').onchange=e=>{OFF=+e.target.value;STAGES=COURSES[OFF].stages;WRITE_STAGE=OFF===200?-1:10;$('#detail').hidden=true;document.querySelector('#dash h1').textContent=COURSES[OFF].name;render();};
 
 async function load(){
   $('#refresh').disabled=true;
@@ -136,7 +145,7 @@ async function load(){
 function students(){
   const m={};
   Object.entries(data.roster).forEach(([exam,name])=>{m[exam]={exam,name,rows:[]};});
-  data.rows.forEach(r=>{(m[r.exam]=m[r.exam]||{exam:r.exam,name:r.name,rows:[]}).rows.push(r);});
+  rowsFor().forEach(r=>{(m[r.exam]=m[r.exam]||{exam:r.exam,name:r.name,rows:[]}).rows.push(r);});
   return Object.values(m).map(s=>{
     const st={};s.rows.forEach(r=>{const x=st[r.stage]=st[r.stage]||{best:-1,passed:false,tries:0};x.tries++;if(r.score>x.best)x.best=r.score;if(r.passed)x.passed=true;});
     const passedN=Object.values(st).filter(x=>x.passed).length;
@@ -151,24 +160,24 @@ function render(){
   $('#sStarted').textContent=`${started.length} / ${list.length}`;
   $('#sDone').textContent=list.filter(s=>s.passedN===10).length;
   $('#sAvg').textContent=list.length?(list.reduce((a,s)=>a+s.passedN,0)/list.length).toFixed(1):'0';
-  const wk=Date.now()-7*86400000;$('#sWeek').textContent=data.rows.filter(r=>Date.parse(r.t)>wk).length;
+  const wk=Date.now()-7*86400000;$('#sWeek').textContent=rowsFor().filter(r=>Date.parse(r.t)>wk).length;
 
   $('#tbl').innerHTML=`<thead><tr><th class="l">Student</th>${STAGES.map(s=>`<th title="${esc(s[1])}">${s[0]}</th>`).join('')}<th>Last active</th></tr></thead><tbody>${list.map(s=>`<tr><td class="l"><button data-e="${esc(s.exam)}">${esc(s.name)}</button> <span class="muted">${esc(s.exam)}</span></td>${STAGES.map(([id,,tot])=>{const x=s.st[id];
-    if(!x)return '<td><span class="cell n">·</span></td>';const lab=id===10?(x.passed?'Done':'Tried'):`${x.best}/${tot}`;
+    if(!x)return '<td><span class="cell n">·</span></td>';const lab=id===WRITE_STAGE?(x.passed?'Done':'Tried'):`${x.best}/${tot}`;
     return `<td><span class="cell ${x.passed?'p':'a'}" title="${x.tries} attempt${x.tries>1?'s':''}">${lab}</span></td>`;}).join('')}<td class="muted">${s.last?ago(s.last):'Not started'}</td></tr>`).join('')}</tbody>`;
   document.querySelectorAll('#tbl button').forEach(b=>b.onclick=()=>detail(list.find(s=>s.exam===b.dataset.e)));
 
   $('#bars').innerHTML=STAGES.map(([id,t])=>{const tried=list.filter(s=>s.st[id]).length,p=list.filter(s=>s.st[id]&&s.st[id].passed).length,pct=tried?Math.round(p/tried*100):0;
     return `<div class="barrow"><span title="${esc(t)}">${id}. ${esc(t)}</span><div class="t"><i style="width:${pct}%"></i></div><span class="muted">${tried?pct+'%':'–'}</span></div>`;}).join('');
 
-  const miss={};data.rows.forEach(r=>r.missed.forEach(m=>{miss[m]=(miss[m]||0)+1;}));
+  const miss={};rowsFor().forEach(r=>r.missed.forEach(m=>{miss[m]=(miss[m]||0)+1;}));
   const top=Object.entries(miss).sort((a,b)=>b[1]-a[1]).slice(0,15);
   $('#miss').innerHTML=top.length?top.map(([m,c])=>`<li><span class="c">${c}</span><span>${esc(m)}</span></li>`).join(''):'<li class="muted">Nothing yet.</li>';
 }
 function detail(s){
   const d=$('#detail');d.hidden=false;
   const rows=s.rows.slice().sort((a,b)=>b.t.localeCompare(a.t));
-  d.innerHTML=`<h2>${esc(s.name)} <span class="muted" style="font-size:1rem">${esc(s.exam)}</span></h2>${rows.length?rows.map(r=>`<div class="attempt"><b>Stage ${r.stage}</b> · ${r.stage===10?(r.passed?'completed':'not completed'):`${r.score}/${r.total} ${r.passed?'passed':'not passed'}`} · ${Math.round(r.seconds/60)} min · <span class="muted">${new Date(r.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
+  d.innerHTML=`<h2>${esc(s.name)} <span class="muted" style="font-size:1rem">${esc(s.exam)}</span></h2>${rows.length?rows.map(r=>`<div class="attempt"><b>Stage ${r.stage}</b> · ${r.stage===WRITE_STAGE?(r.passed?'completed':'not completed'):`${r.score}/${r.total} ${r.passed?'passed':'not passed'}`} · ${Math.round(r.seconds/60)} min · <span class="muted">${new Date(r.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
     ${r.missed.length?`<div class="muted" style="font-size:.82rem;margin-top:4px">Missed: ${r.missed.map(esc).join('; ')}</div>`:''}${r.answer?`<div class="answer">${esc(r.answer)}</div>`:''}</div>`).join(''):'<p class="muted">No attempts yet.</p>'}`;
   d.scrollIntoView({behavior:'smooth',block:'start'});
 }
