@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Paper 3 Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   PAPER 3 COURSE
+   One made-up case study (Ridgeway Cycles Ltd) with appendices, worked
+   through question type by question type. Built on what the AQA Paper 3
+   examiner reports 2017–2026 say. "Based on" means the issue comes from
+   the report; the wording of every item is our own.
+   Stage numbers are stored in the tracking sheet as 600 + stage.
+   ===================================================================== */
+const T=(head,rows)=>`<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${i?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${i?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const CASE_TEXT=`<p>Ridgeway Cycles Ltd was set up in 2014 by Amrit and Kiran Sandhu, a brother and sister, in Swindon. It designs and assembles electric bikes (e-bikes). Most of its bikes are sold through 140 independent bike shops in the UK. Since 2022 it has also sold directly to customers through its own website. Its bikes sell for between £2,400 and £4,500 and compete on quality and reliability rather than price.</p>
+<p>Frames and batteries are bought from suppliers in Taiwan. Ridgeway assembles and tests every bike in its own factory, which employs 64 production staff. UK demand for e-bikes grew quickly between 2020 and 2022, and Ridgeway expanded its factory, funded by a £2.5m bank loan. The bank has said it will review the terms of the loan if Ridgeway's gearing goes above 50%.</p>
+<p>Since 2023 the growth of the market has slowed, and cheaper imported e-bikes sold online have taken market share. Bike shops say their customers increasingly compare prices online before buying.</p>
+<p>Amrit, who runs operations, wants to invest £1.2m in an automated assembly line (Appendix D). Kiran, who runs marketing, would rather spend money growing website sales, where Ridgeway does not have to give a bike shop 35% of the retail price.</p>
+<p>Labour turnover in the factory rose sharply in 2024. Production staff are paid hourly, and some have left for a new warehouse nearby that pays more. The Sandhus have always run the business informally and make most decisions themselves.</p>`;
+const APX_A=`<p class="apx">Appendix A: Financial information (£m)</p>`+T(['','2022','2023','2024'],[['Revenue','9.6','10.4','9.9'],['Gross profit','3.4','3.5','3.1'],['Operating profit','1.15','0.94','0.52'],['Non-current liabilities','2.5','2.3','2.1'],['Total equity','2.6','2.7','2.6']]);
+const APX_B=`<p class="apx">Appendix B: Factory data</p>`+T(['','2022','2023','2024'],[['Bikes produced','4,100','4,300','4,000'],['Maximum capacity (bikes per year)','6,000','6,000','6,000'],['Labour turnover, production staff (%)','9','12','26'],['Bikes failing final testing (%)','2.1','2.4','3.6']]);
+const APX_C=`<p class="apx">Appendix C: Sales channels, 2024</p>`+T(['','Bike shops','Website'],[['Bikes sold','3,200','800'],['Average retail price (£)','3,440','3,440'],['Amount Ridgeway receives per bike (£)','2,236','3,440'],['Variable cost per bike (£)','1,700','1,700'],['Delivery and online marketing per bike (£)','–','200']]);
+const APX_D=`<p class="apx">Appendix D: Proposed automated assembly line</p>`+T(['','Now','With the new line'],[['Assembly time per bike (hours)','6','3.5'],['Production staff needed at current output','64','40'],['Cost of the line (£m)','–','1.2'],['Expected labour cost saving per year (£m)','–','0.6']])+
+  `<p class="apx" style="margin-top:12px">Installing the line</p>`+T(['Activity','Duration (weeks)','Must follow'],[['A: Order and build equipment','10','–'],['B: Prepare factory floor','4','–'],['C: Install line','6','A and B'],['D: Train staff','3','A'],['E: Test runs','2','C and D']]);
+const APX_E=`<p class="apx">Appendix E: UK e-bike market</p>`+T(['','2022','2023','2024','2025 (forecast)'],[['Market value (£m)','820','850','860','870'],['Share sold online by direct-to-customer brands (%)','18','24','31','37']]);
+const APX_F=`<p class="apx">Appendix F: UK economic forecasts</p>`+T(['','2025','2026','2027'],[['GDP growth (%)','1.0','1.4','1.6'],['Bank of England base rate (%)','4.25','3.75','3.50'],['Inflation (%)','2.8','2.4','2.1']])+`<p style="font-size:.88rem;color:var(--muted);margin:-6px 0 14px">Income elasticity of demand for e-bikes: +1.8</p>`;
+const CASE_OPEN=`<details class="card casebox" open><summary>Ridgeway Cycles Ltd: the case</summary>${CASE_TEXT}</details>`;
+const CASE_BOX=`<details class="card casebox"><summary>Ridgeway Cycles Ltd: the case</summary>${CASE_TEXT}</details>`;
+const Q={
+  1:'Analyse why Ridgeway\'s operating profit margin fell between 2022 and 2024.',
+  2:'Analyse how selling more bikes through its own website could improve Ridgeway\'s operating profit margin.',
+  3:'Using Appendix D, assess whether Ridgeway could have the automated line running within four months of placing the order.',
+  4:'To what extent is the automated line likely to improve Ridgeway\'s competitiveness?',
+  5:'Using Appendices A and C, should Ridgeway invest in the automated line or in growing its website sales? Justify your answer.',
+  6:'To what extent should all UK manufacturers automate their production to compete with cheaper imports?'};
+const QBOX=n=>`<div class="qbox" style="margin-bottom:14px"><span style="color:var(--muted);font-weight:600">Question ${n}.</span> ${Q[n]}</div>`;
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'mcq', title:'How Paper 3 works', blurb:'Marks, timing and what each question needs.', pass:7,
+  teach:`<p>Paper 3 is one case study and six questions, 100 marks in 2 hours. Questions 1 and 2 are worth 12 marks each, questions 3 and 4 are 16 each, question 5 is 20 and question 6 is 24.</p>
+  <p>Throughout this course you will work on one case, <b>Ridgeway Cycles Ltd</b>, which is made up for the course. It is at the top of every stage that uses it. First, make sure you know what each question is asking for.</p>${CASE_BOX}`,
+  items:[
+    {src:'AQA November 2020 · Paper 3 report', prompt:'How many marks are for evaluation (AO4) on the 16, 20 and 24-mark questions?',
+     o:['7, 8 and 9','4, 5 and 6','Half the marks on each','None, because evaluation is only on Paper 1'], a:0,
+     why:'The report says that without a judgement, students "severely" restrict the marks they can get.'},
+    {src:'Based on AQA June 2024 · Paper 3 report', prompt:'Do questions 1 and 2, the 12-mark questions, need a conclusion?',
+     o:['No: they are analysis questions, so use the time to develop the argument','Yes, always','Only if you have time left','Only question 2'], a:0,
+     why:'They test analysis, not evaluation. A conclusion takes time and earns nothing extra.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q2)', prompt:'What approach did the June 2026 examiner show as ideal for a 12-mark question?',
+     o:['One argument, fully developed in the context of the case','Three or four short points','Two sides and a conclusion','A definition followed by two points'], a:0,
+     why:'An answer with one fully developed argument scored 12 out of 12. One with several undeveloped points scored 1.'},
+    {src:'Exam-style · timing', prompt:'The paper is 2 hours for 100 marks, and you need time to read the case. About how long should question 6 (24 marks) take?',
+     o:['About 25 to 30 minutes','About 10 minutes','About an hour','Whatever time is left'], a:0,
+     why:'After 15 to 20 minutes of reading and planning, you have roughly a minute per mark. Question 6 is the last question, so it is the one most often squeezed.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', prompt:'Questions 1 to 5 are about the case business. Where should your context come from?',
+     o:['The case and the appendices: draw sensible conclusions, but don\'t invent facts','Any business you know','Your own assumptions about the business','Last year\'s case study'], a:0,
+     why:'In 2026 students invented shareholders and built arguments on facts that were not in the case.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q6)', prompt:'Question 6 asks about all businesses. What context should you use?',
+     o:['A range of different businesses or situations, not just the case business','Only the case business','No context is needed','One well-known company'], a:0,
+     why:'Answers that only used the case business had their marks capped.'},
+    {src:'AQA June 2026 · Paper 3 report', prompt:'What did the 2026 examiner recommend doing each time you start a new paragraph?',
+     o:['Re-read the question','Write a definition','Bring in a new model','Summarise the case'], a:0,
+     why:'"It is sensible to re-read the question each time you start a new paragraph."'},
+    {src:'AQA June 2026 · Paper 3 report', prompt:'What did weaker answers do on questions 1 and 4 in 2026?',
+     o:['Produced purely theoretical answers, without using the case','Used too much data','Wrote too much','Used too many models'], a:0,
+     why:'The examiner said weaker responses "at times, produce purely theoretical answers, especially to questions 1 and 4".'},
+    {src:'AQA June 2025 · Paper 3 report', prompt:'On a 16-mark question, is a conclusion that just says which side is stronger enough?',
+     o:['No: it needs to weigh the arguments and explain why one outweighs the other','Yes','Only on question 5','Conclusions are not marked'], a:0,
+     why:'The 2025 examiner said: "Too many simply decided which argument was stronger and restated this".'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'mcq', title:'Read the case', blurb:'Find what matters, and don\'t add what isn\'t there.', pass:6,
+  teach:`<p>Read the case below carefully. Every question in this stage is about what it does and does not say. On the June 2026 Paper 3, the worst-answered question went wrong because students built arguments on facts that were not in the case.</p>${CASE_BOX}`,
+  items:[
+    {src:'Exam-style · Ridgeway Cycles', table:CASE_OPEN, prompt:'Who are Ridgeway\'s main customers?',
+     o:['Independent bike shops, which buy bikes to resell, plus some individuals through the website','Members of the public in its own shops','Large supermarkets','Overseas distributors'], a:0,
+     why:'Most sales are B2B. That changes the arguments: bike shops care about reliability, margin and delivery.'},
+    {src:'Exam-style · Ridgeway Cycles', table:CASE_OPEN, prompt:'Why does Ridgeway make more on each bike sold through its website?',
+     o:['A bike shop keeps 35% of the retail price, which Ridgeway keeps itself on website sales','Website customers pay a higher price','Website bikes are cheaper to make','There is no difference'], a:0,
+     why:'The price is the same, but Ridgeway receives all of it.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', table:CASE_OPEN, prompt:'A student writes: "Ridgeway must keep its shareholders on the stock exchange happy." Is this supported by the case?',
+     o:['No: it is a private limited company run by the Sandhus, and its shares are not traded publicly','Yes','Yes, because it has a bank loan','Only after 2025'], a:0,
+     why:'This is the kind of invented fact that cost marks in 2026.'},
+    {src:'Exam-style · Ridgeway Cycles', table:CASE_OPEN, prompt:'A question asks about labour turnover. Which fact from the case matters most?',
+     o:['Production staff are paid hourly, and some have left for a nearby warehouse that pays more','Bikes sell for £2,400 to £4,500','Frames come from Taiwan','The business started in 2014'], a:0,
+     why:'It gives the likely cause, which is where the chain should start.'},
+    {src:'Exam-style · Ridgeway Cycles', table:CASE_OPEN, prompt:'Why might the bank loan limit Ridgeway\'s choices?',
+     o:['The bank will review the loan terms if gearing goes above 50%, so more borrowing could trigger that','Banks do not lend to manufacturers','The loan has to be repaid this year','Ridgeway has no bank loan'], a:0,
+     why:'Any option funded by more debt has to be checked against that 50% line.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', table:CASE_OPEN, prompt:'How does the case describe the market since 2023?',
+     o:['Growth has slowed, and cheaper imported e-bikes sold online have taken market share','The market has collapsed','Demand has doubled','Bike shops are closing down'], a:0,
+     why:'Keep it in proportion. The 2026 examiner credited answers that avoided exaggeration.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', table:CASE_OPEN, prompt:'Which statement goes beyond what the case says?',
+     o:['The Sandhus are planning to sell the business','Amrit wants to invest in automation','Kiran prefers to grow website sales','The founders make most decisions themselves'], a:0,
+     why:'Nothing in the case suggests a sale.'},
+    {src:'Exam-style · Ridgeway Cycles', table:CASE_OPEN, prompt:'How does Ridgeway compete?',
+     o:['On quality and reliability rather than price','As the cheapest e-bike in the UK','Only on speed of delivery','The case does not say'], a:0,
+     why:'In Porter\'s terms this is differentiation, which matters when judging any plan to cut costs.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'calc', title:'Work out the appendices', blurb:'The figures you will need for the longer questions.', pass:6,
+  teach:`<p>The best Paper 3 answers do calculations from the appendices and then use the answers in their arguments. On the June 2025 Paper 3, the examiner expected students to calculate how long the project would take, and said answers without "accurate use of Appendix C data" were unlikely to reach Level 3 or 4.</p>
+  <p>Work out each figure from Ridgeway's appendices. Give your answer as a number.</p>`,
+  items:[
+    {src:'Exam-style · Appendix A', table:APX_A, prompt:'Calculate Ridgeway\'s operating profit margin in 2024, to two decimal places.', unit:'%', ans:5.25, tol:0.06,
+     traps:[{v:31.31,m:'That is the gross profit margin.'},{v:11.98,m:'That is 2022.'}],
+     work:'£0.52m ÷ £9.9m × 100 = 5.25%.', use:'In 2022 it was about 12%. Saying the margin more than halved is much stronger than "profit fell".'},
+    {src:'Exam-style · Appendix A', table:APX_A, prompt:'By how many percentage points did the operating profit margin fall between 2022 and 2024, to one decimal place?', unit:'percentage points', ans:6.7, tol:0.1,
+     work:'2022: 1.15 ÷ 9.6 × 100 = 12.0%. 2024: 5.3%. 12.0 − 5.3 = 6.7 points.', use:'This is the size of the problem that question 1 asks you to explain.'},
+    {src:'Exam-style · Appendix A', table:APX_A, prompt:'Calculate Ridgeway\'s gearing in 2024, to one decimal place.', unit:'%', ans:44.7, tol:0.1,
+     traps:[{v:80.8,m:'You divided by total equity. Gearing = non-current liabilities ÷ capital employed (equity + non-current liabilities).'}],
+     work:'Capital employed = 2.6 + 2.1 = £4.7m. 2.1 ÷ 4.7 × 100 = 44.7%.', use:'It is below the bank\'s 50% line, but not by much.'},
+    {src:'Exam-style · Appendices A and D', table:APX_A, prompt:'If the £1.2m line were paid for entirely with a new loan, what would gearing become, to one decimal place?', unit:'%', ans:55.9, tol:0.1,
+     traps:[{v:70.2,m:'Capital employed rises too: the new loan is part of it.'}],
+     work:'Non-current liabilities = 2.1 + 1.2 = £3.3m. Capital employed = 4.7 + 1.2 = £5.9m. 3.3 ÷ 5.9 × 100 = 55.9%.', use:'Above 50%, so the bank would review the loan terms. That is a strong point for question 5.'},
+    {src:'Exam-style · Appendix B', table:APX_B, prompt:'Calculate capacity utilisation in 2024, to one decimal place.', unit:'%', ans:66.7, tol:0.1,
+     work:'4,000 ÷ 6,000 × 100 = 66.7%.', use:'A third of the factory is idle, so its fixed costs are spread over fewer bikes.'},
+    {src:'Exam-style · Appendix C', table:APX_C, prompt:'Calculate the contribution per bike sold through the website.', pre:'£', ans:1540, tol:0,
+     traps:[{v:1740,m:'Remember the £200 of delivery and online marketing.'},{v:536,m:'That is the contribution per bike through bike shops.'}],
+     work:'£3,440 − £1,700 − £200 = £1,540.', use:'Through a bike shop it is £2,236 − £1,700 = £536. Each bike moved online adds about £1,000.'},
+    {src:'Based on AQA June 2025 · Paper 3 report (Q3)', table:APX_D, prompt:'How long is the critical path for installing the new line?', unit:'weeks', ans:18, tol:0,
+     traps:[{v:25,m:'You added every activity. Some run at the same time.'},{v:16,m:'C can only start once A and B are both finished, then E needs C and D.'}],
+     work:'A (10) → C (6) → E (2) = 18 weeks. B and D run alongside.', use:'Four months is about 17 weeks, so this is just over. That is the key fact for question 3.'},
+    {src:'Exam-style · Appendix D', table:APX_D, prompt:'What is the payback period of the automated line, using the expected labour saving?', unit:'years', ans:2, tol:0,
+     work:'£1.2m ÷ £0.6m a year = 2 years.', use:'Payback assumes the saving actually happens. Fewer staff only saves money if the 24 posts really go.'}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'weak', title:'The 12-mark questions', blurb:'One deep argument. Find the step that would lose marks.', pass:4,
+  teach:`<p>Questions 1 and 2 reward one argument, developed step by step in the context of the case, using the appendix data. Each chain below has one step that the reports say loses marks: going past the end point, inventing a fact, a generic point, misreading the data, or a model used wrongly.</p>
+  <p>The June 2026 report said some students "pushed arguments too far", going past customer satisfaction, the end point in the question, to revenue and profit.</p>${CASE_BOX}${APX_A}${APX_B}${APX_C}`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 3 report', q:Q[2],
+     s:['On its website Ridgeway keeps the full £3,440, instead of the £2,236 it receives through a bike shop.','Even after £200 of delivery and marketing, each website bike contributes £1,540 compared with £536.','So each bike moved from shops to the website adds about £1,000 towards fixed costs, without adding to them, so operating profit rises faster than revenue.','The extra profit can then be paid to the Sandhus as dividends, which will encourage them to grow the business.'],
+     bad:3, problem:'The question ends at the operating profit margin. Going on to dividends wastes time, which is what the 2026 examiner described.',
+     fixes:['Therefore selling more through its own website could improve Ridgeway\'s operating profit margin, because each sale keeps far more of the price.','The extra profit could be reinvested in new products.','This would also make Ridgeway more competitive in the long run.'], fix:0},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:Q[1],
+     s:['Labour turnover among production staff rose from 9% to 26%.','New staff are less experienced, so more bikes fail final testing: the failure rate rose from 2.1% to 3.6%.','Ridgeway also had to pay its new shareholders higher dividends, which reduced its margin.','Each faulty bike has to be reworked or scrapped, which adds cost without adding revenue.'],
+     bad:2, problem:'There are no new shareholders in the case, and dividends are paid out of profit, so they do not affect operating profit.',
+     fixes:['Recruiting and training replacements adds to operating expenses as well.','Dividends are always paid before operating profit is calculated.','Shareholders may have wanted Ridgeway to grow faster.'], fix:0},
+    {src:'AQA June 2026 · Paper 3 report', q:'Analyse how the automated line could improve Ridgeway\'s competitiveness.',
+     s:['The line would cut assembly time from 6 hours to 3.5 hours per bike.','Automation generally improves efficiency in businesses.','With fewer labour hours per bike, Ridgeway needs 40 production staff instead of 64, saving about £0.6m a year.','Lower costs per bike let it hold its prices against cheaper imports while protecting its margin.'],
+     bad:1, problem:'A purely theoretical step that could be about any business. The 2026 examiner found these especially on questions 1 and 4.',
+     fixes:['That is a cut of over 40% in labour time for every bike assembled.','Machines are better than people.','Many manufacturers use automation.'], fix:0},
+    {src:'Based on AQA June 2025 · Paper 3 report (Q3)', q:Q[1],
+     s:['Ridgeway\'s revenue fell every year from 2022 to 2024.','At the same time its operating expenses rose, from £2.25m to £2.58m.','Some of this is likely to be the cost of marketing the website and recruiting replacement staff.','With costs rising faster than revenue, operating profit fell from £1.15m to £0.52m, so the margin fell from about 12% to about 5%.'],
+     bad:0, problem:'This misreads Appendix A. Revenue rose to £10.4m in 2023 and was still higher in 2024 than in 2022. In 2025 the examiner showed an answer whose arguments were flawed because it misread the appendix.',
+     fixes:['Ridgeway\'s revenue rose to £10.4m in 2023 before falling back to £9.9m, so it was only slightly higher in 2024 than in 2022.','Ridgeway\'s revenue doubled between 2022 and 2024.','Ridgeway has no revenue data in the appendices.'], fix:0},
+    {src:'Exam-style · Handy\'s cultures', q:'Analyse how the founders\' informal way of running the business might affect labour turnover.',
+     s:['The Sandhus make most decisions themselves, which Handy would call a role culture.','Production staff have little say over shifts or how the work is organised.','Staff who feel they have no voice have less reason to stay when a nearby warehouse pays more.','So more of them leave, adding to labour turnover that has already reached 26%.'],
+     bad:0, problem:'Decisions made by a few people at the centre is a power culture. Role culture is built on rules and procedures.',
+     fixes:['The Sandhus make most decisions themselves, which Handy would call a power culture.','The Sandhus make most decisions themselves, which Handy would call a task culture.','The Sandhus use a person culture.'], fix:0}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'build', title:'Build a 12-mark argument', blurb:'Order the steps from the case and the data.', pass:1,
+  teach:`<p>Now build a full 12-mark argument. Each step comes from Ridgeway's case or appendices, with a reason between each one. One card is a trap: it is true, but it is not part of this argument.</p>
+  <p>Tap cards to place them in order, and tap a placed card to send it back. You get two checks. To score, it must be right first time.</p>`,
+  items:[
+    {src:'Exam-style · Question 2', q:Q[2], table:APX_C,
+     start:'Ridgeway moves more of its sales from bike shops to its own website', end:'Ridgeway\'s operating profit margin rises',
+     cards:[
+      {id:'A',t:'It keeps the full £3,440, instead of the £2,236 left after the bike shop\'s 35%',w:'Why? There is no retailer taking a share of the price.'},
+      {id:'B',t:'After £200 of delivery and marketing, each website bike contributes £1,540 instead of £536',w:'Why? The variable cost of £1,700 is the same either way.'},
+      {id:'C',t:'Each bike switched adds about £1,000 of contribution, while fixed costs stay the same',w:'Why? The factory and staff cost the same whichever way the bike is sold.'},
+      {id:'D',t:'Operating profit rises faster than revenue',w:'Why? Revenue per bike rises by about 54%, but contribution nearly triples.'}],
+     decoy:{id:'E',t:'Bike shops may stop stocking Ridgeway if it undercuts them online',w:'Trap: a real risk, but it is the other side of the argument. A 12-mark answer needs one developed argument.'},
+     order:['A','B','C','D']},
+    {src:'Exam-style · Question 1', q:Q[1], table:APX_B,
+     start:'Labour turnover among production staff rises from 9% to 26%', end:'Ridgeway\'s operating profit margin falls',
+     cards:[
+      {id:'A',t:'About 17 of the 64 production staff are new each year and still learning the job',w:'Why? 26% of 64 is about 17 people.'},
+      {id:'B',t:'More bikes fail final testing: the rate rose from 2.1% to 3.6%',w:'Why? Inexperienced staff make more assembly mistakes.'},
+      {id:'C',t:'Faulty bikes are reworked or scrapped, adding cost without adding revenue',w:'Why? The extra work and parts have to be paid for.'},
+      {id:'D',t:'Cost per bike sold rises, so less of each £1 of revenue is left as operating profit',w:'Why? Costs rise while prices stay the same.'}],
+     decoy:{id:'E',t:'The automated line would cut the staff needed to 40',w:'Trap: a plan for the future, not a reason the margin fell.'},
+     order:['A','B','C','D']}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'mcq', title:'The 16-mark questions', blurb:'Use the appendix, judge, and keep new points out of the conclusion.', pass:6,
+  teach:`<p>Questions 3 and 4 need analysis on both sides and a judgement, with 7 of the 16 marks for evaluation. Question 3 usually comes with an appendix that has to be used accurately. In 2025 the examiner expected students to calculate how long the project would take.</p>
+  <p>Use Appendices D and F for this stage.</p>${APX_D}${APX_F}`,
+  items:[
+    {src:'Based on AQA June 2025 · Paper 3 report (Q3)', table:APX_D, prompt:'Question 3: '+Q[3]+' What does the network tell you?',
+     o:['It is just over: the critical path is 18 weeks, about 4.1 months, so it can only be done in four months if A, C or E is shortened','Yes, easily, as the longest activity is 10 weeks','No, it will take 25 weeks','The appendix cannot answer this'], a:0,
+     why:'A → C → E = 18 weeks. Four months is about 17 weeks. The calculation gives you a precise, balanced judgement.'},
+    {src:'Exam-style · Appendix D', table:APX_D, prompt:'Which activity could be delayed without delaying the whole project?',
+     o:['B, preparing the factory floor, which has 6 weeks of float','A, ordering the equipment','C, installing the line','E, the test runs'], a:0,
+     why:'C cannot start until A finishes at week 10, so B (4 weeks) can slip by up to 6. D has 3 weeks of float.'},
+    {src:'Exam-style · Question 3', table:APX_D, prompt:'Which factor from the case could make the four-month target even harder?',
+     o:['Labour turnover of 26%, as staff being trained in activity D may leave and need replacing','Bikes are sold through bike shops','The Sandhus are siblings','Frames are made in Taiwan'], a:0,
+     why:'Using the wider case alongside the network makes the judgement more realistic.'},
+    {src:'Exam-style · Question 4', prompt:'Question 4: '+Q[4]+' What does the answer most depend on?',
+     o:['Whether Ridgeway can cut costs without losing the quality and reliability its customers pay for','Whether the Sandhus like machines','How many weeks installation takes','Whether the line is automated'], a:0,
+     why:'Ridgeway competes on quality, not price. Automation helps if it keeps the quality and frees money to compete. It hurts if the quality slips.'},
+    {src:'AQA June 2026 · Paper 3 report', prompt:'A student ends their question 4 answer: "Also, interest rates may fall, which would help Ridgeway." What is the problem?',
+     o:['It adds a new issue in the conclusion, which the 2026 examiner called "a bad idea"','Nothing','It is too short','It should be in the introduction'], a:0,
+     why:'The conclusion should weigh the arguments already made, not add new ones.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q4)', table:APX_F, prompt:'"To what extent are the economic forecasts in Appendix F positive for Ridgeway?" GDP growth of 1.4% is forecast for 2026. With income elasticity of +1.8, what might happen to demand?',
+     o:['It could rise by about 2.5%, faster than incomes, because e-bikes are income elastic','It would fall','It would not change','It would rise by exactly 1.4%'], a:0,
+     why:'1.8 × 1.4 = 2.5%. In 2026 the stronger answers used the income elasticity to judge how big the effect would be.'},
+    {src:'AQA June 2026 · Paper 3 report (Q4)', table:APX_F, prompt:'Same question. Which line should you not take?',
+     o:['The forecasts may be wrong, so they cannot be relied on','Falling interest rates cut the cost of Ridgeway\'s loan','Rising incomes increase demand for e-bikes','Rivals face the same economic conditions'], a:0,
+     why:'The question is about these forecasts. The examiner said questioning their accuracy was "not considered to be a valid response".'},
+    {src:'AQA June 2026 · Paper 3 report (Q4)', prompt:'What did the examiner say marked out the best answers on the forecasts question?',
+     o:['Understanding that the economy affects all UK businesses, including rivals, not just the case business','Listing each forecast in turn','Questioning the data','Writing more paragraphs'], a:0,
+     why:'"Above all else", the best answers saw that rivals would face the same costs and benefits.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'drift', title:'The 20-mark question', blurb:'Both appendices, numbers that add up, and no exaggeration.', pass:6,
+  labels:['Supported and in proportion','Overstated or unsupported'], showLabel:'A sentence from a student\'s answer:',
+  teach:`<p>Question 5 is the biggest decision question in the case, with 8 of its 20 marks for evaluation. On the June 2026 Paper 3, answers that used only one of the two appendices named in the question were capped, and the examiner credited answers that kept problems in proportion rather than treating them as an "existential crisis".</p>
+  <p>Question 5: ${Q[5]}</p>${APX_A}${APX_C}`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:Q[5], ok:false,
+     text:'With operating profit down to £0.52m, Ridgeway is close to collapse, so it must act now.',
+     why:'It is still profitable, and its revenue has held up. Exaggerating weakens the judgement.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:Q[5], ok:true,
+     text:'Operating profit has more than halved, from £1.15m to £0.52m, so whichever option is chosen needs to improve the margin, not just sales.',
+     why:'Accurate, and it uses the data to set the test for both options.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:Q[5], ok:false,
+     text:'The website option is clearly better because it makes more money.',
+     why:'An assertion. How much more, compared with what?'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:Q[5], ok:true,
+     text:'Each bike moved online adds about £1,000 of contribution, so switching 500 bikes would add around £0.5m, close to the line\'s £0.6m saving but without the £1.2m outlay.',
+     why:'It uses Appendix C to compare the two options in the same units.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:Q[5], ok:false,
+     text:'Borrowing £1.2m for the line would push gearing so high that the bank would close the business down.',
+     why:'Gearing would rise to about 56%. The case says the bank would review the loan terms, not close the business.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:Q[5], ok:true,
+     text:'If the line were paid for with a new loan, gearing would rise from about 45% to about 56%, above the 50% at which the bank reviews its terms, so the cost of borrowing could rise.',
+     why:'A calculation, set against the condition in the case, with a proportionate consequence.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:Q[5], ok:false,
+     text:'The answer only needs Appendix A, because it has all the financial data.',
+     why:'The question names Appendices A and C. In 2026, answers using only one of the two named appendices were capped.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:Q[5], ok:false,
+     text:'The line saves £0.6m a year, so Ridgeway\'s cash balance will be £0.6m higher by the end of the first year.',
+     why:'It costs £1.2m up front, so cash falls in year one. This is the cash flow and profit confusion the 2026 examiner reported.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'mcq', title:'The 24-mark question', blurb:'All businesses: contrast, challenge "always", judge.', pass:5,
+  teach:`<p>Question 6 is about businesses in general, not just the case business. You need different types of business or situation to show where the statement holds and where it does not. In 2026 the examiner said application on question 6 "was less clear, despite the question itself offering clear opportunities to use scenarios".</p>
+  <p>Question 6: ${Q[6]}</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 3 report (Q6)', prompt:'Which plan answers "all UK manufacturers"?',
+     o:['Contrast a high-volume maker of standard products, such as a drinks bottler, with a small maker of made-to-order goods, such as a furniture workshop','Write only about Ridgeway','List the pros and cons of automation','Write about one famous car maker'], a:0,
+     why:'A contrast shows when the statement holds and when it doesn\'t.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q6)', prompt:'Where can Ridgeway appear in your answer to question 6?',
+     o:['As one example among several, not the whole answer','It must be the whole answer','Not at all','Only in the conclusion'], a:0,
+     why:'Using the case business is fine, but answers that only used it were capped.'},
+    {src:'Exam-style · Question 6', prompt:'What most decides whether automation helps a manufacturer compete with imports?',
+     o:['Whether its output is large and standard enough to spread the cost of the machines over many units','Whether it is based in the UK','Whether it has a website','How long it has been trading'], a:0,
+     why:'This is the "depends on" that runs through the whole essay.'},
+    {src:'Exam-style · Question 6', prompt:'A student writes: "Automation always lowers unit costs." What is the best challenge?',
+     o:['At low volumes the cost of the machines is spread over few units, so cost per unit may rise','Machines are expensive','Automation is modern','Workers do not like machines'], a:0,
+     why:'Challenging "always" with a reason is evaluation.'},
+    {src:'Exam-style · Question 6', prompt:'Which example supports the case for automation?',
+     o:['A car parts maker producing hundreds of thousands of identical components a year','A tailor making made-to-measure suits','A pottery selling hand-made pieces','A furniture maker producing one-off commissions'], a:0,
+     why:'High volume, standard products, where labour is a big share of cost.'},
+    {src:'Exam-style · Question 6', prompt:'Do UK manufacturers have to compete on price with cheaper imports?',
+     o:['No: some compete on quality, design or service, as Ridgeway does, where automation matters less','Yes, always','Only large ones','Imports are always cheaper, so it makes no difference'], a:0,
+     why:'Porter\'s generic strategies: differentiation is the alternative to cost leadership.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q6)', prompt:'What should the conclusion to question 6 do?',
+     o:['Say which kinds of manufacturer should automate and which should not, and what decides it','Say yes for all manufacturers','Summarise each paragraph','Recommend that Ridgeway buys the line'], a:0,
+     why:'A judgement showing where the statement holds and where it does not is what the "all" question needs.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'timed', title:'Against the clock', blurb:'Twelve mixed questions, 35 seconds each.', pass:10, poolFrom:[1,2,6,7,8], count:12, seconds:35,
+  teach:`<p>Twelve questions drawn at random from stages 1, 2, 6, 7 and 8, with 35 seconds each. On Paper 3 you have to make these decisions quickly while you plan.</p>
+  <p>You get a different set each time.</p>${CASE_BOX}`,
+  items:[]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'write', title:'Write question 1', blurb:'A full 12-mark answer on Ridgeway, one developed argument.', pass:1,
+  teach:`<p>Now write question 1 in full. Aim for about 12 to 15 minutes, which is roughly what you would have in the exam.</p>
+  <p>Write <b>one</b> argument, developed step by step, using the case and at least two pieces of data from the appendices, with something worked out. There is no need for a counter-argument or a conclusion. Finish with a sentence starting "Therefore" that uses the words of the question.</p>
+  <p>Write your start point and end point first. The answer box unlocks when you have.</p>`,
+  items:[{src:'Exam-style · Ridgeway Cycles · Question 1', w:{
+    intro:`${CASE_BOX}${APX_A}${APX_B}${APX_C}<div class="qbox">${Q[1]} <span style="color:var(--muted);font-weight:400">(12 marks)</span></div>`,
+    plan:[
+      {id:'S',label:'Start point',cls:'s',ph:'What caused the fall?',ok:v=>/(turnover|staff|defect|fail|test|capacity|utilis|idle|website|online|marketing|import|price|cost|expense|wage|recruit|gross)/.test(v),hint:'Check your start point: which cause from the case are you starting from?'},
+      {id:'E',label:'End point',cls:'e',ph:'Where must the chain finish?',ok:v=>/margin/.test(v),hint:'Check your end point. The question is about the margin, not just profit.'}],
+    planOk:'Good. Keep both in front of you while you write.',
+    checks:[
+      {k:'data',label:'Uses two different pieces of data from the appendices',test:x=>{const l=x.low;
+        const g=[/(\b12(\.0)?\s?%|11\.98|5\.25|5\.3\s?%|5\.2\s?%)/,/(\b9\s?%|\b26\s?%)/,/(2\.1\s?%|3\.6\s?%)/,/(66\.7|4,?000|6,?000)/,/(2\.25|2\.58)/,/(£?3\.4m|£?3\.1m|35\.4|31\.3)/,/(1\.15|0\.52)/,/(2,?236|3,?440|1,?540|\b536\b)/];
+        return g.filter(r=>r.test(l)).length>=2;}},
+      {k:'calc',label:'Works something out (margin, utilisation, staff replaced, change in costs...)',test:x=>/(5\.25|5\.3\s?%|5\.2\s?%|6\.7|66\.7|one third|a third|\b17 (new |staff|people|workers|of)|2\.58|0\.33|£?330,?000|31\.3|35\.4|1\.5 (percentage )?points|more than half|55\s?%|54\.8|halved)/.test(x.low)},
+      {k:'context',label:'Uses Ridgeway\'s situation (bikes, testing, staff, bike shops...)',test:x=>/(ridgeway|bike)/.test(x.low)},
+      {k:'links',label:'At least six linking words between steps',test:x=>(x.low.match(/\b(because|so|therefore|this means|which means|as a result|meaning|leads to|resulting in|consequently|since|as)\b/g)||[]).length>=6},
+      {k:'focus',label:'Keeps coming back to the margin',test:x=>(x.low.match(/margin/g)||[]).length>=2},
+      {k:'end',label:'Last sentence starts "Therefore" and answers the question',test:x=>/^therefore/.test(x.last)&&/margin/.test(x.last)}],
+    warn:x=>/(dividend|shareholder)/.test(x.low)?{msg:'Check the case. Ridgeway is a Ltd run by the Sandhus, so be careful about bringing in shareholders.'}
+      :/\b(however|on the other hand|in conclusion|overall,|to conclude)\b/.test(x.low)?{msg:'This looks like a counter-argument or conclusion. A 12-mark answer needs one developed argument.',block:true}
+      :x.words>380?{msg:'This is long for 12 marks. One argument, developed well, is enough.'}:null,
+    minCompare:80, minAi:100, finishLabel:'Finish the course',
+    model:`<span class="src">One way to write it</span><p><span class="hl-s">One reason Ridgeway's operating profit margin fell is the rise in labour turnover</span>, which went from <span class="hl-d">9% in 2022 to 26% in 2024</span>. With 64 production staff, <span class="hl-d">that means about 17 people a year are new</span> and still learning how to assemble and test a high-value e-bike. <span class="hl-w">Because</span> new staff make more mistakes, more bikes fail the final test: <span class="hl-d">the failure rate rose from 2.1% to 3.6%, an increase of about 70%</span>. Each bike that fails has to be stripped down and reworked, or its parts scrapped, <span class="hl-w">so</span> Ridgeway pays for extra labour and materials that do not lead to an extra sale. On top of that, every leaver has to be replaced, <span class="hl-w">which means</span> more spending on recruitment and training, adding to operating expenses that rose <span class="hl-d">from £2.25m to £2.58m</span>. <span class="hl-w">As a result</span>, the cost of each bike Ridgeway sells has gone up, while it cannot easily raise prices with cheaper imports on sale online. <span class="hl-w">This means</span> less of each pound of revenue is left as operating profit, and the margin fell <span class="hl-d">from about 12% to 5.25%</span>. <span class="hl-w">Therefore</span> rising labour turnover helps explain why <span class="hl-e">Ridgeway's operating profit margin fell between 2022 and 2024</span>, because it pushed up the cost of every bike while the price stayed the same.</p>
+      <div class="key"><span><span class="hl-s">teal</span> start point</span><span><span class="hl-e">coral</span> end point</span><span><span class="hl-w">purple</span> links</span><span><span class="hl-d">underlined</span> data, worked out</span></div>
+      <p style="margin-top:14px;font-size:.9rem;color:var(--muted)">One cause, followed all the way to the margin. Other causes, such as spare capacity or price competition, could each make a full answer on their own.</p>`,
+    ai:`You are an experienced AQA A-level Business teacher giving feedback on a student's answer to a Paper 3 12-mark question: "Analyse why Ridgeway's operating profit margin fell between 2022 and 2024."
+Case (made up for practice): Ridgeway Cycles Ltd, a private limited company run by siblings Amrit and Kiran Sandhu, assembles e-bikes (£2,400–£4,500) in Swindon, sold mainly through 140 independent bike shops (which keep 35% of the retail price) and since 2022 through its own website. Competes on quality, not price. Cheaper imported e-bikes sold online have taken share since 2023. 64 production staff paid hourly; some left for a nearby warehouse paying more. Decisions are made informally by the founders.
+Data 2022 / 2023 / 2024: revenue £9.6m / £10.4m / £9.9m; gross profit £3.4m / £3.5m / £3.1m; operating profit £1.15m / £0.94m / £0.52m (margin about 12.0% / 9.0% / 5.25%); bikes produced 4,100 / 4,300 / 4,000 with capacity 6,000 (utilisation 66.7% in 2024); labour turnover 9% / 12% / 26%; bikes failing final testing 2.1% / 2.4% / 3.6%. 2024 channels: bike shops 3,200 bikes, Ridgeway receives £2,236 each; website 800 bikes at £3,440 with £200 delivery and marketing; variable cost £1,700 per bike.
+Rules for this question: on Paper 3 12-mark questions, one fully developed argument in context is the ideal approach (an AQA examiner showed a one-argument answer scoring 12/12), so never tell the student to add a second argument, a counter-argument or a conclusion. Focus on: whether every step is specific to Ridgeway and uses the case; whether they use at least two pieces of appendix data and work something out; whether they read the data correctly (revenue rose in 2023 and was slightly higher in 2024 than 2022; there are no outside shareholders); whether the chain ends on the operating profit MARGIN, not just profit; whether they avoid going past the end point; and whether the final "Therefore" sentence uses the question's words.
+Do not give a mark or level. Write in plain British English, as a teacher speaking to a Year 13 student. No headings, no bullet symbols other than simple dashes, no emoji. Give: one sentence on what works; then two or three improvements, each quoting a short phrase they wrote ("You wrote: ...") and showing a better version ("You could write: ..."). Keep it under 230 words.`,
+    doneTitle:'Course complete',
+    doneText:'You have worked through a full Paper 3 case question by question. In the exam, read the case once for the story and once for the numbers, plan each answer from its end point, and keep a minute per mark in mind.'
+  }}]}
+];
+
+window.COURSE={
+  id:'paper3', key:'paper3_course_v1', offset:600, short:'Paper 3',
+  name:'Paper 3 Course',
+  hero:{kicker:'Paper 3 · AQA A-level Business',
+    title:'One case, <em>six questions</em>',
+    lede:'Paper 3 brings everything together: reading a case, using the appendices, one deep argument on the 12-markers, judgement on the longer questions, and a range of businesses on question 6. This course works through one case study question by question, using what the Paper 3 examiner reports say. Pass each stage to unlock the next.'},
+  stages:STAGES
+};
+</script>
+<style>
+.casebox{margin:14px 0 18px}
+.casebox summary{cursor:pointer;font-weight:600}
+.casebox p{margin-top:10px;font-size:.94rem}
+.apx{font-weight:600;font-size:.88rem;margin:6px 0 6px}
+</style>
+<script src="course-engine.js"></script>
+</body>
+</html>

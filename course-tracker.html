@@ -88,7 +88,7 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
   <div class="grid2">
     <div>
       <div class="card">
-        <div class="filters"><select id="course" aria-label="Choose course"><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option><option value="400">Application Course</option><option value="500">Models Course</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
+        <div class="filters"><select id="course" aria-label="Choose course"><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option><option value="400">Application Course</option><option value="500">Models Course</option><option value="600">Paper 3 Course</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
         <div class="tablewrap"><table id="tbl"></table></div>
         <div class="legend"><span><span class="cell p">8/10</span> passed (best score)</span><span><span class="cell a">5/10</span> tried, not passed yet</span><span>Click a name to see attempts and written answers</span></div>
       </div>
@@ -112,10 +112,11 @@ const COURSES={
   200:{name:'Calculations Course',stages:[[1,'Percentages',6],[2,'Reverse percentages',6],[3,'Break-even',6],[4,'Profit and margins',6],[5,'Ratios',6],[6,'Investment appraisal',6],[7,'People and operations',6],[8,'Markets and elasticity',6],[9,'What the number means',8],[10,'Final timed round',10]]},
   300:{name:'Concept Confusions Course',stages:[[1,'Cash and profit',10],[2,'Numbers that look alike',11],[3,'Ownership and growth',9],[4,'People and pay',10],[5,'Use the theory accurately',6],[6,'Making and selling',9],[7,'Strategy words',9],[8,'Outside the business',9],[9,'Read the key word',8],[10,'Against the clock',15]]},
   400:{name:'Application Course',stages:[[1,'Applied or generic?',10],[2,'Pick the right data',8],[3,'Quote it or use it?',9],[4,'Work it out',7],[5,'What kind of business?',7],[6,'Stick to the case',8],[7,'All businesses',8],[8,'Build it with the data',3],[9,'Against the clock',12],[10,'Use the data',1]]},
-  500:{name:'Models Course',stages:[[1,'Which model fits?',11],[2,'Get the mechanics right',14],[3,'Herzberg, Maslow and Taylor',9],[4,'Use it, don\'t just name it',10],[5,'Spot the misuse',5],[6,'Strategy models in context',10],[7,'Build it with a model',3],[8,'Evaluate with the model',8],[9,'Against the clock',12],[10,'Use a model in an answer',1]]}
+  500:{name:'Models Course',stages:[[1,'Which model fits?',11],[2,'Get the mechanics right',14],[3,'Herzberg, Maslow and Taylor',9],[4,'Use it, don\'t just name it',10],[5,'Spot the misuse',5],[6,'Strategy models in context',10],[7,'Build it with a model',3],[8,'Evaluate with the model',8],[9,'Against the clock',12],[10,'Use a model in an answer',1]]},
+  600:{name:'Paper 3 Course',stages:[[1,'How Paper 3 works',9],[2,'Read the case',8],[3,'Work out the appendices',8],[4,'The 12-mark questions',5],[5,'Build a 12-mark argument',2],[6,'The 16-mark questions',8],[7,'The 20-mark question',8],[8,'The 24-mark question',7],[9,'Against the clock',12],[10,'Write question 1',1]]}
 };
 let OFF=0,STAGES=COURSES[0].stages,WRITE_STAGE=10;
-/* rows in the sheet: stage 1-10 = Start/End, 101-110 = Judgement, 201-210 = Calculations, 301-310 = Concepts, 401-410 = Application, 501-510 = Models */
+/* rows in the sheet: stage 1-10 = Start/End, 101-110 = Judgement, 201-210 = Calculations, 301-310 = Concepts, 401-410 = Application, 501-510 = Models, 601-610 = Paper 3 */
 const courseOf=st=>st>=100?Math.floor(st/100)*100:0;
 function rowsFor(){return data.rows.filter(r=>courseOf(r.stage)===OFF).map(r=>Object.assign({},r,{stage:r.stage-OFF}));}
 const $=s=>document.querySelector(s);
