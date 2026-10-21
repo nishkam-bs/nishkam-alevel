@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Concept Confusions Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   CONCEPT CONFUSIONS COURSE (AO1)
+   Every item is built on a mix-up named in an AQA examiner report,
+   Papers 1, 2 and 3, 2017 to 2026. "Based on" means the confusion comes
+   from the report; the wording of every item is our own.
+   Stage numbers are stored in the tracking sheet as 300 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'drift', title:'Cash and profit', blurb:'Cash flow, profit, share prices and dividends are not the same thing.', pass:8,
+  labels:TF, showLabel:'True or false?',
+  teach:`<p>Profit is revenue minus costs over a period. Cash flow is the timing of money coming in and going out. A sale on credit adds to profit now but brings in cash later.</p>
+  <p>On the June 2026 Paper 3, students used the two words as if they meant the same thing, and their analysis fell apart as a result. Share prices cause a similar problem: the November 2020 Paper 3 report found many students thought a rise in share price gives the business more money.</p>
+  <p>Decide whether each statement is true or false.</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:'A furniture maker sells £50,000 of tables to a hotel chain on 90 days\' credit.', ok:false,
+     text:'This sale increases the business\'s profit and its cash balance this month.',
+     why:'It counts towards revenue and profit when the sale is made, but the cash does not arrive for 90 days.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:'A business has made a profit every month this year.', ok:true,
+     text:'It can still run out of cash.',
+     why:'If customers pay late, stock builds up or a large asset is bought, more cash can go out than comes in even though revenue is above costs.'},
+    {src:'Based on AQA June 2026 · Paper 1 report (Q19)', q:'A business starts using debt factoring for the money its customers owe.', ok:true,
+     text:'This improves its cash flow straight away but reduces its profit.',
+     why:'The factor pays most of the money now, so cash arrives sooner. The factor keeps a fee, so the business ends up with less than the full value of its sales.'},
+    {src:'Based on AQA June 2026 · Paper 1 report (Q19)', q:'A business starts using debt factoring for the money its customers owe.', ok:false,
+     text:'Debt factoring increases the total amount the business receives from its sales.',
+     why:'It gets the money sooner, not more of it. After the fee it receives less.'},
+    {src:'Based on AQA November 2020 · Paper 3 report (Q1)', q:'A plc\'s share price rises by 20%.', ok:false,
+     text:'The business now has more money to spend on investment.',
+     why:'Existing shares are traded between investors, so the money goes to the shareholder who sells. The examiner said "a large number of responses" believed the business would have more money. A higher price does make it easier to raise finance if the business issues new shares later.'},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q2.2)', q:'A company\'s profits have risen and its share price has gone up.', ok:false,
+     text:'The company put its share price up because its profits rose.',
+     why:'A business does not set its own share price. It rises because more investors want to buy the shares than sell them, often after good profit news. The 2022 examiner noted some students believed the business sets the price.'},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q2.1)', q:'A company pays its shareholders a dividend.', ok:true,
+     text:'A dividend is a share of the company\'s profit paid to shareholders as a return on their investment.',
+     why:'The 2022 examiner said weak definitions missed exactly this: the sharing out of profit, or the idea of a return on investment.'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q7)', q:'Current assets £40,000. Current liabilities £80,000. Gearing 15%.', ok:true,
+     text:'The business has a low current ratio and low gearing.',
+     why:'Current ratio = 40,000 ÷ 80,000 = 0.5, which is low. Gearing of 15% is low. In 2018 only 35% of students got a question like this right.'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q7)', q:'A business has gearing of 65%.', ok:false,
+     text:'This means it cannot pay its short-term debts.',
+     why:'Gearing is about long-term borrowing compared with capital employed. Paying short-term debts is liquidity, measured by the current ratio. High gearing means more interest to pay, which can strain cash, but the two ratios measure different things.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:'A profitable small business sees its cash balance fall from £60,000 to £54,000.', ok:false,
+     text:'This is a serious threat to the survival of the business.',
+     why:'Cash has fallen, but the business still holds £54,000 and makes a profit. The 2026 examiner credited answers that kept problems in proportion rather than treating them as an "existential crisis".'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'mcq', title:'Numbers that look alike', blurb:'Margin or profit, contribution or revenue, units or pounds.', pass:8,
+  teach:`<p>Many marks are lost not because students can't calculate, but because they calculate the wrong thing: profit instead of margin, revenue instead of contribution, pounds instead of units.</p>
+  <p>Every question here is built on a mistake an examiner reported. Work each one out before you look at the options.</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 2 report (Q1.4)', prompt:'Revenue rises from £8m to £12m. Operating profit rises from £1.2m to £1.5m. What has happened to the operating profit margin?',
+     o:['It has risen, because operating profit went up','It has fallen, from 15% to 12.5%','It has stayed the same','It has risen, from 15% to 18%'], a:1,
+     why:'1.2 ÷ 8 = 15%. 1.5 ÷ 12 = 12.5%. Profit went up but revenue went up faster, so the margin fell. In 2026 many students wrote about operating profit when the question asked about the margin.'},
+    {src:'Based on AQA June 2026 · Paper 1 report (Q5)', prompt:'Selling price £12. Variable cost £7 per unit. 1,000 units sold. Fixed costs £3,000. What is total contribution?',
+     o:['£12,000','£5,000','£2,000','£7,000'], a:1,
+     why:'(12 − 7) × 1,000 = £5,000. £12,000 is revenue. £2,000 is profit, which is contribution minus fixed costs.'},
+    {src:'Based on AQA June 2024 · Paper 3 report (Q3)', prompt:'What is contribution per unit?',
+     o:['The cost of making one unit','The selling price minus the variable cost of one unit','The profit made on each unit','Revenue divided by output'], a:1,
+     why:'The 2024 examiner found students "misunderstanding contribution as unit cost". Contribution is what each unit adds towards fixed costs. It only becomes profit once fixed costs are covered.'},
+    {src:'Based on AQA June 2017 · Paper 1 report (Q19)', prompt:'A café\'s break-even output is 4,000 cups a month. What does this mean?',
+     o:['The café takes 4,000 hours to break even','The café must sell 4,000 cups a month to cover all its costs','The café makes £4,000 profit a month','The café breaks even after four months'], a:1,
+     why:'Break-even is a level of output, not a length of time. The 2017 examiner noted students defining it as a period of time.'},
+    {src:'Based on AQA June 2024 · Paper 1 report (Q16)', prompt:'Break-even output is 6,000 units. The business sells 8,500 units at £20 each. What is the margin of safety?',
+     o:['£50,000','2,500 units','8,500 units','£170,000'], a:1,
+     why:'Actual output − break-even output = 2,500 units. In 2024 many students added a £ sign to this answer and lost marks.'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q17)', prompt:'A market was worth £40m last year and is worth £46m this year. What is the market growth?',
+     o:['15%','13%','£6m','6% more market share'], a:0,
+     why:'(46 − 40) ÷ 40 × 100 = 15%. Divide by the original size. 13% comes from dividing by the new size, which a "relatively large proportion" did in 2018. Others confused market growth with market share.'},
+    {src:'Based on AQA June 2017 · Paper 1 report (Q16)', prompt:'A machine costs £90,000. Net cash flows: Year 1 £30,000, Year 2 £40,000, Year 3 £40,000. What is the payback period?',
+     o:['3 years','2 years 6 months','2 years','2 years 2 months'], a:1,
+     why:'£70,000 is back after two years. The last £20,000 is half of Year 3\'s £40,000, so payback is 2 years 6 months. The 2017 examiner reported students saying payback came "after 3 years" rather than during the third year.'},
+    {src:'Based on AQA June 2017 · Paper 1 report (Q16 and Q17)', prompt:'Which method of investment appraisal uses discount factors?',
+     o:['Payback','Average rate of return','Net present value','Break-even'], a:2,
+     why:'Only NPV discounts future cash flows. In 2017 many students used the discount factors to calculate payback, so they answered the wrong question.'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q8)', prompt:'A business budgeted for costs of £50,000. Actual costs were £56,000. What is the variance?',
+     o:['£6,000 favourable','£6,000 adverse','£56,000 adverse','£6,000 positive'], a:1,
+     why:'Costs above budget are bad for profit, so the variance is adverse. The 2018 report found confusion between adverse and favourable.'},
+    {src:'Based on AQA June 2025 · Paper 1 report (Q16)', prompt:'Inventory £30,000. Receivables £20,000. Cash £10,000. Current liabilities £40,000. Net current assets £20,000. What is the current ratio?',
+     o:['0.5','1.5','2.0','0.75'], a:1,
+     why:'Current assets = 30,000 + 20,000 + 10,000 = £60,000. 60,000 ÷ 40,000 = 1.5. In 2025 the most common error was using the net current assets figure instead of adding up the current assets.'},
+    {src:'Based on AQA June 2024 · Paper 1 report (Q17)', prompt:'Initial cost £100,000. Present values of the returns: Year 1 £45,000, Year 2 £48,000. What is the NPV?',
+     o:['+£7,000','−£7,000','£93,000','£193,000'], a:1,
+     why:'NPV = present values − initial cost = 93,000 − 100,000 = −£7,000. In 2024 students often took it away the wrong way round, and some missed that the answer was negative.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'drift', title:'Ownership and growth', blurb:'Plc, Ltd, organic growth, joint ventures and integration.', pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<p>These are basic terms, but the reports show they are often misunderstood. In 2018 over 40% of students thought a plc was in the public sector. In 2023 organic growth was "the most misunderstood piece of business knowledge on the paper". In 2026 the question on becoming a limited company was the worst answered on Paper 3.</p>
+  <p>If the term is wrong, every step built on it is wrong too.</p>`,
+  items:[
+    {src:'Based on AQA June 2018 · Paper 1 report (Q3)', q:'Tesco is a public limited company.', ok:false,
+     text:'Tesco is in the public sector.',
+     why:'"Public" means its shares can be sold to the public. It is owned by shareholders, so it is in the private sector. Over 40% of students got this wrong in 2018.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:'A sole trader turns his business into a private limited company (Ltd).', ok:true,
+     text:'He now has limited liability, so his personal assets are protected if the business fails.',
+     why:'The company is now a separate legal body. He can only lose what he has put into it.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:'A sole trader turns his business into a private limited company (Ltd).', ok:false,
+     text:'The business can now sell shares to the public on the stock exchange.',
+     why:'Only a plc can offer shares to the public. A Ltd sells shares privately. Students in 2026 mixed up Ltd and plc.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:'A sole trader turns his business into a private limited company (Ltd).', ok:false,
+     text:'The business must now have outside shareholders who will want dividends.',
+     why:'The owner can hold every share himself. Some 2026 answers invented shareholders who were not in the case.'},
+    {src:'Based on AQA June 2023 · Paper 3 report', q:'A business chooses organic growth.', ok:false,
+     text:'It is growing in an environmentally friendly way.',
+     why:'Organic growth means growing from within, for example opening new sites or selling more, rather than by merging or taking over. A "notable minority" in 2023 thought it meant environmentally friendly.'},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q2.4)', q:'Two businesses set up a joint venture.', ok:false,
+     text:'The two businesses have merged into one company.',
+     why:'In a joint venture both stay separate and share a project, with its costs and profits. The 2022 examiner said it was common to assume it was a merger, and some confused it with venture capital.'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q10)', q:'A chocolate manufacturer buys a cocoa farm.', ok:false,
+     text:'This is forward vertical integration.',
+     why:'Buying a supplier is backward vertical integration. Forward would be buying a business closer to the customer, such as a chain of shops. The 2018 report noted confusion between the two.'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q10)', q:'A car manufacturer buys a chain of car dealerships.', ok:true,
+     text:'This is forward vertical integration.',
+     why:'The dealerships are the next stage towards the customer.'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q10)', q:'A clothing retailer takes over a rival clothing retailer.', ok:true,
+     text:'This is horizontal integration.',
+     why:'Same industry and same stage of production.'}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'mcq', title:'People and pay', blurb:'Turnover, productivity, retention, PRP and the HR function.', pass:8,
+  teach:`<p>The people topics have a lot of terms that sound alike. Confusing labour turnover with labour productivity kept many students below Level 2 on a 2018 question. In 2026, students mixed up performance-related pay with piece rate.</p>
+  <p>Read each option carefully. The wrong ones are the mistakes examiners saw.</p>`,
+  items:[
+    {src:'Based on AQA June 2018 · Paper 1 report (Q18)', prompt:'Which of these measures labour productivity?',
+     o:['Staff leaving ÷ average number of staff × 100','Output ÷ number of employees','Labour costs ÷ output','Staff still employed ÷ staff at the start × 100'], a:1,
+     why:'Productivity is output per worker. The first option is labour turnover. In 2018, confusing the two was "a mistake that accounted for many of the students who did not reach level 2".'},
+    {src:'Based on AQA June 2019 · Paper 1 report (Q5)', prompt:'A firm starts the year with 200 staff. During the year 30 of them leave. What is the labour retention rate?',
+     o:['15%','85%','30','17.6%'], a:1,
+     why:'Retention = staff who stayed ÷ staff at the start × 100 = 170 ÷ 200 = 85%. 15% is the share who left. In 2019 students understood productivity better than retention.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q3.3)', prompt:'A sales team gets a bonus at the end of the year if it hits its sales target. What is this?',
+     o:['Piece rate','Performance-related pay','Profit sharing','A salary'], a:1,
+     why:'PRP rewards meeting targets. Piece rate pays an amount for each unit produced.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q3.3)', prompt:'A machinist is paid £1.20 for every garment she finishes. What is this?',
+     o:['Piece rate','Performance-related pay','Profit sharing','A salary'], a:0,
+     why:'Pay per unit produced is piece rate. It only works where each worker\'s output is easy to count.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q3.3)', prompt:'Every employee receives a bonus worth 5% of the company\'s annual profit, shared out in proportion to salary. What is this?',
+     o:['Piece rate','Performance-related pay','Profit sharing','Commission'], a:2,
+     why:'It depends on the whole company\'s profit, not on an individual\'s targets or output.'},
+    {src:'Based on AQA June 2025 · Paper 1 report (Q20)', prompt:'"Analyse how an innovation strategy might affect the role of the HR function." Which sentence answers the question?',
+     o:['Staff will feel more motivated because their ideas are valued.','HR will need to recruit people with design skills and organise training, so the right staff are in place before products launch.','Employees may resist the change because they fear for their jobs.','Sales will rise because the products are new.'], a:1,
+     why:'The question is about what the HR department does: recruitment, training and workforce planning. The 2025 examiner noted answers that "linked their logic to the impact on employees rather than the role of the HR function".'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q19)', prompt:'What is intrapreneurship?',
+     o:['A paid work placement for students','Employees acting like entrepreneurs inside an existing business, developing new ideas','Wealthy individuals investing in start-ups','Workers making continuous small improvements'], a:1,
+     why:'In 2018 some students confused it with internships and business angels, and some wrote about kaizen instead.'},
+    {src:'Exam-style · organisational structure', prompt:'A manager has 12 people reporting directly to her. What does the number 12 describe?',
+     o:['Her span of control','The chain of command','The number of levels of hierarchy','Her level of delegation'], a:0,
+     why:'Span of control is the number of people a manager is directly responsible for. It is a number, not a measure of how controlling the manager is.'},
+    {src:'Based on AQA June 2019 · Paper 1 report (Q6)', prompt:'A project team brings together people from different departments to solve one problem, and expertise matters more than job title. Which Handy culture is this?',
+     o:['Power','Role','Task','Person'], a:2,
+     why:'Task culture is built around teams and projects. Role culture is built around rules and job descriptions. In 2019 students were surer about power culture than role or task.'},
+    {src:'Based on AQA June 2025 · Paper 1 report (Q8)', prompt:'A business going through retrenchment needs fewer staff. How can a high labour turnover help?',
+     o:['It means staff are more productive','Staff leaving on their own means fewer redundancies are needed','It cuts recruitment costs','It shows staff are motivated'], a:1,
+     why:'If people are already leaving, the business can shrink by not replacing them. In 2025 this was the hardest multiple-choice question because students did not see the link.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'weak', title:'Use the theory accurately', blurb:'Find the step where a model is used wrongly, then fix it.', pass:5,
+  teach:`<p>Examiners reward models that are used accurately. They do not reward a model that is named and then used wrongly. In 2025, Lewin's force field analysis was "frequently only superficially understood". The same year, many students thought training was a hygiene factor.</p>
+  <p>Each chain has one step that misuses a model or term. Tap it, then choose the best replacement. Both must be right first time to score.</p>`,
+  items:[
+    {src:'Based on AQA June 2025 · Paper 3 report (Q1)', q:'Analyse why now may be the right time for the business to make the change, using force field analysis.',
+     s:['Managers have identified three driving forces and five restraining forces.','Because there are more restraining forces, the model shows the change should not go ahead.','The strongest driving force is that unit costs are 30% higher than rivals\'.','If managers weaken the main restraining force, staff resistance, through consultation, the change is more likely to succeed.'],
+     bad:1, problem:'Lewin\'s model weighs the strength of the forces, not how many there are. The 2025 examiner found terminology being used "without showing a full grasp of the mechanics of the model".',
+     fixes:['The model compares the total strength of the forces, so one very strong driving force can outweigh several weak restraining ones.','The model says change always happens if managers want it.','Restraining forces only count if they come from outside the business.'], fix:0},
+    {src:'Based on AQA June 2025 · Paper 2 report (Q2.3)', q:'Analyse how the new training plan might affect motivation, using Herzberg.',
+     s:['The manager plans to put every member of staff through a training course.','Training gives staff a chance to develop and take on more responsibility.','Herzberg would see training as a hygiene factor, like working conditions.','Staff who feel they are growing in the job are more likely to work harder and stay.'],
+     bad:2, problem:'Training links to growth, advancement and responsibility, which Herzberg treats as motivators. The 2025 examiner named "training was a hygiene factor" as a common misconception.',
+     fixes:['Herzberg would see training as a motivator, because it offers growth and the chance of advancement.','Herzberg did not write about training, so it cannot be used.','Herzberg would see training as a basic need at the bottom of the hierarchy.'], fix:0},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q2.3)', q:'Analyse how the restructure might affect the motivation of senior managers, using Maslow.',
+     s:['Senior managers already earn high salaries and have secure jobs.','So their physiological and safety needs are likely to be met.','Herzberg\'s hygiene factors show that their esteem needs now matter most.','The restructure removes their decision-making power, so it may lower motivation by reducing status and recognition.'],
+     bad:2, problem:'This mixes Herzberg into a Maslow argument. Esteem needs come from Maslow\'s hierarchy. The 2022 examiner noted students confusing Maslow with Herzberg.',
+     fixes:['Under Maslow, the next needs that matter to them are esteem needs, such as status and recognition.','Herzberg\'s motivators are the same as Maslow\'s lower-order needs.','Taylor would say they are only interested in money.'], fix:0},
+    {src:'Based on AQA June 2018 · Paper 2 report (Q3.2)', q:'Using force field analysis, analyse one driving force and one restraining force for the airline\'s plan to cut cabin crew pay.',
+     s:['The cabin crew union could threaten strike action.','This is a restraining force, because it works against the pay cut going ahead.','Falling incomes are expected to reduce demand for flights.','This is a restraining force, because it pushes the airline to cut costs.'],
+     bad:3, problem:'A force that pushes the change forward is a driving force. In 2018 a minority of students got the two mixed up.',
+     fixes:['This is a driving force, because it pushes the airline towards cutting costs.','This is neither force, because it is external.','This is a restraining force, because it reduces revenue.'], fix:0},
+    {src:'Based on AQA June 2025 · Paper 3 report (Q5)', q:'Analyse whether a SWOT analysis would help the business plan its next strategy.',
+     s:['The business\'s old factory, with unit costs higher than rivals\', is a threat to the business.','A new competitor entering the market would put further pressure on prices.','This competitor is a threat, because it comes from outside the business.','Seeing both side by side helps managers decide whether to invest in new equipment first.'],
+     bad:0, problem:'An old factory is inside the business, so it is a weakness. Threats come from outside. The 2025 examiner found internal weaknesses being mislabelled as threats.',
+     fixes:['The business\'s old factory, with unit costs higher than rivals\', is a weakness, because it is a problem inside the business.','The old factory is an opportunity to invest.','The old factory is a strength, because it is already paid for.'], fix:0},
+    {src:'Based on AQA June 2024 · Paper 1 report (Q23)', q:'Analyse how strategic drift may have affected the retailer.',
+     s:['Over ten years, customers moved towards shopping online.','The retailer kept opening large stores while rivals invested in websites and delivery.','This shows the retailer had decided to drift its strategy away from online sales.','As a result its market share fell and its stores were left with spare capacity.'],
+     bad:2, problem:'Strategic drift is not a decision. It happens when a business keeps the same strategy while the market changes. The 2024 examiner said many students saw it as "a deliberate and planned change in strategy".',
+     fixes:['This shows the retailer carried on with the same store-based strategy and failed to adapt as the market changed.','This shows the retailer chose an emergent strategy of drifting.','This shows the retailer planned to drift so that it could save money.'], fix:0}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'drift', title:'Making and selling', blurb:'Scale and scope, lean and capital intensive, capacity and stock.', pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<p>Operations has several pairs that students mix up. Economies of scale come from producing more. Economies of scope come from producing a wider range. Lean production is about cutting waste. Capital intensive is about using more machinery compared with labour.</p>
+  <p>The 2024 Paper 3 report put it well: most students knew high capacity utilisation meant the business was busy, but fewer understood what that meant for costs and customers.</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 2 report (Q1.4)', q:'A supermarket starts selling clothes, insurance and petrol as well as food.', ok:false,
+     text:'The savings from sharing its stores, brand and delivery network across these products are economies of scale.',
+     why:'Savings from producing a wider range are economies of scope. Economies of scale come from producing more of the same. In 2026 students mixed these up.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q1.4)', q:'A supermarket doubles the number of stores selling the same range.', ok:true,
+     text:'Buying stock in larger quantities lowers its average cost per item. This is an economy of scale.',
+     why:'Bulk buying is a purchasing economy of scale.'},
+    {src:'Based on AQA June 2019 · Paper 1 report (Q3)', q:'A business grows so large that communication between departments becomes slow.', ok:true,
+     text:'This is a diseconomy of scale, so its unit costs rise.',
+     why:'Diseconomies of scale mean average cost per unit rises as the business grows. The 2019 examiner thought confusion about the term "unit costs" caused errors on this.'},
+    {src:'Based on AQA June 2024 · Paper 1 report (Q24)', q:'A manufacturer introduces lean production.', ok:false,
+     text:'Lean production means replacing workers with machines.',
+     why:'That is becoming more capital intensive. Lean production means cutting waste, such as stock, defects and waiting time, through methods like JIT and kaizen. The 2024 examiner noted confusion with capital-intensive production.'},
+    {src:'Based on AQA June 2023 · Paper 2 report', q:'A packaging firm becomes more capital intensive.', ok:true,
+     text:'It uses a higher proportion of machinery and technology compared with labour.',
+     why:'The 2023 examiner said students who did not know the term "capital intensive" found it hard to give a creditworthy answer.'},
+    {src:'Based on AQA June 2024 · Paper 3 report (Q1)', q:'A dessert parlour is running at 98% capacity utilisation.', ok:false,
+     text:'This is always good for the business, because fixed costs are spread over more customers.',
+     why:'Fixed cost per customer is low, but there is no room for extra demand, staff are stretched, queues form and there is little time for maintenance.'},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q3.2)', q:'A business reorders stock when it falls to 400 units. Stock is never allowed to fall below 150 units.', ok:false,
+     text:'The buffer stock is 400 units.',
+     why:'400 is the re-order level. Buffer stock is the minimum held, 150 units. In 2022 many students used the re-order level instead of the buffer stock.'},
+    {src:'Based on AQA June 2019 · Paper 1 report (Q11)', q:'An order is placed on 3 March and the delivery arrives on 10 March.', ok:true,
+     text:'The lead time is 7 days.',
+     why:'Lead time is the gap between ordering and receiving stock. It was the idea students were least sure of in the 2019 inventory question.'},
+    {src:'Based on AQA June 2018 · Paper 2 report (Q3.1)', q:'An airline fills more of the seats on each flight.', ok:true,
+     text:'The cost per seat falls, because the fixed cost of running the flight is shared across more passengers.',
+     why:'This is capacity utilisation at work. The 2018 examiner said answers that explained the margin per ticket this way were "very much in the minority".'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'mcq', title:'Strategy words', blurb:'Ansoff, differentiation, emergent strategy, B2B and more.', pass:7,
+  teach:`<p>Strategy questions often turn on one word. In 2024, "a worrying number of students" wrote about diversification when the question was about differentiation. In 2026, most students answered a question about selling to businesses as though the customers were members of the public.</p>
+  <p>Pick the option that uses the term correctly.</p>`,
+  items:[
+    {src:'Based on AQA June 2018 · Paper 1 report (Q22)', prompt:'A UK bakery chain starts selling its existing range of bread in France. Which Ansoff strategy is this?',
+     o:['Market penetration','Market development','Product development','Diversification'], a:1,
+     why:'An existing product in a new market. The 2018 examiner reported answers that confused market development with market penetration.'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q22)', prompt:'The same bakery runs price promotions to win more customers in its existing UK shops. Which Ansoff strategy is this?',
+     o:['Market penetration','Market development','Product development','Diversification'], a:0,
+     why:'An existing product in an existing market. This is the lowest-risk Ansoff strategy.'},
+    {src:'Based on AQA June 2019 · Paper 1 report (Q8)', prompt:'A toy maker buys a chain of coffee shops. Which is correct?',
+     o:['Market development: low risk','Diversification: the highest risk','Product development: medium risk','Market penetration: the lowest risk'], a:1,
+     why:'A new product in a new market is diversification, the riskiest of the four. In 2019 fewer than half of students showed they understood both market penetration and diversification.'},
+    {src:'Based on AQA June 2024 · Paper 3 report (Q6)', prompt:'A question asks how innovation helps a business differentiate its products. What is differentiation?',
+     o:['Moving into a new market with new products','Making a product different from rivals\' so customers see it as better or distinctive','Selling to different segments at different prices','Cutting costs below those of competitors'], a:1,
+     why:'The first option is diversification. The 2024 examiner saw "a worrying number of students writing about diversification instead of differentiation".'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q14)', prompt:'A hotel chain plans to open new city-centre hotels. A pandemic hits and it quickly starts renting rooms out as offices. What is this switch?',
+     o:['Strategic drift','Emergent strategy','Intended strategy','Diversification by takeover'], a:1,
+     why:'An emergent strategy is an unplanned response to events. Strategic drift is the opposite problem: failing to adapt. In 2018 students were sure about emergent strategy but much less sure about strategic drift.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q3.1)', prompt:'A garden machinery maker sells to garden centres, not to the public. What matters most in keeping these customers?',
+     o:['Eye-catching packaging that encourages impulse buying','Reliable delivery, trade prices and a good relationship with each buyer','TV advertising aimed at families','Celebrity endorsements on social media'], a:1,
+     why:'This is B2B. Business buyers buy in bulk, repeatedly and on rational grounds, so reliability, price and relationships matter. In 2026 most students wrote about individual consumers instead.'},
+    {src:'Based on AQA June 2024 · Paper 3 report (Q5)', prompt:'A dessert business plans to grow by franchising. Which statement is correct?',
+     o:['The business opens and runs every new outlet itself','Franchisees pay to use the brand and run their own outlets, so the business can grow without funding each site','Franchising is the same as a takeover','Franchisees become employees of the business'], a:1,
+     why:'The franchisor supplies the brand and system. The franchisee invests in and runs the outlet, usually paying a fee and royalties. The 2024 examiner found "some patchy understanding of franchising".'},
+    {src:'Based on AQA June 2025 · Paper 1 report (Q21)', prompt:'A UK business decides to become a multinational. What does that mean?',
+     o:['It sells products abroad from its UK factory','It has operations, such as factories or offices, in more than one country','It sells online to customers anywhere','It buys materials from overseas suppliers'], a:1,
+     why:'Exporting is not the same as being a multinational. The 2025 examiner noted that some answers "focused mainly on exporting".'},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q1.1)', prompt:'What is extrapolation?',
+     o:['Extending a past trend to predict the future','Measuring how closely two variables are related','Asking customers about their future buying plans','Testing a product in one area before a full launch'], a:0,
+     why:'The second option is correlation. The 2022 examiner noted some students confused the two.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'mcq', title:'Outside the business', blurb:'Fiscal and monetary, exchange rates, elasticity, law and ethics.', pass:7,
+  teach:`<p>The external environment causes some of the most reported mix-ups. In 2025 the question on fiscal policy was the hardest on Paper 1, because students confused it with monetary policy and with legislation. In 2022 the most common error on exchange rates was getting the mechanism "entirely backwards".</p>
+  <p>Take your time with the direction of each effect.</p>`,
+  items:[
+    {src:'Based on AQA June 2019 · Paper 1 report (Q9)', prompt:'The government increases subsidies to farmers. What kind of policy is this?',
+     o:['Monetary policy','Fiscal policy','Legislation','Exchange rate policy'], a:1,
+     why:'Fiscal policy is government spending and taxation. Monetary policy is interest rates, set by the Bank of England. In 2019 a significant number could not tell which a subsidy was.'},
+    {src:'Based on AQA June 2025 · Paper 1 report (Q19)', prompt:'Which of these is fiscal policy?',
+     o:['The Bank of England raises interest rates','The government raises VAT on medicines','A new law sets safety standards for medical devices','The pound falls against the euro'], a:1,
+     why:'A tax change is fiscal policy. In 2025 fiscal policy "was often confused with monetary policy and sometimes with legislation".'},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q1.4)', prompt:'A product has a price elasticity of demand of −0.5. The price rises by 10%. What happens?',
+     o:['Demand does not change, because it is inelastic','Demand falls by 5% and revenue rises','Demand falls by 20%','Demand rises by 5%'], a:1,
+     why:'Inelastic means demand changes by a smaller percentage than price, not that it stays the same. The 2022 examiner called "no change in demand" a common misconception.'},
+    {src:'Based on AQA June 2022 · Paper 1 report (Q8)', prompt:'Demand for a product is price inelastic. The business raises its price. What happens to total revenue?',
+     o:['It rises','It falls','It stays the same','It cannot be known'], a:0,
+     why:'Quantity falls by a smaller percentage than the price rises, so revenue goes up. In 2022 a wrong answer was more popular than the right one because students did not understand price inelastic demand.'},
+    {src:'Based on AQA June 2018 · Paper 2 report (Q3.1)', prompt:'Air travel has an income elasticity of demand of +1.5. What does this tell you?',
+     o:['If price falls by 10%, demand rises by 15%','If incomes fall by 10%, demand falls by about 15%','Demand is price inelastic','Air travel is an inferior good'], a:1,
+     why:'Income elasticity links demand to incomes, not to price. In 2018 many students confused the income elasticity figure with price elasticity.'},
+    {src:'Based on AQA June 2026 · Paper 1 report (Q11)', prompt:'A budget supermarket\'s own-brand range has an income elasticity of −0.4. Incomes rise by 5%. What happens to demand?',
+     o:['It rises by 2%','It falls by 2%','It rises by 0.4%','No change, because it is inelastic'], a:1,
+     why:'Negative YED means an inferior good: as incomes rise, people buy less. −0.4 × 5 = −2%. In 2026 most students could not apply a negative income elasticity, which made this the most challenging multiple-choice question.'},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q3.4)', prompt:'The pound falls against the euro. A UK business exports to Spain and buys all its materials in the UK. What is the likely effect?',
+     o:['Its costs rise, because exporting becomes more expensive','Its products become cheaper for Spanish customers, so sales are likely to rise','Its products become more expensive in Spain','No effect, because it buys from UK suppliers'], a:1,
+     why:'A weaker pound means each euro buys more pounds, so UK goods cost less in euros. The examiner also said import effects were irrelevant here because the business used UK suppliers.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q2.3)', prompt:'A question asks about the effect of new legislation on businesses. Which of these is about legislation?',
+     o:['A business pays above the minimum wage because it is the right thing to do','A business must now report its carbon emissions by law, which adds to its costs','A business chooses fair trade suppliers','A business gives 1% of its profit to charity'], a:1,
+     why:'Legislation is compulsory. The other three are voluntary ethical choices. In 2026 many students wrote about ethics when the question was about legislation.'},
+    {src:'Based on AQA June 2022 · Paper 1 report (Q11)', prompt:'A country has poor roads and an unreliable power supply. In a SWOT analysis for a business thinking of moving there, what is this?',
+     o:['Weak infrastructure, which could be a threat','A weakness of the business','A strength of the market','Monetary policy'], a:0,
+     why:'Infrastructure means the basic networks a country provides, such as transport, energy and communications. It is external, so it is not a weakness of the business. In 2022 not understanding infrastructure caused the problems on this question.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'mcq', title:'Read the key word', blurb:'One word in the question decides which concept you need.', pass:6,
+  teach:`<p>Many confusions start with how the question is read. The 2026 reports give several examples: operating profit instead of the margin, ethics instead of legislation, consumers instead of business customers.</p>
+  <p>For each question, find what it is really asking about before you start writing.</p>`,
+  items:[
+    {src:'Based on AQA June 2018 · Paper 2 report (Q3.1)', prompt:'"Analyse how cutting ticket prices and cabin crew pay could affect the margin per ticket sold." What should the answer focus on?',
+     o:['Total revenue','Overall profit','The difference between the price and the cost of each ticket','Demand for flights'], a:2,
+     why:'The examiner said many wrote about revenue or overall profit, "as opposed to the margin per ticket sold which is what the question asked".'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q2.3)', prompt:'"To what extent will new legislation be a threat to all businesses?" Which line would drift off the question?',
+     o:['How compliance costs differ between large and small firms','How some firms gain sales when rivals cannot meet the new rules','Whether firms should behave ethically even when the law does not require it','How long businesses have to adapt before the law starts'], a:2,
+     why:'That is about ethics, not legislation.'},
+    {src:'Based on AQA June 2018 · Paper 2 report', prompt:'A question asks you to analyse the "actions" the business could take. How many should you cover?',
+     o:['One, developed fully','More than one','As many as you can list','None, just evaluate'], a:1,
+     why:'The 2018 examiner gave "actions" rather than "action" as an example of why you need to read the question carefully.'},
+    {src:'Based on AQA June 2023 · Paper 3 report (Q1)', prompt:'"Analyse why environmental issues are important when making operational decisions." Many students wrote good marketing arguments. What was missing?',
+     o:['Data from the case','A link to operational decisions','A conclusion','A business model'], a:1,
+     why:'The examiner said these arguments "failed to explicitly address the ‘operational decisions’ aspect of the question".'},
+    {src:'Based on AQA June 2023 · Paper 3 report (Q5)', prompt:'A question asks you to assess the level of risk of a loan. A student writes a strong analysis of how the loan pays for growth. What is missing?',
+     o:['Use of data','A link back to the level of risk','A definition of a loan','A second example'], a:1,
+     why:'In 2023 analysis on this question "often omitted reference to the level of risk".'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q4)', prompt:'"To what extent are these economic forecasts positive for the business?" Which line should you not take?',
+     o:['Whether the forecast rise in incomes matters, given the income elasticity','Whether the forecasts might be wrong','Whether the business can pass on inflation through higher prices','Whether rivals face the same conditions'], a:1,
+     why:'The question is about these forecasts. The 2026 examiner rejected answers that questioned whether they were accurate.'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q21)', prompt:'"To what extent is stakeholder mapping useful in managing change?" Where should the answer start?',
+     o:['With what stakeholder mapping shows managers, and how that helps them manage change','With Kotter and Schlesinger\'s methods','With a general discussion of change','With the business\'s profits'], a:0,
+     why:'The examiner said some students "drifted into evaluation of change management without having established the use of stakeholder mapping first".'},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q19)', prompt:'"Analyse how intrapreneurship might improve a business\'s financial performance." What should each chain finish on?',
+     o:['Staff motivation','Revenue, costs or profit','Innovation','Employee engagement'], a:1,
+     why:'The examiner said many students did not link the concept to financial performance and focused on motivation instead.'}
+  ]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Against the clock', blurb:'Fifteen mixed questions from the whole course, 30 seconds each.', pass:12, poolFrom:[1,2,3,4,6,7,8,9], count:15, seconds:30,
+  teach:`<p>Fifteen questions drawn at random from stages 1 to 9, with 30 seconds each. In the exam there is no time to puzzle over whether a term means what you think it means. You need to know straight away.</p>
+  <p>You get different questions each time you try.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'concepts', key:'concepts_course_v1', offset:300, short:'Concepts',
+  name:'Concept Confusions Course',
+  hero:{kicker:'AO1 knowledge · AQA A-level Business',
+    title:'Know the <em>difference</em>',
+    lede:'Every year the examiner reports name the same pairs of ideas that students mix up: cash and profit, scale and scope, fiscal and monetary, plc and public sector. One mix-up can wreck a whole chain of analysis. This course works through the ones AQA has reported since 2017. Pass each stage to unlock the next.'},
+  doneText:'You have worked through the mix-ups AQA has reported since 2017. When you revise a topic, ask yourself what it is most often confused with, and make sure you could explain the difference in one sentence.',
+  stages:STAGES
+};
+</script>
+<script src="course-engine.js"></script>
+</body>
+</html>

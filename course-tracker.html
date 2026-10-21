@@ -88,7 +88,7 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
   <div class="grid2">
     <div>
       <div class="card">
-        <div class="filters"><select id="course" aria-label="Choose course"><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
+        <div class="filters"><select id="course" aria-label="Choose course"><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
         <div class="tablewrap"><table id="tbl"></table></div>
         <div class="legend"><span><span class="cell p">8/10</span> passed (best score)</span><span><span class="cell a">5/10</span> tried, not passed yet</span><span>Click a name to see attempts and written answers</span></div>
       </div>
@@ -109,10 +109,11 @@ const API='https://nishkam-tracker.alevelnishkam.workers.dev';
 const COURSES={
   0:{name:'Start Point/End Point Course',stages:[[1,'Read the question',10],[2,'Spot the drift',10],[3,'Build the chain',3],[4,'Find the weak link',6],[5,'Explain the link',9],[6,'Read every word',8],[7,'Use the theory',8],[8,'Numbers in the chain',6],[9,'Against the clock',12],[10,'The real thing',1]]},
   100:{name:'Judgement Course',stages:[[1,'Summary or judgement?',10],[2,'What does it depend on?',8],[3,'Attack the big word',8],[4,'Build the judgement',3],[5,'Fix the conclusion',6],[6,'Why it outweighs',8],[7,'Know when to judge',7],[8,'Judge with numbers',5],[9,'Against the clock',12],[10,'Write the conclusion',1]]},
-  200:{name:'Calculations Course',stages:[[1,'Percentages',6],[2,'Reverse percentages',6],[3,'Break-even',6],[4,'Profit and margins',6],[5,'Ratios',6],[6,'Investment appraisal',6],[7,'People and operations',6],[8,'Markets and elasticity',6],[9,'What the number means',8],[10,'Final timed round',10]]}
+  200:{name:'Calculations Course',stages:[[1,'Percentages',6],[2,'Reverse percentages',6],[3,'Break-even',6],[4,'Profit and margins',6],[5,'Ratios',6],[6,'Investment appraisal',6],[7,'People and operations',6],[8,'Markets and elasticity',6],[9,'What the number means',8],[10,'Final timed round',10]]},
+  300:{name:'Concept Confusions Course',stages:[[1,'Cash and profit',10],[2,'Numbers that look alike',11],[3,'Ownership and growth',9],[4,'People and pay',10],[5,'Use the theory accurately',6],[6,'Making and selling',9],[7,'Strategy words',9],[8,'Outside the business',9],[9,'Read the key word',8],[10,'Against the clock',15]]}
 };
 let OFF=0,STAGES=COURSES[0].stages,WRITE_STAGE=10;
-/* rows in the sheet: stage 1-10 = Start/End, 101-110 = Judgement, 201-210 = Calculations */
+/* rows in the sheet: stage 1-10 = Start/End, 101-110 = Judgement, 201-210 = Calculations, 301-310 = Concepts */
 const courseOf=st=>st>=100?Math.floor(st/100)*100:0;
 function rowsFor(){return data.rows.filter(r=>courseOf(r.stage)===OFF).map(r=>Object.assign({},r,{stage:r.stage-OFF}));}
 const $=s=>document.querySelector(s);
@@ -132,7 +133,7 @@ $('#lf').onsubmit=async e=>{e.preventDefault();$('#lerr').textContent='';
 $('#logout').onclick=()=>{token=null;try{sessionStorage.removeItem('ct_token');}catch(e){}$('#dash').hidden=true;$('#loginView').hidden=false;};
 $('#refresh').onclick=()=>load();
 $('#sort').onchange=()=>render();
-$('#course').onchange=e=>{OFF=+e.target.value;STAGES=COURSES[OFF].stages;WRITE_STAGE=OFF===200?-1:10;$('#detail').hidden=true;document.querySelector('#dash h1').textContent=COURSES[OFF].name;render();};
+$('#course').onchange=e=>{OFF=+e.target.value;STAGES=COURSES[OFF].stages;WRITE_STAGE=OFF>=200?-1:10;$('#detail').hidden=true;document.querySelector('#dash h1').textContent=COURSES[OFF].name;render();};
 
 async function load(){
   $('#refresh').disabled=true;
