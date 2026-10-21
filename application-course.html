@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Application Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   APPLICATION COURSE (AO2)
+   Built on what AQA examiner reports 2017–2026 say about using the case
+   and the data. Bloom Garden Supplies, Kaya Fresh and Pellow Joinery are
+   made-up businesses written for this course. "Based on" means the issue
+   comes from the report; the wording of every item is our own.
+   Stage numbers are stored in the tracking sheet as 400 + stage.
+   ===================================================================== */
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const rint=(a,b,s=1)=>a+s*Math.floor(Math.random()*((b-a)/s+1));
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=n=>Math.round(n*10)/10;
+
+const BLOOM_INTRO='Bloom Garden Supplies Ltd makes compost and plant feed and sells them to garden centres, not to the public. Most of its sales come in spring.';
+const BLOOM_TABLE=`<p style="font-size:.92rem;margin-bottom:8px">${BLOOM_INTRO}</p><div class="tablewrap"><table class="d"><thead><tr><th>Bloom Garden Supplies</th><th class="r">2024</th><th class="r">2025</th><th class="r">Industry 2025</th></tr></thead><tbody>
+<tr><td>Revenue (£m)</td><td class="r">4.2</td><td class="r">4.6</td><td class="r">–</td></tr>
+<tr><td>Orders delivered on time (%)</td><td class="r">94</td><td class="r">86</td><td class="r">95</td></tr>
+<tr><td>Garden centre customers</td><td class="r">140</td><td class="r">126</td><td class="r">–</td></tr>
+<tr><td>Labour turnover (%)</td><td class="r">11</td><td class="r">19</td><td class="r">10</td></tr>
+<tr><td>Operating profit margin (%)</td><td class="r">8.0</td><td class="r">6.5</td><td class="r">9.0</td></tr></tbody></table></div>`;
+const KAYA_TABLE=`<p style="font-size:.92rem;margin-bottom:8px">Kaya Fresh runs 12 convenience stores selling groceries and fresh food.</p><div class="tablewrap"><table class="d"><thead><tr><th>Kaya Fresh, per store</th><th class="r">2024</th><th class="r">2025</th></tr></thead><tbody>
+<tr><td>Sales per week (£)</td><td class="r">21,000</td><td class="r">19,500</td></tr>
+<tr><td>Customers per week</td><td class="r">2,500</td><td class="r">2,143</td></tr>
+<tr><td>Average spend per customer (£)</td><td class="r">8.40</td><td class="r">9.10</td></tr>
+<tr><td>Food waste (% of stock)</td><td class="r">6</td><td class="r">9</td></tr>
+<tr><td>Staff</td><td class="r">9</td><td class="r">9</td></tr></tbody></table></div>`;
+const PELLOW='Sam Pellow has run Pellow Joinery for 12 years, making fitted kitchens for homeowners. He employs three joiners, all of whom have worked for him for more than eight years. In March he changed the business from a sole trader to a private limited company, and he holds all the shares himself. Most jobs are booked six months ahead.';
+const BLOOM_Q='Analyse how improving its on-time delivery rate could help Bloom Garden Supplies win back garden centre customers.';
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'drift', title:'Applied or generic?', blurb:'Could the sentence be about any business? Then it is not applied.', pass:8,
+  labels:['Applied to this business','Could be about any business'], showLabel:'A sentence from a student\'s answer:',
+  teach:`<p>Application means your point only makes sense for <b>this</b> business in <b>this</b> situation. The June 2026 Paper 2 report said lower-scoring answers "often relied on generic business points". The November 2020 report said students with the knowledge still lost marks by "providing very generic answers and not considering the context in the case".</p>
+  <p>A quick test: cover the business's name. If the sentence still works for any company, it is generic.</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 2 report', q:'Bloom sells compost to garden centres. Its on-time delivery rate fell from 94% to 86%.', ok:false,
+     text:'Late deliveries can damage a business\'s reputation, which may reduce its sales.',
+     why:'This is true of any business. It does not mention garden centres, compost, spring or the 86%.'},
+    {src:'Based on AQA June 2026 · Paper 2 report', q:'Bloom sells compost to garden centres. Its on-time delivery rate fell from 94% to 86%.', ok:true,
+     text:'A garden centre that runs out of compost in April loses sales at its busiest time, so after a few late deliveries it is likely to move its orders to a supplier that delivers on time.',
+     why:'It uses who the customer is, when they buy and why reliability matters to them.'},
+    {src:'Based on AQA November 2020 · Paper 2 report', q:'Kaya Fresh runs 12 convenience stores. Food waste has risen from 6% to 9% of stock.', ok:false,
+     text:'Waste increases costs, so profit will fall.',
+     why:'Correct, but it could be written about any business without reading the case.'},
+    {src:'Based on AQA November 2020 · Paper 2 report', q:'Kaya Fresh runs 12 convenience stores. Food waste has risen from 6% to 9% of stock.', ok:true,
+     text:'With waste up from 6% to 9% of stock, Kaya is throwing away half as much again as last year, so more of what it pays its suppliers never turns into a sale.',
+     why:'It uses Kaya\'s figures and works something out from them.'},
+    {src:'Based on AQA June 2025 · Paper 2 report (Q3.1)', q:'A growing low-cost airline sets an objective of keeping labour turnover below 10%.', ok:true,
+     text:'Low turnover means the airline avoids repeatedly recruiting and training cabin crew, which matters for a low-cost model where every extra cost per seat has to be kept down.',
+     why:'It links the objective to the airline\'s low-cost model. The 2025 examiner said weaker answers "did not focus on the context of a growing low-cost airline".'},
+    {src:'Based on AQA June 2025 · Paper 2 report (Q3.1)', q:'A growing low-cost airline sets an objective of keeping labour turnover below 10%.', ok:false,
+     text:'Low labour turnover is good because it saves money on recruitment and training.',
+     why:'Nothing here is about an airline, never mind a low-cost one.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q2.1)', q:'A social enterprise runs cafés that train and employ people who have been out of work for a long time.', ok:true,
+     text:'It could measure how many of its trainees move into permanent jobs within a year, because that shows whether it is meeting its social aim and not just covering its costs.',
+     why:'A specific measure that fits this organisation\'s purpose. The 2026 examiner said weaker answers "discussed performance in general terms".'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q2.1)', q:'A social enterprise runs cafés that train and employ people who have been out of work for a long time.', ok:false,
+     text:'Performance can be measured using a range of measures such as revenue, profit and customer satisfaction.',
+     why:'This could be any café chain. It ignores the social aim.'},
+    {src:'Based on AQA November 2020 · Paper 2 report (Q2.3)', q:'An online furniture retailer holds three weeks of stock in a large rented warehouse.', ok:true,
+     text:'Furniture is bulky, so three weeks of stock fills a large warehouse; with just-in-time the retailer could rent far less space, but it would then rely on suppliers delivering within days of each order.',
+     why:'It uses the product and the warehouse to explain both the benefit and the risk. The 2020 examiner said many answers on JIT were not set "in the context of the data and situation provided".'},
+    {src:'Based on AQA November 2020 · Paper 2 report (Q2.3)', q:'An online furniture retailer holds three weeks of stock in a large rented warehouse.', ok:false,
+     text:'Just-in-time reduces storage costs and waste, which improves profit.',
+     why:'A textbook definition with no furniture, no warehouse and no three weeks.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'mcq', title:'Pick the right data', blurb:'Choose the figures that support the point, and read them correctly.', pass:6,
+  teach:`<p>You will rarely need every number in an appendix. The June 2026 Paper 2 report said stronger answers "were selective in their use of data". In 2018 the examiner described answers that "listed appendices" and ended up with "a wealth of under-developed points".</p>
+  <p>Read the data carefully as well. In 2025 the Paper 3 examiner showed an answer whose arguments were "flawed" because it misread the appendix.</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 2 report', table:BLOOM_TABLE, prompt:BLOOM_Q+' Which data would you use first?',
+     o:['Revenue rose from £4.2m to £4.6m','On-time deliveries fell from 94% to 86%, below the industry average of 95%','Operating profit margin fell to 6.5%','Labour turnover is 19%'], a:1,
+     why:'The question starts from on-time delivery, so that is the first figure you need.'},
+    {src:'Based on AQA June 2026 · Paper 2 report', table:BLOOM_TABLE, prompt:'Same question. Which second piece of data best shows why it matters?',
+     o:['Garden centre customers fell from 140 to 126','Revenue rose to £4.6m','Labour turnover rose','The industry operating margin is 9%'], a:0,
+     why:'The end point is winning back customers, and this shows 14 have already been lost.'},
+    {src:'Based on AQA June 2026 · Paper 2 report', table:BLOOM_TABLE, prompt:'Analyse why Bloom\'s operating profit margin might have fallen. Which data helps explain it?',
+     o:['Labour turnover rose from 11% to 19%, so more is being spent on recruiting and training','Garden centre customers fell from 140 to 126','The industry delivery rate is 95%','Revenue rose by £0.4m'], a:0,
+     why:'Recruiting and training replacements add to operating costs, which squeezes the margin. The other figures do not explain costs.'},
+    {src:'Based on AQA June 2025 · Paper 3 report (Q3)', table:BLOOM_TABLE, prompt:'Which statement misreads the data?',
+     o:['Revenue rose even though customers fell, so each remaining customer is buying more','Bloom is losing customers, so its revenue must be falling','Bloom\'s delivery rate is now 9 percentage points below the industry average','Labour turnover has nearly doubled'], a:1,
+     why:'Revenue actually rose. An argument built on a misreading falls apart, which is what the 2025 examiner described.'},
+    {src:'Based on AQA June 2026 · Paper 2 report', table:KAYA_TABLE, prompt:'Analyse how reducing food waste could improve Kaya Fresh\'s profit. Which data matters most?',
+     o:['Food waste rose from 6% to 9% of stock','Average spend rose from £8.40 to £9.10','Staff per store stayed at 9','There are 12 stores'], a:0,
+     why:'It is the only figure about waste.'},
+    {src:'Based on AQA June 2026 · Paper 2 report', table:KAYA_TABLE, prompt:'Analyse why Kaya\'s sales per store have fallen. Which pair of figures explains it?',
+     o:['Customers fell from 2,500 to 2,143 a week, while average spend rose from £8.40 to £9.10','Food waste rose and staff stayed the same','Average spend rose, so sales must have risen','There are 9 staff and 12 stores'], a:0,
+     why:'About 14% fewer customers outweighed the higher spend per customer. You need both figures to show it.'},
+    {src:'Based on AQA June 2025 · Paper 3 report (Q3)', table:KAYA_TABLE, prompt:'A student writes: "Kaya\'s sales fell because customers are spending less." What is wrong?',
+     o:['Nothing','Average spend actually rose; the fall comes from fewer customers','Sales did not fall','Spend is not in the table'], a:1,
+     why:'Spend went up from £8.40 to £9.10. The whole fall comes from fewer people coming in.'},
+    {src:'AQA June 2025 · Paper 3 report (Q3)', prompt:'A question tells you to use Appendix C to assess whether a factory can open within a year. What happens if you only make qualitative points and ignore the appendix?',
+     o:['Nothing, as long as the points are good','You are unlikely to reach Level 3 or 4','You lose one mark','You need to write more'], a:1,
+     why:'The 2025 examiner said: "without accurate use of Appendix C data, responses were not likely to achieve a level 3 or 4 mark."'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'drift', title:'Quote it or use it?', blurb:'Copying a number out of the table is not the same as using it.', pass:7,
+  labels:['Uses the data','Just quotes it'], showLabel:'A sentence from a student\'s answer:',
+  teach:`<p>The reports keep making the same point. In 2018 students "merely described the various appendices". In 2022 "a few students simply lifted and described data". In 2025 the Paper 3 examiner praised an answer that, "instead of describing the appendix", used the data "in an analytical way by manipulating" it.</p>
+  <p>Using data means doing something with it: comparing, working out a change, or saying what it means for the business.</p>`,
+  items:[
+    {src:'Based on AQA June 2018 · Paper 2 report (Q1.5)', q:BLOOM_INTRO, ok:false,
+     text:'Bloom\'s on-time delivery rate was 94% in 2024 and 86% in 2025.',
+     why:'This repeats the table. It does not say what the change means.'},
+    {src:'Based on AQA June 2025 · Paper 3 report (Q3)', q:BLOOM_INTRO, ok:true,
+     text:'Bloom now delivers about one order in seven late, compared with roughly one in seventeen a year ago, so a garden centre is far more likely to have been let down.',
+     why:'It turns 86% and 94% into something a reader can picture: 14% late against 6% late.'},
+    {src:'Based on AQA June 2022 · Paper 2 report', q:BLOOM_INTRO, ok:false,
+     text:'Customers fell from 140 to 126 and revenue rose from £4.2m to £4.6m.',
+     why:'Two figures copied out. Nothing is done with either.'},
+    {src:'Based on AQA June 2025 · Paper 3 report (Q3)', q:BLOOM_INTRO, ok:true,
+     text:'Average revenue per customer rose from £30,000 to about £36,500, so each garden centre Bloom loses now costs it more revenue than before.',
+     why:'£4.2m ÷ 140 and £4.6m ÷ 126. The calculation gives the argument its weight.'},
+    {src:'Based on AQA June 2022 · Paper 2 report', q:'Kaya Fresh runs 12 convenience stores.', ok:false,
+     text:'Food waste went from 6% to 9%.',
+     why:'Quoted, not used.'},
+    {src:'Based on AQA June 2025 · Paper 3 report (Q3)', q:'Kaya Fresh runs 12 convenience stores.', ok:true,
+     text:'Waste has risen by half, from 6% to 9% of stock, so for every £100 of stock Kaya now throws away £9 instead of £6.',
+     why:'It works out the size of the change and what it means in money.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q3)', q:'A furniture maker has a wage bill of £62,000 and operating profit of £85,000. The owner is considering a 20% pay rise.', ok:false,
+     text:'The wage bill is £62,000 and the owner wants to give a 20% pay rise.',
+     why:'This restates the question.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q3)', q:'A furniture maker has a wage bill of £62,000 and operating profit of £85,000. The owner is considering a 20% pay rise.', ok:true,
+     text:'A 20% rise adds £12,400 a year to costs, cutting operating profit from £85,000 to £72,600, so the business can afford it without making a loss.',
+     why:'On the June 2026 Paper 3, students who worked out what the pay rise cost could judge whether it was affordable.'},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q1.5)', q:'A business\'s market share was 22% in 2022, 20% in 2023 and 18% in 2024.', ok:true,
+     text:'Market share has fallen by 2 percentage points every year, so if nothing changes it will be down to 14% by 2026.',
+     why:'It spots the trend and extends it. The 2022 examiner said too few students used their own calculations to support arguments.'}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'calc', title:'Work it out', blurb:'Turn the figures into a number that makes your point.', pass:5,
+  teach:`<p>The June 2026 reports for Papers 2 and 3 both show that answers which calculated from the data did better than answers that just quoted it. In 2022 the Paper 2 examiner said there was "a distinct lack of relevant calculations to support arguments".</p>
+  <p>These are the small calculations you do inside a paragraph, not separate calculation questions. The numbers change each time you try. After each one, read how it strengthens the argument.</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 3 report (Q3)', gen(){const bill=rint(40,90)*1000,pct=pick([5,10,15,20]);
+      return {given:`A business has a wage bill of <b>£${f(bill)}</b> a year. The owner is considering a <b>${pct}%</b> pay rise.`,prompt:'Calculate the extra cost per year.',pre:'£',ans:bill*pct/100,tol:0.5,
+        traps:[{v:bill*(1+pct/100),m:'That is the new wage bill, not the extra cost.'}],
+        work:`£${f(bill)} × ${pct}% = £${f(bill*pct/100)}.`,use:'Now compare it with profit. A cost the business can easily absorb is a very different argument from one that wipes out its profit.'};}},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q3)', gen(){const extra=rint(6,20)*1000,profit=rint(50,150)*1000;
+      return {given:`A pay rise would add <b>£${f(extra)}</b> a year to costs. Operating profit is currently <b>£${f(profit)}</b>.`,prompt:'By what percentage would operating profit fall?',unit:'%',ans:r1(extra/profit*100),tol:0.1,
+        traps:[{v:r1(extra/(profit-extra)*100),m:'Divide by the original profit, not the new one.'}],
+        work:`£${f(extra)} ÷ £${f(profit)} × 100 = ${r1(extra/profit*100)}%.`,use:'"Profit would fall by about '+Math.round(extra/profit*100)+'%" lets you judge how serious the cost is, instead of just saying "costs rise".'};}},
+    {src:'Based on AQA June 2025 · Paper 3 report (Q3)', gen(){const rev=pick([3.6,4.2,4.8,5.4,6.0]),cust=pick([120,150,160,200,240]);const ans=Math.round(rev*1e6/cust);
+      return {given:`A B2B supplier has revenue of <b>£${rev}m</b> from <b>${cust}</b> business customers.`,prompt:'Calculate the average revenue per customer, in pounds.',pre:'£',ans,tol:1,
+        work:`£${f(rev*1e6)} ÷ ${cust} = £${f(ans)}.`,use:'This shows how much revenue is at risk each time one customer is lost. In B2B, losing one customer can matter a lot.'};}},
+    {src:'Based on AQA June 2026 · Paper 2 report', gen(){const ind=rint(92,97),firm=ind-rint(4,12);
+      return {given:`A firm delivers <b>${firm}%</b> of orders on time. The industry average is <b>${ind}%</b>.`,prompt:'How many percentage points below the industry average is the firm?',unit:'percentage points',ans:ind-firm,tol:0,
+        traps:[{v:r1((ind-firm)/ind*100),m:'That is a percentage difference. The question asks for percentage points: just subtract.'}],
+        work:`${ind} − ${firm} = ${ind-firm} percentage points.`,use:'Comparing with the industry tells you whether a figure is actually bad, not just lower than last year.'};}},
+    {src:'Based on AQA June 2018 · Paper 1 report (Q17)', gen(){const old=pick([120,140,160,180,200,250]),pct=pick([5,10,15,20]),nw=old*(1-pct/100);
+      return {given:`A business had <b>${old}</b> customers last year and has <b>${nw}</b> this year.`,prompt:'Calculate the percentage fall in customers.',unit:'%',ans:pct,tol:0.05,
+        traps:[{v:r1((old-nw)/nw*100),m:'You divided by the new figure. Always divide by the original.'}],
+        work:`${old} − ${nw} = ${old-nw}. ${old-nw} ÷ ${old} × 100 = ${pct}%.`,use:'"Lost '+pct+'% of its customers in a year" shows the scale of the problem far better than two raw numbers.'};}},
+    {src:'Based on AQA June 2026 · Paper 2 report', gen(){const ind=pick([8,10,12]),firm=ind*pick([1.5,2,2.5]);
+      return {given:`Labour turnover at the business is <b>${firm}%</b>. The industry average is <b>${ind}%</b>.`,prompt:'How many times the industry average is the business\'s labour turnover?',unit:'times',ans:firm/ind,tol:0.01,
+        traps:[{v:firm-ind,m:'That is the difference in percentage points. The question asks how many times bigger.'}],
+        work:`${firm} ÷ ${ind} = ${f(firm/ind)}.`,use:'"Labour turnover is '+f(firm/ind)+' times the industry average" is a strong, specific piece of evidence.'};}},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q1.1)', gen(){const s=rint(18,30),d=pick([1,1.5,2,2.5]),yrs=pick([2,3]);
+      return {given:`Market share was <b>${s+2*d}%</b> two years ago, <b>${s+d}%</b> last year and is <b>${s}%</b> this year.`,prompt:`If the trend continues, what will market share be in ${yrs} years' time?`,unit:'%',ans:s-d*yrs,tol:0.05,
+        work:`Share falls by ${d} points a year. ${s} − ${d} × ${yrs} = ${s-d*yrs}%.`,use:'Extrapolating the trend shows where the business is heading if it does nothing, which makes a strong reason to act.'};}}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'mcq', title:'What kind of business is it?', blurb:'A retailer is not a manufacturer. A business customer is not a shopper.', pass:6,
+  teach:`<p>Before you write, ask what kind of business it is, who its customers are and what situation it is in. In 2025 some students "did not consider Seabus was a retailer and framed their answers around a manufacturing process". In 2026 most students treated a business that sells to garden centres as if it sold to the public.</p>
+  <p>Choose the point that fits the business in the question.</p>`,
+  items:[
+    {src:'AQA June 2025 · Paper 2 report', prompt:'A retailer wants to improve its inventory control. Which point fits the context?',
+     o:['Reduce work-in-progress on the production line','Order smaller quantities from suppliers more often, so less unsold stock sits in its stores','Introduce cell production','Improve maintenance of its machines'], a:1,
+     why:'A retailer buys and sells finished goods. It has no production line.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q3.1)', prompt:'A manufacturer sells only to garden centres. Which argument fits a B2B context?',
+     o:['Customers buy on impulse when they see the product on the shelf','Each customer places large repeat orders, so losing one garden centre loses a big slice of revenue','Customers follow social media trends','Customers compare prices in the shop'], a:1,
+     why:'Business customers are few, buy in bulk and order again and again, so each relationship matters.'},
+    {src:'AQA June 2025 · Paper 2 report (Q3.1)', prompt:'A growing low-cost airline aims to keep labour costs below 20% of revenue. Which point uses the context?',
+     o:['Lower labour costs help keep fares low, which is how a low-cost airline wins passengers','Labour costs are part of every business\'s costs','Motivated staff work harder','HR objectives should be SMART'], a:0,
+     why:'The examiner said weaker answers "did not focus on the context of a growing low-cost airline".'},
+    {src:'AQA June 2022 · Paper 2 report (Q2.3)', prompt:'A question asks how a change might affect the motivation of senior managers, using Maslow. Which point fits them?',
+     o:['A pay rise will meet their physiological needs','Their lower-order needs are likely to be met already, so status and responsibility matter more','They need job security above all','They are motivated by piece rate'], a:1,
+     why:'The best answers recognised "that senior managers will already have satisfied their lower order needs".'},
+    {src:'AQA June 2018 · Paper 2 report (Q1.5)', prompt:'A question asks whether financial data about a business would be useful to a rival that is thinking of taking it over. Which point did the best answers make?',
+     o:['The data is historical','As a rival, it already knows the market and can compare the figures with its own','Financial data is always useful','Takeovers are risky'], a:1,
+     why:'The examiner praised students who noticed the question said "rival", so the buyer would already know market conditions and have data to compare.'},
+    {src:'AQA November 2020 · Paper 2 report (Q2.2)', prompt:'A question asks how a marketing manager might respond to new tariffs on the business\'s exports. Which response is part of a marketing manager\'s job?',
+     o:['Move the factory abroad','Change the price or target different export markets','Cut staff wages','Take out a bank loan'], a:1,
+     why:'The examiner noted "suggestions that were clearly not in the remit of a marketing manager".'},
+    {src:'AQA June 2025 · Paper 1 report (Q21)', prompt:'A question says a UK business\'s home market has stopped growing. How should that shape your answer?',
+     o:['Ignore it, as it is just background','Use it as the reason to look abroad, and ask whether overseas markets are growing faster','Assume the business will fail','Focus on cutting UK prices'], a:1,
+     why:'The examiner noted that some responses "did not incorporate this aspect of the question".'}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'drift', title:'Stick to the case', blurb:'Use what the case tells you. Don\'t invent facts.', pass:6,
+  labels:['Supported by the case','Not in the case'], showLabel:'A sentence from a student\'s answer:',
+  teach:`<p>On Paper 3, questions 1 to 5 are about the business in the case. You can draw sensible conclusions from it, but you must not invent facts. On the June 2026 Paper 3, students invented shareholders who were not in the case. They also claimed the owner had hired staff because the business became a limited company, when he already had them.</p>
+  <p>Read the case below, then decide whether each sentence is supported by it.</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:PELLOW, ok:false,
+     text:'Customers may worry that new shareholders will push for higher prices.',
+     why:'Sam holds all the shares. There are no new shareholders.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:PELLOW, ok:true,
+     text:'Because Sam holds every share, the people customers deal with have not changed.',
+     why:'This follows directly from the case.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:PELLOW, ok:false,
+     text:'Sam took on three joiners after becoming a limited company, which raised his costs.',
+     why:'The joiners have worked for him for over eight years. This is the kind of false premise the 2026 examiner described.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:PELLOW, ok:true,
+     text:'With most jobs booked six months ahead, demand is already strong, so Sam has little need to cut prices to win work.',
+     why:'A reasonable conclusion from a fact in the case.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:PELLOW, ok:false,
+     text:'The business can now raise money by selling shares on the stock exchange.',
+     why:'Only a plc can do that, and nothing in the case suggests Sam wants to sell shares.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:PELLOW, ok:true,
+     text:'His joiners have years of experience, so the quality of the kitchens customers receive is unlikely to change.',
+     why:'Supported by "more than eight years".'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:PELLOW, ok:false,
+     text:'Customers will now get a wider range of kitchen designs.',
+     why:'Nothing in the case says the range has changed.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:PELLOW, ok:true,
+     text:'Sam\'s personal assets are now protected if the company fails, which may make him more willing to take on larger contracts.',
+     why:'Limited liability follows from becoming a Ltd, and the rest is a sensible inference.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'mcq', title:'All businesses', blurb:'When the question says "all", the case study is not enough.', pass:6,
+  teach:`<p>Some questions ask about <b>all</b> businesses. Then you need different types of business to show where the statement holds and where it does not. In 2022 many students "struggled to apply the context beyond M&S", which limited their marks. On the June 2026 Paper 3 essay, answers that only used the case study business had their marks capped.</p>
+  <p>The context does not always have to be a named company. The 2023 Paper 3 report said: "application means context, not necessarily a specific example."</p>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 3 report (Q6)', prompt:'"Should all UK businesses use only UK suppliers?" Which plan best answers the "all"?',
+     o:['Three paragraphs about the case study business','Compare a business where UK suppliers make sense, such as a bakery needing daily deliveries, with one where they are impractical, such as an electronics maker whose parts are made in Asia','List the advantages and disadvantages of UK suppliers','Write about Brexit'], a:1,
+     why:'Contrasting two types of business shows when the statement holds and when it doesn\'t.'},
+    {src:'AQA June 2017 · Paper 2 report', prompt:'"Is Africa an attractive market for all businesses?" Which pair gives the strongest contrast?',
+     o:['A maker of low-cost mobile phones and a luxury car brand','Two luxury brands','Only the case study business','A list of African countries'], a:0,
+     why:'The examiner said weaker answers "failed to recognise the fact it may be good for some and not others".'},
+    {src:'AQA June 2023 · Paper 3 report', prompt:'A question asks about the importance of external factors for all businesses. Which approach did the 2023 examiner say worked best?',
+     o:['Naming as many real businesses as possible','Comparing a fast-moving industry, such as technology, with a slower-moving one, such as furniture','Writing only about the case','Going through PESTLE in order'], a:1,
+     why:'The examiner said the "even more successful" students compared fast-moving and slower-moving industries.'},
+    {src:'AQA June 2023 · Paper 3 report', prompt:'Does context on an "all businesses" question have to be a named real company?',
+     o:['Yes, always','No: a type of business or situation counts as context','Only on 25-mark essays','Only on Paper 1'], a:1,
+     why:'"Application means context, not necessarily a specific example."'},
+    {src:'AQA November 2020 · Paper 2 report (Q2.4)', prompt:'"Is Taylor\'s approach a good way for all businesses to motivate employees?" Which pair gives the strongest contrast?',
+     o:['A fast-food kitchen with simple, repeated tasks, and a software design team','Two car factories','A supermarket and a clothes shop','The case study business only'], a:0,
+     why:'Taylor fits measurable, repetitive work far better than creative work. The examiner said most answers "relied upon generic arguments".'},
+    {src:'AQA June 2022 · Paper 2 report (Q2.4)', prompt:'"Are joint ventures the best way for all businesses to grow?" What limited many answers in 2022?',
+     o:['Using too many examples','Only using M&S from the case study','Doing calculations','Writing a conclusion'], a:1,
+     why:'Students "struggled to apply the context beyond M&S", so they did not meet "the demand of the question for \'all\' businesses".'},
+    {src:'AQA June 2025 · Paper 2 report (Q2.4)', prompt:'"Should all businesses segment their market by income?" Which business shows where income matters less?',
+     o:['A luxury watch brand','A plumber, whose customers need repairs whatever they earn','A premium car maker','A designer clothing label'], a:1,
+     why:'The 2025 examiner noted a wide range of examples, from watches and supermarkets to "even plumbers".'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q6)', prompt:'In an "all businesses" answer, what should the conclusion do?',
+     o:['Say yes or no for every business','Say which types of business the statement holds for, which it does not, and why','Repeat the case study','Avoid a judgement'], a:1,
+     why:'The 2026 examiner was pleased to see conclusions that showed what the answer depends on.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'build', title:'Build it with the data', blurb:'Put the steps in order. One card is a trap.', pass:2,
+  teach:`<p>Now put it together. Each chain uses the case and the data at every step. Five cards, four belong. The trap card is true, but it heads away from the end point.</p>
+  <p>Tap cards to place them in order, and tap a placed card to send it back. You get two checks. To score, it must be right first time.</p>`,
+  items:[
+    {src:'Exam-style · Bloom Garden Supplies', q:BLOOM_Q, table:BLOOM_TABLE,
+     start:'Bloom raises on-time deliveries from 86% towards the industry average of 95%', end:'Bloom wins back garden centre customers',
+     cards:[
+      {id:'A',t:'More garden centres receive their compost when they ordered it, before the spring rush',w:'Why? At 86%, about one order in seven arrived late.'},
+      {id:'B',t:'They are less likely to run out of stock at their busiest time of year',w:'Why? Their shelves are refilled when demand is highest.'},
+      {id:'C',t:'Bloom becomes as reliable as rival suppliers, so the main reason to switch away goes',w:'Why? It is now 9 points below the industry; closing the gap puts it level with rivals.'},
+      {id:'D',t:'Some of the 14 garden centres it lost are willing to order from Bloom again',w:'Why? A business buyer chooses a supplier mainly on reliability and price.'}],
+     decoy:{id:'E',t:'Labour turnover falls from 19%, so recruitment costs fall',w:'Trap: possible, but it heads towards costs, not customers.'},
+     order:['A','B','C','D']},
+    {src:'Exam-style · Kaya Fresh', q:'Analyse how cutting food waste could improve Kaya Fresh\'s profit.', table:KAYA_TABLE,
+     start:'Kaya cuts food waste from 9% back to 6% of stock', end:'Kaya\'s profit rises',
+     cards:[
+      {id:'A',t:'Kaya orders fresh food more closely in line with what each store sells',w:'Why? Less unsold food goes past its date.'},
+      {id:'B',t:'For every £100 of stock, £3 less is thrown away',w:'Why? Waste falls from £9 to £6 per £100.'},
+      {id:'C',t:'Kaya pays for less food that never reaches a customer, while its sales stay the same',w:'Why? The cost of the goods it sells falls.'},
+      {id:'D',t:'Each £1 of sales now leaves more gross profit',w:'Why? Revenue minus cost of sales gets bigger.'}],
+     decoy:{id:'E',t:'Average spend has risen from £8.40 to £9.10',w:'Trap: true, but nothing to do with cutting waste.'},
+     order:['A','B','C','D']},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q3)', q:'A furniture maker employs five joiners. Last year two of them left for a local rival that pays 15% more. Its wage bill is £62,000 and operating profit is £85,000. Analyse how a 20% pay rise might affect labour turnover.',
+     start:'The business raises pay by 20%, adding £12,400 a year to costs', end:'Labour turnover falls from last year\'s 40%',
+     cards:[
+      {id:'A',t:'Its joiners are now paid slightly more than the rival that attracted two of them away',w:'Why? A 20% rise more than closes a 15% gap.'},
+      {id:'B',t:'Pay stops being a reason for joiners to feel dissatisfied',w:'Why? Herzberg treats pay as a hygiene factor: it removes dissatisfaction.'},
+      {id:'C',t:'Joiners have less reason to look for work elsewhere',w:'Why? The push that made two of them leave has gone.'},
+      {id:'D',t:'Fewer of the five joiners leave over the next year',w:'Why? With pay no longer an issue, they are more likely to stay.'}],
+     decoy:{id:'E',t:'The pay rise motivates the joiners to work harder',w:'Trap: Herzberg says pay does not motivate on its own, and this heads to productivity, not turnover.'},
+     order:['A','B','C','D']}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'timed', title:'Against the clock', blurb:'Twelve mixed questions, 30 seconds each.', pass:10, poolFrom:[1,2,3,5,6,7], count:12, seconds:30,
+  teach:`<p>Twelve questions drawn at random from stages 1, 2, 3, 5, 6 and 7, with 30 seconds each. In the exam you have to spot quickly whether a point is applied and whether the data is used.</p>
+  <p>You get a different set each time.</p>`,
+  items:[]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'write', title:'Use the data', blurb:'Write a full 9-mark answer built on the case and the data.', pass:1,
+  teach:`<p>This is an exam-style 9-mark question on Bloom Garden Supplies. The skill being tested is application: everything you write should only make sense for Bloom.</p>
+  <p>Write one developed argument, about 6 or 7 linked steps, with no counter-argument and no separate conclusion. Use at least two different pieces of data and work something out from them. Remember that Bloom sells to garden centres, not to the public. Finish with a sentence starting "Therefore" that uses the words of the question.</p>
+  <p>Write your start point and end point first. The answer box unlocks when you have.</p>`,
+  items:[{src:'Exam-style · Bloom Garden Supplies', w:{
+    intro:`${BLOOM_TABLE}<div class="qbox">${BLOOM_Q} <span style="color:var(--muted);font-weight:400">(9 marks)</span></div>`,
+    plan:[
+      {id:'S',label:'Start point',cls:'s',ph:'What are you analysing?',ok:v=>/(deliver|on.time|reliab|late)/.test(v),hint:'Check your start point: what is Bloom improving?'},
+      {id:'E',label:'End point',cls:'e',ph:'Where must the chain finish?',ok:v=>/(custom|garden cent|client|buyer)/.test(v),hint:'Check your end point. Look at the last words of the question.'}],
+    planOk:'Good. Keep both in front of you while you write.',
+    checks:[
+      {k:'start',label:'Opens from on-time delivery',test:x=>/(deliver|on.time|reliab|late)/.test(x.firstTwo)},
+      {k:'data',label:'Uses two different pieces of data from the table',test:x=>{const l=x.low;
+        const a=/(\b86\b|\b94\b|\b95\b|one in seven|1 in 7)/.test(l);
+        const b=/(\b140\b|\b126\b|\b14 (garden|customers|fewer)|lost 14|10%|ten per ?cent)/.test(l);
+        const c=/(4\.6|4\.2|36,?5\d\d|30,?000|36\.5k|£30k)/.test(l);
+        const d=/(\b19%|\b19 per|labour turnover)/.test(l);return [a,b,c,d].filter(Boolean).length>=2;}},
+      {k:'calc',label:'Works something out (points below the industry, % of customers lost, revenue per customer...)',test:x=>/(\b8 (percentage )?points|\b9 (percentage )?points|one in seven|1 in 7|\b14 (garden|customers|fewer)|lost 14|10%|ten per ?cent|36,?5\d\d|30,?000|36\.5k|£30k|\b14%)/.test(x.low)},
+      {k:'context',label:'Uses the B2B context (garden centres, spring, running out of stock...)',test:x=>/garden cent/.test(x.low)&&/(spring|season|run out|running out|shelves|stock|repeat|switch|supplier)/.test(x.low)},
+      {k:'links',label:'At least six linking words between steps',test:x=>(x.low.match(/\b(because|so|therefore|this means|which means|as a result|meaning|leads to|resulting in|consequently|since|as)\b/g)||[]).length>=6},
+      {k:'end',label:'Last sentence starts "Therefore" and answers the question',test:x=>/^therefore/.test(x.last)&&/(custom|garden cent)/.test(x.last)&&/(win|back|return|regain|re-?gain|again)/.test(x.last)}],
+    warn:x=>/(profit|revenue|cost)/.test(x.last)&&!/(custom|garden cent)/.test(x.last)?{msg:'Your last sentence is about profit, revenue or costs. The end point is winning back customers.',block:true}
+      :/(shoppers|consumers|impulse|social media|influencer|advert)/.test(x.low)?{msg:'Bloom sells to garden centres, not to the public. Check this part is about business customers.'}
+      :/\b(however|on the other hand|in conclusion|overall,)\b/.test(x.low)?{msg:'This looks like a counter-argument or conclusion. A 9-mark answer needs one developed argument.'}:null,
+    minCompare:60, minAi:80, finishLabel:'Finish the course',
+    model:`<span class="src">One way to write it</span><p><span class="hl-s">Improving Bloom's on-time delivery rate</span> could help it win back garden centre customers because <span class="hl-d">at 86%, roughly one order in seven now arrives late, compared with about one in seventeen in 2024</span>. Most compost is sold in spring, <span class="hl-w">so</span> a garden centre whose delivery is late at that time has empty shelves when its own customers want to buy, and loses sales it cannot get back. <span class="hl-w">This means</span> reliability matters more to a garden centre than almost anything else when it chooses a supplier, and Bloom is now <span class="hl-d">9 percentage points below the industry average of 95%</span>, which gives buyers a clear reason to go elsewhere. That is likely to explain why <span class="hl-d">Bloom has lost 14 of its 140 garden centre customers, a fall of 10%</span>. If Bloom raises its delivery rate back to the industry level, <span class="hl-w">then</span> the main reason those buyers left is removed, <span class="hl-w">so</span> some of them are likely to try Bloom again for the next season's orders. <span class="hl-w">Because</span> each customer now spends on average <span class="hl-d">about £36,500 a year (£4.6m ÷ 126)</span>, even winning back a few of them would be worth a lot. <span class="hl-w">Therefore</span> improving its on-time delivery rate could help Bloom win back garden centre customers, because it fixes the reliability problem that is most likely to have driven them away.</p>
+      <div class="key"><span><span class="hl-s">teal</span> start point</span><span><span class="hl-e">coral</span> end point</span><span><span class="hl-w">purple</span> links</span><span><span class="hl-d">underlined</span> data, worked out</span></div>
+      <p style="margin-top:14px;font-size:.9rem;color:var(--muted)">Notice that nearly every sentence would make no sense for a different business. That is what application means.</p>`,
+    ai:`You are an experienced AQA A-level Business teacher giving feedback on a student's 9-mark answer to: "Analyse how improving its on-time delivery rate could help Bloom Garden Supplies win back garden centre customers."
+Case: Bloom makes compost and plant feed and sells them to garden centres (B2B), not to the public; most sales are in spring. Data 2024 → 2025: revenue £4.2m → £4.6m; on-time deliveries 94% → 86% (industry average 95%); garden centre customers 140 → 126; labour turnover 11% → 19% (industry 10%); operating profit margin 8.0% → 6.5% (industry 9.0%).
+Rules for this question: one fully developed argument is the right approach, so never tell the student to add a counter-argument or conclusion. This course is about APPLICATION, so focus on: whether every step is specific to Bloom and its garden centre customers rather than generic; whether they treat the customers as businesses (not consumers); whether they use at least two pieces of data and work something out from them (for example 9 points below the industry, 14 customers or 10% lost, about £36,500 revenue per customer, one order in seven late) rather than just quoting figures; whether they read the data correctly (revenue rose, it did not fall); whether every step heads to WINNING BACK GARDEN CENTRE CUSTOMERS; and whether the final "Therefore" sentence uses the question's words.
+Do not give a mark or level. Write in plain British English, as a teacher speaking to a Year 13 student. No headings, no bullet symbols other than simple dashes, no emoji. Give: one sentence on what works; then two or three improvements, each quoting a short phrase they wrote ("You wrote: ...") and showing a better version ("You could write: ..."). Keep it under 220 words.`,
+    doneTitle:'Course complete',
+    doneText:'You have written an answer where the business and the data do the work. In every answer, cover the business\'s name and ask whether the sentence would still work for any company. If it would, add the case and the numbers.'
+  }}]}
+];
+
+window.COURSE={
+  id:'application', key:'application_course_v1', offset:400, short:'Application',
+  name:'Application Course',
+  hero:{kicker:'AO2 application · AQA A-level Business',
+    title:'Use the <em>case</em>, use the data',
+    lede:'Examiners say it every year: answers that could be about any business, data copied out of the appendix instead of used, and "all businesses" questions answered with one business. This course trains you to make every point about the business in front of you, using its numbers. Pass each stage to unlock the next.'},
+  stages:STAGES
+};
+</script>
+<script src="course-engine.js"></script>
+</body>
+</html>
