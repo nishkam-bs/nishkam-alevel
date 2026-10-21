@@ -23,7 +23,7 @@ const STAGES=[
 /* ---------------- STAGE 1 ---------------- */
 { id:1, type:'drift', title:'Summary or judgement?', blurb:'Tell a real judgement from a conclusion that just repeats.', pass:8,
   labels:['A real judgement','Not a judgement yet'], showLabel:'A student\'s conclusion:',
-  teach:`<p>On the long questions, 7 of 16, 8 of 20 and 9 of 24 marks on Paper 3 are for evaluation. Examiners keep writing the same thing about weaker answers: they "simply summarised when attempting to evaluate, rather than genuinely trying to weigh up their arguments."</p>
+  teach:`<p>On the long questions, 7 of 16, 8 of 20 and 9 of 24 marks on Paper 3 are for evaluation. The Paper 3 reports for 2023 and 2024 both say weaker responses "often simply summarised when attempting to evaluate, rather than genuinely trying to weigh-up their arguments."</p>
   <p>A real judgement answers the question, says which side carries more weight and why, and says what the answer depends on. A summary just lists both sides again.</p>
   <p>Read each conclusion and decide which it is.</p>`,
   items:[
@@ -42,12 +42,12 @@ const STAGES=[
     {src:'AQA June 2025 · Paper 1 · Q22', q:'The marketing department of a business wishes to increase its market share in a growing market. To what extent is market research the most important activity of the marketing department in order to achieve this objective?', ok:false,
      text:'Market research is important, but other activities such as pricing and promotion are also important, so it depends on the business.',
      why:'"It depends on the business" is the classic empty ending. Depends on what about the business?'},
-    {src:'AQA June 2024 · Paper 1 · Q22', q:'To what extent is this change guaranteed to increase the motivation of all employees?', ok:true,
-     text:'The change is not guaranteed to motivate all employees. It is likely to motivate staff who value recognition and responsibility, but for workers who are mainly unhappy about pay or job security, Herzberg suggests this will do little until those hygiene factors are fixed. So how far it works depends on what is currently causing dissatisfaction in that workforce.',
+    {src:'AQA June 2024 · Paper 1 · Q22', q:'A business changes its human resource management (HRM) approach from hard HRM to soft HRM. To what extent is this change guaranteed to increase the motivation of all employees?', ok:true,
+     text:'Moving to soft HRM is not guaranteed to motivate all employees. It is likely to motivate staff who value recognition and responsibility, but for workers who are mainly unhappy about pay or job security, Herzberg suggests this will do little until those hygiene factors are fixed. So how far it works depends on what is currently causing dissatisfaction in that workforce.',
      why:'It tackles both "guaranteed" and "all", uses theory to weigh, and gives a specific condition.'},
-    {src:'Based on AQA June 2023 Paper 3 (examiner commentary)', q:'To what extent should Logger Boards focus on its existing customers?', ok:false,
-     text:'Overall, Logger should focus on existing customers. It should also increase sales by launching a social media campaign and offering discounts to new customers in Europe.',
-     why:'The examiner criticised a conclusion like this: it "drifts from the question", which did not ask how Logger should increase sales, and it adds ideas that were never analysed.'},
+    {src:'AQA June 2023 · Paper 3 · Q4', q:'If the new production facility is built, Bodhi will aim to increase sales. To what extent is Bodhi likely to be able to increase sales using his current approach to promotion?', ok:false,
+     text:'Overall, Bodhi will be able to increase sales. To increase sales further, Logger should also start paid advertising and offer discounts to new customers in Europe.',
+     why:'The examiner criticised a conclusion on this question because it "drifts from the question – which did not ask how Logger should increase sales." It also adds ideas that were never analysed.'},
     {src:'AQA June 2018 · Paper 1 · Q24', q:'Are demographic factors now more significant than economic factors in influencing the performance of UK businesses? Justify your view.', ok:true,
      text:'For most UK businesses economic factors are still more significant, because changes in interest rates and incomes hit demand within months. Demographic change matters more for businesses whose market is defined by age, such as care homes or student housing, where an ageing population shifts demand permanently. So the answer depends on how closely a business\'s customers are tied to one age group.',
      why:'It makes a call, explains why it usually holds, and shows where it does not. That is the "depends on" the examiner rewards.'},
@@ -60,7 +60,7 @@ const STAGES=[
   ]},
 /* ---------------- STAGE 2 ---------------- */
 { id:2, type:'mcq', title:'What does it depend on?', blurb:'Find the condition that actually decides the answer.', pass:6,
-  teach:`<p>"It depends" only earns credit when you say what it depends on and why that factor decides it. The June 2026 Paper 3 examiner was pleased to see "depends on" conclusions, but the condition has to be specific to the question.</p>
+  teach:`<p>"It depends" only earns credit when you say what it depends on and why that factor decides it. On the June 2026 Paper 3 essay, the stronger answers ended with a judgement showing where the statement holds and where it does not. The condition has to be specific to the question.</p>
   <p>For each one, choose the condition that does the most work.</p>`,
   items:[
     {src:'AQA June 2024 · Paper 1 · Q24', prompt:LEAN_Q+' Which "depends on" is most useful?',
@@ -160,12 +160,12 @@ const STAGES=[
      fixes:['The figures are probably made up for the exam.','The cost rise matters more because it affects every job, while the lost contract was a one-off.','Material costs might go down next year.'], fix:1},
     {src:'Based on AQA June 2026 · Paper 3 (examiner report)', q:'To what extent will the cash flow problem threaten the survival of the business?',
      s:['The cash flow problem is a real threat, but not an immediate one.','The business has an overdraft facility that covers the gap for the next three months.','Because of this, the business will definitely collapse within weeks.','Its survival depends on whether the large customer pays on time in March.'],
-     bad:2, problem:'Exaggeration. The 2026 examiner penalised hyperbole and rewarded answers that kept the effect in proportion. It also contradicts the previous sentence.',
+     bad:2, problem:'Exaggeration, and it contradicts the previous sentence. On a June 2026 Paper 3 question about cash flow, the examiner said some of the best evaluation recognised it was not an "existential crisis", and found "the willingness to avoid hyperbolic responses" heartening.',
      fixes:['Because of this, the threat is serious but manageable in the short term.','Because of this, the business is completely safe forever.','Because of this, the owner should sell the business.'], fix:0},
-    {src:'Based on AQA June 2023 · Paper 3 (examiner commentary)', q:'To what extent should Logger Boards focus on its existing customers?',
-     s:['On balance, Logger should focus on its existing customers.','They provide most of its income and are cheaper to keep than new customers are to win.','To increase sales, Logger should launch a social media campaign aimed at Europe.','This depends on whether existing customers are still growing their orders.'],
-     bad:2, problem:'The examiner said a conclusion like this "drifts from the question – which did not ask how Logger should increase sales."',
-     fixes:['Logger should also cut its prices.','Focusing on new customers would be riskier because Logger has no track record with them, so the cost of winning them is less certain.','Logger is a good business.'], fix:1},
+    {src:'AQA June 2023 · Paper 3 · Q4 (examiner commentary)', q:'If the new production facility is built, Bodhi will aim to increase sales. To what extent is Bodhi likely to be able to increase sales using his current approach to promotion?',
+     s:['On balance, Bodhi is unlikely to increase sales much using his current approach alone.','His Instagram account has 200 000 followers, but the content focuses on his surfing lifestyle and beliefs rather than on the surfboards.','To increase sales, Logger should start paid advertising and offer discounts to new customers.','This depends on how many of his followers match the age and income of the people who actually buy his boards.'],
+     bad:2, problem:'The examiner said a conclusion on this question "drifts from the question – which did not ask how Logger should increase sales."',
+     fixes:['Bodhi should hire a marketing manager.','Whether followers turn into customers matters more than how many followers there are, because promotion only raises sales if it reaches people who are likely to buy.','Logger Boards is a successful business.'], fix:1},
     {src:'AQA June 2024 · Paper 1 · Q24', q:LEAN_Q,
      s:['Lean production will usually lower unit costs, but not always.','In the first paragraph I explained JIT, in the second I explained kaizen, and in the third I explained the risks.','The savings on stock apply to every unit, so for a high-volume firm they outweigh the training costs.','It depends on supplier reliability, because a single failed delivery can stop the line.'],
      bad:1, problem:'Describing what you wrote is not weighing it. Examiners say weaker conclusions "summarised" instead of judging.',
@@ -183,7 +183,7 @@ const STAGES=[
   items:[
     {src:'Exam-style · proportion', prompt:'New regulations add £1.2m a year to costs for a firm with revenue of £60m and operating profit of £4m. Which judgement uses the figures best?',
      o:['£1.2m is a large amount of money, so the regulation is very damaging.','£1.2m is only 2% of revenue, so it hardly matters.','£1.2m is 30% of operating profit, so even though it is a small share of revenue, it is a serious threat to profitability.'], a:2,
-     why:'Compare the cost with profit, not revenue. 1.2 ÷ 4 = 30%. The 2026 examiner rewarded this kind of proportional thinking.'},
+     why:'Compare the cost with profit, not revenue. 1.2 ÷ 4 = 30%. Keeping an effect in proportion, neither ignoring it nor exaggerating it, is what the 2026 Paper 3 examiner praised.'},
     {src:'Exam-style · timescale', prompt:'Delayering cuts salary costs by £300,000 a year but costs £400,000 in one-off redundancy pay. Which reason best shows the savings outweigh the cost?',
      o:['The savings are bigger.','The redundancy cost is paid once, while the savings repeat every year, so the business is better off from the second year onwards.','Redundancy is bad for morale.'], a:1,
      why:'£300k × 2 = £600k > £400k. Comparing one-off with recurring is a strong way to weigh.'},

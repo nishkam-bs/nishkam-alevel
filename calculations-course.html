@@ -54,12 +54,12 @@ const STAGES=[
   ]},
 /* ---------------- STAGE 2 ---------------- */
 { id:2, type:'calc', title:'Reverse percentages', blurb:'Work back to the original figure. The 2026 trap.', pass:5,
-  teach:`<p>In June 2026 the examiner reported that students "subtracted 10% instead of dividing by 1.1" on Paper 2 question 1.1. It is the most common reverse percentage mistake.</p>
+  teach:`<p>On Paper 2 question 1.1 in June 2026, the examiner reported students "deducting the percentage change rather than reversing it correctly". Many also lost marks for leaving out the currency and units: "the omission of the Euro symbol and reference to billions was a frequent reason for students losing marks."</p>
   <p>If a figure has gone <b>up</b> by 10%, it is now 110% of the original, so divide by 1.1. If it has gone <b>down</b> by 10%, it is 90% of the original, so divide by 0.9.</p>`,
   items:[
     {src:'Based on AQA June 2026 · Paper 2 · Q1.1', gen(){const O=pick([30,40,45,50,60,80,90]),V=r2(O*1.1);
       return {given:`A supermarket's revenue in 2025 was <b>£${f(V)}m</b>, which was 10% higher than in 2024.`,prompt:'Calculate revenue in 2024.',pre:true,ans:O,tol:0.01,
-        traps:[{v:r2(V*0.9),m:'You subtracted 10%. This was the main error in June 2026. Divide by 1.1 instead.'}],
+        traps:[{v:r2(V*0.9),m:'You took 10% off. This was a common error in June 2026. Divide by 1.1 instead.'}],
         work:`£${f(V)}m ÷ 1.1 = £${f(O)}m.`};}},
     {src:'Core skill · after an increase', gen(){const O=pick([200,240,300,360,400,480,500,600]),x=pick([5,15,20,25]),V=O*(1+x/100);
       return {given:`After a <b>${x}%</b> increase, costs are <b>£${f(V)}k</b>.`,prompt:'Calculate costs before the increase (in £k).',pre:'£',unit:'k',ans:O,tol:0.01,
@@ -84,7 +84,7 @@ const STAGES=[
   ]},
 /* ---------------- STAGE 3 ---------------- */
 { id:3, type:'calc', title:'Break-even and margin of safety', blurb:'Contribution, break-even and the units trap.', pass:5,
-  teach:`<p>In June 2026, half the cohort got full marks on the margin of safety question, but over a quarter scored zero. The examiner said students "confuse profit with margin of safety" and gave it in pounds rather than units.</p>
+  teach:`<p>In June 2026, half the cohort got full marks on the margin of safety question, but over a quarter scored zero, "often appearing to confuse profit with margin of safety". The mark scheme is clear: do not credit a margin of safety expressed in pounds.</p>
   <p>Contribution per unit = selling price − variable cost per unit. Break-even output = fixed costs ÷ contribution per unit. Margin of safety = actual output − break-even output, in <b>units</b>.</p>`,
   items:[
     {src:'Core skill · contribution', gen(){const V=rint(4,30),P=V+rint(3,25);
@@ -112,7 +112,7 @@ const STAGES=[
   ]},
 /* ---------------- STAGE 4 ---------------- */
 { id:4, type:'calc', title:'Profit and margins', blurb:'Gross profit, operating profit, and the margin trap.', pass:5,
-  teach:`<p>In June 2026 the examiner flagged two problems on Paper 2: students "confused operating expenses with operating profit" on a multi-step question, and discussed operating profit when the question asked about operating profit <i>margin</i>.</p>
+  teach:`<p>In June 2026 the Paper 2 examiner flagged two problems: on question 1.2 students "confused operating expenses with operating profit", and on question 1.4 "many students discussed operating profit rather than operating profit margin".</p>
   <p>Gross profit = revenue − cost of sales. Operating profit = gross profit − operating expenses. Operating profit margin = operating profit ÷ revenue × 100.</p>`,
   items:[
     {src:'Core skill · gross profit', gen(){const R=rint(400,2000,20),COS=rint(Math.round(R*.4/10)*10,Math.round(R*.7/10)*10,10);
@@ -123,10 +123,10 @@ const STAGES=[
     {src:'Core skill · operating profit margin', gen(){const R=rint(1000,5000,100),OP=Math.round(R*pick([.06,.08,.1,.12,.15,.18])),ans=r1(OP/R*100);
       return {given:`Revenue <b>£${f(R)}k</b>. Operating profit <b>£${f(OP)}k</b>.`,prompt:'Calculate the operating profit margin (to 1 decimal place).',unit:'%',ans,tol:0.051,
         work:`£${f(OP)}k ÷ £${f(R)}k × 100 = ${ans}%.`};}},
-    {src:'Based on AQA June 2026 · Paper 2 · Q1.2', gen(){const R=rint(2000,6000,100),COS=Math.round(R*pick([.5,.55,.6])/10)*10,OP=Math.round(R*pick([.08,.1,.12])/10)*10,OE=R-COS-OP;
-      return {given:`Revenue <b>£${f(R)}k</b>. Cost of sales <b>£${f(COS)}k</b>. Operating profit <b>£${f(OP)}k</b>.`,prompt:'Calculate operating expenses (in £k).',pre:'£',unit:'k',ans:OE,tol:0,
-        traps:[{v:R-OP,m:'You only took operating profit off revenue. Cost of sales has to come off too.'},{v:R-COS,m:'That is gross profit. Operating expenses = gross profit − operating profit.'}],
-        work:`Gross profit = £${f(R)}k − £${f(COS)}k = £${f(R-COS)}k. Operating expenses = £${f(R-COS)}k − £${f(OP)}k = £${f(OE)}k.`};}},
+    {src:'Based on AQA June 2026 · Paper 2 · Q1.2', gen(){const R=rint(20,80,5)*100,m=pick([4,5,6,8,10]),OP=R*m/100,GP=R*pick([.3,.35,.4,.45]),OE=GP-OP;
+      return {given:`Revenue <b>£${f(R)}m</b>. Gross profit <b>£${f(GP)}m</b>. Operating profit margin <b>${m}%</b>.`,prompt:'Calculate operating expenses.',pre:'£',unit:'m',ans:OE,tol:0.01,
+        traps:[{v:OP,m:'That is operating profit. The 2026 examiner said students confused operating expenses with operating profit. One more step: gross profit − operating profit.'},{v:R-OP,m:'Start from gross profit, not revenue.'}],
+        work:`Operating profit = £${f(R)}m × ${m}% = £${f(OP)}m. Operating expenses = gross profit − operating profit = £${f(GP)}m − £${f(OP)}m = £${f(OE)}m.`,use:'This is the same two-step method as the real question: margin → operating profit → operating expenses.'};}},
     {src:'Core skill · profit for the year', gen(){const OP=rint(300,1200,10),fin=rint(20,120,5),tax=Math.round((OP-fin)*0.25);
       return {given:`Operating profit <b>£${f(OP)}k</b>. Net finance costs (interest) <b>£${fin}k</b>. Tax <b>£${f(tax)}k</b>.`,prompt:'Calculate profit for the year (in £k).',pre:'£',unit:'k',ans:OP-fin-tax,tol:0,
         traps:[{v:OP-tax,m:'You forgot the finance costs. Interest comes off before tax.'}],work:`£${f(OP)}k − £${fin}k − £${f(tax)}k = £${f(OP-fin-tax)}k.`};}},
@@ -164,12 +164,12 @@ const STAGES=[
   ]},
 /* ---------------- STAGE 6 ---------------- */
 { id:6, type:'calc', title:'Investment appraisal', blurb:'Payback, ARR and NPV, and the ARR trap.', pass:5,
-  teach:`<p>In June 2026 only about a fifth of students got the ARR question fully right. The examiner said the critical error was "not recognising the need to subtract the initial cost". In 2017, many thought payback happened at the end of a year rather than during it.</p>
+  teach:`<p>In June 2026 only about a fifth of students got the ARR question fully right. The examiner said "a significant number of other answers did not recognise the need to subtract the initial cost". In 2017, many thought payback happened at the end of a year rather than during it.</p>
   <p>ARR = (total net returns − initial cost) ÷ years ÷ initial cost × 100. NPV = present value of inflows − initial cost.</p>`,
   items:[
     {src:'Based on AQA June 2026 · Paper 1 · Q16', gen(){const C=pick([100,200,250,400,500]),n=pick([4,5]),arr=pick([6,8,10,12,15]),T=C+C*arr/100*n;
       return {given:`A machine costs <b>£${C}k</b>. Total net cash inflows over its ${n}-year life are <b>£${f(T)}k</b>.`,prompt:'Calculate the average rate of return (ARR).',unit:'%',ans:arr,tol:0.05,
-        traps:[{v:r1(T/n/C*100),m:'You did not subtract the initial cost. This was the main error in June 2026.'}],
+        traps:[{v:r1(T/n/C*100),m:'You did not subtract the initial cost. The 2026 examiner flagged exactly this.'}],
         work:`Total profit = £${f(T)}k − £${C}k = £${f(T-C)}k. Per year = £${f((T-C)/n)}k. £${f((T-C)/n)}k ÷ £${C}k × 100 = ${arr}%.`};}},
     {src:'Core skill · payback', gen(){const fr=pick([0.25,0.4,0.5,0.6,0.75,0.8]),y3=pick([40,50,60,80,100]),y1=rint(20,50,5),y2=rint(30,60,5),C=y1+y2+fr*y3,ans=r2(2+fr);
       return {given:`An investment costs <b>£${f(C)}k</b>. Net cash inflows: year 1 <b>£${y1}k</b>, year 2 <b>£${y2}k</b>, year 3 <b>£${y3}k</b>.`,prompt:'Calculate the payback period in years (to 2 decimal places).',unit:'years',ans,tol:0.01,
