@@ -606,6 +606,8 @@ STAGES.forEach(s=>s.items.forEach((it,i)=>{it._id=s.id+'.'+(i+1);}));
 
 /* Tracking only runs on the school site. Everywhere else the course works on its own. */
 const TRACKING_ON=true;
+// Half-term only: students sign in with exam number alone. Remove this when individual passwords go in.
+const HOLIDAY_CODE='Chains26';
 const TRACK=TRACKING_ON&&/github\.io$/.test(location.hostname);
 const API='https://nishkam-tracker.alevelnishkam.workers.dev';
 const KEY='endpoint_course_v1';
@@ -647,11 +649,11 @@ function logResult(row){if(!TRACK||!auth)return;const q=pending();q.push(row);se
 function renderAuth(msg){
   const box=$('#authBox');if(!TRACK){box.hidden=true;return;}box.hidden=false;
   if(auth){box.innerHTML=`<div class="who">Signed in as <b>${esc(auth.name)}</b> <span class="sync" id="syncTxt"></span><button id="soBtn">Not you? Sign out</button></div>`;$('#soBtn').onclick=()=>signOut();return;}
-  box.innerHTML=`<form class="signin" id="siForm"><h3>Sign in to start</h3><p>Use your exam number and the class code from your teacher. Your progress is saved to your account, so you can carry on from any device.</p>
-    <div class="row"><input class="txt" id="siExam" inputmode="numeric" autocomplete="off" placeholder="Exam number" aria-label="Exam number"><input class="txt" id="siCode" autocomplete="off" placeholder="Class code" aria-label="Class code"><button class="btn" type="submit">Sign in</button></div>
+  box.innerHTML=`<form class="signin" id="siForm"><h3>Sign in to start</h3><p>Enter your exam number. Your progress is saved, so you can carry on from any device.</p>
+    <div class="row"><input class="txt" id="siExam" inputmode="numeric" autocomplete="off" placeholder="Exam number" aria-label="Exam number"><button class="btn" type="submit">Sign in</button></div>
     <div class="err" aria-live="polite">${msg?esc(msg):''}</div></form>`;
   $('#siForm').onsubmit=async e=>{e.preventDefault();const btn=$('#siForm .btn'),err=$('#siForm .err');btn.disabled=true;err.textContent='';
-    try{const d=await api('/login',{exam:$('#siExam').value.trim(),code:$('#siCode').value.trim()});
+    try{const d=await api('/login',{exam:$('#siExam').value.trim(),code:HOLIDAY_CODE});
       auth={token:d.token,name:d.name,exam:d.exam};try{localStorage.setItem('epc_auth',JSON.stringify(auth));}catch(x){}
       loadState();renderAuth();renderMap();await syncProgress();flush();
     }catch(x){err.textContent=x.message==='Failed to fetch'?'Could not connect. Check your internet and try again.':x.message;btn.disabled=false;}};
