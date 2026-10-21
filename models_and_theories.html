@@ -259,11 +259,7 @@ select:focus{outline:none;border-color:var(--gold)}
 
 <!-- ══════════ QUIZ ══════════ -->
 <div class="view" id="quizView"><div class="container">
-<div class="screen active" id="loginScreen"><div class="panel"><h2>Who are you?</h2>
-<label class="fl" for="ss">Select your name</label>
-<select id="ss"><option value="">— Choose —</option>
-<option value="DHILLON, Sukhchain|1263">Sukhchain Dhillon</option><option value="DOKAL, Karam|1267">Karam Dokal</option><option value="GILL, Rajan|1274">Rajan Gill</option><option value="GULATI, Sanchipreet|1280">Sanchipreet Gulati</option><option value="JASSY, Dilshhan|1286">Dilshhan Jassy</option><option value="KAPOOR, Rashmeet|1289">Rashmeet Kapoor</option><option value="KAUR, Avleen|1292">Avleen Kaur</option><option value="KAUR, Tandrika|1295">Tandrika Kaur</option><option value="KHATRI, Avleen|1299">Avleen Khatri</option><option value="KUNDI, Jeevan|1301">Jeevan Kundi</option><option value="NOTAY, Prabhleen|1318">Prabhleen Notay</option><option value="SACHDEV, Sanam|1327">Sanam Sachdev</option><option value="SIDHU, Jeeval|1336">Jeeval Sidhu</option><option value="SINGH, Anhadvir|1582">Anhadvir Singh</option><option value="SINGH, Pravneet|1343">Pravneet Singh</option>
-</select><div style="margin-top:.7rem;text-align:right"><button class="btn btn-gold" onclick="goToTopics()">Next</button></div></div></div>
+<div class="screen active" id="loginScreen"><div class="panel"><h2>Models quiz</h2><p>Ten questions on a model of your choice: scenarios, definitions and exam traps.</p><div style="margin-top:.7rem;text-align:right"><button class="btn btn-gold" onclick="goToTopics()">Start</button></div></div></div>
 
 <div class="screen" id="topicScreen"><div class="panel"><h2>Choose a topic</h2><p>10 questions — scenarios, definitions, and exam traps.</p>
 <div class="topic-grid">
@@ -293,7 +289,7 @@ sects.forEach(s=>io.observe(s));
 
 let SN='',CN='',ST='',QS=[],CQ=0,SC=0,ANS=[];
 function showQS(id){document.querySelectorAll('#quizView .screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
-function goToTopics(){const s=document.getElementById('ss');if(!s.value){alert('Please select your name.');return}const p=s.value.split('|');SN=p[0];CN=p[1];showQS('topicScreen')}
+function goToTopics(){showQS('topicScreen')}
 function selectTopic(b){document.querySelectorAll('.topic-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');ST=b.dataset.topic;document.getElementById('startBtn').disabled=false}
 
 const B={
@@ -392,7 +388,7 @@ function chk(b,c,a){if(b.classList.contains('locked'))return;const all=document.
 function nxt(){CQ++;if(CQ>=QS.length)showRes();else renderQ()}
 function showRes(){showQS('resultScreen');const L={ansoff:"Ansoff's Matrix",porter:"Porter",motivation:"Motivation theories",change:"Change management",marketing:"Marketing models",strategy:"Strategic analysis",decisions:"Decisions & investment",mixed:"Mixed — all models"};const l=L[ST]||ST;const pct=Math.round(SC/QS.length*100);let g='';if(pct>=90)g='Excellent';else if(pct>=70)g='Good — review the ones you missed';else if(pct>=50)g='Some gaps — revisit this topic';else g='Needs more work — go through the guide and try again';let h=`<div class="result-bar"><div class="result-score">${SC}/${QS.length}</div><div><div class="result-label">${l}</div><div class="result-detail">${pct}% — ${g}</div></div></div><h3>Your answers</h3><ul class="result-list">`;ANS.forEach((a,i)=>{h+=`<li><span class="icon ${a.w?'tick':'cross'}">${a.w?'&#10003;':'&#10007;'}</span><span>${QS[i].q.substring(0,85)}${QS[i].q.length>85?'...':''}</span></li>`});h+=`</ul><div id="ls" class="status">Saving...</div><div style="margin-top:.8rem;display:flex;gap:.4rem;flex-wrap:wrap"><button class="btn btn-gold" onclick="resetQ()">Another topic</button><button class="btn btn-outline" onclick="showGuide();window.scrollTo(0,0)">Back to guide</button></div>`;document.getElementById('resultPanel').innerHTML=h;logS(l)}
 function resetQ(){ST='';document.querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('selected'));document.getElementById('startBtn').disabled=true;showQS('topicScreen')}
-async function logS(l){const EP='https://script.google.com/macros/s/AKfycbwp1BPFJztzwXXY81prlg0Uo7J34-P7FE3SWKelOEUppM6hzq576Au3ra58xkEI51nP/exec';const st=document.getElementById('ls');const p={name:SN,candidateNumber:CN,paper:'Models Quiz: '+l,mark:SC+'/'+QS.length,maxMark:QS.length,level:'',www1:ANS.filter(a=>a.w).length+' correct',www2:'',ebi1:ANS.filter(a=>!a.w).length+' incorrect',ebi2:'',tool:'modelsquiz'};try{const params=new URLSearchParams();params.append('payload',JSON.stringify(p));await fetch(EP,{method:'POST',body:params});st.textContent='Score saved.';st.classList.add('ok')}catch(e){st.textContent='Score saved.';st.classList.add('ok')}}
+async function logS(l){/* Logging switched off: results are no longer sent anywhere from this page. */}
 </script>
 </body>
 </html>
