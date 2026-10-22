@@ -83,7 +83,7 @@ const STAGES=[
         work:`£${f(V)}k ÷ 0.9 = £${f(r2(V/0.9))}k (2024). ÷ 1.2 = £${f(O)}k (2023).`};}}
   ]},
 /* ---------------- STAGE 3 ---------------- */
-{ id:3, type:'calc', title:'Break-even and margin of safety', blurb:'Contribution, break-even and the units trap.', pass:5,
+{ id:3, type:'calc', title:'Break-even and margin of safety', blurb:'Contribution, break-even and the units trap.', pass:6,
   teach:`<p>In June 2026, half the cohort got full marks on the margin of safety question, but over a quarter scored zero, "often appearing to confuse profit with margin of safety". The mark scheme is clear: do not credit a margin of safety expressed in pounds.</p>
   <p>Contribution per unit = selling price − variable cost per unit. Break-even output = fixed costs ÷ contribution per unit. Margin of safety = actual output − break-even output, in <b>units</b>.</p>`,
   items:[
@@ -108,7 +108,15 @@ const STAGES=[
     {src:'Core skill · margin of safety as a percentage', gen(){const BE=rint(400,1200,50),Q=BE+rint(50,400,25),ans=r1((Q-BE)/Q*100);
       return {given:`Break-even output is <b>${f(BE)} units</b>. Current output is <b>${f(Q)} units</b>.`,prompt:'Calculate the margin of safety as a percentage of current output (to 1 decimal place).',unit:'%',ans,tol:0.051,
         traps:[{v:r1((Q-BE)/BE*100),m:'Divide by current output, not by break-even output.'}],
-        work:`(${f(Q)} − ${f(BE)}) ÷ ${f(Q)} × 100 = ${ans}%.`};}}
+        work:`(${f(Q)} − ${f(BE)}) ÷ ${f(Q)} × 100 = ${ans}%.`};}},
+    {src:'Based on AQA June 2026 · Paper 1 report (Q5)', gen(){const Q=rint(2000,8000,500),V=rint(4,20),P=V+rint(3,15),TR=P*Q,TVC=V*Q;let FC=rint(10,50,5)*1000;if(Math.abs(FC-TVC)<2000)FC+=7000;
+      return {given:`Total revenue <b>£${f(TR)}</b>. Total variable costs <b>£${f(TVC)}</b>. Fixed costs <b>£${f(FC)}</b>.`,prompt:'Calculate total contribution.',pre:'£',ans:TR-TVC,tol:0,
+        traps:[{v:TR-TVC-FC,m:'That is profit. Total contribution only takes off variable costs.'},{v:TR-FC,m:'Take off the variable costs, not the fixed costs.'}],
+        work:`Total contribution = total revenue − total variable costs = £${f(TR)} − £${f(TVC)} = £${f(TR-TVC)}.`,use:'Then profit = total contribution − fixed costs. The 2026 accounting-equations question tested exactly these links.'};}},
+    {src:'Based on AQA June 2026 · Paper 1 report (Q5)', gen(){const Q=rint(2000,8000,500),V=rint(4,20),P=V+rint(3,15),TR=P*Q,TVC=V*Q,FC=Math.round((P-V)*Q*pick([0.4,0.5,0.6])/1000)*1000,pr=TR-TVC-FC;
+      return {given:`Total revenue <b>£${f(TR)}</b>. Total variable costs <b>£${f(TVC)}</b>. Profit <b>£${f(pr)}</b>.`,prompt:'Calculate fixed costs.',pre:'£',ans:FC,tol:0,
+        traps:[{v:TR-pr,m:'That is total costs. Total costs = fixed + variable, so take off the variable costs as well.'},{v:TR-TVC,m:'That is total contribution. Fixed costs = total contribution − profit.'}],
+        work:`Total contribution = £${f(TR)} − £${f(TVC)} = £${f(TR-TVC)}. Fixed costs = total contribution − profit = £${f(TR-TVC)} − £${f(pr)} = £${f(FC)}.`};}}
   ]},
 /* ---------------- STAGE 4 ---------------- */
 { id:4, type:'calc', title:'Profit and margins', blurb:'Gross profit, operating profit, and the margin trap.', pass:5,

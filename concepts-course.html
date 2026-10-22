@@ -61,7 +61,7 @@ const STAGES=[
   ]},
 
 /* ---------------- STAGE 2 ---------------- */
-{ id:2, type:'mcq', title:'Numbers that look alike', blurb:'Margin or profit, contribution or revenue, units or pounds.', pass:8,
+{ id:2, type:'mcq', title:'Numbers that look alike', blurb:'Margin or profit, contribution or revenue, units or pounds.', pass:10,
   teach:`<p>Many marks are lost not because students can't calculate, but because they calculate the wrong thing: profit instead of margin, revenue instead of contribution, pounds instead of units.</p>
   <p>Every question here is built on a mistake an examiner reported. Work each one out before you look at the options.</p>`,
   items:[
@@ -86,6 +86,12 @@ const STAGES=[
     {src:'Based on AQA June 2017 · Paper 1 report (Q16)', prompt:'A machine costs £90,000. Net cash flows: Year 1 £30,000, Year 2 £40,000, Year 3 £40,000. What is the payback period?',
      o:['3 years','2 years 6 months','2 years','2 years 2 months'], a:1,
      why:'£70,000 is back after two years. The last £20,000 is half of Year 3\'s £40,000, so payback is 2 years 6 months. The 2017 examiner reported students saying payback came "after 3 years" rather than during the third year.'},
+    {src:'Based on AQA June 2026 · Paper 1 report (Q5)', prompt:'Which of these equations is always correct?',
+     o:['Total revenue = total costs + total contribution','Total revenue = contribution per unit × quantity sold','Total contribution = total revenue − total variable costs','Profit = total contribution + fixed costs'], a:2,
+     why:'Contribution per unit × quantity is total contribution, not revenue. Total costs + total contribution comes to revenue plus fixed costs, so it overstates revenue. Profit = total contribution − fixed costs. The 2026 report named this accounting-equations question as one of the more challenging ones.'},
+    {src:'Based on AQA June 2026 · Paper 1 report (Q5)', prompt:'Revenue £80,000. Variable costs £50,000. Fixed costs £20,000. Which statement is correct?',
+     o:['Total contribution is £30,000 and profit is £10,000','Total contribution is £10,000 and profit is £30,000','Total contribution is £80,000 and profit is £10,000','Total contribution is £60,000 and profit is £30,000'], a:0,
+     why:'Contribution = 80,000 − 50,000 = £30,000. Profit = 30,000 − 20,000 = £10,000.'},
     {src:'Based on AQA June 2017 · Paper 1 report (Q16 and Q17)', prompt:'Which method of investment appraisal uses discount factors?',
      o:['Payback','Average rate of return','Net present value','Break-even'], a:2,
      why:'Only NPV discounts future cash flows. In 2017 many students used the discount factors to calculate payback, so they answered the wrong question.'},
