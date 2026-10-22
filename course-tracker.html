@@ -70,7 +70,7 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
 
 <div id="loginView" class="login card">
   <h1>Course tracker</h1>
-  <p>Start Point/End Point Course. Teacher access only.</p>
+  <p>Courses and marked answers. Teacher access only.</p>
   <form id="lf"><input type="password" id="pw" placeholder="Teacher password" autocomplete="current-password" aria-label="Teacher password"><button class="btn" type="submit">Open</button><div class="err" id="lerr"></div></form>
 </div>
 
@@ -80,21 +80,21 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
     <div style="display:flex;gap:10px"><button class="btn ghost" id="refresh">Refresh</button><button class="btn ghost" id="logout">Sign out</button></div>
   </div>
   <div class="stats">
-    <div class="card stat"><b id="sStarted">0</b><span>students started</span></div>
-    <div class="card stat"><b id="sDone">0</b><span>finished all 10 stages</span></div>
-    <div class="card stat"><b id="sAvg">0</b><span>average stages passed</span></div>
-    <div class="card stat"><b id="sWeek">0</b><span>attempts in the last 7 days</span></div>
+    <div class="card stat"><b id="sStarted">0</b><span id="lStarted">students started</span></div>
+    <div class="card stat"><b id="sDone">0</b><span id="lDone">finished all 10 stages</span></div>
+    <div class="card stat"><b id="sAvg">0</b><span id="lAvg">average stages passed</span></div>
+    <div class="card stat"><b id="sWeek">0</b><span id="lWeek">attempts in the last 7 days</span></div>
   </div>
   <div class="grid2">
     <div>
       <div class="card">
-        <div class="filters"><select id="course" aria-label="Choose course"><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option><option value="400">Application Course</option><option value="500">Models Course</option><option value="600">Paper 3 Course</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
+        <div class="filters"><select id="course" aria-label="Choose course"><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option><option value="400">Application Course</option><option value="500">Models Course</option><option value="600">Paper 3 Course</option><option value="m">Marked answers (essay tools)</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
         <div class="tablewrap"><table id="tbl"></table></div>
-        <div class="legend"><span><span class="cell p">8/10</span> passed (best score)</span><span><span class="cell a">5/10</span> tried, not passed yet</span><span>Click a name to see attempts and written answers</span></div>
+        <div class="legend" id="legend"><span><span class="cell p">8/10</span> passed (best score)</span><span><span class="cell a">5/10</span> tried, not passed yet</span><span>Click a name to see attempts and written answers</span></div>
       </div>
       <div class="card detail" id="detail" hidden></div>
     </div>
-    <div class="side">
+    <div class="side" id="side">
       <div class="card"><h2>Pass rate by stage</h2><div class="bars" id="bars"></div></div>
       <div class="card"><h2>Most missed questions</h2><ul class="miss" id="miss"></ul><p class="muted" style="font-size:.8rem;margin:12px 0 0">Counts every attempt. The number before the source is stage.question.</p></div>
     </div>
@@ -136,7 +136,10 @@ $('#lf').onsubmit=async e=>{e.preventDefault();$('#lerr').textContent='';
 $('#logout').onclick=()=>{token=null;try{sessionStorage.removeItem('ct_token');}catch(e){}$('#dash').hidden=true;$('#loginView').hidden=false;};
 $('#refresh').onclick=()=>load();
 $('#sort').onchange=()=>render();
-$('#course').onchange=e=>{OFF=+e.target.value;STAGES=COURSES[OFF].stages;WRITE_STAGE=(OFF===200||OFF===300)?-1:10;$('#detail').hidden=true;document.querySelector('#dash h1').textContent=COURSES[OFF].name;render();};
+let MODE='c';
+$('#course').onchange=e=>{const v=e.target.value;$('#detail').hidden=true;
+  if(v==='m'){MODE='m';document.querySelector('#dash h1').textContent='Marked answers';render();return;}
+  MODE='c';OFF=+v;STAGES=COURSES[OFF].stages;WRITE_STAGE=(OFF===200||OFF===300)?-1:10;document.querySelector('#dash h1').textContent=COURSES[OFF].name;render();};
 
 async function load(){
   $('#refresh').disabled=true;
@@ -158,6 +161,9 @@ function students(){
   });
 }
 function render(){
+  const isM=MODE==='m';$('#side').hidden=isM;$('#legend').hidden=isM;
+  [['lStarted','students started','students with a marked answer'],['lDone','finished all 10 stages','answers marked in total'],['lAvg','average stages passed','average mark (%)'],['lWeek','attempts in the last 7 days','answers marked in the last 7 days']].forEach(([id,a,b])=>{$('#'+id).textContent=isM?b:a;});
+  if(isM){renderMarks();return;}
   const list=students(),sort=$('#sort').value;
   list.sort(sort==='prog'?(a,b)=>b.passedN-a.passedN||a.name.localeCompare(b.name):sort==='recent'?(a,b)=>(b.last||'').localeCompare(a.last||''):(a,b)=>a.name.localeCompare(b.name));
   const started=list.filter(s=>s.rows.length);
@@ -183,6 +189,25 @@ function detail(s){
   const rows=s.rows.slice().sort((a,b)=>b.t.localeCompare(a.t));
   d.innerHTML=`<h2>${esc(s.name)} <span class="muted" style="font-size:1rem">${esc(s.exam)}</span></h2>${rows.length?rows.map(r=>`<div class="attempt"><b>Stage ${r.stage}</b> · ${r.stage===WRITE_STAGE?(r.passed?'completed':'not completed'):`${r.score}/${r.total} ${r.passed?'passed':'not passed'}`} · ${Math.round(r.seconds/60)} min · <span class="muted">${new Date(r.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
     ${r.missed.length?`<div class="muted" style="font-size:.82rem;margin-top:4px">Missed: ${r.missed.map(esc).join('; ')}</div>`:''}${r.answer?`<div class="answer">${esc(r.answer)}</div>`:''}</div>`).join(''):'<p class="muted">No attempts yet.</p>'}`;
+  d.scrollIntoView({behavior:'smooth',block:'start'});
+}
+const pct=m=>{const x=String(m).match(/(\d+(?:\.\d+)?)\s*\/\s*(\d+)/);return x&&+x[2]?+x[1]/+x[2]*100:null;};
+function renderMarks(){
+  const marks=(data.marks||[]).slice(),sort=$('#sort').value,roster=data.roster||{};
+  marks.sort(sort==='name'?(a,b)=>a.name.localeCompare(b.name)||b.t.localeCompare(a.t):(a,b)=>b.t.localeCompare(a.t));
+  const who=new Set(marks.map(m=>m.exam));
+  $('#sStarted').textContent=`${who.size} / ${Object.keys(roster).length||who.size}`;
+  $('#sDone').textContent=marks.length;
+  const ps=marks.map(m=>pct(m.mark)).filter(x=>x!=null);$('#sAvg').textContent=ps.length?Math.round(ps.reduce((a,b)=>a+b,0)/ps.length)+'%':'–';
+  const wk=Date.now()-7*86400000;$('#sWeek').textContent=marks.filter(m=>Date.parse(m.t)>wk).length;
+  $('#tbl').innerHTML=marks.length?`<thead><tr><th class="l">Student</th><th class="l">Date</th><th class="l">Tool</th><th class="l">Question</th><th>Mark</th><th class="l">Level</th></tr></thead><tbody>${marks.map((m,i)=>`<tr><td class="l"><button data-i="${i}">${esc(m.name)}</button> <span class="muted">${esc(m.exam)}</span></td><td class="l muted">${new Date(m.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td><td class="l">${esc(m.tool)}</td><td class="l" style="white-space:normal;min-width:240px;max-width:420px">${esc(m.question.length>140?m.question.slice(0,140)+'…':m.question)}</td><td><span class="cell ${(pct(m.mark)??0)>=50?'p':'a'}">${esc(m.mark)}</span></td><td class="l muted">${esc(m.level)}</td></tr>`).join('')}</tbody>`:'<tbody><tr><td class="l muted">No marked answers yet. Students\' results appear here when they use the 25-mark lab, Open essay lab, 9-mark lab or Redraft while signed in.</td></tr></tbody>';
+  document.querySelectorAll('#tbl button').forEach(b=>b.onclick=()=>markDetail(marks[+b.dataset.i]));
+}
+function markDetail(m){
+  const d=$('#detail');d.hidden=false;
+  d.innerHTML=`<h2>${esc(m.name)} <span class="muted" style="font-size:1rem">${esc(m.exam)} · ${esc(m.tool)} · ${new Date(m.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span></h2>
+    <p><b>${esc(m.mark)}</b> ${esc(m.level)}</p><p class="muted" style="margin:6px 0 12px">${esc(m.question)}</p>
+    ${m.well?`<p><b>What went well:</b> ${esc(m.well)}</p>`:''}${m.improve?`<p><b>To improve:</b> ${esc(m.improve)}</p>`:''}${m.answer?`<div class="answer">${esc(m.answer)}</div>`:''}`;
   d.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function ago(t){const m=Math.round((Date.now()-Date.parse(t))/60000);if(m<60)return m+' min ago';const h=Math.round(m/60);if(h<24)return h+' h ago';return Math.round(h/24)+' days ago';}

@@ -488,6 +488,7 @@ async function runMark(){
 
 /* ─── RENDER FEEDBACK ─── */
 function showFeedback(fb,qText,maxMark){
+  if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'9-mark lab',question:qText,mark:fb.mark+'/'+maxMark,level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:fb.overall_feedback||'',improve:fb.improvement_note||'',answer:document.getElementById('essay').value.trim()});
   document.getElementById('ldPanel').classList.remove('show');
   document.getElementById('fbPanel').style.display='block';
   const col={3:'var(--green)',2:'var(--gold)',1:'var(--red)'}[fb.level]||'var(--muted)';
@@ -698,5 +699,7 @@ function generatePDF(){
 }
 
 </script>
+<script src="mark-tracker.js"></script>
+<script>NTrack.init('#essay');</script>
 </body>
 </html>

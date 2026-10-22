@@ -341,6 +341,7 @@ ${isFullEssay ? `{
 
 /* ── Display feedback ── */
 function showFeedback(r){
+  if(window.NTrack)NTrack.mark({panel:'#step2',tool:'Redraft',question:'Redraft of earlier feedback',mark:(r.type==='full'&&r.new_mark)?String(r.new_mark):'Section only',level:(r.type==='full'&&r.new_level)?String(r.new_level):'',well:(Array.isArray(r.what_is_better)?r.what_is_better.join(' / '):(r.what_is_better||'')),improve:(Array.isArray(r.still_to_work_on)?r.still_to_work_on.join(' / '):(r.still_to_work_on||'')),answer:document.getElementById('redraftText').value.trim()});
   document.getElementById('loadingState').classList.add('hidden');
   document.getElementById('step2').classList.remove('hidden');
 
@@ -411,5 +412,7 @@ function resetPage(){
   document.getElementById('pdfInput').value='';
 }
 </script>
+<script src="mark-tracker.js"></script>
+<script>NTrack.init('#redraftText');</script>
 </body>
 </html>

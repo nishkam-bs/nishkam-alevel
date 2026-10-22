@@ -1147,6 +1147,7 @@ let lastFb=null,lastQ='';
 
 function showFeedback(fb,qText){
   lastFb=fb;lastQ=qText;
+  if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'25-mark lab',question:qText,mark:fb.mark+'/25',level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:(Array.isArray(fb.www)?fb.www.join(' / '):(fb.www||'')),improve:fb.priority||'',answer:(document.getElementById('essay').value.trim()||(typeof uploadedImages!=='undefined'&&uploadedImages.length?'[Handwritten answer uploaded as photos]':''))});
   document.getElementById('ldPanel').classList.remove('show');
   document.getElementById('fbPanel').style.display='block';
   const col={5:'var(--green)',4:'var(--blue)',3:'var(--gold)',2:'var(--red)',1:'var(--red)'}[fb.level]||'var(--muted)';
@@ -1204,6 +1205,7 @@ function showFeedback(fb,qText){
 
 // ══════════ REWRITE ══════════
 async function runRewrite(qText,fb){
+  if(!document.getElementById('rewriteLoading'))return;
   document.getElementById('rewriteLoading').style.display='block';
   document.getElementById('rewriteResult').innerHTML='';
   const essayText=document.getElementById('essay').value.trim();
@@ -1408,5 +1410,7 @@ document.querySelectorAll('.drill-new').forEach(btn=>{
   };
 });
 </script>
+<script src="mark-tracker.js"></script>
+<script>NTrack.init('#essay');</script>
 </body>
 </html>
