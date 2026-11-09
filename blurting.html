@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Blurting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+<style>
+.sec{padding-block:44px 8px}
+.sec h2.title{font-size:clamp(1.7rem,4vw,2.2rem);margin-bottom:10px}
+.sec .intro{color:var(--muted);max-width:62ch;margin-bottom:22px}
+.steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:12px;counter-reset:s}
+.steps li{position:relative;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;box-shadow:var(--shadow);counter-increment:s}
+.steps li::before{content:counter(s);display:block;font:400 1.8rem "DM Serif Display",Georgia,serif;color:var(--gold);line-height:1;margin-bottom:8px}
+.steps h3{font-size:1.1rem;margin-bottom:4px}
+.steps p{color:var(--muted);font-size:.9rem}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.tabs{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--bg2)}
+.tabs button{flex:1 1 auto;border:0;background:none;padding:14px 16px;font-weight:600;font-size:.95rem;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--gold);background:var(--card)}
+.tab{padding:24px}
+label.f{display:block;font-size:.85rem;font-weight:600;margin-bottom:6px}
+select,input[type=number],textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:240px;resize:vertical;line-height:1.55}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:14px;margin-bottom:16px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.b{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:10px;padding:10px 16px;font-weight:600;font-size:.92rem;cursor:pointer}
+.b.p{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.b.g{background:var(--gold);color:#fff;border-color:var(--gold)}
+.b:disabled{opacity:.45;cursor:not-allowed}
+.b:focus-visible,.tabs button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.units{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.units label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:.88rem;cursor:pointer;background:var(--bg)}
+.topic-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px;margin:6px 0 12px}
+.topic-head h3{font-size:1.5rem}
+.topic-head .ref{font:500 .78rem "IBM Plex Mono",monospace;color:var(--muted)}
+.timer{font:600 1.6rem "IBM Plex Mono",monospace;color:var(--gold)}
+.timer.out{color:var(--end)}
+.small{font-size:.85rem;color:var(--muted)}
+.check{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:6px}
+.check li{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.check li.got{border-color:var(--ok);background:var(--ok-soft)}
+.check li.part{border-color:var(--gold);background:var(--gold-soft)}
+.check input{margin-top:4px;width:18px;height:18px;flex:none}
+.check .tagx{margin-left:auto;font:500 .7rem "IBM Plex Mono",monospace;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.score{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:18px}
+.score b{font:400 2.2rem "DM Serif Display",Georgia,serif}
+.box{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:14px;background:var(--bg)}
+.box h4{margin:0 0 6px;font-size:.95rem}
+.box.err{border-color:var(--end);background:var(--end-soft)}
+.box ul{margin:6px 0 0;padding-left:20px}
+.card3{perspective:1000px;margin:6px auto 0;max-width:560px}
+.flip{position:relative;min-height:220px;transform-style:preserve-3d;transition:transform .5s}
+.flip.on{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;display:grid;place-content:center;text-align:center;padding:24px;border-radius:16px;border:1px solid var(--line);background:var(--bg)}
+.face.back{transform:rotateY(180deg);background:var(--card)}
+.face .ttl{font:500 .75rem "IBM Plex Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.face .cue{font:400 1.7rem "DM Serif Display",Georgia,serif}
+.face .ans{font-size:1.05rem;max-width:44ch}
+.rf-stats{display:flex;justify-content:center;gap:18px;margin-top:14px;font:500 .85rem "IBM Plex Mono",monospace;color:var(--muted)}
+.dlt{width:100%;border-collapse:collapse;font-size:.93rem}
+.dlt td,.dlt th{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.dlt th{font:500 .72rem "IBM Plex Mono",monospace;text-transform:uppercase;color:var(--muted)}
+.dlt a{font-weight:600;color:var(--fg);text-decoration:none;border-bottom:2px solid var(--gold-soft)}
+.dlt a:hover{border-color:var(--gold)}
+.preview{margin-top:16px}
+.preview ol{padding-left:22px;color:var(--muted)}
+#printArea{display:none}
+@media (prefers-reduced-motion: reduce){.flip{transition:none}}
+@media print{
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block!important;color:#000;font:11pt/1.45 "IBM Plex Sans",Arial,sans-serif}
+  #printArea h1{font:700 15pt Arial,sans-serif;margin:0 0 4pt;color:#193e68}
+  #printArea .meta{font-size:9pt;color:#555;margin-bottom:10pt}
+  #printArea .pt{break-inside:avoid;margin-top:12pt}
+  #printArea h2{font:700 11.5pt Arial,sans-serif;color:#193e68;margin:0 0 2pt}
+  #printArea .hint{font-size:8.5pt;color:#666}
+  #printArea .ln{border-bottom:0.6pt solid #aab;height:24pt}
+  #printArea ul{margin:3pt 0 0;padding-left:16pt}
+  body::before{display:none}
+  @page{size:A4;margin:15mm}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <canvas id="net" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="kicker">AQA A-level Business 7132</div>
+    <h1>Blurting</h1>
+    <p class="lead">Blurting means writing down everything you can remember about a topic, without notes, then checking what you missed. It is one of the quickest ways to find the gaps in your knowledge. Everything on this page covers the whole specification.</p>
+  </div>
+</header>
+<main class="wrap">
+  <section class="sec">
+    <h2 class="title">How to blurt</h2>
+    <ol class="steps">
+      <li><h3>Pick one topic</h3><p>Keep it small - one topic, not a whole unit.</p></li>
+      <li><h3>Blurt</h3><p>Notes away. Write everything you can remember in five or ten minutes: terms, lists, formulas, models.</p></li>
+      <li><h3>Check</h3><p>Compare with the blurt sheet. Add what you missed in a different colour.</p></li>
+      <li><h3>Revise the gaps</h3><p>Only the gaps. Don't reread what you already know.</p></li>
+      <li><h3>Blurt it again</h3><p>Same topic a few days later. The gaps should shrink each time.</p></li>
+    </ol>
+  </section>
+
+  <section class="sec">
+    <h2 class="title">Blurt tools</h2>
+    <p class="intro">Blurt a topic on screen and check it, build a random blurt sheet to print, or test yourself with quick prompts.</p>
+    <div class="panel">
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-t="t1">Blurt a topic</button>
+        <button role="tab" aria-selected="false" data-t="t2">Mixed blurt sheet</button>
+        <button role="tab" aria-selected="false" data-t="t3">Rapid fire</button>
+      </div>
+
+      <div class="tab" id="t1">
+        <div id="b-setup">
+          <div class="row">
+            <div><label class="f" for="b-unit">Unit</label><select id="b-unit"></select></div>
+            <div><label class="f" for="b-topic">Topic</label><select id="b-topic"></select></div>
+            <div><label class="f" for="b-time">Timer</label><select id="b-time"><option value="180">3 minutes</option><option value="300" selected>5 minutes</option><option value="600">10 minutes</option><option value="0">No timer</option></select></div>
+          </div>
+          <div class="btns"><button class="b p" id="b-start">Start blurting</button><button class="b g" id="b-random">Random topic</button></div>
+          <p class="small" style="margin-top:10px">Random topic picks from the unit you have chosen, or from the whole course if you choose "All units".</p>
+        </div>
+        <div id="b-run" hidden>
+          <div class="topic-head"><div><div class="ref" id="b-ref"></div><h3 id="b-title"></h3></div><div class="timer" id="b-timer"></div></div>
+          <p class="small" id="b-count"></p>
+          <label class="f" for="b-text" style="margin-top:10px">Type your blurt</label>
+          <textarea id="b-text" placeholder="Write everything you can remember about this topic. Notes away."></textarea>
+          <p class="small" style="margin-top:8px">Blurted on paper? You can photograph it instead and use the AI check: <label class="b" style="display:inline-block;padding:6px 12px;margin-left:4px">Add photo<input type="file" id="b-photo" accept="image/*" hidden></label> <span id="b-photo-name"></span></p>
+          <div class="btns"><button class="b p" id="b-done">I've finished - show the checklist</button><button class="b" id="b-back">Choose a different topic</button></div>
+        </div>
+        <div id="b-check" hidden>
+          <h3 style="font-size:1.3rem;margin-top:22px">Checklist</h3>
+          <p class="small">Tick each point you included. Give yourself the tick only if you had the meaning right, not just the word.</p>
+          <ul class="check" id="b-list"></ul>
+          <div class="score"><b id="b-score"></b><span class="small" id="b-score-txt"></span></div>
+          <div class="btns"><button class="b g" id="b-ai">Check my blurt with AI</button><button class="b" id="b-print">Print the points I missed</button><button class="b" id="b-again">Blurt this topic again</button><button class="b" id="b-new">New topic</button></div>
+          <div id="b-ai-out"></div>
+        </div>
+      </div>
+
+      <div class="tab" id="t2" hidden>
+        <p class="small" style="margin-bottom:12px">Choose the units, and the generator picks topics at random from across them. Print the blank sheet, blurt on it, then print the answers to check.</p>
+        <div class="units" id="m-units"></div>
+        <div class="row">
+          <div><label class="f" for="m-n">Number of topics</label><select id="m-n"><option>3</option><option>4</option><option selected>5</option><option>6</option><option>8</option><option>10</option></select></div>
+        </div>
+        <div class="btns"><button class="b p" id="m-gen">Generate</button><button class="b g" id="m-blank" disabled>Print blank sheet</button><button class="b" id="m-ans" disabled>Print answers</button></div>
+        <div class="preview" id="m-prev"></div>
+      </div>
+
+      <div class="tab" id="t3" hidden>
+        <p class="small" style="margin-bottom:12px">A term or list comes up. Say or write the answer, then turn the card over. Be honest - if you only half knew it, mark it as missed.</p>
+        <div class="units" id="r-units"></div>
+        <div class="card3"><div class="flip" id="r-card"><div class="face front"><div class="ttl" id="r-topic"></div><div class="cue" id="r-cue"></div></div><div class="face back"><div class="ttl" id="r-topic2"></div><div class="ans"><b id="r-cue2"></b><br><span id="r-ans"></span></div></div></div></div>
+        <div class="btns" style="justify-content:center"><button class="b p" id="r-flip">Turn over</button><button class="b" id="r-got" hidden>Got it</button><button class="b" id="r-miss" hidden>Missed it</button></div>
+        <div class="rf-stats"><span id="r-s1">0 got</span><span id="r-s2">0 missed</span><span id="r-s3"></span></div>
+        <div id="r-missed"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="title">Blurt sheets to print</h2>
+    <p class="intro">The blurt sheet has the key points for every topic in the unit on one page - information only. The blank sheet has the same headings with space to write, and tells you how many points to aim for.</p>
+    <div class="panel" style="padding:8px 18px 14px"><table class="dlt"><thead><tr><th>Unit</th><th>Blurt sheet</th><th>Blank sheet</th></tr></thead><tbody id="dl"></tbody></table></div>
+  </section>
+  <section class="sec" style="padding-bottom:40px">
+    <p class="intro">For longer notes with exam traps, analysis chains and evaluation points, use the <a href="knowledge-organisers.html" style="color:var(--fg)">knowledge organisers</a>.</p>
+  </section>
+</main>
+<footer><div class="wrap"><a href="index.html" style="color:var(--muted)">Back to the main site</a><br>Nishkam School West London · Man Neeva, Mat Uchi</div></footer>
+<div id="printArea"></div>
+
+<script>
+(function(){
+"use strict";
+const DATA=[{"unit": "3.1", "title": "What is business?", "topics": [{"ref": "3.1.1", "title": "Why Businesses Exist, Mission & Objectives", "points": [["Why businesses exist", "to provide goods and services that meet customer needs and create value for owners and stakeholders"], ["Business objectives (AQA)", "profit, growth, survival, cash flow, social and ethical"], ["Mission", "the overall purpose and values of the business; qualitative and long term"], ["Objectives", "measurable targets that turn the mission into action"], [null, "Mission → corporate objectives → strategy → functional objectives"], ["Why set objectives", "direction, coordination, basis for decisions, measuring performance, motivation"]]}, {"ref": "3.1.1", "title": "Measuring Profit", "points": [["Revenue", "selling price × quantity sold (also called turnover or sales)"], ["Fixed costs", "do not change with output in the short run, e.g. rent, salaries"], ["Variable costs", "change directly with output, e.g. raw materials, packaging"], ["Total costs", "fixed costs + total variable costs"], ["Profit", "total revenue − total costs"], ["Why profit matters", "reward for risk, source of finance (retained profit), signal to investors, measure of performance"], ["Profit v cash", "profit is revenue minus costs over a period; cash is money actually in the bank"]]}, {"ref": "3.1.2", "title": "Forms of Business", "points": [["Sole trader", "one owner, keeps all profit, full control, unlimited liability"], ["Private limited company (Ltd)", "separate legal identity, limited liability, shares sold privately"], ["Public limited company (plc)", "can sell shares to the public on a stock exchange; risk of takeover"], ["Unlimited liability", "owner personally responsible for all business debts"], ["Limited liability", "shareholders can lose only what they invested"], ["Ordinary share capital", "money raised by selling shares; not repaid; gives votes and dividends"], ["Public sector", "owned or controlled by government, e.g. the NHS (a plc is private sector)"], ["Social enterprise", "trades like a business with a social or environmental purpose; reinvests most profit"], ["Reasons to change form", "limited liability, more finance, credibility; going private to escape stock market pressure"]]}, {"ref": "3.1.2", "title": "Shareholders, Share Price & Ownership", "points": [["Why shareholders invest", "dividends, capital gain, voting rights"], ["Dividend", "share of profit paid to shareholders, usually per share"], ["Market capitalisation", "number of shares issued × current share price"], ["Influences on share price", "profit forecasts, dividends, new contracts, takeover rumours, management changes, economy"], ["Falling share price", "cheaper takeover target, harder to raise share capital, less shareholder wealth"], ["Ownership and objectives", "plcs face short-term pressure; family firms value control; social enterprises put purpose first"]]}, {"ref": "3.1.3", "title": "The External Environment: Costs & Demand", "points": [["External factors (AQA)", "competition, market conditions, incomes, interest rates, demographic factors, environmental issues and fair trade"], ["Competition", "more rivals means more choice, pressure on prices and margins"], ["Rising incomes", "demand for most products rises, especially luxuries; inferior goods may fall"], ["Higher interest rates", "higher borrowing costs and lower consumer spending, especially on credit"], ["Demographic factors", "size and structure of the population, e.g. ageing population"], ["Fair trade", "guaranteed minimum price to producers; higher costs but can support premium price"]]}]}, {"unit": "3.2", "title": "Managers, leadership and decision making", "topics": [{"ref": "3.2.1", "title": "Management & Leadership Styles", "points": [["Management", "planning, organising, coordinating and controlling resources"], ["Leadership", "setting direction and influencing and inspiring people"], ["Autocratic", "leader decides alone and tells staff"], ["Paternalistic", "leader decides in what they believe is staff's best interest"], ["Democratic", "staff consulted and involved in decisions"], ["Laissez-faire", "leader sets broad goals and leaves staff to decide"], ["Influences on style", "leader's personality, staff skills, urgency, task, risk, size and culture"]]}, {"ref": "3.2.1", "title": "The Tannenbaum Schmidt Continuum", "points": [["Tannenbaum Schmidt continuum", "range of leadership from manager-centred to team-centred"], ["Stages", "tell, sell, consult, join, delegate"], ["Moving along", "manager uses less authority, team has more freedom"], ["Forces deciding the position", "the manager, the team, the situation"]]}, {"ref": "3.2.2", "title": "Scientific & Intuitive Decision Making", "points": [["Scientific decision making", "set objectives → gather data → analyse → select strategy → implement → review"], ["Intuition", "decisions based on gut feeling and experience"], ["Risk", "chance the outcome is worse than expected; can often be estimated"], ["Uncertainty", "outcomes or their likelihood cannot be known"], ["Opportunity cost", "the next best alternative given up"], ["Influences on decisions (AQA)", "mission, objectives, ethics, external environment including competition, resource constraints"]]}, {"ref": "3.2.2", "title": "Decision Trees", "points": [["Square", "decision point"], ["Circle", "chance node (outcomes with probabilities)"], ["Probabilities at a chance node", "add up to 1"], ["Expected value", "sum of (probability × pay-off)"], ["Net gain", "expected value − cost of the option"], ["Limitations of decision trees", "estimates, EV never actually happens, ignore qualitative factors and attitude to risk"]]}, {"ref": "3.2.3", "title": "Stakeholders: Needs, Overlap & Conflict", "points": [["Stakeholder", "anyone who affects or is affected by the business"], ["Internal stakeholders", "employees, managers, owners/shareholders"], ["External stakeholders", "customers, suppliers, lenders, community, government, pressure groups"], ["Overlap", "a successful business can meet many needs at once, especially long term"], ["Conflict examples", "pay v dividends, low prices v margins, relocation v local jobs"]]}, {"ref": "3.2.3", "title": "Stakeholder Mapping & Managing Relationships", "points": [["Stakeholder mapping", "stakeholders placed by power and interest"], ["High power, high interest", "manage closely"], ["High power, low interest", "keep satisfied"], ["Low power, high interest", "keep informed"], ["Low power, low interest", "monitor"], ["Communication", "passing on information"], ["Consultation", "asking for views before deciding"]]}]}, {"unit": "3.3", "title": "Marketing management", "topics": [{"ref": "3.3.1", "title": "Marketing Objectives", "points": [["Marketing objectives (AQA)", "sales volume, sales value, market size, market and sales growth, market share, brand loyalty"], ["Sales volume", "number of units sold"], ["Sales value", "revenue from sales"], ["Brand loyalty", "customers repeatedly choosing the brand"]]}, {"ref": "3.3.2", "title": "Market Research & Sampling", "points": [["Primary research", "new data collected for a specific purpose"], ["Secondary research", "data that already exists"], ["Quantitative data", "numerical"], ["Qualitative data", "opinions, feelings and reasons"], ["Random sampling", "everyone has an equal chance of being chosen"], ["Stratified sampling", "population split into groups, random sample from each in proportion"], ["Quota sampling", "set number of people with certain characteristics"]]}, {"ref": "3.3.2", "title": "Market Data", "points": [["Market growth (%)", "change in market size ÷ original market size × 100"], ["Sales growth (%)", "change in sales ÷ original sales × 100"], ["Market share (%)", "sales of one business ÷ total market sales × 100"], ["Correlation", "relationship between two variables; positive or negative, strong or weak; not proof of cause"], ["Confidence interval", "range in which the true figure is likely to lie, at a stated level of confidence"], ["Extrapolation", "extending a past trend to forecast"]]}, {"ref": "3.3.2", "title": "Price & Income Elasticity of Demand", "points": [["PED", "responsiveness of quantity demanded to a change in price"], ["Price elastic", "above 1 (ignoring sign); price cut raises revenue"], ["Price inelastic", "below 1; price rise raises revenue"], ["YED", "responsiveness of quantity demanded to a change in income"], ["Normal good", "positive YED"], ["Inferior good", "negative YED"], ["Elasticity calculations", "interpret only; you are not asked to calculate PED or YED"]]}, {"ref": "3.3.3", "title": "Segmentation, Targeting & Positioning", "points": [["Segmentation methods (AQA)", "demographic, geographic, income, behavioural"], ["Niche marketing", "small, specialised segment"], ["Mass marketing", "whole market with one approach"], ["Positioning", "how the product is seen compared with rivals"], ["Market mapping", "brands plotted on two axes customers care about, showing gaps and clusters"]]}, {"ref": "3.3.4", "title": "The 7Ps & an Integrated Mix", "points": [["7Ps", "product, price, promotion, place, people, process, physical environment"], ["Integrated mix", "every element supports the others"], ["Influences on an integrated mix (AQA)", "product life cycle, Boston Matrix, product type, marketing objectives, target market, competition, positioning"]]}, {"ref": "3.3.4", "title": "Product: Life Cycle, Extension & NPD", "points": [["Product life cycle stages", "development, introduction, growth, maturity, decline"], ["Extension strategies", "new uses, new markets, new versions, packaging, price changes, new promotion"], ["New product development", "replaces declining products; costly and risky"]]}, {"ref": "3.3.4", "title": "Product: Portfolio Analysis", "points": [["Boston Matrix axes", "market share and market growth"], ["Star", "high share, high growth"], ["Cash cow", "high share, low growth"], ["Question mark", "low share, high growth"], ["Dog", "low share, low growth"], ["Limitations of the Boston Matrix", "snapshot, market definition, dogs may still be profitable"]]}, {"ref": "3.3.4", "title": "Price", "points": [["Penetration pricing", "low price at launch to gain share, raised later"], ["Price skimming", "high price at launch, lowered over time"], ["Dynamic pricing", "prices change with demand and data in real time"], ["Influences on price", "PED, costs, competitors, objectives, life cycle stage, rest of the mix"]]}, {"ref": "3.3.4", "title": "Promotion", "points": [["Branding", "name, design or image that makes a product recognisable; builds loyalty, lowers PED"], ["Social media", "targeted, low cost, measurable, two-way; less control"], ["Viral marketing", "content customers share, spreading the message rapidly"]]}, {"ref": "3.3.4", "title": "Place, People, Process & Physical Environment", "points": [["Multi-channel distribution", "selling through more than one channel"], ["People", "staff who deal with customers"], ["Process", "systems customers go through, e.g. ordering, delivery, returns"], ["Physical environment", "what customers see and experience"]]}, {"ref": "3.3.4", "title": "Digital Marketing & E-commerce", "points": [["Digital marketing", "marketing through websites, search, social media, email and apps"], ["E-commerce", "buying and selling online"], ["Relationship marketing", "building long-term customer relationships, e.g. loyalty schemes"]]}]}, {"unit": "3.4", "title": "Operational management", "topics": [{"ref": "3.4.1", "title": "Operational Objectives", "points": [["Operational objectives (AQA)", "costs, quality, speed of response, flexibility, environmental objectives, added value"], ["Added value", "sales revenue − cost of bought-in goods and services"]]}, {"ref": "3.4.2", "title": "Operations Data", "points": [["Labour productivity", "output over a time period ÷ number of employees"], ["Unit cost (average cost)", "total costs ÷ number of units of output"], ["Capacity", "maximum output possible with current resources"], ["Capacity utilisation (%)", "actual output ÷ maximum possible output × 100"]]}, {"ref": "3.4.3", "title": "Capacity", "points": [["Under-utilisation", "high fixed cost per unit, idle resources"], ["Very high utilisation", "low unit costs but no time for maintenance and pressure on staff"], ["Improving utilisation", "raise sales, make for other firms, rent out space, or cut capacity"]]}, {"ref": "3.4.3", "title": "Efficiency, Productivity & Technology", "points": [["Efficiency", "producing output at the lowest unit cost"], ["Increasing productivity", "training, motivation, better equipment, better organisation of work"], ["Labour intensive", "relies mainly on people"], ["Capital intensive", "relies mainly on machinery and technology"]]}, {"ref": "3.4.3", "title": "Lean Production & Just in Time", "points": [["Lean production", "cutting waste of all kinds while maintaining quality"], ["Just in time (JIT)", "materials arrive just when needed; little inventory held"], ["Just in case", "holding buffer inventory in case of extra demand or supply problems"], ["JIT drawbacks", "needs reliable suppliers; no buffer if demand jumps"]]}, {"ref": "3.4.4", "title": "Quality", "points": [["Quality control", "checking products to find and remove faults"], ["Quality assurance", "building quality into every stage to prevent faults"], ["Consequences of poor quality", "waste, returns, lost reputation and sales, recalls"]]}, {"ref": "3.4.5", "title": "Matching Supply to Demand", "points": [["Ways to match supply to demand (AQA)", "outsourcing, temporary and part-time staff, producing to order"], ["Outsourcing", "another business carries out an activity or makes part of the output"], ["Producing to order", "making products only once an order is received"]]}, {"ref": "3.4.5", "title": "Inventory Control", "points": [["Lead time", "time between placing an order and delivery"], ["Re-order level", "inventory level at which a new order is placed"], ["Buffer inventory", "minimum level kept in case of delays or extra demand"], ["Re-order quantity", "amount ordered each time"], ["Maximum inventory level", "buffer inventory + re-order quantity"]]}, {"ref": "3.4.5", "title": "Suppliers & Supply Chains", "points": [["Choosing suppliers", "price, quality, reliability, capacity, location, ethics"], ["Supply chain", "every stage from raw materials to the final customer"], ["Value of outsourcing", "specialist skills, lower cost, flexibility; but less control"]]}]}, {"unit": "3.5", "title": "Financial management", "topics": [{"ref": "3.5.1", "title": "Financial Objectives", "points": [["Financial objectives", "revenue, cost, profit, cash flow, return on investment"], ["Return on investment (%)", "profit from investment ÷ cost of investment × 100"]]}, {"ref": "3.5.1", "title": "Cash Flow v Profit & the Three Measures of Profit", "points": [["Cash flow v profit", "profit is revenue minus costs over a period; cash flow is money actually in and out"], ["Gross profit", "revenue − cost of sales"], ["Operating profit", "gross profit − operating expenses"], ["Profit for the year", "operating profit + profit from other activities − net finance costs − tax"]]}, {"ref": "3.5.2", "title": "Budgets & Variances", "points": [["Budget", "financial plan for income and spending over a future period"], ["Variance", "budgeted figure − actual figure"], ["Favourable variance", "better for profit than planned"], ["Adverse variance", "worse for profit than planned"]]}, {"ref": "3.5.2", "title": "Cash Flow Forecasts", "points": [["Net cash flow", "cash inflows − cash outflows"], ["Closing balance", "opening balance + net cash flow"], ["Receivables", "money owed to the business by customers"], ["Payables", "money the business owes to suppliers"]]}, {"ref": "3.5.2", "title": "Break-even", "points": [["Contribution per unit", "selling price − variable cost per unit"], ["Total contribution", "contribution per unit × units sold"], ["Break-even output", "fixed costs ÷ contribution per unit"], ["Margin of safety", "actual output − break-even output (in units)"]]}, {"ref": "3.5.2", "title": "Break-even: Changes & Value", "points": [["Higher price", "steeper revenue line; break-even falls"], ["Higher fixed costs", "total cost line shifts up; break-even rises"], ["Higher variable cost per unit", "steeper total cost line; break-even rises"], ["Limitations of break-even", "one price, straight-line costs, all output sold, estimates"]]}, {"ref": "3.5.2", "title": "Profitability", "points": [["Gross profit margin (%)", "gross profit ÷ revenue × 100"], ["Operating profit margin (%)", "operating profit ÷ revenue × 100"], ["Profit for the year margin (%)", "profit for the year ÷ revenue × 100"]]}, {"ref": "3.5.3", "title": "Sources of Finance", "points": [["Sources of finance (AQA)", "debt factoring, overdrafts, retained profits, share capital, loans, venture capital, crowdfunding"], ["Debt factoring", "selling receivables to a factor for immediate cash, less a fee"], ["Overdraft", "flexible short-term borrowing up to a limit"], ["Venture capital", "investment in growing firms in return for a share of ownership"], ["Crowdfunding", "many people each provide a small amount, usually online"]]}, {"ref": "3.5.4", "title": "Improving Cash Flow", "points": [["Speeding up inflows", "chase debts, shorter credit, early-payment discounts, debt factoring, sell unused assets"], ["Delaying outflows", "longer credit from suppliers, less inventory, leasing, cutting non-essential spending"]]}, {"ref": "3.5.4", "title": "Improving Profit & Profitability", "points": [["Profit v profitability", "profit is a £ amount; profitability compares profit with revenue or capital"], ["Increasing profit", "raise price (if inelastic), raise volume, cut costs, higher-margin product mix"]]}]}, {"unit": "3.6", "title": "Human resource management", "topics": [{"ref": "3.6.1", "title": "HR Objectives & Approaches", "points": [["HR objectives (AQA)", "employee engagement, talent development, training, diversity, alignment of values, number, skills and location of employees"], ["Soft HRM", "staff treated as a resource to develop"], ["Hard HRM", "staff treated as a cost to control"]]}, {"ref": "3.6.2", "title": "HR Data", "points": [["Labour turnover (%)", "number of staff leaving ÷ number of staff employed × 100"], ["Labour productivity", "output over a time period ÷ number of employees"], ["Employee costs as % of turnover", "employee costs ÷ turnover × 100"], ["Labour cost per unit", "labour costs ÷ units of output"]]}, {"ref": "3.6.3", "title": "Organisational Structures", "points": [["Functional structure", "organised by department"], ["Product-based structure", "organised around products"], ["Regional structure", "organised by geographical area"], ["Matrix structure", "staff report to a functional manager and a project manager"]]}, {"ref": "3.6.3", "title": "Organisational Design", "points": [["Authority", "right to make decisions"], ["Span of control", "number of people a manager directly supervises"], ["Hierarchy", "levels of management; tall or flat"], ["Delegation", "passing authority to someone lower down"], ["Centralisation", "decisions made at the top"], ["Decentralisation", "decisions made lower down or locally"]]}, {"ref": "3.6.3", "title": "Human Resource Flow", "points": [["Human resource flow (AQA)", "HR plan, recruitment, training, redeployment, redundancy"], ["Redeployment", "moving staff to a different role or location within the business"], ["Redundancy", "a job is no longer needed"]]}, {"ref": "3.6.4", "title": "Motivation Theory", "points": [["Taylor", "workers motivated by money; one best way; piece rate"], ["Maslow's hierarchy", "physiological, safety, love and belonging, esteem, self-actualisation"], ["Maslow's key idea", "lower needs must be met first; a satisfied need no longer motivates"], ["Herzberg's hygiene factors", "pay, conditions, policy, supervision, security; prevent dissatisfaction"], ["Herzberg's motivators", "achievement, recognition, the work itself, responsibility, advancement"]]}, {"ref": "3.6.4", "title": "Financial Methods of Motivation", "points": [["Piece rate", "pay per unit produced"], ["Commission", "pay as a % of the value of sales"], ["Salary", "fixed annual amount"], ["Performance-related pay", "bonus based on an appraisal of performance"]]}, {"ref": "3.6.4", "title": "Non-financial Methods of Motivation", "points": [["Empowerment", "authority to make decisions about own work"], ["Team working", "working in groups with shared goals"], ["Flexible working", "choice over when or where to work"], ["Job enrichment", "more challenging, responsible work"], ["Job rotation", "moving between tasks at the same level"]]}, {"ref": "3.6.5", "title": "Employer-Employee Relations", "points": [["Trade union", "represents members in negotiations with employers"], ["Works council", "employee and management representatives discussing workplace issues"], ["Value of good relations", "fewer disputes, higher motivation, change accepted more easily"]]}]}, {"unit": "3.7", "title": "Analysing the strategic position of a business", "topics": [{"ref": "3.7.1", "title": "Mission, Objectives & Strategy", "points": [["Strategy", "long-term plan to achieve corporate objectives"], ["Tactics", "short-term actions supporting the strategy"], ["Corporate objectives", "targets for the whole business"], ["Functional objectives", "targets for marketing, operations, finance and HR"]]}, {"ref": "3.7.1", "title": "Influences on Objectives & SWOT", "points": [["Short-termism", "pressure for quick results, e.g. from shareholders"], ["SWOT", "strengths and weaknesses (internal); opportunities and threats (external)"], ["Influences on objectives", "ownership, internal and external environment, short-termism"]]}, {"ref": "3.7.2", "title": "Financial Statements & Ratios", "points": [["Income statement", "revenue, costs and profit over a period"], ["Balance sheet", "assets, liabilities and equity at one point in time"], ["ROCE (%)", "operating profit ÷ capital employed × 100"], ["Capital employed", "total equity + non-current liabilities"], ["Current ratio", "current assets ÷ current liabilities (x:1)"], ["Gearing (%)", "non-current liabilities ÷ capital employed × 100"]]}, {"ref": "3.7.2", "title": "Efficiency Ratios & the Value of Ratios", "points": [["Payables days", "payables ÷ cost of sales × 365"], ["Receivables days", "receivables ÷ revenue × 365"], ["Inventory turnover", "cost of sales ÷ average inventories held (times a year)"], ["Limitations of ratios", "past data, one date, different accounting methods, ignore non-financial factors"]]}, {"ref": "3.7.3", "title": "Overall Performance", "points": [["Core competence", "capability that sets the business apart and is hard to copy"], ["Elkington's Triple Bottom Line", "profit, people, planet"], ["Non-financial data", "operations, HR and marketing data"]]}, {"ref": "3.7.4", "title": "Political & Legal Change", "points": [["Laws (AQA)", "competition, labour market, environment"], ["Government policy (AQA)", "enterprise, regulators, infrastructure, environment, international trade"]]}, {"ref": "3.7.5", "title": "Economic Change", "points": [["Economic factors (AQA)", "GDP, taxation, exchange rates, inflation, fiscal and monetary policy, open trade v protectionism"], ["Stronger pound", "exports dearer abroad, imports cheaper"], ["Fiscal policy", "government spending and taxation"], ["Monetary policy", "interest rates set by the Bank of England"], ["Protectionism", "tariffs, quotas and other trade barriers"]]}, {"ref": "3.7.6", "title": "Social Change", "points": [["Social factors (AQA)", "demographic change, migration, consumer lifestyle and buying behaviour, growth of online businesses"]]}, {"ref": "3.7.6", "title": "Corporate Social Responsibility", "points": [["CSR", "responsibility for effects on society and the environment beyond the law"], ["Shareholder concept", "main duty is to maximise returns to owners"], ["Stakeholder concept", "consider the interests of all stakeholders"], ["Carroll's CSR pyramid (base up)", "economic, legal, ethical, philanthropic"]]}, {"ref": "3.7.6", "title": "Technological Change", "points": [["Effects of technology", "automation, e-commerce, new skills, new markets, lower barriers to entry"]]}, {"ref": "3.7.7", "title": "Porter's Five Forces", "points": [["Porter's five forces", "threat of new entrants, buyer power, supplier power, threat of substitutes, competitive rivalry"], ["Barriers to entry", "factors that make it hard for new firms to enter a market"]]}, {"ref": "3.7.8", "title": "Investment Appraisal: Payback & ARR", "points": [["Payback", "time for net cash flows to cover the initial cost"], ["Payback part year", "amount still needed ÷ next year's net cash flow × 12 months"], ["ARR (%)", "average annual return ÷ initial cost × 100"], ["Average annual return", "(total net cash flows − initial cost) ÷ number of years"]]}, {"ref": "3.7.8", "title": "Investment Appraisal: NPV & Other Factors", "points": [["Present value", "net cash flow × discount factor"], ["NPV", "total present values − initial cost"], ["Other factors in investment", "investment criteria, non-financial factors, risk and uncertainty"]]}]}, {"unit": "3.8", "title": "Choosing strategic direction", "topics": [{"ref": "3.8.1", "title": "Choosing Markets & Products", "points": [["Strategic direction", "which markets to compete in and which products to offer"]]}, {"ref": "3.8.1", "title": "Ansoff's Matrix", "points": [["Market penetration", "existing products, existing markets"], ["Market development", "existing products, new markets"], ["New product development", "new products, existing markets"], ["Diversification", "new products, new markets (highest risk)"]]}, {"ref": "3.8.2", "title": "Porter's Generic Strategies", "points": [["Porter's generic strategies", "cost leadership, differentiation, focus"], ["Cost leadership", "lowest costs in the market"], ["Differentiation", "offering something customers value as different"], ["Focus", "targeting a narrow segment on cost or differentiation"]]}, {"ref": "3.8.2", "title": "Competitive Advantage", "points": [["Competitive advantage", "something that lets a business outperform rivals"], ["Difficulties keeping it", "copying, new technology, changing tastes, cost of staying ahead"]]}]}, {"unit": "3.9", "title": "Strategic methods: how to pursue strategies", "topics": [{"ref": "3.9.1", "title": "Growth & Retrenchment", "points": [["Organic growth", "growing from within"], ["External growth", "joining with or buying other businesses"], ["Retrenchment", "cutting back the scale of the business"]]}, {"ref": "3.9.1", "title": "Economies, Diseconomies & Overtrading", "points": [["Economies of scale (AQA)", "technical, purchasing, managerial"], ["Economies of scope", "lower costs from sharing resources across a range of products"], ["Diseconomies of scale", "unit costs rise as the business grows too large"], ["Synergy", "combined businesses achieve more than separately"], ["Overtrading", "growing faster than working capital can support"]]}, {"ref": "3.9.1", "title": "Methods & Types of Growth", "points": [["Methods of growth (AQA)", "mergers, takeovers, ventures, franchising"], ["Horizontal integration", "same stage, same industry"], ["Backward vertical integration", "buying a supplier"], ["Forward vertical integration", "buying a business closer to the customer"], ["Conglomerate integration", "unrelated industry"]]}, {"ref": "3.9.2", "title": "Innovation", "points": [["Product innovation", "new or improved goods and services"], ["Process innovation", "new or improved ways of producing them"]]}, {"ref": "3.9.2", "title": "Becoming Innovative & Protecting Ideas", "points": [["Kaizen", "continuous improvement through many small changes"], ["Intrapreneurship", "employees acting like entrepreneurs inside the business"], ["Benchmarking", "comparing with the best and adopting better practice"], ["Patent", "sole right to make and sell an invention for a set period"], ["Copyright", "protects original creative work automatically"]]}, {"ref": "3.9.3", "title": "Globalisation & Emerging Economies", "points": [["Globalisation", "growing integration of economies through trade, investment, people and technology"], ["Emerging economies", "fast-growing economies with rising incomes and lower costs"]]}, {"ref": "3.9.3", "title": "Entering International Markets", "points": [["Methods of entry (AQA)", "exporting, licensing, alliances, direct investment"], ["Licensing", "a foreign firm makes the product for a fee"], ["Multinational", "a business with operations in more than one country"]]}, {"ref": "3.9.3", "title": "Producing Abroad & Managing International Business", "points": [["Off-shoring", "moving production or services abroad"], ["Re-shoring", "bringing production back home"], ["Pressures in international business", "local responsiveness v cost reduction"]]}, {"ref": "3.9.4", "title": "Digital Technology", "points": [["Digital technology (AQA)", "automation, e-commerce, big data, data mining"], ["Big data", "very large data sets from customers, sales and devices"], ["Data mining", "analysing big data to find patterns"]]}]}, {"unit": "3.10", "title": "Managing strategic change", "topics": [{"ref": "3.10.1", "title": "Causes & Types of Change", "points": [["Types of change (AQA)", "internal, external, incremental, disruptive"], ["Incremental change", "gradual, small steps"], ["Disruptive change", "sudden, major change that can transform a market"], ["Lewin's force field analysis", "change happens when driving forces outweigh restraining forces"]]}, {"ref": "3.10.1", "title": "Flexible Organisations & Knowledge", "points": [["Flexible organisation (AQA)", "restructuring, delayering, flexible contracts, organic v mechanistic, knowledge and information management"], ["Delayering", "removing levels of management"], ["Mechanistic structure", "rigid hierarchy and clear rules"], ["Organic structure", "flexible, fewer rules, shared roles"]]}, {"ref": "3.10.1", "title": "Resistance to Change", "points": [["Kotter and Schlesinger's reasons for resistance", "parochial self-interest, misunderstanding and lack of trust, different assessments, low tolerance for change"], ["Kotter and Schlesinger's ways of overcoming resistance", "education and communication, participation and involvement, facilitation and support, negotiation and agreement, manipulation and co-optation, explicit and implicit coercion"]]}, {"ref": "3.10.2", "title": "Organisational Culture", "points": [["Organisational culture", "shared values and attitudes; the way things are done"], ["Handy's cultures", "power, role, task, person"], ["Power culture", "control held at the centre"], ["Role culture", "rules and procedures"], ["Task culture", "project teams, expertise matters"], ["Person culture", "exists to serve the individuals in it"]]}, {"ref": "3.10.3", "title": "Implementing Strategy", "points": [["Implementing strategy (AQA)", "leadership, communication, organisational structure, network analysis"]]}, {"ref": "3.10.3", "title": "Network Analysis", "points": [["EST", "earliest start time of the next activity"], ["LFT", "latest finish time without delaying the project"], ["Critical path", "activities with zero float; any delay delays the project"], ["Total float", "LFT − duration − EST"]]}, {"ref": "3.10.4", "title": "Why Strategies Fail", "points": [["Planned strategy", "decided in advance, then implemented"], ["Emergent strategy", "develops over time in response to events"], ["Strategic drift", "strategy gradually falls out of line with a changing environment"]]}, {"ref": "3.10.4", "title": "Strategic & Contingency Planning", "points": [["Contingency planning", "planning in advance for events that might happen"], ["Crisis management", "responding to an unexpected event as it happens"]]}]}];
+const PROXY='https://nishkam-marker.alevelnishkam.workers.dev';
+const MODEL='claude-sonnet-4-6';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pt=p=>p[0]?`<b>${esc(p[0])}:</b> ${esc(p[1])}`:esc(p[1]);
+const ptText=p=>p[0]?`${p[0]}: ${p[1]}`:p[1];
+const TOPICS=[];DATA.forEach((u,ui)=>u.topics.forEach((t,ti)=>TOPICS.push({u:ui,t:ti,unit:u.unit,utitle:u.title,...t})));
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* tabs */
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  document.querySelectorAll('.tab').forEach(t=>t.hidden=t.id!==b.dataset.t);});
+
+/* downloads */
+$('#dl').innerHTML=DATA.map(u=>`<tr><td><b>${u.unit}</b> ${esc(cap(u.title))}</td><td><a href="blurting/7132_Blurt_Sheet_Unit_${u.unit}.pdf" download>Download</a></td><td><a href="blurting/7132_Blank_Blurt_Sheet_Unit_${u.unit}.pdf" download>Download</a></td></tr>`).join('')+
+  `<tr><td><b>All</b> Formulas</td><td><a href="blurting/7132_Formula_Blurt_Sheet.pdf" download>Download</a></td><td class="small">Use a blank page</td></tr>`;
+
+/* unit chips */
+function chips(el){el.innerHTML=DATA.map((u,i)=>`<label><input type="checkbox" value="${i}" checked> ${u.unit}</label>`).join('');}
+const chosen=el=>[...el.querySelectorAll('input:checked')].map(i=>+i.value);
+chips($('#m-units'));chips($('#r-units'));
+
+/* ---------- blurt a topic ---------- */
+const bu=$('#b-unit'),bt=$('#b-topic');
+bu.innerHTML='<option value="-1">All units</option>'+DATA.map((u,i)=>`<option value="${i}">${u.unit} ${esc(cap(u.title))}</option>`).join('');
+bu.value='0';
+function fillTopics(){const ui=+bu.value;const list=ui<0?TOPICS:TOPICS.filter(t=>t.u===ui);
+  bt.innerHTML=list.map(t=>`<option value="${TOPICS.indexOf(t)}">${t.ref} ${esc(t.title)}</option>`).join('');}
+bu.onchange=fillTopics;fillTopics();
+let cur=null,tick=null,left=0,photo=null;
+function start(idx){
+  cur=TOPICS[idx];bt.value=idx;
+  $('#b-setup').hidden=true;$('#b-run').hidden=false;$('#b-check').hidden=true;$('#b-ai-out').innerHTML='';
+  $('#b-ref').textContent=`Unit ${cur.unit} · ${cur.ref}`;$('#b-title').textContent=cur.title;
+  $('#b-count').textContent=`There are ${cur.points.length} key points on the blurt sheet for this topic. See how many you can get.`;
+  $('#b-text').value='';photo=null;$('#b-photo-name').textContent='';
+  clearInterval(tick);left=+$('#b-time').value;const tm=$('#b-timer');tm.classList.remove('out');
+  if(left>0){const show=()=>{tm.textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`;};show();
+    tick=setInterval(()=>{left--;show();if(left<=0){clearInterval(tick);tm.textContent="Time's up";tm.classList.add('out');}},1000);}
+  else tm.textContent='';
+  $('#b-text').focus();
+}
+$('#b-start').onclick=()=>start(+bt.value);
+$('#b-random').onclick=()=>{const ui=+bu.value;const list=ui<0?TOPICS:TOPICS.filter(t=>t.u===ui);start(TOPICS.indexOf(pick(list)));};
+$('#b-back').onclick=$('#b-new').onclick=()=>{clearInterval(tick);$('#b-setup').hidden=false;$('#b-run').hidden=true;$('#b-check').hidden=true;};
+$('#b-again').onclick=()=>start(TOPICS.indexOf(cur));
+$('#b-done').onclick=()=>{clearInterval(tick);
+  $('#b-list').innerHTML=cur.points.map((p,i)=>`<li data-i="${i}"><input type="checkbox" id="c${i}"><label for="c${i}">${pt(p)}</label><span class="tagx"></span></li>`).join('');
+  $('#b-list').querySelectorAll('input').forEach(c=>c.onchange=()=>{c.closest('li').classList.toggle('got',c.checked);score();});
+  $('#b-check').hidden=false;score();$('#b-check').scrollIntoView({behavior:'smooth',block:'start'});};
+function score(){const all=$('#b-list').querySelectorAll('input'),n=[...all].filter(c=>c.checked).length;
+  $('#b-score').textContent=`${n} / ${all.length}`;
+  $('#b-score-txt').textContent=n===all.length?'Every point. Blurt a different topic next.':n>=all.length*0.7?'Good. Revise the points you missed, then try again in a few days.':'Revise the points you missed, then blurt this topic again.';}
+$('#b-print').onclick=()=>{const miss=cur.points.filter((p,i)=>!$('#c'+i).checked);
+  printSheet(`<h1>Points to revise - ${esc(cur.title)}</h1><div class="meta">Unit ${cur.unit} · ${cur.ref}</div><ul>${(miss.length?miss:cur.points).map(p=>`<li>${pt(p)}</li>`).join('')}</ul>`);};
+
+/* photo */
+$('#b-photo').onchange=e=>{const f=e.target.files[0];if(!f)return;const img=new Image(),r=new FileReader();
+  r.onload=()=>{img.onload=()=>{const max=1600,s=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=img.width*s;c.height=img.height*s;
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);photo=c.toDataURL('image/jpeg',0.8);$('#b-photo-name').textContent=f.name;};img.src=r.result;};r.readAsDataURL(f);};
+
+/* AI check */
+$('#b-ai').onclick=async()=>{
+  const text=$('#b-text').value.trim();
+  if(!text&&!photo){$('#b-ai-out').innerHTML='<div class="box err">Type your blurt in the box above, or add a photo of it, then try again.</div>';return;}
+  const btn=$('#b-ai');btn.disabled=true;btn.textContent='Checking...';
+  const list=cur.points.map((p,i)=>`${i}. ${ptText(p)}`).join('\n');
+  const sys=`You check a Year 13 student's blurt for AQA A-level Business (7132). A blurt is everything the student could remember about one topic, written from memory without notes.
+Topic: ${cur.ref} ${cur.title}
+Checklist of key points:
+${list}
+
+Compare the blurt with the checklist.
+- "got": indexes of points the student included with the meaning correct, even if worded differently or in note form.
+- "partial": indexes where the student mentioned the point but it is incomplete (e.g. named the term with no meaning, or listed only some items of a list).
+- "errors": things the student wrote that are factually wrong for AQA A-level Business, each with what they wrote (short quote) and the correct version. Only include real errors. Spelling mistakes are not errors.
+- "extra": up to two correct, relevant points the student made that are not on the checklist (short). Leave empty if none.
+- "comment": one or two sentences to the student in plain, encouraging teacher language, British English, saying what to revise first. Do not use the word A*.
+Return JSON only, no other text: {"got":[],"partial":[],"errors":[{"wrote":"","correct":""}],"extra":[],"comment":""}`;
+  let content;
+  if(photo){content=[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:photo.split(',')[1]}},{type:'text',text:'The student\'s handwritten blurt is in the image.'+(text?'\n\nThey also typed:\n'+text:'')}];}
+  else content='Student\'s blurt:\n'+text;
+  try{
+    const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,max_tokens:1500,system:sys,messages:[{role:'user',content}]})});
+    if(!r.ok)throw new Error('the checker returned an error ('+r.status+')');
+    const d=await r.json();const fb=JSON.parse(d.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim());
+    const got=new Set((fb.got||[]).map(Number)),part=new Set((fb.partial||[]).map(Number));
+    $('#b-list').querySelectorAll('li').forEach(li=>{const i=+li.dataset.i,c=li.querySelector('input'),tg=li.querySelector('.tagx');
+      c.checked=got.has(i);li.classList.toggle('got',got.has(i));li.classList.toggle('part',part.has(i));tg.textContent=got.has(i)?'got it':part.has(i)?'partly':'';});
+    score();
+    let h=`<div class="box"><h4>AI check</h4><p>${esc(fb.comment||'')}</p><p class="small" style="margin-top:6px">The checklist has been ticked for you. Points marked "partly" need more detail. You can change any tick if you disagree.</p></div>`;
+    if(fb.errors&&fb.errors.length)h+=`<div class="box err"><h4>Things to correct</h4><ul>${fb.errors.map(e=>`<li>You wrote: "${esc(e.wrote)}". ${esc(e.correct)}</li>`).join('')}</ul></div>`;
+    if(fb.extra&&fb.extra.length)h+=`<div class="box"><h4>Also correct, not on the checklist</h4><ul>${fb.extra.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+    $('#b-ai-out').innerHTML=h;
+  }catch(e){$('#b-ai-out').innerHTML=`<div class="box err">The AI check didn't work: ${esc(e.message)}. Check your connection and try again, or tick the checklist yourself.</div>`;}
+  btn.disabled=false;btn.textContent='Check my blurt with AI';
+};
+
+/* ---------- mixed sheet ---------- */
+let mixed=[];
+$('#m-gen').onclick=()=>{const us=chosen($('#m-units'));if(!us.length){$('#m-prev').innerHTML='<p class="small">Choose at least one unit.</p>';return;}
+  const pool=TOPICS.filter(t=>us.includes(t.u));mixed=shuffle(pool).slice(0,+$('#m-n').value);
+  mixed.sort((a,b)=>TOPICS.indexOf(a)-TOPICS.indexOf(b));
+  $('#m-prev').innerHTML=`<p class="small">Your sheet:</p><ol>${mixed.map(t=>`<li>${t.ref} ${esc(t.title)} <span class="small">(${t.points.length} points)</span></li>`).join('')}</ol>`;
+  $('#m-blank').disabled=$('#m-ans').disabled=false;};
+$('#m-blank').onclick=()=>printSheet(`<h1>Blurt sheet</h1><div class="meta">Name: ______________________ &nbsp; Date: __________ &nbsp; Notes away. Write everything you can remember under each heading.</div>`+
+  mixed.map(t=>`<div class="pt"><h2>${t.ref} ${esc(t.title)}</h2><div class="hint">${t.points.length} key points to recall</div>${'<div class="ln"></div>'.repeat(Math.max(5,t.points.length+3))}</div>`).join(''));
+$('#m-ans').onclick=()=>printSheet(`<h1>Blurt sheet - answers</h1><div class="meta">Mark your sheet in a different colour.</div>`+
+  mixed.map(t=>`<div class="pt"><h2>${t.ref} ${esc(t.title)}</h2><ul>${t.points.map(p=>`<li>${pt(p)}</li>`).join('')}</ul></div>`).join(''));
+function printSheet(h){$('#printArea').innerHTML=h;window.print();}
+
+/* ---------- rapid fire ---------- */
+let deck=[],di=0,got=0,miss=0,missed=[];
+function buildDeck(){const us=chosen($('#r-units'));deck=[];
+  TOPICS.forEach(t=>{if(us.includes(t.u))t.points.forEach(p=>{if(p[0])deck.push({t,p});});});
+  deck=shuffle(deck);di=0;got=0;miss=0;missed=[];show();}
+function show(){const card=$('#r-card');card.classList.remove('on');
+  ['#r-got','#r-miss'].forEach(s=>$(s).hidden=true);$('#r-flip').hidden=false;
+  if(!deck.length){$('#r-cue').textContent='Choose at least one unit';$('#r-topic').textContent='';$('#r-flip').hidden=true;return;}
+  if(di>=deck.length){$('#r-topic').textContent='Finished';$('#r-cue').textContent=`${got} of ${deck.length}`;$('#r-flip').hidden=true;stats();return;}
+  const c=deck[di];$('#r-topic').textContent=$('#r-topic2').textContent=`${c.t.ref} ${c.t.title}`;
+  $('#r-cue').textContent=c.p[0];setTimeout(()=>{$('#r-cue2').textContent=c.p[0];$('#r-ans').textContent=c.p[1];},200);stats();}
+function stats(){$('#r-s1').textContent=`${got} got`;$('#r-s2').textContent=`${miss} missed`;$('#r-s3').textContent=deck.length?`${Math.min(di+1,deck.length)} of ${deck.length}`:'';
+  $('#r-missed').innerHTML=missed.length?`<div class="box"><h4>Missed so far - revise these</h4><ul>${missed.map(p=>`<li>${pt(p)}</li>`).join('')}</ul></div>`:'';}
+$('#r-flip').onclick=()=>{$('#r-card').classList.add('on');$('#r-flip').hidden=true;$('#r-got').hidden=$('#r-miss').hidden=false;};
+$('#r-got').onclick=()=>{got++;di++;show();};
+$('#r-miss').onclick=()=>{miss++;missed.push(deck[di].p);di++;show();};
+$('#r-units').onchange=buildDeck;
+document.addEventListener('keydown',e=>{if($('#t3').hidden||/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;
+  if(e.key===' '&&!$('#r-flip').hidden){e.preventDefault();$('#r-flip').click();}
+  else if(e.key==='ArrowRight'&&!$('#r-got').hidden)$('#r-got').click();
+  else if(e.key==='ArrowLeft'&&!$('#r-miss').hidden)$('#r-miss').click();});
+buildDeck();
+
+/* hero network */
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cv=$('#net'),cx=cv.getContext('2d');let W,H,pts=[],mouse={x:-999,y:-999};
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function size(){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);
+  pts=Array.from({length:Math.round(Math.min(70,W*H/12000))},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,k:Math.random()<.12?'s':Math.random()<.14?'e':'c'}));}
+function draw(){cx.clearRect(0,0,W,H);const cs={s:css('--start'),e:css('--end'),c:css('--chain')},lc=css('--muted');
+  for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;const dx=p.x-mouse.x,dy=p.y-mouse.y,d=Math.hypot(dx,dy);if(d<120&&d>0){p.x+=dx/d;p.y+=dy/d;}}
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<125){cx.globalAlpha=(1-d/125)*.28;cx.strokeStyle=lc;cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke();}}
+  for(const p of pts){cx.globalAlpha=.75;cx.fillStyle=cs[p.k];cx.beginPath();cx.arc(p.x,p.y,p.k==='c'?1.8:3,0,7);cx.fill();}
+  cx.globalAlpha=1;if(!reduce)requestAnimationFrame(draw);}
+size();draw();addEventListener('resize',size);
+const hero=document.querySelector('.hero');hero.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;});hero.addEventListener('pointerleave',()=>{mouse.x=mouse.y=-999;});
+})();
+</script>
+</body>
+</html>
