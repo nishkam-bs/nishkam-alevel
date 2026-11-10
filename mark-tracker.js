@@ -1,12 +1,11 @@
 /* =====================================================================
    Saves marking-tool results to the teacher tracker.
-   Uses the same sign-in as the courses (exam number, stored in epc_auth),
+   Uses the same sign-in as the courses (username and password, stored in epc_auth),
    and the same tracker Worker. No student data is written in this file.
    ===================================================================== */
 (function(){
 "use strict";
 const API='https://nishkam-tracker.alevelnishkam.workers.dev';
-const HOLIDAY_CODE='Chains26';
 const ON=/github\.io$/.test(location.hostname);
 const QKEY='ntrack_pending';
 let auth=null,waiting=null,mountEl=null;
@@ -39,15 +38,15 @@ function render(msg,cls,into){
   if(into&&box.parentNode!==into)into.prepend(box);
   box.className='ntk'+(cls?' '+cls:'');
   if(auth){
-    box.innerHTML=`Signed in as <b>${esc(auth.name)}</b>. Your marks are saved for your teacher.${msg?` <span class="ok">${esc(msg)}</span>`:''}<button class="link" type="button" id="ntkOut">Not you?</button>`;
+    box.innerHTML=`Signed in as <b>${esc(auth.name)}</b>. Your marks are saved for your teacher.${msg?` <span class="ok">${esc(msg)}</span>`:''}<button class="link" type="button" id="ntkOut">Not you? Sign out</button>`;
     document.getElementById('ntkOut').onclick=()=>{auth=null;try{localStorage.removeItem('epc_auth');}catch(e){}render();};
   }else{
-    box.innerHTML=`${msg?`<b>${esc(msg)}</b><br>`:''}Sign in with your exam number so your marks are saved for your teacher.
-      <form id="ntkForm"><input id="ntkExam" inputmode="numeric" autocomplete="off" placeholder="Exam number" aria-label="Exam number"><button type="submit">Sign in</button></form><div class="err" id="ntkErr"></div>`;
+    box.innerHTML=`${msg?`<b>${esc(msg)}</b><br>`:''}Sign in with the username and password on your slip so your marks are saved for your teacher.
+      <form id="ntkForm"><input id="ntkUser" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Username" aria-label="Username"><input id="ntkPass" type="password" autocomplete="current-password" autocapitalize="none" placeholder="Password" aria-label="Password"><button type="submit">Sign in</button></form><div class="err" id="ntkErr"></div>`;
     document.getElementById('ntkForm').onsubmit=async e=>{e.preventDefault();
       const btn=e.target.querySelector('button'),err=document.getElementById('ntkErr');btn.disabled=true;err.textContent='';
-      try{const d=await api('/login',{exam:document.getElementById('ntkExam').value.trim(),code:HOLIDAY_CODE});
-        auth={token:d.token,name:d.name,exam:d.exam};try{localStorage.setItem('epc_auth',JSON.stringify(auth));}catch(x){}
+      try{const d=await api('/login',{site:'alevel',username:document.getElementById('ntkUser').value.trim(),password:document.getElementById('ntkPass').value.trim()});
+        auth={token:d.token,name:d.name,exam:d.username};try{localStorage.setItem('epc_auth',JSON.stringify(auth));}catch(x){}
         if(waiting){const q=pending();q.push(waiting);setPending(q);waiting=null;}
         render();flush();
       }catch(x){err.textContent=x.message==='Failed to fetch'?'Could not connect. Check your internet and try again.':x.message;btn.disabled=false;}};

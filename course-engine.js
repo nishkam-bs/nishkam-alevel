@@ -56,8 +56,6 @@ STAGES.forEach(s=>s.items.forEach((it,i)=>{it._id=s.id+'.'+(i+1);}));
 
 /* Tracking only runs on the school site. Everywhere else the course works on its own. */
 const TRACKING_ON=true;
-// Half-term only: students sign in with exam number alone. Remove this when individual passwords go in.
-const HOLIDAY_CODE='Chains26';
 const TRACK=TRACKING_ON&&/github\.io$/.test(location.hostname);
 const API='https://nishkam-tracker.alevelnishkam.workers.dev';
 const KEY=C.key;
@@ -84,7 +82,7 @@ function signOut(msg){auth=null;try{localStorage.removeItem('epc_auth');}catch(e
 async function syncProgress(){
   if(!auth)return;
   try{const d=await api('/progress',{token:auth.token});
-    /* the sheet stores every course together; keep only this course's stages */
+    /* the tracker stores every course together; keep only this course's stages */
     const mine=k=>{k=+k;return k>OFFSET&&k<OFFSET+100?k-OFFSET:null;};
     Object.entries(d.best||{}).forEach(([k,v])=>{const s=mine(k);if(s&&(state.best[s]==null||v>state.best[s]))state.best[s]=v;});
     Object.keys(d.passed||{}).forEach(k=>{const s=mine(k);if(s)state.passed[s]=true;});save();renderMap();}catch(e){}
@@ -101,12 +99,12 @@ function logResult(row){if(!TRACK||!auth)return;const q=pending();q.push(row);se
 function renderAuth(msg){
   const box=$('#authBox');if(!TRACK){box.hidden=true;return;}box.hidden=false;
   if(auth){box.innerHTML=`<div class="who">Signed in as <b>${esc(auth.name)}</b> <span class="sync" id="syncTxt"></span><button id="soBtn">Not you? Sign out</button></div>`;$('#soBtn').onclick=()=>signOut();return;}
-  box.innerHTML=`<form class="signin" id="siForm"><h3>Sign in to start</h3><p>Enter your exam number. Your progress is saved, so you can carry on from any device.</p>
-    <div class="row"><input class="txt" id="siExam" inputmode="numeric" autocomplete="off" placeholder="Exam number" aria-label="Exam number"><button class="btn" type="submit">Sign in</button></div>
+  box.innerHTML=`<form class="signin" id="siForm"><h3>Sign in to start</h3><p>Use the username and password from the slip your teacher gave you. You only need to do this once on each device.</p>
+    <div class="row"><input class="txt" id="siUser" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Username" aria-label="Username"><input class="txt" id="siPass" type="password" autocomplete="current-password" autocapitalize="none" placeholder="Password" aria-label="Password"><button class="btn" type="submit">Sign in</button></div>
     <div class="err" aria-live="polite">${msg?esc(msg):''}</div></form>`;
   $('#siForm').onsubmit=async e=>{e.preventDefault();const btn=$('#siForm .btn'),err=$('#siForm .err');btn.disabled=true;err.textContent='';
-    try{const d=await api('/login',{exam:$('#siExam').value.trim(),code:HOLIDAY_CODE});
-      auth={token:d.token,name:d.name,exam:d.exam};try{localStorage.setItem('epc_auth',JSON.stringify(auth));}catch(x){}
+    try{const d=await api('/login',{site:'alevel',username:$('#siUser').value.trim(),password:$('#siPass').value.trim()});
+      auth={token:d.token,name:d.name,exam:d.username};try{localStorage.setItem('epc_auth',JSON.stringify(auth));}catch(x){}
       loadState();renderAuth();renderMap();await syncProgress();flush();
     }catch(x){err.textContent=x.message==='Failed to fetch'?'Could not connect. Check your internet and try again.':x.message;btn.disabled=false;}};
 }
@@ -141,7 +139,7 @@ function renderMap(){
     const cnt=countOf(s);const status=TRACK&&!auth?'Sign in first':!un?'Locked':ps?(s.type==='write'?'Complete':`Passed · ${best}/${cnt}`):(best!=null?`Best ${best}/${cnt}`:'Ready');
     d.innerHTML=`<button class="ncard" ${un?'':'aria-disabled="true"'}><div class="top"><span class="n">${ps?'✓':s.id}</span><span class="st">${status}</span></div><h3>${esc(s.title)}</h3><p>${esc(s.blurb)}</p></button>`;
     const c=d.querySelector('.ncard');
-    c.onclick=()=>{if(un)openStage(s.id);else if(TRACK&&!auth){const i=$('#siExam');if(i){i.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});i.focus({preventScroll:true});}}else{c.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'none'}],{duration:300});}};
+    c.onclick=()=>{if(un)openStage(s.id);else if(TRACK&&!auth){const i=$('#siUser');if(i){i.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});i.focus({preventScroll:true});}}else{c.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'none'}],{duration:300});}};
     if(fine&&!reduce){c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`rotateX(${-y*10}deg) rotateY(${x*14}deg) translateZ(10px)`;});c.addEventListener('pointerleave',()=>c.style.transform='');}
     box.append(d);
   });

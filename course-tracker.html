@@ -61,6 +61,25 @@ h2{font-size:1.35rem;margin-bottom:12px}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-top:10px}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 select{border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:8px 10px;font:inherit}
+.mgr{display:grid;gap:20px}
+.mgr textarea{width:100%;min-height:150px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:11px 13px;font:15px/1.6 "IBM Plex Sans",sans-serif;margin-bottom:12px}
+.mgr p{margin:0 0 12px}
+.mgr td .btn{padding:5px 12px;font-size:.8rem}
+.row-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.newlogins{margin-top:16px;padding:16px;border-radius:12px;background:var(--gold-soft)}
+.mono{font-family:"IBM Plex Mono",monospace;font-size:.85rem}
+.wipe input{max-width:260px;margin:0}
+#slips{display:none}
+@media print{
+  body.printing{background:#fff}
+  body.printing .wrap{display:none}
+  body.printing #slips{display:block;color:#000;font:12pt/1.5 Arial,sans-serif}
+  .slip{border:1px dashed #777;padding:14px 18px;margin:0 0 10px;break-inside:avoid}
+  .slip h3{margin:0 0 6px;font-size:13pt}
+  .slip p{margin:2px 0}
+  .slip .cred{font:12pt "Courier New",monospace}
+  .slip .small{font-size:9.5pt;color:#333;margin-top:8px}
+}
 [hidden]{display:none!important}
 @media (max-width:900px){.side{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
@@ -77,15 +96,38 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
 <div id="dash" hidden>
   <div class="top">
     <div><h1>Start Point/End Point Course</h1><p id="updated"></p></div>
-    <div style="display:flex;gap:10px"><button class="btn ghost" id="refresh">Refresh</button><button class="btn ghost" id="logout">Sign out</button></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn ghost" id="mgrBtn">Students and logins</button><button class="btn ghost" id="refresh">Refresh</button><button class="btn ghost" id="logout">Sign out</button></div>
   </div>
-  <div class="stats">
+  <div class="mgr" id="mgr" hidden>
+    <div class="card">
+      <h2>Add students</h2>
+      <p class="muted">Type one name per line. Each student gets a random username and password. Names are only stored in the tracker database and only show on this page.</p>
+      <textarea id="newNames" aria-label="Student names, one per line" placeholder="First name Surname"></textarea>
+      <div class="row-btns"><button class="btn" id="addBtn">Create logins</button><span class="err" id="addErr"></span></div>
+      <div id="newOut"></div>
+    </div>
+    <div class="card">
+      <h2>Students</h2>
+      <div class="tablewrap"><table id="stuTbl"></table></div>
+    </div>
+    <div class="card">
+      <h2>Download for Excel</h2>
+      <p class="muted">Saves a CSV file that opens in Excel. Keep it on the school OneDrive, not on a personal device.</p>
+      <div class="row-btns"><button class="btn ghost" id="csvMarks">Marked answers</button><button class="btn ghost" id="csvCourses">Course attempts</button><button class="btn ghost" id="csvStudents">Student list (no passwords)</button></div>
+    </div>
+    <div class="card wipe">
+      <h2>End of course</h2>
+      <p class="muted">When this group leaves, delete everything: names, logins, marks and answers. This cannot be undone, so download anything you need first.</p>
+      <div class="row-btns"><input id="wipeTxt" placeholder="Type DELETE EVERYTHING" aria-label="Type DELETE EVERYTHING to confirm" autocomplete="off"><button class="btn" id="wipeBtn" style="background:var(--end)">Delete all data</button><span class="err" id="wipeErr"></span></div>
+    </div>
+  </div>
+  <div class="stats" id="statsRow">
     <div class="card stat"><b id="sStarted">0</b><span id="lStarted">students started</span></div>
     <div class="card stat"><b id="sDone">0</b><span id="lDone">finished all 10 stages</span></div>
     <div class="card stat"><b id="sAvg">0</b><span id="lAvg">average stages passed</span></div>
     <div class="card stat"><b id="sWeek">0</b><span id="lWeek">attempts in the last 7 days</span></div>
   </div>
-  <div class="grid2">
+  <div class="grid2" id="mainGrid">
     <div>
       <div class="card">
         <div class="filters"><select id="course" aria-label="Choose course"><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option><option value="400">Application Course</option><option value="500">Models Course</option><option value="600">Paper 3 Course</option><option value="m">Marked answers (essay tools)</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
@@ -102,10 +144,12 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
 </div>
 
 </div>
+<div id="slips"></div>
 <script>
 (function(){
 "use strict";
 const API='https://nishkam-tracker.alevelnishkam.workers.dev';
+const SITE='alevel',SITE_URL='https://nishkam-bs.github.io/nishkam-alevel/';
 const COURSES={
   0:{name:'Start Point/End Point Course',stages:[[1,'Read the question',10],[2,'Spot the drift',10],[3,'Build the chain',3],[4,'Find the weak link',6],[5,'Explain the link',9],[6,'Read every word',8],[7,'Use the theory',8],[8,'Numbers in the chain',6],[9,'Against the clock',12],[10,'The real thing',1]]},
   100:{name:'Judgement Course',stages:[[1,'Summary or judgement?',10],[2,'What does it depend on?',8],[3,'Attack the big word',8],[4,'Build the judgement',3],[5,'Fix the conclusion',6],[6,'Why it outweighs',8],[7,'Know when to judge',7],[8,'Judge with numbers',5],[9,'Against the clock',12],[10,'Write the conclusion',1]]},
@@ -125,7 +169,7 @@ let token=null,data=null;
 try{token=sessionStorage.getItem('ct_token');}catch(e){}
 
 async function api(path,body){
-  const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({site:SITE},body))});
   const d=await r.json().catch(()=>({}));
   if(!r.ok){const e=new Error(d.error||'Something went wrong');e.status=r.status;throw e;}
   return d;
@@ -133,7 +177,7 @@ async function api(path,body){
 $('#lf').onsubmit=async e=>{e.preventDefault();$('#lerr').textContent='';
   try{const d=await api('/teacher',{password:$('#pw').value});token=d.token;try{sessionStorage.setItem('ct_token',token);}catch(x){}$('#pw').value='';load();}
   catch(x){$('#lerr').textContent=x.message==='Failed to fetch'?'Could not connect.':x.message;}};
-$('#logout').onclick=()=>{token=null;try{sessionStorage.removeItem('ct_token');}catch(e){}$('#dash').hidden=true;$('#loginView').hidden=false;};
+$('#logout').onclick=()=>{token=null;try{sessionStorage.removeItem('ct_token');}catch(e){}$('#dash').hidden=true;$('#newOut').innerHTML='';$('#slips').innerHTML='';$('#loginView').hidden=false;};
 $('#refresh').onclick=()=>load();
 $('#sort').onchange=()=>render();
 let MODE='c';
@@ -210,6 +254,69 @@ function markDetail(m){
     ${m.well?`<p><b>What went well:</b> ${esc(m.well)}</p>`:''}${m.improve?`<p><b>To improve:</b> ${esc(m.improve)}</p>`:''}${m.answer?`<div class="answer">${esc(m.answer)}</div>`:''}`;
   d.scrollIntoView({behavior:'smooth',block:'start'});
 }
+
+/* ---------- students and logins ---------- */
+let MGR=false;
+$('#mgrBtn').onclick=()=>{MGR=!MGR;$('#mgr').hidden=!MGR;$('#statsRow').hidden=MGR;$('#mainGrid').hidden=MGR;
+  $('#mgrBtn').textContent=MGR?'Back to tracker':'Students and logins';
+  document.querySelector('#dash h1').textContent=MGR?'Students and logins':($('#course').value==='m'?'Marked answers':COURSES[OFF].name);
+  if(MGR)renderStudents();};
+function renderStudents(){
+  const list=(data&&data.students)||[];
+  $('#stuTbl').innerHTML=list.length?`<thead><tr><th class="l">Name</th><th class="l">Username</th><th class="l">Last signed in</th><th class="l">Status</th><th class="l"></th></tr></thead><tbody>${list.map(s=>`<tr>
+    <td class="l">${esc(s.name)}</td><td class="l mono">${esc(s.username)}</td><td class="l muted">${s.last_login?ago(s.last_login):'Not yet'}</td>
+    <td class="l">${s.active?'<span class="cell p">On</span>':'<span class="cell a">Off</span>'}</td>
+    <td class="l"><div class="row-btns"><button class="btn ghost" data-a="reset" data-u="${esc(s.username)}">New password</button><button class="btn ghost" data-a="active" data-u="${esc(s.username)}" data-v="${s.active?0:1}">${s.active?'Switch off':'Switch on'}</button><button class="btn ghost" data-a="remove" data-u="${esc(s.username)}">Remove</button></div></td></tr>`).join('')}</tbody>`
+    :'<tbody><tr><td class="l muted">No students yet. Add names above.</td></tr></tbody>';
+  document.querySelectorAll('#stuTbl button').forEach(b=>b.onclick=()=>stuAction(b));
+}
+async function stuAction(b){
+  const u=b.dataset.u,s=data.students.find(x=>x.username===u),nm=s?s.name:u;
+  try{
+    if(b.dataset.a==='reset'){if(!confirm(`Give ${nm} a new password? Their old one stops working straight away.`))return;
+      const d=await api('/students/reset',{token,username:u});showNew([d],'New password for '+d.name);}
+    if(b.dataset.a==='active'){await api('/students/active',{token,username:u,active:b.dataset.v==='1'});}
+    if(b.dataset.a==='remove'){if(!confirm(`Remove ${nm}? This deletes their login and all their results.`))return;
+      await api('/students/remove',{token,username:u});}
+    await load();renderStudents();
+  }catch(x){if(x.status===401){$('#logout').click();$('#lerr').textContent='Please sign in again.';}else alert(x.message);}
+}
+function showNew(list,title){
+  $('#newOut').innerHTML=`<div class="newlogins"><h2 style="font-size:1.15rem">${esc(title)}</h2>
+    <p>Passwords are only shown now. Print the slips before you leave this page. If one gets lost, use <b>New password</b> below.</p>
+    <div class="tablewrap"><table><thead><tr><th class="l">Name</th><th class="l">Username</th><th class="l">Password</th></tr></thead><tbody>${list.map(c=>`<tr><td class="l">${esc(c.name)}</td><td class="l mono">${esc(c.username)}</td><td class="l mono">${esc(c.password)}</td></tr>`).join('')}</tbody></table></div>
+    <div class="row-btns" style="margin-top:12px"><button class="btn" id="printBtn">Print slips</button><button class="btn ghost" id="hideBtn">Done, hide passwords</button></div></div>`;
+  $('#slips').innerHTML=list.map(c=>`<div class="slip"><h3>${esc(c.name)}</h3><p>Website: ${esc(SITE_URL)}</p>
+    <p>Username: <span class="cred">${esc(c.username)}</span></p><p>Password: <span class="cred">${esc(c.password)}</span></p>
+    <p class="small">Keep this slip safe and don't share it. You sign in once on each device. Your marks and answers are saved under your username so your teacher can see your progress, and they are deleted when you finish the course.</p></div>`).join('');
+  $('#printBtn').onclick=()=>{document.body.classList.add('printing');window.print();};
+  $('#hideBtn').onclick=()=>{$('#newOut').innerHTML='';$('#slips').innerHTML='';};
+}
+addEventListener('afterprint',()=>document.body.classList.remove('printing'));
+$('#addBtn').onclick=async()=>{
+  const names=$('#newNames').value.split('\n').map(x=>x.trim()).filter(Boolean);$('#addErr').textContent='';
+  if(!names.length){$('#addErr').textContent='Type at least one name.';return;}
+  const have=new Set((data.students||[]).map(s=>s.name.toLowerCase())),dup=names.filter(n=>have.has(n.toLowerCase()));
+  if(dup.length&&!confirm(`Already on the list: ${dup.join(', ')}. Create another login for them anyway?`))return;
+  $('#addBtn').disabled=true;
+  try{const d=await api('/students/add',{token,names});$('#newNames').value='';showNew(d.created,'New logins');await load();renderStudents();}
+  catch(x){$('#addErr').textContent=x.message;}
+  $('#addBtn').disabled=false;
+};
+function csv(name,head,rows){
+  const q=v=>{v=String(v==null?'':v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+  const text='﻿'+[head,...rows].map(r=>r.map(q).join(',')).join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name+'-'+new Date().toISOString().slice(0,10)+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+const when=t=>new Date(t).toLocaleString('en-GB');
+$('#csvMarks').onclick=()=>csv('marked-answers',['Date','Name','Username','Tool','Question','Mark','Level','What went well','To improve','Answer'],(data.marks||[]).map(m=>[when(m.t),m.name,m.exam,m.tool,m.question,m.mark,m.level,m.well,m.improve,m.answer]));
+$('#csvCourses').onclick=()=>csv('course-attempts',['Date','Name','Username','Course','Stage','Stage title','Score','Out of','Passed','Minutes','Missed'],(data.rows||[]).map(r=>{const c=COURSES[courseOf(r.stage)];return [when(r.t),r.name,r.exam,c?c.name:'',r.stage-courseOf(r.stage),r.stageTitle||'',r.score,r.total,r.passed?'Yes':'No',Math.round(r.seconds/60),(r.missed||[]).join('; ')];}));
+$('#csvStudents').onclick=()=>csv('students',['Name','Username','Status','Created','Last signed in'],(data.students||[]).map(s=>[s.name,s.username,s.active?'On':'Off',when(s.created),s.last_login?when(s.last_login):'']));
+$('#wipeBtn').onclick=async()=>{$('#wipeErr').textContent='';
+  if($('#wipeTxt').value!=='DELETE EVERYTHING'){$('#wipeErr').textContent='Type DELETE EVERYTHING exactly.';return;}
+  if(!confirm('Delete every name, login, mark and answer for this site?'))return;
+  try{await api('/wipe',{token,confirm:'DELETE EVERYTHING'});$('#wipeTxt').value='';await load();renderStudents();}catch(x){$('#wipeErr').textContent=x.message;}
+};
 function ago(t){const m=Math.round((Date.now()-Date.parse(t))/60000);if(m<60)return m+' min ago';const h=Math.round(m/60);if(h<24)return h+' h ago';return Math.round(h/24)+' days ago';}
 if(token)load();
 })();
