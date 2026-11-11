@@ -10,4 +10,4 @@ ALLOWED_ORIGINS = "https://nishkam-bs.github.io,https://nishkam-alevel.alevelnis
 [[d1_databases]]
 binding = "DB"
 database_name = "nishkam-tracker"
-database_id = "PASTE-DATABASE-ID-HERE"
+database_id = "caade91e-9c05-49f3-9518-5bc289f17830"
