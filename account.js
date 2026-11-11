@@ -1,0 +1,277 @@
+/* =====================================================================
+   Student account for the 7132 site.
+   One sign-in (on the home page). Once signed in, saved work follows the
+   student to any device: course progress, essay drafts, marked answers
+   and blurting results.
+
+   Nothing personal is stored in this file. The sign-in is checked by the
+   tracker Worker; this file only keeps the student's session token.
+
+   Window.Acct
+     user                 signed-in user {username,name} or null
+     ready                promise, resolves after the first sync
+     get(k) / set(k,v)    saved items that follow the student between devices
+     merge(prefix, fn)    how to combine two copies of an item (e.g. course progress)
+     onChange(fn)         called with the list of keys updated from the server
+     send(path, body)     results for the teacher (/log, /mark, /blurt), queued if offline
+     bar(el, opts)        small "Signed in as ..." strip for a page
+     mountHome(el)        the sign-in panel on the home page
+   ===================================================================== */
+(function(){
+"use strict";
+const LS=(()=>{try{const k='__t';localStorage.setItem(k,'1');localStorage.removeItem(k);return localStorage;}catch(e){return null;}})();
+const lget=(k,d)=>{try{const v=LS&&LS.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}};
+const lset=(k,v)=>{try{LS&&LS.setItem(k,JSON.stringify(v));}catch(e){}};
+const ldel=k=>{try{LS&&LS.removeItem(k);}catch(e){}};
+
+const override=(()=>{try{return LS&&LS.getItem('nk_api');}catch(e){return null;}})();
+const API=override||'https://nishkam-tracker.alevelnishkam.workers.dev';
+const ON=!!LS&&(!!override||/github\.io$|alevelnishkam\.workers\.dev$/.test(location.hostname));
+const HOME='index.html#account';
+
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const offlineMsg='Could not connect. Check your internet and try again.';
+
+let auth=ON?lget('nk_auth',null):null;
+let store=lget('nk_store',{});          // k -> {data,t}
+let dirty=new Set(lget('nk_dirty',[]));
+const mergers=[],listeners=[],bars=[];
+let syncTimer=null,syncing=null,lastStatus='';
+
+const saveLocal=()=>{lset('nk_store',store);lset('nk_dirty',[...dirty]);};
+const active=()=>!!(auth&&auth.token&&!auth.mustChange);
+
+async function call(path,body,opts){
+  const r=await fetch(API+path,Object.assign({method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},opts||{}));
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok){const e=new Error(d.error||'Something went wrong. Try again.');e.status=r.status;throw e;}
+  return d;
+}
+async function api(path,body){
+  if(!auth)throw Object.assign(new Error('Please sign in.'),{status:401});
+  try{return await call(path,Object.assign({},body,{token:auth.token}));}
+  catch(e){if(e.status===401){expire();}throw e;}
+}
+function expire(){
+  auth=null;ldel('nk_auth');setStatus('');renderBars();
+}
+
+/* ---------- saved items ---------- */
+function get(k){const it=store[k];return it?it.data:undefined;}
+function set(k,data){
+  store[k]={data,t:Date.now()};dirty.add(k);saveLocal();
+  if(active()){clearTimeout(syncTimer);syncTimer=setTimeout(sync,1500);setStatus('waiting');}
+}
+function mergerFor(k){const m=mergers.find(m=>k.startsWith(m.prefix));return m&&m.fn;}
+
+async function sync(){
+  if(!active())return;
+  if(syncing)return syncing;
+  syncing=(async()=>{
+    const keys=[...dirty];
+    const items=keys.map(k=>({k,data:store[k]?store[k].data:null,t:store[k]?store[k].t:Date.now()}));
+    try{
+      const d=await api('/sync',{items});
+      keys.forEach(k=>{if(store[k]&&items.find(i=>i.k===k).t===store[k].t)dirty.delete(k);});
+      const changed=[];
+      Object.entries(d.items||{}).forEach(([k,srv])=>{
+        const loc=store[k];
+        if(!loc){store[k]=srv;changed.push(k);return;}
+        if(dirty.has(k))return;                       // newer local edit made during this sync
+        const fn=mergerFor(k);
+        if(fn&&JSON.stringify(loc.data)!==JSON.stringify(srv.data)){
+          const m=fn(loc.data,srv.data);
+          if(JSON.stringify(m)!==JSON.stringify(srv.data)){store[k]={data:m,t:Date.now()};dirty.add(k);}
+          else store[k]=srv;
+          if(JSON.stringify(m)!==JSON.stringify(loc.data))changed.push(k);
+        }else if(srv.t>loc.t){store[k]=srv;changed.push(k);}
+        else if(srv.t<loc.t)dirty.add(k);
+      });
+      saveLocal();
+      if(changed.length)listeners.forEach(fn=>{try{fn(changed);}catch(e){console.error(e);}});
+      setStatus(dirty.size?'waiting':'saved');
+      if(dirty.size){clearTimeout(syncTimer);syncTimer=setTimeout(sync,3000);}
+    }catch(e){setStatus(e.status===401?'':'offline');}
+    finally{syncing=null;}
+  })();
+  return syncing;
+}
+
+/* ---------- results for the teacher (queued) ---------- */
+const queue=()=>lget('nk_queue',[]);
+const setQueue=q=>lset('nk_queue',q.slice(-60));
+function send(path,body){
+  if(!ON)return;
+  const id=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
+  const q=queue();q.push({path,body:Object.assign({},body,{qid:id}),u:auth&&auth.username});setQueue(q);
+  if(active())flush();
+}
+let flushing=false;
+async function flush(){
+  if(!active()||flushing)return;
+  /* only one open tab sends the queue at a time */
+  if(navigator.locks&&!flush.inLock)return navigator.locks.request('nk_flush',{ifAvailable:true},async l=>{if(!l)return;flush.inLock=true;try{await flush();}finally{flush.inLock=false;}});
+  flushing=true;
+  try{
+    let q=queue();
+    while(q.length){
+      const it=q[0];
+      if(it.u&&it.u!==auth.username){q.shift();setQueue(q);continue;}
+      try{await api(it.path,it.body);q.shift();setQueue(q);}
+      catch(e){if(e.status===400||e.status===413){q.shift();setQueue(q);}else break;}
+    }
+  }finally{flushing=false;renderBars();}
+}
+
+/* ---------- sign in / out ---------- */
+async function signIn(username,password){
+  const d=await call('/login',{username:String(username).trim().toLowerCase(),password});
+  const prev=lget('nk_last_user',null);
+  if(prev&&prev!==d.username){store={};dirty=new Set();saveLocal();}
+  auth={token:d.token,username:d.username,name:d.name,mustChange:d.mustChange};
+  lset('nk_auth',auth);lset('nk_last_user',d.username);
+  /* work done on this device before signing in is carried into the account */
+  Object.keys(store).forEach(k=>dirty.add(k));saveLocal();
+  if(active()){await sync();flush();}
+  renderBars();
+  return auth;
+}
+async function changePassword(current,next){
+  await api('/password',{current,next});
+  auth.mustChange=false;lset('nk_auth',auth);
+  await sync();flush();renderBars();
+}
+async function signOut(){
+  if(auth){
+    try{if(dirty.size)await sync();}catch(e){}
+    try{await call('/logout',{token:auth.token});}catch(e){}
+  }
+  auth=null;ldel('nk_auth');
+  /* shared school computers: remove this student's saved work from the device */
+  store={};dirty=new Set();saveLocal();ldel('nk_queue');
+  listeners.forEach(fn=>{try{fn(['*']);}catch(e){}});
+  renderBars();
+}
+
+/* ---------- status strip on each page ---------- */
+const css=`.nk-bar{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;border:1px solid rgba(127,127,127,.28);border-radius:10px;padding:9px 14px;margin:0 0 16px;font-size:14px;line-height:1.45;background:rgba(127,127,127,.06)}
+.nk-bar.warn{border-color:#b7791f;background:rgba(183,121,31,.12)}
+.nk-bar a,.nk-bar button{color:inherit;font:inherit;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
+.nk-bar .nk-st{opacity:.7;font-size:13px}
+.nk-bar .nk-sp{flex:1}`;
+let cssDone=false;
+function addCss(){if(cssDone)return;cssDone=true;const s=document.createElement('style');s.textContent=css;document.head.appendChild(s);}
+function setStatus(s){lastStatus=s;bars.forEach(b=>{const el=b.el.querySelector('.nk-st');if(el)el.textContent=statusText();});}
+function statusText(){
+  const q=queue().length;
+  if(lastStatus==='offline')return 'Offline - your work is saved on this device and will sync when you are back online';
+  if(lastStatus==='waiting'||q)return 'Saving...';
+  if(lastStatus==='saved')return 'All work saved';
+  return '';
+}
+function renderBar(b){
+  const {el,opts}=b;
+  if(!ON){el.hidden=true;return;}
+  el.hidden=false;
+  if(active()){
+    el.className='nk-bar';
+    el.innerHTML=`<span>Signed in as <b>${esc(auth.name)}</b></span><span class="nk-st">${esc(statusText())}</span><span class="nk-sp"></span><button type="button" class="nk-out">Sign out</button>`;
+    el.querySelector('.nk-out').onclick=()=>{if(confirm('Sign out on this device?'))signOut();};
+  }else if(auth&&auth.mustChange){
+    el.className='nk-bar warn';
+    el.innerHTML=`<span>Choose your own password to finish signing in.</span><a href="${HOME}">Go to the home page</a>`;
+  }else{
+    el.className='nk-bar'+(opts.alert?' warn':'');
+    el.innerHTML=`<span>${esc(opts.alert||opts.text||'Sign in once on the home page and your work here is saved to your account.')}</span><a href="${HOME}">Sign in</a>`;
+  }
+}
+function renderBars(){bars.forEach(renderBar);}
+function bar(target,opts){
+  if(!ON)return null;addCss();
+  const at=typeof target==='string'?document.querySelector(target):target;if(!at)return null;
+  const el=document.createElement('div');el.setAttribute('aria-live','polite');
+  if(opts&&opts.inside)at.prepend(el);else at.parentNode.insertBefore(el,at);
+  const b={el,opts:opts||{}};bars.push(b);renderBar(b);
+  return {el,alert(msg){b.opts=Object.assign({},b.opts,{alert:msg});renderBar(b);if(!active())el.scrollIntoView({behavior:'smooth',block:'center'});},
+    clear(){b.opts=Object.assign({},b.opts,{alert:''});renderBar(b);}};
+}
+
+/* ---------- home page panel ---------- */
+const COURSES=[['endpoint_course_v1','Start Point/End Point',10,'start-end-point-course.html'],['judgement_course_v1','Judgement',10,'judgement-course.html'],
+  ['calc_course_v1','Calculations',10,'calculations-course.html'],['concepts_course_v1','Concept Confusions',10,'concepts-course.html'],
+  ['application_course_v1','Application',10,'application-course.html'],['models_course_v1','Models',10,'models-course.html'],['paper3_course_v1','Paper 3',10,'paper3-course.html']];
+function mountHome(target){
+  if(!ON)return;
+  const el=typeof target==='string'?document.querySelector(target):target;if(!el)return;
+  el.hidden=false;
+  const draw=async()=>{
+    if(!auth){
+      el.innerHTML=`<div class="nk-home"><h3>Sign in</h3><p>Use the username and password your teacher gave you. You only need to sign in once on each device. After that, your course progress, essays and marks are saved to your account and carry on from any computer or phone.</p>
+        <form id="nkSignIn" autocomplete="on"><label>Username<input name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label><button type="submit">Sign in</button></form><p class="nk-err" aria-live="polite"></p></div>`;
+      el.querySelector('form').onsubmit=async e=>{e.preventDefault();const f=e.target,btn=f.querySelector('button'),err=el.querySelector('.nk-err');
+        btn.disabled=true;err.textContent='';
+        try{await signIn(f.username.value,f.password.value);draw();}
+        catch(x){err.textContent=x.message==='Failed to fetch'?offlineMsg:x.message;btn.disabled=false;}};
+      return;
+    }
+    if(auth.mustChange){
+      el.innerHTML=`<div class="nk-home"><h3>Choose your own password</h3><p>The password your teacher gave you only works once. Choose a new one that you will remember, at least 8 characters. Don't share it with anyone.</p>
+        <form id="nkPw"><label>Password from your teacher<input name="current" type="password" autocomplete="current-password" required></label>
+        <label>New password<input name="next" type="password" autocomplete="new-password" minlength="8" required></label>
+        <label>New password again<input name="again" type="password" autocomplete="new-password" minlength="8" required></label><button type="submit">Save password</button></form>
+        <p class="nk-err" aria-live="polite"></p><p class="nk-small">Signed in as ${esc(auth.username)}. <button type="button" class="nk-link" id="nkCancel">Use a different account</button></p></div>`;
+      el.querySelector('#nkCancel').onclick=async()=>{await signOut();draw();};
+      el.querySelector('form').onsubmit=async e=>{e.preventDefault();const f=e.target,btn=f.querySelector('button'),err=el.querySelector('.nk-err');
+        err.textContent='';if(f.next.value!==f.again.value){err.textContent='The two new passwords are different.';return;}
+        btn.disabled=true;
+        try{await changePassword(f.current.value,f.next.value);draw();}
+        catch(x){err.textContent=x.status===401?'Please sign in again.':x.message==='Failed to fetch'?offlineMsg:x.message;btn.disabled=false;if(x.status===401)draw();}};
+      return;
+    }
+    const prog=COURSES.map(([k,t,n,href])=>{const s=get('course:'+k)||{};const p=Object.keys(s.passed||{}).filter(x=>s.passed[x]).length;
+      return `<li><a href="${href}">${esc(t)}</a><span class="nk-bar-t"><i style="width:${p/n*100}%"></i></span><span class="nk-small">${p?`${p} of ${n}`:'Not started'}</span></li>`;}).join('');
+    el.innerHTML=`<div class="nk-home"><div class="nk-head"><h3>Signed in as ${esc(auth.name)}</h3><span class="nk-small">${esc(auth.username)}</span>
+      <span class="nk-small nk-st2">${esc(statusText())}</span><button type="button" class="nk-link" id="nkOut">Sign out</button></div>
+      <div class="nk-cols"><div><h4>Courses</h4><ul class="nk-prog">${prog}</ul></div>
+      <div><h4>Your marked answers</h4><div id="nkMarks" class="nk-small">Loading...</div></div></div></div>`;
+    el.querySelector('#nkOut').onclick=async()=>{if(confirm('Sign out on this device?')){await signOut();draw();}};
+    try{const d=await api('/mymarks',{});const m=el.querySelector('#nkMarks');if(!m)return;
+      m.innerHTML=d.marks&&d.marks.length?`<ul class="nk-marks">${d.marks.slice(0,8).map(x=>`<li><details><summary><b>${esc(x.mark)}</b> ${esc(x.tool)} <span class="nk-small">${new Date(x.t).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span></summary>
+        <p class="nk-q">${esc(x.question)}</p>${x.well?`<p><b>What went well:</b> ${esc(x.well)}</p>`:''}${x.improve?`<p><b>To improve:</b> ${esc(x.improve)}</p>`:''}</details></li>`).join('')}</ul>`
+        :'Nothing marked yet. Answers you mark in the essay labs will appear here.';}
+    catch(e){const m=el.querySelector('#nkMarks');if(m)m.textContent=auth?'Could not load your marks just now.':'';if(!auth)draw();}
+  };
+  draw();
+  listeners.push(()=>{if(active()&&!el.querySelector('input:focus'))draw();});
+  if(location.hash==='#account')setTimeout(()=>el.scrollIntoView({block:'start'}),50);
+}
+
+/* ---------- keep in sync ---------- */
+let readyResolve;const ready=new Promise(r=>{readyResolve=r;});
+async function start(){
+  if(!active()){readyResolve();return;}
+  try{const me=await api('/me',{});auth.name=me.name;auth.mustChange=me.mustChange;lset('nk_auth',auth);}catch(e){}
+  await sync();flush();readyResolve();renderBars();
+}
+if(ON){
+  addEventListener('online',()=>{sync();flush();});
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='hidden'&&active()&&dirty.size){
+      const keys=[...dirty];
+      try{fetch(API+'/sync',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({token:auth.token,items:keys.map(k=>({k,data:store[k]?store[k].data:null,t:store[k]?store[k].t:Date.now()}))})});}catch(e){}
+    }else if(document.visibilityState==='visible')sync();
+  });
+  setInterval(()=>{if(document.visibilityState==='visible'){sync();flush();}},90000);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+}else readyResolve();
+
+window.Acct={
+  get on(){return ON;},
+  get user(){return active()?{username:auth.username,name:auth.name}:null;},
+  ready,get,set,send,sync,signOut,bar,mountHome,
+  merge(prefix,fn){mergers.push({prefix,fn});},
+  onChange(fn){listeners.push(fn);}
+};
+})();

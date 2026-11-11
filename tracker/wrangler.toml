@@ -1,0 +1,13 @@
+# Tracker for the 7132 site. Deployed automatically by Cloudflare from this folder.
+name = "nishkam-tracker"
+main = "src/index.js"
+compatibility_date = "2025-10-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://nishkam-bs.github.io,https://nishkam-alevel.alevelnishkam.workers.dev"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nishkam-tracker"
+database_id = "caade91e-9c05-49f3-9518-5bc289f17830"

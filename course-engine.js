@@ -57,61 +57,57 @@ document.body.insertAdjacentHTML('afterbegin',`<canvas id="burst" aria-hidden="t
 STAGES.forEach(s=>s.bank.forEach((it,i)=>{it._id=s.id+'.'+(i+1);}));
 
 /* Tracking only runs on the school site. Everywhere else the course works on its own. */
-const TRACKING_ON=true;
-// Half-term only: students sign in with exam number alone. Remove this when individual passwords go in.
-const HOLIDAY_CODE='Chains26';
-const TRACK=TRACKING_ON&&/github\.io$/.test(location.hostname);
-const API='https://nishkam-tracker.alevelnishkam.workers.dev';
+/* Progress is saved to the student's account (account.js) and follows them between devices.
+   Off the live site (e.g. opened from a file) it is kept in this browser only. */
+const A=window.Acct||{on:false,user:null,get(){},set(){},send(){},merge(){},onChange(){},bar(){return null;},ready:Promise.resolve()};
+const TRACK=A.on;
 const KEY=C.key;
-const blank=()=>({best:{},passed:{},draft:'',seen:{},wrong:{}});
-let auth=null;
-try{auth=JSON.parse(localStorage.getItem('epc_auth')||'null');}catch(e){}
-if(!TRACK)auth=null;
-const skey=()=>auth?KEY+'_'+auth.exam:KEY;
+const AKEY='course:'+KEY;
+const blank=()=>({best:{},passed:{},draft:'',seen:{},wrong:{},draftT:0});
+const signedIn=()=>!!A.user;
 let state=blank();
-function loadState(){state=blank();try{const r=localStorage.getItem(skey());if(r)state=Object.assign(state,JSON.parse(r));}catch(e){}state.seen=state.seen||{};state.wrong=state.wrong||{};}
+const tidy=s=>{s=Object.assign(blank(),s||{});s.seen=s.seen||{};s.wrong=s.wrong||{};s.best=s.best||{};s.passed=s.passed||{};return s;};
+function legacy(){
+  /* progress saved on this device before accounts (anonymous, or under an exam number) */
+  const out=[];
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k===KEY||k.startsWith(KEY+'_')){const v=JSON.parse(localStorage.getItem(k));if(v&&typeof v==='object')out.push(v);}}}catch(e){}
+  return out;
+}
+function mergeCourse(a,b){
+  a=tidy(a);b=tidy(b);const m=tidy({});
+  new Set([...Object.keys(a.best),...Object.keys(b.best)]).forEach(k=>{m.best[k]=Math.max(a.best[k]??-1,b.best[k]??-1);});
+  new Set([...Object.keys(a.passed),...Object.keys(b.passed)]).forEach(k=>{if(a.passed[k]||b.passed[k])m.passed[k]=true;});
+  new Set([...Object.keys(a.seen),...Object.keys(b.seen)]).forEach(k=>{m.seen[k]=[...new Set([...(a.seen[k]||[]),...(b.seen[k]||[])])];});
+  new Set([...Object.keys(a.wrong),...Object.keys(b.wrong)]).forEach(k=>{m.wrong[k]=[...new Set([...(a.wrong[k]||[]),...(b.wrong[k]||[])])];});
+  /* the essay draft and plan come from whichever copy was edited last */
+  const d=(b.draftT||0)>(a.draftT||0)?b:a;
+  Object.keys(d).forEach(k=>{if(k==='draft'||k==='draftT'||/^plan/.test(k))m[k]=d[k];});
+  return m;
+}
+A.merge(AKEY,mergeCourse);
+function loadState(){
+  if(TRACK){
+    if(signedIn()){
+      state=tidy(A.get(AKEY));
+      if(!localStorage.getItem(KEY+'__moved')){
+        const old=legacy();
+        if(old.length){state=old.reduce((s,o)=>mergeCourse(s,o),state);A.set(AKEY,state);}
+        try{localStorage.setItem(KEY+'__moved','1');}catch(e){}
+      }
+    }else state=blank();
+  }else{state=blank();try{const r=localStorage.getItem(KEY);if(r)state=tidy(JSON.parse(r));}catch(e){}}
+}
 loadState();
 const teacher = !TRACK && location.hash==='#teacher';
-function save(){try{localStorage.setItem(skey(),JSON.stringify(state));}catch(e){}}
-const isUnlocked=id=>teacher||((!TRACK||auth)&&(id===1||!!state.passed[id-1]));
-
-async function api(path,body){
-  const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const d=await r.json().catch(()=>({}));
-  if(r.status===401&&path!=='/login'){signOut('Your sign-in has expired. Please sign in again.');throw new Error('auth');}
-  if(!r.ok)throw new Error(d.error||'Something went wrong');
-  return d;
-}
-function signOut(msg){auth=null;try{localStorage.removeItem('epc_auth');}catch(e){}loadState();renderAuth(msg);renderMap();}
-async function syncProgress(){
-  if(!auth)return;
-  try{const d=await api('/progress',{token:auth.token});
-    /* the sheet stores every course together; keep only this course's stages */
-    const mine=k=>{k=+k;return k>OFFSET&&k<OFFSET+100?k-OFFSET:null;};
-    Object.entries(d.best||{}).forEach(([k,v])=>{const s=mine(k);if(s&&(state.best[s]==null||v>state.best[s]))state.best[s]=v;});
-    Object.keys(d.passed||{}).forEach(k=>{const s=mine(k);if(s)state.passed[s]=true;});save();renderMap();}catch(e){}
-}
-function pending(){try{return JSON.parse(localStorage.getItem('epc_pending_'+(auth&&auth.exam))||'[]');}catch(e){return [];}}
-function setPending(a){try{localStorage.setItem('epc_pending_'+(auth&&auth.exam),JSON.stringify(a));}catch(e){}}
-async function flush(){
-  if(!auth)return;let q=pending();
-  while(q.length){try{await api('/log',Object.assign({token:auth.token},q[0]));q.shift();setPending(q);}catch(e){break;}}
-  const el=$('#syncTxt');if(el)el.textContent=q.length?`${q.length} result${q.length>1?'s':''} waiting to send`:'Progress saved';
-}
-function logResult(row){if(!TRACK||!auth)return;const q=pending();q.push(row);setPending(q);flush();}
-
-function renderAuth(msg){
+function save(){if(TRACK){if(signedIn())A.set(AKEY,state);}else{try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}}
+const isUnlocked=id=>teacher||((!TRACK||signedIn())&&(id===1||!!state.passed[id-1]));
+function logResult(row){if(TRACK&&signedIn())A.send('/log',row);}
+let authBar=null;
+function renderAuth(){
   const box=$('#authBox');if(!TRACK){box.hidden=true;return;}box.hidden=false;
-  if(auth){box.innerHTML=`<div class="who">Signed in as <b>${esc(auth.name)}</b> <span class="sync" id="syncTxt"></span><button id="soBtn">Not you? Sign out</button></div>`;$('#soBtn').onclick=()=>signOut();return;}
-  box.innerHTML=`<form class="signin" id="siForm"><h3>Sign in to start</h3><p>Enter your exam number. Your progress is saved, so you can carry on from any device.</p>
-    <div class="row"><input class="txt" id="siExam" inputmode="numeric" autocomplete="off" placeholder="Exam number" aria-label="Exam number"><button class="btn" type="submit">Sign in</button></div>
-    <div class="err" aria-live="polite">${msg?esc(msg):''}</div></form>`;
-  $('#siForm').onsubmit=async e=>{e.preventDefault();const btn=$('#siForm .btn'),err=$('#siForm .err');btn.disabled=true;err.textContent='';
-    try{const d=await api('/login',{exam:$('#siExam').value.trim(),code:HOLIDAY_CODE});
-      auth={token:d.token,name:d.name,exam:d.exam};try{localStorage.setItem('epc_auth',JSON.stringify(auth));}catch(x){}
-      loadState();renderAuth();renderMap();await syncProgress();flush();
-    }catch(x){err.textContent=x.message==='Failed to fetch'?'Could not connect. Check your internet and try again.':x.message;btn.disabled=false;}};
+  if(!authBar)authBar=A.bar(box,{inside:true,text:'Sign in once on the home page to start. Your progress is saved to your account, so you can carry on from any device.'});
 }
+A.onChange(keys=>{if(keys.includes(AKEY)||keys.includes('*')){if($('#mapView')&&!$('#mapView').hidden){loadState();renderMap();}}});
 
 /* =====================================================================
    HERO NETWORK
@@ -140,10 +136,10 @@ function renderMap(){
     const un=isUnlocked(s.id),ps=!!state.passed[s.id];
     const d=document.createElement('div');d.className='node reveal'+(un?'':' locked')+(ps?' passed':'')+(current&&current.id===s.id?' current':'');
     const best=state.best[s.id]==null?null:Math.min(state.best[s.id],countOf(s));
-    const cnt=countOf(s);const status=TRACK&&!auth?'Sign in first':!un?'Locked':ps?(s.type==='write'?'Complete':`Passed · ${best}/${cnt}`):(best!=null?`Best ${best}/${cnt}`:'Ready');
+    const cnt=countOf(s);const status=TRACK&&!signedIn()?'Sign in first':!un?'Locked':ps?(s.type==='write'?'Complete':`Passed · ${best}/${cnt}`):(best!=null?`Best ${best}/${cnt}`:'Ready');
     d.innerHTML=`<button class="ncard" ${un?'':'aria-disabled="true"'}><div class="top"><span class="n">${ps?'✓':s.id}</span><span class="st">${status}</span></div><h3>${esc(s.title)}</h3><p>${esc(s.blurb)}</p></button>`;
     const c=d.querySelector('.ncard');
-    c.onclick=()=>{if(un)openStage(s.id);else if(TRACK&&!auth){const i=$('#siExam');if(i){i.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});i.focus({preventScroll:true});}}else{c.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'none'}],{duration:300});}};
+    c.onclick=()=>{if(un)openStage(s.id);else if(TRACK&&!signedIn()){const b=$('#authBox');if(b)b.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});}else{c.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'none'}],{duration:300});}};
     if(fine&&!reduce){c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`rotateX(${-y*10}deg) rotateY(${x*14}deg) translateZ(10px)`;});c.addEventListener('pointerleave',()=>c.style.transform='');}
     box.append(d);
   });
@@ -323,14 +319,14 @@ function itemWrite(it,wrap){
   inputs.forEach(i=>{i.value=state['plan'+i.dataset.p]||'';});
   function doPlan(){
     if(!plan.length)return;
-    inputs.forEach(i=>{state['plan'+i.dataset.p]=i.value;});save();
+    inputs.forEach(i=>{state['plan'+i.dataset.p]=i.value;});state.draftT=Date.now();save();
     const bad=plan.find(p=>!p.ok(String(state['plan'+p.id]||'').toLowerCase()));
     if(!bad){msg.innerHTML=`<span style="color:var(--ok)">${esc(W.planOk||'Good. Keep these in front of you while you write.')}</span>`;ta.disabled=false;}
     else{ta.disabled=!state.draft;msg.textContent=plan.every(p=>!state['plan'+p.id])?'':bad.hint;}
   }
   inputs.forEach(i=>i.oninput=doPlan);doPlan();
   function check(){
-    const v=ta.value,low=v.toLowerCase();state.draft=v;save();
+    const v=ta.value,low=v.toLowerCase();state.draft=v;state.draftT=Date.now();save();
     const words=(v.match(/\b[\w'-]+\b/g)||[]).length;$('.wc',wrap).textContent=words+' words';
     const sents=v.split(/(?<=[.!?])\s+/).map(x=>x.trim()).filter(Boolean);
     const ctx={v,low,words,sents,last:(sents[sents.length-1]||'').toLowerCase(),first:(sents[0]||'').toLowerCase(),firstTwo:sents.slice(0,2).join(' ').toLowerCase()};
@@ -427,5 +423,5 @@ if(fine&&!reduce)document.addEventListener('pointermove',e=>{const b=e.target.cl
 
 if(TRACK)$('#resetAll').hidden=true;
 document.title=document.title||C.name;
-renderAuth();renderMap();if(auth){syncProgress();flush();}
+renderAuth();renderMap();A.ready.then(()=>{loadState();renderMap();});
 })();

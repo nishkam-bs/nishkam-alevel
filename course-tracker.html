@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Course Tracker</title>
+<title>Student Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -69,8 +69,8 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
 <div class="wrap">
 
 <div id="loginView" class="login card">
-  <h1>Course tracker</h1>
-  <p>Courses and marked answers. Teacher access only.</p>
+  <h1>Student tracker</h1>
+  <p>Courses, marked answers, blurting and student accounts. Teacher access only.</p>
   <form id="lf"><input type="password" id="pw" placeholder="Teacher password" autocomplete="current-password" aria-label="Teacher password"><button class="btn" type="submit">Open</button><div class="err" id="lerr"></div></form>
 </div>
 
@@ -85,10 +85,24 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
     <div class="card stat"><b id="sAvg">0</b><span id="lAvg">average stages passed</span></div>
     <div class="card stat"><b id="sWeek">0</b><span id="lWeek">attempts in the last 7 days</span></div>
   </div>
-  <div class="grid2">
+  <div class="card" id="acctView" hidden>
+    <h2>Add students</h2>
+    <p class="muted" style="margin:0 0 10px">Type one name per line. Each student gets a username and a one-time password. They sign in on the home page and then choose their own password. The one-time passwords are only shown here once, so download or print the list before you leave this page.</p>
+    <textarea id="newNames" rows="6" placeholder="First name and initial, one per line" style="width:100%;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:11px 13px;font:15px 'IBM Plex Sans',sans-serif"></textarea>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"><button class="btn" id="addBtn">Create accounts</button><span class="muted" id="addMsg" style="align-self:center;font-size:.9rem"></span></div>
+    <div id="newCreds" hidden style="margin-top:18px">
+      <h2>New sign-in details</h2>
+      <div class="tablewrap"><table id="credTbl"></table></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="dlCsv">Download for Excel</button><button class="btn ghost" id="printSlips">Print sign-in slips</button></div>
+    </div>
+    <h2 style="margin-top:26px">All accounts</h2>
+    <div class="tablewrap"><table id="acctTbl"></table></div>
+    <p class="muted" style="font-size:.85rem;margin:12px 0 0">If a student forgets their password, reset it here and give them the new one-time password. Resetting signs them out on every device. Their saved work is kept.</p>
+  </div>
+  <div class="grid2" id="mainGrid">
     <div>
       <div class="card">
-        <div class="filters"><select id="course" aria-label="Choose course"><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option><option value="400">Application Course</option><option value="500">Models Course</option><option value="600">Paper 3 Course</option><option value="m">Marked answers (essay tools)</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
+        <div class="filters"><select id="course" aria-label="Choose course"><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option><option value="400">Application Course</option><option value="500">Models Course</option><option value="600">Paper 3 Course</option><option value="m">Marked answers (essay tools)</option><option value="b">Blurting</option><option value="a">Student accounts</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
         <div class="tablewrap"><table id="tbl"></table></div>
         <div class="legend" id="legend"><span><span class="cell p">8/10</span> passed (best score)</span><span><span class="cell a">5/10</span> tried, not passed yet</span><span>Click a name to see attempts and written answers</span></div>
       </div>
@@ -105,7 +119,7 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
 <script>
 (function(){
 "use strict";
-const API='https://nishkam-tracker.alevelnishkam.workers.dev';
+const API=(()=>{try{return localStorage.getItem('nk_api');}catch(e){return null;}})()||'https://nishkam-tracker.alevelnishkam.workers.dev';
 const COURSES={
   0:{name:'Start Point/End Point Course',stages:[[1,'Read the question',10],[2,'Spot the drift',10],[3,'Build the chain',3],[4,'Find the weak link',6],[5,'Explain the link',9],[6,'Read every word',8],[7,'Use the theory',8],[8,'Numbers in the chain',6],[9,'Against the clock',12],[10,'The real thing',1]]},
   100:{name:'Judgement Course',stages:[[1,'Summary or judgement?',10],[2,'What does it depend on?',8],[3,'Attack the big word',8],[4,'Build the judgement',3],[5,'Fix the conclusion',6],[6,'Why it outweighs',8],[7,'Know when to judge',7],[8,'Judge with numbers',5],[9,'Against the clock',12],[10,'Write the conclusion',1]]},
@@ -139,6 +153,8 @@ $('#sort').onchange=()=>render();
 let MODE='c';
 $('#course').onchange=e=>{const v=e.target.value;$('#detail').hidden=true;
   if(v==='m'){MODE='m';document.querySelector('#dash h1').textContent='Marked answers';render();return;}
+  if(v==='b'){MODE='b';document.querySelector('#dash h1').textContent='Blurting';render();return;}
+  if(v==='a'){MODE='a';document.querySelector('#dash h1').textContent='Student accounts';render();return;}
   MODE='c';OFF=+v;STAGES=COURSES[OFF].stages;WRITE_STAGE=(OFF===200||OFF===300)?-1:10;document.querySelector('#dash h1').textContent=COURSES[OFF].name;render();};
 
 async function load(){
@@ -161,6 +177,10 @@ function students(){
   });
 }
 function render(){
+  const isA=MODE==='a';$('#acctView').hidden=!isA;$('#mainGrid').hidden=isA;$('.stats').hidden=isA;$('#sort').hidden=isA;
+  /* the course picker sits inside the main grid; keep it reachable in accounts view */
+  if(isA){$('#acctView').prepend($('#course'));$('#course').style.marginBottom='16px';renderAccounts();return;}else if($('#course').parentNode.id==='acctView')$('.filters').prepend($('#course'));
+  if(MODE==='b'){$('#side').hidden=true;$('#legend').hidden=true;renderBlurts();return;}
   const isM=MODE==='m';$('#side').hidden=isM;$('#legend').hidden=isM;
   [['lStarted','students started','students with a marked answer'],['lDone','finished all 10 stages','answers marked in total'],['lAvg','average stages passed','average mark (%)'],['lWeek','attempts in the last 7 days','answers marked in the last 7 days']].forEach(([id,a,b])=>{$('#'+id).textContent=isM?b:a;});
   if(isM){renderMarks();return;}
@@ -210,6 +230,80 @@ function markDetail(m){
     ${m.well?`<p><b>What went well:</b> ${esc(m.well)}</p>`:''}${m.improve?`<p><b>To improve:</b> ${esc(m.improve)}</p>`:''}${m.answer?`<div class="answer">${esc(m.answer)}</div>`:''}`;
   d.scrollIntoView({behavior:'smooth',block:'start'});
 }
+
+/* ---------- blurting ---------- */
+function renderBlurts(){
+  const bl=(data.blurts||[]).slice(),roster=data.roster||{},sort=$('#sort').value;
+  bl.sort(sort==='name'?(a,b)=>a.name.localeCompare(b.name)||b.t.localeCompare(a.t):(a,b)=>b.t.localeCompare(a.t));
+  [['lStarted','students who have blurted'],['lDone','topics blurted in total'],['lAvg','average points recalled'],['lWeek','blurts in the last 7 days']].forEach(([id,t])=>{$('#'+id).textContent=t;});
+  const topics=bl.filter(b=>b.kind==='blurt');
+  $('#sStarted').textContent=`${new Set(bl.map(b=>b.exam)).size} / ${Object.keys(roster).length}`;
+  $('#sDone').textContent=topics.length;
+  const ps=topics.filter(b=>b.total).map(b=>b.got/b.total*100);$('#sAvg').textContent=ps.length?Math.round(ps.reduce((a,b)=>a+b,0)/ps.length)+'%':'–';
+  const wk=Date.now()-7*86400000;$('#sWeek').textContent=bl.filter(b=>Date.parse(b.t)>wk).length;
+  $('#tbl').innerHTML=bl.length?`<thead><tr><th class="l">Student</th><th class="l">Date</th><th class="l">Type</th><th class="l">Topic</th><th>Score</th></tr></thead><tbody>${bl.map(b=>{
+    let d={};try{d=JSON.parse(b.detail||'{}');}catch(e){}
+    return `<tr><td class="l">${esc(b.name)} <span class="muted">${esc(b.exam)}</span></td><td class="l muted">${new Date(b.t).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</td><td class="l">${b.kind==='rapid'?'Rapid fire':'Blurt'+(d.ai?' (AI checked)':'')}</td><td class="l" style="white-space:normal">${esc((b.ref?b.ref+' ':'')+b.topic)}</td><td><span class="cell ${b.total&&b.got/b.total>=.7?'p':'a'}">${b.got}/${b.total}</span></td></tr>`;}).join('')}</tbody>`
+    :'<tbody><tr><td class="l muted">No blurting saved yet.</td></tr></tbody>';
+}
+
+/* ---------- accounts ---------- */
+let fresh=[];
+function renderAccounts(){
+  const acc=(data.accounts||[]).slice().sort((a,b)=>a.name.localeCompare(b.name));
+  $('#acctTbl').innerHTML=acc.length?`<thead><tr><th class="l">Name</th><th class="l">Username</th><th class="l">Password</th><th class="l">Last signed in</th><th></th></tr></thead><tbody>${acc.map(a=>`<tr data-u="${esc(a.username)}">
+    <td class="l">${esc(a.name)}</td><td class="l" style="font-family:'IBM Plex Mono',monospace">${esc(a.username)}</td>
+    <td class="l">${a.mustChange?'<span class="cell a">Not set yet</span>':'<span class="cell p">Set</span>'}</td><td class="l muted">${a.lastSeen?ago(a.lastSeen):'Never'}</td>
+    <td class="l"><button class="btn ghost" data-act="reset" style="padding:5px 12px">Reset password</button> <button class="btn ghost" data-act="rename" style="padding:5px 12px">Rename</button> <button class="btn ghost" data-act="delete" style="padding:5px 12px">Delete</button></td></tr>`).join('')}</tbody>`
+    :'<tbody><tr><td class="l muted">No accounts yet. Add your class above.</td></tr></tbody>';
+  document.querySelectorAll('#acctTbl [data-act]').forEach(b=>b.onclick=()=>acctAction(b.dataset.act,b.closest('tr').dataset.u));
+}
+async function acctAction(act,u){
+  const a=data.accounts.find(x=>x.username===u);if(!a)return;
+  try{
+    if(act==='reset'){if(!confirm(`Reset the password for ${a.name}? They will be signed out and need the new one-time password.`))return;
+      const d=await api('/accounts/reset',{token,username:u});fresh=[d];showFresh();}
+    else if(act==='rename'){const n=prompt('New name',a.name);if(!n||!n.trim())return;await api('/accounts/rename',{token,username:u,name:n.trim()});}
+    else if(act==='delete'){if(!confirm(`Delete ${a.name}'s account and all of their saved work and results? This cannot be undone.`))return;
+      if(prompt(`Type DELETE to confirm`)!=='DELETE')return;await api('/accounts/delete',{token,username:u});}
+    await load();
+  }catch(x){alert(x.message);}
+}
+$('#addBtn').onclick=async()=>{
+  const names=$('#newNames').value.split('\n').map(x=>x.trim()).filter(Boolean);
+  if(!names.length){$('#addMsg').textContent='Type at least one name.';return;}
+  const existing=new Set((data.accounts||[]).map(a=>a.name.toLowerCase()));
+  const dup=names.filter(n=>existing.has(n.toLowerCase()));
+  if(dup.length&&!confirm(`These names already have an account: ${dup.join(', ')}. Create another account for them anyway?`))return;
+  $('#addBtn').disabled=true;fresh=[];
+  for(let i=0;i<names.length;i++){
+    $('#addMsg').textContent=`Creating ${i+1} of ${names.length}...`;
+    try{fresh.push(await api('/accounts/create',{token,name:names[i]}));}
+    catch(x){$('#addMsg').textContent=`Stopped at ${names[i]}: ${x.message}`;break;}
+  }
+  if(fresh.length){$('#addMsg').textContent=`${fresh.length} account${fresh.length>1?'s':''} created.`;$('#newNames').value='';}
+  $('#addBtn').disabled=false;showFresh();await load();
+};
+function showFresh(){
+  $('#newCreds').hidden=!fresh.length;
+  $('#credTbl').innerHTML=`<thead><tr><th class="l">Name</th><th class="l">Username</th><th class="l">One-time password</th></tr></thead><tbody>${fresh.map(f=>`<tr><td class="l">${esc(f.name)}</td><td class="l" style="font-family:'IBM Plex Mono',monospace">${esc(f.username)}</td><td class="l" style="font-family:'IBM Plex Mono',monospace">${esc(f.password)}</td></tr>`).join('')}</tbody>`;
+  $('#newCreds').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+$('#dlCsv').onclick=()=>{
+  const q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  const csv='﻿'+['Name,Username,One-time password,Site'].concat(fresh.map(f=>[f.name,f.username,f.password,SITE].map(q).join(','))).join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`7132 sign-in details ${new Date().toISOString().slice(0,10)}.csv`;a.click();
+};
+const SITE='https://nishkam-bs.github.io/nishkam-alevel/';
+$('#printSlips').onclick=()=>{
+  const w=window.open('','_blank');if(!w){alert('Allow pop-ups for this page and try again.');return;}
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Sign-in slips</title><style>
+body{font-family:Arial,sans-serif;margin:12mm}.slip{border:1px dashed #888;padding:10px 14px;margin:0 0 8mm;break-inside:avoid;font-size:12pt;line-height:1.6}
+.slip b{font-family:"Courier New",monospace;font-size:14pt}.slip .s{font-size:10pt;color:#444}</style></head><body>
+${fresh.map(f=>`<div class="slip">${esc(f.name)}<br>Website: ${SITE}<br>Username: <b>${esc(f.username)}</b><br>One-time password: <b>${esc(f.password)}</b><br>
+<span class="s">Sign in on the home page. You will then choose your own password. Keep this slip private.</span></div>`).join('')}
+<script>window.onload=()=>setTimeout(()=>window.print(),300);<\/script></body></html>`);w.document.close();
+};
 function ago(t){const m=Math.round((Date.now()-Date.parse(t))/60000);if(m<60)return m+' min ago';const h=Math.round(m/60);if(h<24)return h+' h ago';return Math.round(h/24)+' days ago';}
 if(token)load();
 })();

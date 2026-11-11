@@ -41,6 +41,7 @@
 </main>
 <footer><div class="wrap"><a href="index.html" style="color:var(--muted)">Back to the main site</a><br>Nishkam School West London · Man Neeva, Mat Uchi</div></footer>
 
+<script src="account.js"></script>
 <script>
 (function(){
 "use strict";
@@ -60,19 +61,14 @@ const COURSES=[
   {href:'paper3-course.html',key:'paper3_course_v1',offset:600,stages:10,tag:'Paper 3',title:'Paper 3 Course',
    text:'One case study, worked through question by question: reading the case, using the appendices, one deep argument on the 12-markers, judgement on the longer questions and a range of businesses on question 6.'}
 ];
-const API='https://nishkam-tracker.alevelnishkam.workers.dev';
-const TRACK=/github\.io$/.test(location.hostname);
+const A=window.Acct||{on:false,user:null,get(){},ready:Promise.resolve(),onChange(){},bar(){}};
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, fine=matchMedia('(pointer: fine)').matches;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let auth=null;try{auth=JSON.parse(localStorage.getItem('epc_auth')||'null');}catch(e){}
-if(!TRACK)auth=null;
-
-function local(c){try{const r=localStorage.getItem(auth?c.key+'_'+auth.exam:c.key);return r?JSON.parse(r):null;}catch(e){return null;}}
-function render(server){
+function local(c){if(A.on)return A.user?A.get('course:'+c.key)||null:null;try{const r=localStorage.getItem(c.key);return r?JSON.parse(r):null;}catch(e){return null;}}
+function render(){
   $('#list').innerHTML=COURSES.map((c,i)=>{
     const st=local(c),passed=new Set(Object.keys((st&&st.passed)||{}).filter(k=>st.passed[k]).map(Number));
-    if(server)Object.keys(server).forEach(k=>{k=+k;if(k>c.offset&&k<c.offset+100)passed.add(k-c.offset);});
     const n=passed.size;
     return `<a class="course reveal" href="${c.href}"><div class="num">${String(i+1).padStart(2,'0')}</div>
       <div><div class="tag">${esc(c.tag)}</div><h2>${esc(c.title)}</h2><p>${esc(c.text)}</p></div>
@@ -83,10 +79,8 @@ function render(server){
     if(fine&&!reduce){el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.transform=`rotateX(${-y*6}deg) rotateY(${x*8}deg)`;});el.addEventListener('pointerleave',()=>el.style.transform='');}
   });
 }
-$('#who').innerHTML=auth?`<div class="who">Signed in as <b>${esc(auth.name)}</b></div>`:(TRACK?`<p style="color:var(--muted);font-size:.92rem">Open any course and sign in with your exam number. You only need to do it once.</p>`:'');
-render(null);
-if(auth){fetch(API+'/progress',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:auth.token})})
-  .then(r=>r.ok?r.json():null).then(d=>{if(d)render(d.passed||{});}).catch(()=>{});}
+if(A.on)A.bar('#who',{inside:true,text:'Sign in once on the home page and your progress on every course is saved to your account.'});
+render();A.ready.then(render);A.onChange(render);
 
 /* hero network */
 const cv=$('#net'),cx=cv.getContext('2d');let W,H,pts=[],mouse={x:-999,y:-999};
