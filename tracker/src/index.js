@@ -31,6 +31,10 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS blurts(id INTEGER PRIMARY KEY AUTOINCREMENT, qid TEXT, username TEXT NOT NULL, t TEXT NOT NULL,
      kind TEXT, ref TEXT, topic TEXT, got INTEGER, total INTEGER, detail TEXT)`,
   `CREATE TABLE IF NOT EXISTS fails(k TEXT PRIMARY KEY, n INTEGER NOT NULL, until INTEGER NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS work(id TEXT PRIMARY KEY, username TEXT NOT NULL, source TEXT NOT NULL, title TEXT, spec TEXT NOT NULL,
+     status TEXT NOT NULL, created TEXT NOT NULL, due TEXT, answers TEXT, result TEXT, score REAL, total REAL, done_at TEXT)`,
+  `CREATE INDEX IF NOT EXISTS work_user ON work(username)`,
+  `CREATE TABLE IF NOT EXISTS notes(username TEXT PRIMARY KEY, text TEXT, t TEXT)`,
   `CREATE INDEX IF NOT EXISTS attempts_user ON attempts(username)`,
   `CREATE UNIQUE INDEX IF NOT EXISTS attempts_qid ON attempts(qid)`,
   `CREATE UNIQUE INDEX IF NOT EXISTS marks_qid ON marks(qid)`,
@@ -231,12 +235,18 @@ const routes = {
 
   async '/dashboard'(db, b) {
     await session(db, b.token, 'teacher');
-    const [users, att, mk, bl] = await db.batch([
+    const [users, att, mk, bl, st, wk, nt] = await db.batch([
       db.prepare('SELECT username,name,must_change,created,last_seen FROM users ORDER BY name'),
       db.prepare('SELECT username,t,stage,title,score,total,passed,missed,answer FROM attempts ORDER BY id DESC LIMIT 8000'),
       db.prepare('SELECT username,t,tool,question,mark,level,well,improve,answer FROM marks ORDER BY id DESC LIMIT 2000'),
-      db.prepare('SELECT username,t,kind,ref,topic,got,total,detail FROM blurts ORDER BY id DESC LIMIT 4000')
+      db.prepare('SELECT username,t,kind,ref,topic,got,total,detail FROM blurts ORDER BY id DESC LIMIT 4000'),
+      db.prepare("SELECT username,k,data FROM store WHERE k LIKE 'course:%' OR k='blurt:history'"),
+      db.prepare('SELECT id,username,source,title,spec,status,created,due,answers,result,score,total,done_at FROM work ORDER BY created DESC LIMIT 1500'),
+      db.prepare('SELECT username,text,t FROM notes')
     ]);
+    const store = {};
+    st.results.forEach(r => { try { (store[r.username] = store[r.username] || {})[r.k] = JSON.parse(r.data); } catch (e) {} });
+    const parse = (x, d) => { try { return x ? JSON.parse(x) : d; } catch (e) { return d; } };
     const roster = {};
     users.results.forEach(u => { roster[u.username] = u.name; });
     const name = x => roster[x] || x;
@@ -246,8 +256,99 @@ const routes = {
       rows: att.results.map(r => ({ exam: r.username, name: name(r.username), t: r.t, stage: r.stage, stageTitle: r.title, score: r.score, total: r.total,
         passed: !!r.passed, missed: (() => { try { return JSON.parse(r.missed || '[]'); } catch (e) { return []; } })(), answer: r.answer || '' })),
       marks: mk.results.map(r => Object.assign({ exam: r.username, name: name(r.username) }, r)),
-      blurts: bl.results.map(r => Object.assign({ exam: r.username, name: name(r.username) }, r))
+      blurts: bl.results.map(r => Object.assign({ exam: r.username, name: name(r.username) }, r)),
+      store,
+      work: wk.results.map(w => Object.assign({}, w, { exam: w.username, name: name(w.username), spec: parse(w.spec, {}), answers: parse(w.answers, {}), result: parse(w.result, null) })),
+      notes: Object.fromEntries(nt.results.map(n => [n.username, { text: n.text, t: n.t }]))
     };
+  },
+
+
+  /* ----- set work and practice ----- */
+  async '/work/set'(db, b) {
+    await session(db, b.token, 'teacher');
+    const list = (Array.isArray(b.items) ? b.items : []).slice(0, 60);
+    const ids = [];
+    const stmts = [];
+    for (const it of list) {
+      const spec = JSON.stringify(it.spec || {});
+      if (spec.length > MAX_KEY_BYTES) throw new HttpError(413, 'That set of work is too large.');
+      const id = 'w-' + b64u(rand(9));
+      ids.push(id);
+      stmts.push(db.prepare('INSERT INTO work(id,username,source,title,spec,status,created,due) VALUES(?,?,?,?,?,?,?,?)')
+        .bind(id, str(it.username, 40), 'teacher', str(it.title, 160), spec, 'set', nowIso(), str(it.due, 20) || null));
+    }
+    if (stmts.length) await db.batch(stmts);
+    return { ids };
+  },
+
+  async '/work/delete'(db, b) {
+    await session(db, b.token, 'teacher');
+    await db.prepare('DELETE FROM work WHERE id=?').bind(str(b.id, 40)).run();
+    return { ok: true };
+  },
+
+  async '/work/self'(db, b) {
+    const u = await student(db, b);
+    const spec = JSON.stringify(b.spec || {});
+    if (spec.length > MAX_KEY_BYTES) throw new HttpError(413, 'That set is too large.');
+    const n = await db.prepare("SELECT COUNT(*) AS n FROM work WHERE username=? AND source='self' AND created>?").bind(u.username, new Date(Date.now() - 86400000).toISOString()).first();
+    if (n.n >= 30) throw new HttpError(429, 'You have made a lot of sets today. Finish some of them first.');
+    const id = 'w-' + b64u(rand(9));
+    await db.prepare('INSERT INTO work(id,username,source,title,spec,status,created) VALUES(?,?,?,?,?,?,?)')
+      .bind(id, u.username, 'self', str(b.title, 160), spec, 'set', nowIso()).run();
+    return { id };
+  },
+
+  async '/work/mine'(db, b) {
+    const u = await student(db, b);
+    const { results } = await db.prepare('SELECT id,source,title,spec,status,created,due,answers,result,score,total,done_at FROM work WHERE username=? ORDER BY created DESC LIMIT 80').bind(u.username).all();
+    const parse = (x, d) => { try { return x ? JSON.parse(x) : d; } catch (e) { return d; } };
+    return { work: results.map(w => Object.assign({}, w, { spec: parse(w.spec, {}), answers: parse(w.answers, {}), result: parse(w.result, null) })) };
+  },
+
+  async '/work/save'(db, b) {
+    const u = await student(db, b);
+    const ans = JSON.stringify(b.answers || {});
+    if (ans.length > MAX_KEY_BYTES) throw new HttpError(413, 'Your answers are too long to save.');
+    await db.prepare("UPDATE work SET answers=?, status=CASE WHEN status='done' THEN status ELSE 'started' END WHERE id=? AND username=?").bind(ans, str(b.id, 40), u.username).run();
+    return { ok: true };
+  },
+
+  async '/work/submit'(db, b) {
+    const u = await student(db, b);
+    const res = JSON.stringify(b.result || {});
+    if (res.length > MAX_KEY_BYTES) throw new HttpError(413, 'Too much to save.');
+    await db.prepare("UPDATE work SET answers=?, result=?, score=?, total=?, status='done', done_at=? WHERE id=? AND username=?")
+      .bind(JSON.stringify(b.answers || {}), res, Number(b.score) || 0, Number(b.total) || 0, nowIso(), str(b.id, 40), u.username).run();
+    return { ok: true };
+  },
+
+  async '/notes/save'(db, b) {
+    await session(db, b.token, 'teacher');
+    await db.prepare('INSERT INTO notes(username,text,t) VALUES(?,?,?) ON CONFLICT(username) DO UPDATE SET text=excluded.text, t=excluded.t')
+      .bind(str(b.username, 40), str(b.text, 8000), nowIso()).run();
+    return { ok: true };
+  },
+
+  /* one-time import of results from the old Google Sheet tracker */
+  async '/import'(db, b) {
+    await session(db, b.token, 'teacher');
+    const users = new Set((await db.prepare('SELECT username FROM users').all()).results.map(r => r.username));
+    const stmts = [];
+    for (const m of (Array.isArray(b.marks) ? b.marks : []).slice(0, 200)) {
+      if (!users.has(m.username) || !m.qid) continue;
+      stmts.push(db.prepare('INSERT OR IGNORE INTO marks(qid,username,t,tool,question,mark,level,well,improve,answer) VALUES(?,?,?,?,?,?,?,?,?,?)')
+        .bind(str(m.qid, 40), m.username, str(m.t, 40), str(m.tool, 60), str(m.question, 500), str(m.mark, 20), str(m.level, 60), str(m.well, 1200), str(m.improve, 1200), str(m.answer, 12000)));
+    }
+    for (const a of (Array.isArray(b.attempts) ? b.attempts : []).slice(0, 200)) {
+      if (!users.has(a.username) || !a.qid) continue;
+      stmts.push(db.prepare('INSERT OR IGNORE INTO attempts(qid,username,t,stage,title,score,total,passed,missed,answer) VALUES(?,?,?,?,?,?,?,?,?,?)')
+        .bind(str(a.qid, 40), a.username, str(a.t, 40), int(a.stage), str(a.stageTitle, 200), int(a.score), int(a.total), a.passed ? 1 : 0,
+          JSON.stringify((Array.isArray(a.missed) ? a.missed : []).slice(0, 30).map(m => str(m, 300))), str(a.answer, 12000)));
+    }
+    if (stmts.length) await db.batch(stmts);
+    return { saved: stmts.length };
   },
 
   async '/accounts/create'(db, b) {
@@ -290,7 +391,7 @@ const routes = {
   async '/accounts/delete'(db, b) {
     await session(db, b.token, 'teacher');
     const u = str(b.username, 40);
-    await db.batch(['users', 'sessions', 'store', 'attempts', 'marks', 'blurts'].map(t => db.prepare(`DELETE FROM ${t} WHERE username=?`).bind(u)));
+    await db.batch(['users', 'sessions', 'store', 'attempts', 'marks', 'blurts', 'work', 'notes'].map(t => db.prepare(`DELETE FROM ${t} WHERE username=?`).bind(u)));
     return { ok: true };
   }
 };

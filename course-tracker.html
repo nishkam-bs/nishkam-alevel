@@ -85,6 +85,7 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
     <div class="card stat"><b id="sAvg">0</b><span id="lAvg">average stages passed</span></div>
     <div class="card stat"><b id="sWeek">0</b><span id="lWeek">attempts in the last 7 days</span></div>
   </div>
+  <div id="ovView" hidden><div id="ovSel" style="margin-bottom:14px"></div><div id="ovRoot"></div></div>
   <div class="card" id="acctView" hidden>
     <h2>Add students</h2>
     <p class="muted" style="margin:0 0 10px">Type one name per line. Each student gets a username and a one-time password. They sign in on the home page and then choose their own password. The one-time passwords are only shown here once, so download or print the list before you leave this page.</p>
@@ -97,12 +98,16 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
     </div>
     <h2 style="margin-top:26px">All accounts</h2>
     <div class="tablewrap"><table id="acctTbl"></table></div>
+    <h2 style="margin-top:26px">Results from the old Google Sheet</h2>
+    <p class="muted" style="margin:0 0 10px">This brings the marks, quizzes, calculation work and course attempts from the old tracker sheet into the students' new accounts, so the overview starts with everything you have. Create the student accounts first. Paste the import key you were given, then check the matches before importing. Running it twice does not create duplicates.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><input type="password" id="impKey" placeholder="Import key" style="max-width:360px;margin:0" autocomplete="off"><button class="btn ghost" id="impGo">Check matches</button></div>
+    <div id="impOut" style="margin-top:12px"></div>
     <p class="muted" style="font-size:.85rem;margin:12px 0 0">If a student forgets their password, reset it here and give them the new one-time password. Resetting signs them out on every device. Their saved work is kept.</p>
   </div>
   <div class="grid2" id="mainGrid">
     <div>
       <div class="card">
-        <div class="filters"><select id="course" aria-label="Choose course"><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option><option value="400">Application Course</option><option value="500">Models Course</option><option value="600">Paper 3 Course</option><option value="m">Marked answers (essay tools)</option><option value="b">Blurting</option><option value="a">Student accounts</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
+        <div class="filters" id="mainFilters"><select id="course" aria-label="Choose course"><option value="o">Overview</option><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option><option value="400">Application Course</option><option value="500">Models Course</option><option value="600">Paper 3 Course</option><option value="m">Marked answers (essay tools)</option><option value="b">Blurting</option><option value="a">Student accounts</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
         <div class="tablewrap"><table id="tbl"></table></div>
         <div class="legend" id="legend"><span><span class="cell p">8/10</span> passed (best score)</span><span><span class="cell a">5/10</span> tried, not passed yet</span><span>Click a name to see attempts and written answers</span></div>
       </div>
@@ -150,16 +155,17 @@ $('#lf').onsubmit=async e=>{e.preventDefault();$('#lerr').textContent='';
 $('#logout').onclick=()=>{token=null;try{sessionStorage.removeItem('ct_token');}catch(e){}$('#dash').hidden=true;$('#loginView').hidden=false;};
 $('#refresh').onclick=()=>load();
 $('#sort').onchange=()=>render();
-let MODE='c';
+let MODE='o';
 $('#course').onchange=e=>{const v=e.target.value;$('#detail').hidden=true;
   if(v==='m'){MODE='m';document.querySelector('#dash h1').textContent='Marked answers';render();return;}
   if(v==='b'){MODE='b';document.querySelector('#dash h1').textContent='Blurting';render();return;}
   if(v==='a'){MODE='a';document.querySelector('#dash h1').textContent='Student accounts';render();return;}
+  if(v==='o'){MODE='o';document.querySelector('#dash h1').textContent='Overview';render();return;}
   MODE='c';OFF=+v;STAGES=COURSES[OFF].stages;WRITE_STAGE=(OFF===200||OFF===300)?-1:10;document.querySelector('#dash h1').textContent=COURSES[OFF].name;render();};
 
 async function load(){
   $('#refresh').disabled=true;
-  try{data=await api('/dashboard',{token});$('#loginView').hidden=true;$('#dash').hidden=false;render();
+  try{data=await api('/dashboard',{token});$('#loginView').hidden=true;$('#dash').hidden=false;if(MODE==='o')document.querySelector('#dash h1').textContent='Overview';render();
     $('#updated').textContent='Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}
   catch(x){if(x.status===401){$('#logout').click();$('#lerr').textContent='Please sign in again.';}else alert(x.message);}
   $('#refresh').disabled=false;
@@ -177,9 +183,11 @@ function students(){
   });
 }
 function render(){
-  const isA=MODE==='a';$('#acctView').hidden=!isA;$('#mainGrid').hidden=isA;$('.stats').hidden=isA;$('#sort').hidden=isA;
-  /* the course picker sits inside the main grid; keep it reachable in accounts view */
-  if(isA){$('#acctView').prepend($('#course'));$('#course').style.marginBottom='16px';renderAccounts();return;}else if($('#course').parentNode.id==='acctView')$('.filters').prepend($('#course'));
+  const isA=MODE==='a',isO=MODE==='o';$('#acctView').hidden=!isA;$('#ovView').hidden=!isO;$('#mainGrid').hidden=isA||isO;$('#dash>.stats').hidden=isA||isO;$('#sort').hidden=isA||isO;
+  /* the course picker sits inside the main grid; keep it reachable in the other views */
+  if(isA){$('#acctView').prepend($('#course'));$('#course').style.marginBottom='16px';renderAccounts();return;}
+  if(isO){$('#ovSel').append($('#course'));if(window.Overview)Overview.render($('#ovRoot'));return;}
+  if($('#course').parentNode.id!=='mainFilters')$('.filters').prepend($('#course'));
   if(MODE==='b'){$('#side').hidden=true;$('#legend').hidden=true;renderBlurts();return;}
   const isM=MODE==='m';$('#side').hidden=isM;$('#legend').hidden=isM;
   [['lStarted','students started','students with a marked answer'],['lDone','finished all 10 stages','answers marked in total'],['lAvg','average stages passed','average mark (%)'],['lWeek','attempts in the last 7 days','answers marked in the last 7 days']].forEach(([id,a,b])=>{$('#'+id).textContent=isM?b:a;});
@@ -249,6 +257,44 @@ function renderBlurts(){
 
 /* ---------- accounts ---------- */
 let fresh=[];
+/* ---------- import from the old sheet ---------- */
+let imp=null;
+const b64u=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')+'==='.slice((s.length+3)%4)),c=>c.charCodeAt(0));
+function matchAccount(full,accs){
+  const n=full.toLowerCase(),[f,...rest]=n.split(' '),sur=rest.join(' ');
+  let m=accs.filter(a=>a.name.toLowerCase()===n);if(m.length===1)return m[0];
+  m=accs.filter(a=>{const x=a.name.toLowerCase().split(' ');return x[0]===f&&x.length>1&&(x.slice(1).join(' ')===sur||x[1][0]===sur[0]&&x[1].replace('.','').length<=2);});
+  if(m.length===1)return m[0];
+  m=accs.filter(a=>a.name.toLowerCase().split(' ')[0]===f);
+  if(m.length===1)return m[0];
+  m=accs.filter(a=>a.name.toLowerCase().includes(f)&&a.name.toLowerCase().includes(sur));
+  return m.length===1?m[0]:null;
+}
+$('#impGo').onclick=async()=>{
+  const out=$('#impOut');out.innerHTML='<p class="muted">Opening...</p>';
+  try{
+    const f=await (await fetch('old-results.json',{cache:'no-store'})).json();
+    const key=await crypto.subtle.importKey('raw',b64u($('#impKey').value.trim()),'AES-GCM',false,['decrypt']);
+    const ct=Uint8Array.from(atob(f.ct),c=>c.charCodeAt(0));
+    imp=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:b64u(f.iv)},key,ct)));
+  }catch(e){out.innerHTML='<p class="err">That key did not work. Check you copied all of it.</p>';return;}
+  const accs=data.accounts||[],names=[...new Set([...imp.marks,...imp.attempts].map(x=>x.name))].sort();
+  const map={};names.forEach(n=>{const a=matchAccount(n,accs);map[n]=a?a.username:'';});
+  out.innerHTML=`<table><thead><tr><th class="l">Name in the old sheet</th><th class="l">Records</th><th class="l">New account</th></tr></thead><tbody>${names.map(n=>`<tr><td class="l">${esc(n)}</td><td class="l">${imp.marks.filter(m=>m.name===n).length+imp.attempts.filter(m=>m.name===n).length}</td>
+    <td class="l"><select data-n="${esc(n)}"><option value="">Don't import</option>${accs.map(a=>`<option value="${esc(a.username)}" ${map[n]===a.username?'selected':''}>${esc(a.name)} (${esc(a.username)})</option>`).join('')}</select></td></tr>`).join('')}</tbody></table>
+    <div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button class="btn" id="impRun">Import</button><span class="muted" id="impMsg"></span></div>`;
+  $('#impRun').onclick=async()=>{
+    const m={};document.querySelectorAll('#impOut select').forEach(s=>{m[s.dataset.n]=s.value;});
+    const marks=imp.marks.filter(x=>m[x.name]).map(x=>Object.assign({},x,{username:m[x.name]}));
+    const attempts=imp.attempts.filter(x=>m[x.name]).map(x=>Object.assign({},x,{username:m[x.name]}));
+    $('#impRun').disabled=true;let saved=0;
+    try{
+      for(let i=0;i<marks.length;i+=100){$('#impMsg').textContent=`Importing ${Math.min(i+100,marks.length)} of ${marks.length}...`;saved+=(await api('/import',{token,marks:marks.slice(i,i+100),attempts:[]})).saved;}
+      if(attempts.length)saved+=(await api('/import',{token,marks:[],attempts})).saved;
+      $('#impMsg').textContent=`Done. ${marks.length+attempts.length} records checked.`;imp=null;$('#impKey').value='';await load();
+    }catch(e){$('#impMsg').textContent=e.message;$('#impRun').disabled=false;}
+  };
+};
 function renderAccounts(){
   const acc=(data.accounts||[]).slice().sort((a,b)=>a.name.localeCompare(b.name));
   $('#acctTbl').innerHTML=acc.length?`<thead><tr><th class="l">Name</th><th class="l">Username</th><th class="l">Password</th><th class="l">Last signed in</th><th></th></tr></thead><tbody>${acc.map(a=>`<tr data-u="${esc(a.username)}">
@@ -304,9 +350,14 @@ ${fresh.map(f=>`<div class="slip">${esc(f.name)}<br>Website: ${SITE}<br>Username
 <span class="s">Sign in on the home page. You will then choose your own password. Keep this slip private.</span></div>`).join('')}
 <script>window.onload=()=>setTimeout(()=>window.print(),300);<\/script></body></html>`);w.document.close();
 };
+window.TR={get data(){return data;},get token(){return token;},api,esc,ago:t=>ago(t),reload:()=>load()};
 function ago(t){const m=Math.round((Date.now()-Date.parse(t))/60000);if(m<60)return m+' min ago';const h=Math.round(m/60);if(h<24)return h+' h ago';return Math.round(h/24)+' days ago';}
 if(token)load();
 })();
 </script>
+<script src="taxonomy.js"></script>
+<script src="analysis.js"></script>
+<script src="workgen.js"></script>
+<script src="tracker-overview.js"></script>
 </body>
 </html>

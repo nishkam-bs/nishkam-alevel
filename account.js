@@ -233,9 +233,12 @@ function mountHome(target){
       return `<li><a href="${href}">${esc(t)}</a><span class="nk-bar-t"><i style="width:${p/n*100}%"></i></span><span class="nk-small">${p?`${p} of ${n}`:'Not started'}</span></li>`;}).join('');
     el.innerHTML=`<div class="nk-home"><div class="nk-head"><h3>Signed in as ${esc(auth.name)}</h3><span class="nk-small">${esc(auth.username)}</span>
       <span class="nk-small nk-st2">${esc(statusText())}</span><button type="button" class="nk-link" id="nkOut">Sign out</button></div>
+      <p class="nk-small" id="nkWork" style="margin:-6px 0 16px"></p>
       <div class="nk-cols"><div><h4>Courses</h4><ul class="nk-prog">${prog}</ul></div>
       <div><h4>Your marked answers</h4><div id="nkMarks" class="nk-small">Loading...</div></div></div></div>`;
     el.querySelector('#nkOut').onclick=async()=>{if(confirm('Sign out on this device?')){await signOut();draw();}};
+    api('/work/mine',{}).then(d=>{const el2=el.querySelector('#nkWork');if(!el2)return;const todo=(d.work||[]).filter(w=>w.source==='teacher'&&w.status!=='done');
+      el2.innerHTML=todo.length?`<b>Work from your teacher: ${todo.length} to do.</b> <a href="practice.html">Go to practice</a>`:`<a href="practice.html">Practice</a>: make questions on your gaps or any topic.`;}).catch(()=>{});
     try{const d=await api('/mymarks',{});const m=el.querySelector('#nkMarks');if(!m)return;
       m.innerHTML=d.marks&&d.marks.length?`<ul class="nk-marks">${d.marks.slice(0,8).map(x=>`<li><details><summary><b>${esc(x.mark)}</b> ${esc(x.tool)} <span class="nk-small">${new Date(x.t).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span></summary>
         <p class="nk-q">${esc(x.question)}</p>${x.well?`<p><b>What went well:</b> ${esc(x.well)}</p>`:''}${x.improve?`<p><b>To improve:</b> ${esc(x.improve)}</p>`:''}</details></li>`).join('')}</ul>`
@@ -271,6 +274,7 @@ window.Acct={
   get on(){return ON;},
   get user(){return active()?{username:auth.username,name:auth.name}:null;},
   ready,get,set,send,sync,signOut,bar,mountHome,
+  call(path,body){return api(path,body||{});},
   merge(prefix,fn){mergers.push({prefix,fn});},
   onChange(fn){listeners.push(fn);}
 };
