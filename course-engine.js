@@ -14,7 +14,9 @@ const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(M
 const C=window.COURSE;
 const STAGES=C.stages;
 const OFFSET=C.offset||0;            // stage numbers in the sheet: course offset + stage (0, 100, 200...)
-const countOf=s=>s.type==='timed'?(s.count||12):s.items.length;
+/* each stage keeps a bank of questions; a run serves `serve` of them (or the whole bank if no serve is set) */
+C.stages.forEach(s=>{s.bank=s.items;});
+const countOf=s=>s.type==='timed'?(s.count||12):s.type==='write'?1:Math.min(s.serve||s.bank.length,s.bank.length);
 
 document.body.insertAdjacentHTML('afterbegin',`<canvas id="burst" aria-hidden="true"></canvas>
 <div id="mapView">
@@ -52,7 +54,7 @@ document.body.insertAdjacentHTML('afterbegin',`<canvas id="burst" aria-hidden="t
    STATE
    ===================================================================== */
 /* every question gets a label so the teacher dashboard can show which ones are missed */
-STAGES.forEach(s=>s.items.forEach((it,i)=>{it._id=s.id+'.'+(i+1);}));
+STAGES.forEach(s=>s.bank.forEach((it,i)=>{it._id=s.id+'.'+(i+1);}));
 
 /* Tracking only runs on the school site. Everywhere else the course works on its own. */
 const TRACKING_ON=true;
@@ -61,13 +63,13 @@ const HOLIDAY_CODE='Chains26';
 const TRACK=TRACKING_ON&&/github\.io$/.test(location.hostname);
 const API='https://nishkam-tracker.alevelnishkam.workers.dev';
 const KEY=C.key;
-const blank=()=>({best:{},passed:{},draft:''});
+const blank=()=>({best:{},passed:{},draft:'',seen:{},wrong:{}});
 let auth=null;
 try{auth=JSON.parse(localStorage.getItem('epc_auth')||'null');}catch(e){}
 if(!TRACK)auth=null;
 const skey=()=>auth?KEY+'_'+auth.exam:KEY;
 let state=blank();
-function loadState(){state=blank();try{const r=localStorage.getItem(skey());if(r)state=Object.assign(state,JSON.parse(r));}catch(e){}}
+function loadState(){state=blank();try{const r=localStorage.getItem(skey());if(r)state=Object.assign(state,JSON.parse(r));}catch(e){}state.seen=state.seen||{};state.wrong=state.wrong||{};}
 loadState();
 const teacher = !TRACK && location.hash==='#teacher';
 function save(){try{localStorage.setItem(skey(),JSON.stringify(state));}catch(e){}}
@@ -137,7 +139,7 @@ function renderMap(){
   STAGES.forEach(s=>{
     const un=isUnlocked(s.id),ps=!!state.passed[s.id];
     const d=document.createElement('div');d.className='node reveal'+(un?'':' locked')+(ps?' passed':'')+(current&&current.id===s.id?' current':'');
-    const best=state.best[s.id];
+    const best=state.best[s.id]==null?null:Math.min(state.best[s.id],countOf(s));
     const cnt=countOf(s);const status=TRACK&&!auth?'Sign in first':!un?'Locked':ps?(s.type==='write'?'Complete':`Passed · ${best}/${cnt}`):(best!=null?`Best ${best}/${cnt}`:'Ready');
     d.innerHTML=`<button class="ncard" ${un?'':'aria-disabled="true"'}><div class="top"><span class="n">${ps?'✓':s.id}</span><span class="st">${status}</span></div><h3>${esc(s.title)}</h3><p>${esc(s.blurb)}</p></button>`;
     const c=d.querySelector('.ncard');
@@ -171,9 +173,10 @@ let timerId=null;
 function openStage(id){
   const st=STAGES.find(s=>s.id===id);
   if(st.type==='timed'){
-    const pool=st.poolFrom.flatMap(id=>{const src=STAGES.find(x=>x.id===id);return src.items.map(x=>Object.assign({_k:src.type,_from:src},x));});
-    st.items=shuffle(pool).slice(0,countOf(st));
-  }
+    const pool=st.poolFrom.flatMap(id=>{const src=STAGES.find(x=>x.id===id);return src.bank.map(x=>Object.assign({_k:src.type,_from:src},x));});
+    st.items=pickItems(st.id,pool,countOf(st));
+  }else if(st.type!=='write')st.items=pickItems(st.id,st.bank,countOf(st));
+  else st.items=st.bank;
   S={st,i:-1,score:0,streak:0,results:[],t0:0,cd:null};
   $('#mapView').hidden=true;$('#stageView').hidden=false;running=false;
   $('#sTitle').textContent=`Stage ${st.id} · ${st.title}`;
@@ -288,7 +291,7 @@ function itemCalc(it,wrap){
   const inp=$('.num',wrap),btn=$('.btn',wrap);inp.focus({preventScroll:true});
   const go=()=>{const v=parseFloat(inp.value.replace(/[−–]/g,'-').replace(/:\s*1\s*$/,'').replace(/[^0-9.\-]/g,''));if(isNaN(v)){inp.focus();return;}
     inp.disabled=true;btn.disabled=true;const ok=Math.abs(v-it.ans)<=(it.tol||0)+1e-9;
-    const trap=!ok&&(it.traps||[]).find(t=>Math.abs(t.v-v)<=Math.max(0.06,Math.abs(t.v)*0.001));
+    const trap=!ok&&(it.traps||[]).filter(t=>Math.abs(t.v-it.ans)>(it.tol||0)+0.06).find(t=>Math.abs(t.v-v)<=Math.max(0.06,Math.abs(t.v)*0.001));
     record(ok);fb($('.fbz',wrap),ok,ok?'Correct':`Not quite. The answer is ${esc(ansText())}`,(trap?esc(trap.m)+'<br><br>':'')+'<b>Working:</b> '+esc(it.work),it.use?esc(it.use):'');nextBtn(wrap);};
   btn.onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go();};
   wrap._timeout=()=>{inp.disabled=true;btn.disabled=true;fb($('.fbz',wrap),false,`Out of time. The answer is ${esc(ansText())}`,'<b>Working:</b> '+esc(it.work));};
@@ -355,6 +358,25 @@ function itemWrite(it,wrap){
   };
 }
 
+/* Choose the questions for a run: ones this student hasn't seen yet come first.
+   Once the whole bank has been seen, a new round starts, with the ones they got wrong first. */
+function pickItems(key,pool,n){
+  const seen=new Set(state.seen[key]||[]),wrong=new Set(state.wrong[key]||[]);
+  const unseen=shuffle(pool.filter(it=>!seen.has(it._id)));
+  let pick;
+  if(unseen.length>=n){pick=unseen.slice(0,n);state.seen[key]=[...seen,...pick.map(it=>it._id)];}
+  else{
+    const rest=shuffle(pool.filter(it=>seen.has(it._id))).sort((a,b)=>(wrong.has(b._id)?1:0)-(wrong.has(a._id)?1:0));
+    pick=[...unseen,...rest].slice(0,n);state.seen[key]=pick.map(it=>it._id);
+  }
+  save();return shuffle(pick);
+}
+function noteWrong(key,items){
+  const w=new Set(state.wrong[key]||[]);
+  items.forEach((it,i)=>{if(S.results[i])w.delete(it._id);else w.add(it._id);});
+  state.wrong[key]=[...w];
+}
+
 /* =====================================================================
    RESULT
    ===================================================================== */
@@ -362,7 +384,7 @@ function finish(writeDone){
   clearInterval(timerId);
   const st=S.st,n=st.items.length,passed=st.type==='write'?!!writeDone:S.score>=st.pass;
   const prevBest=state.best[st.id]??-1;if(S.score>prevBest)state.best[st.id]=S.score;
-  if(passed)state.passed[st.id]=true;save();
+  if(passed)state.passed[st.id]=true;if(st.type!=='write')noteWrong(st.id,st.items);save();
   logResult({stage:OFFSET+st.id,stageTitle:(C.short?C.short+': ':'')+st.title,score:st.type==='write'?1:S.score,total:st.type==='write'?1:n,passed,
     seconds:Math.round((Date.now()-S.t0)/1000),
     missed:st.type==='write'?[]:st.items.filter((it,i)=>!S.results[i]).map(it=>it._id+' '+it.src),
@@ -374,7 +396,7 @@ function finish(writeDone){
   if(st.type==='write'){const W=st.items[0].w;title=W.doneTitle||'Course complete';text=W.doneText||'';}
   else if(passed&&!nextSt){title='Course complete';text=C.doneText||'You have passed every stage.';}
   else if(passed){title=S.score===n?'Full marks':'Stage passed';text=nextSt?`${esc(nextSt.title)} is now unlocked.`:'';}
-  else{title='Not yet';text=`You need ${st.pass} out of ${n} to pass. Look at the ones you missed below, then try again. The order of the answers changes each time.`;}
+  else{title='Not yet';text=`You need ${st.pass} out of ${n} to pass. Look at the ones you missed below, then try again. You will get a different set of questions next time.`;}
   $('#stageBody').innerHTML=`<div class="item result"><div class="ringbox"><svg width="180" height="180" viewBox="0 0 180 180"><circle class="bgc" cx="90" cy="90" r="${r}" fill="none" stroke-width="10"/><circle class="fgc" id="resRing" cx="90" cy="90" r="${r}" fill="none" stroke-width="10" stroke-linecap="round" stroke="${passed?css('--ok'):css('--end')}" stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC}"/></svg>
     <div class="val"><b>${st.type==='write'?'✓':S.score}</b><span>${st.type==='write'?'done':'out of '+n}</span></div></div>
     <h2>${title}</h2><p>${text}</p>
