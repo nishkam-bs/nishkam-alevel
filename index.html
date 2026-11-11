@@ -138,6 +138,35 @@ footer a{color:var(--muted);display:block;padding:2px 0}footer a:hover{color:var
   .fc-face{padding:24px 20px}
   .fc-ai-form{flex-direction:column}
 }
+
+/* account */
+.acct{margin-bottom:40px;padding:0 0 40px;border-bottom:1px solid var(--rule)}
+.nk-home{background:var(--paper);border:1px solid var(--rule);border-radius:14px;padding:24px 26px;max-width:980px}
+.nk-home h3{font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);font-weight:400;margin-bottom:6px}
+.nk-home h4{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:0 0 10px}
+.nk-home p{font-size:14.5px;color:var(--ink-soft);max-width:640px}
+.nk-home form{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:16px}
+.nk-home label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--navy);flex:1 1 200px;max-width:280px}
+.nk-home input{padding:10px 12px;font:inherit;font-weight:400;font-size:15px;border:1px solid var(--rule);border-radius:8px;background:var(--parchment);color:var(--ink)}
+.nk-home input:focus{outline:2px solid var(--gold-soft);border-color:var(--gold)}
+.nk-home form button{padding:11px 22px;border-radius:10px;border:0;background:var(--navy);color:#fff;font-weight:700;font-size:14px}
+.nk-home form button:disabled{opacity:.6}
+.nk-home .nk-err{color:#b23b31;font-size:14px;margin-top:10px;min-height:1em}
+.nk-home .nk-small{font-size:13px;color:var(--muted)}
+.nk-home .nk-link{background:none;border:0;padding:0;font:inherit;font-size:13px;color:var(--navy);text-decoration:underline}
+.nk-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin-bottom:18px}
+.nk-head h3{margin:0}
+.nk-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px}
+.nk-prog{list-style:none;display:grid;gap:9px}
+.nk-prog li{display:grid;grid-template-columns:150px minmax(60px,1fr) 80px;gap:10px;align-items:center;font-size:14px}
+.nk-prog a{color:var(--navy);font-weight:600;text-decoration:none}.nk-prog a:hover{text-decoration:underline}
+.nk-bar-t{height:7px;border-radius:99px;background:var(--parchment-warm);overflow:hidden}.nk-bar-t i{display:block;height:100%;background:var(--success)}
+.nk-marks{list-style:none;display:grid;gap:6px}
+.nk-marks details{border:1px solid var(--rule);border-radius:8px;padding:8px 12px;font-size:14px}
+.nk-marks summary{cursor:pointer}
+.nk-marks details p{font-size:13.5px;margin-top:6px}
+.nk-marks .nk-q{font-style:italic}
+@media(max-width:760px){.nk-cols{grid-template-columns:1fr}.nk-prog li{grid-template-columns:120px 1fr 70px}.nk-home{padding:20px}}
 </style>
 </head>
 <body>
@@ -206,6 +235,8 @@ footer a{color:var(--muted);display:block;padding:2px 0}footer a:hover{color:var
       <a href="paper3-revision.html" class="btn-hero btn-primary">Paper 3 Revision</a>
     </div>
   </div>
+
+  <div class="acct" id="account" hidden></div>
 
   <!-- ════════════════════════════════════════════════════ -->
   <!-- FLASHCARDS — inline on the homepage                 -->
@@ -813,5 +844,7 @@ document.getElementById('fc-ai-shuffle').addEventListener('click',()=>{fcShuffle
 // Smooth scroll for anchor links
 document.querySelectorAll('a[href="#flashcards"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();document.getElementById('flashcards').scrollIntoView({behavior:'smooth',block:'start'})})});
 </script>
+<script src="account.js"></script>
+<script>if(window.Acct)Acct.mountHome('#account');</script>
 </body>
 </html>

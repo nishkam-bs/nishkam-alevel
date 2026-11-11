@@ -137,6 +137,7 @@ textarea{min-height:240px;resize:vertical;line-height:1.55}
           <div class="btns"><button class="b p" id="b-start">Start blurting</button><button class="b g" id="b-random">Random topic</button></div>
           <p class="small" style="margin-top:10px">Random topic picks from the unit you have chosen, or from the whole course if you choose "All units".</p>
           <p class="small topic-dl" id="b-dl"></p>
+          <p class="small" id="b-resume" hidden></p>
         </div>
         <div id="b-run" hidden>
           <div class="topic-head"><div><div class="ref" id="b-ref"></div><h3 id="b-title"></h3></div><div class="timer" id="b-timer"></div></div>
@@ -190,6 +191,7 @@ textarea{min-height:240px;resize:vertical;line-height:1.55}
 <footer><div class="wrap"><a href="index.html" style="color:var(--muted)">Back to the main site</a><br>Nishkam School West London · Man Neeva, Mat Uchi</div></footer>
 <div id="printArea"></div>
 
+<script src="account.js"></script>
 <script>
 (function(){
 "use strict";
@@ -200,6 +202,8 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pt=p=>p[0]?`<b>${esc(p[0])}:</b> ${esc(p[1])}`:esc(p[1]);
 const ptText=p=>p[0]?`${p[0]}: ${p[1]}`:p[1];
+const A=window.Acct||{on:false,user:null,get(){},set(){},send(){},bar(){},onChange(){},ready:Promise.resolve()};
+const hist=()=>A.get('blurt:history')||{};
 const TOPICS=[];DATA.forEach((u,ui)=>u.topics.forEach((t,ti)=>TOPICS.push({u:ui,t:ti,unit:u.unit,utitle:u.title,...t})));
 const cap=s=>s[0].toUpperCase()+s.slice(1);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -227,28 +231,41 @@ const bu=$('#b-unit'),bt=$('#b-topic');
 bu.innerHTML='<option value="-1">All units</option>'+DATA.map((u,i)=>`<option value="${i}">${u.unit} ${esc(cap(u.title))}</option>`).join('');
 bu.value='0';
 function fillTopics(){const ui=+bu.value;const list=ui<0?TOPICS:TOPICS.filter(t=>t.u===ui);
-  bt.innerHTML=list.map(t=>`<option value="${TOPICS.indexOf(t)}">${t.ref} ${esc(t.title)}</option>`).join('');}
+  const h=hist();bt.innerHTML=list.map(t=>{const x=h[t.id];return `<option value="${TOPICS.indexOf(t)}">${t.ref} ${esc(t.title)}${x?` (last time ${x.got}/${x.total})`:''}</option>`;}).join('');}
 function topicDl(){const t=TOPICS[+bt.value];if(!t){$('#b-dl').innerHTML='';return;}
   $('#b-dl').innerHTML=`Sheets for this topic: <a href="${tUrl(t)}" download>blurt sheet</a> · <a href="${tUrl(t,1)}" download>blank sheet</a>`;}
 bu.onchange=()=>{fillTopics();topicDl();};bt.onchange=topicDl;fillTopics();topicDl();
-let cur=null,tick=null,left=0,photo=null;
-function start(idx){
+let cur=null,tick=null,left=0,photo=null,sess=null;
+function saveDraft(){if(cur)A.set('draft:blurting',{id:cur.id,text:$('#b-text').value});}
+function showResume(){const d=A.get('draft:blurting'),el=$('#b-resume');const t=d&&d.text&&d.text.trim()&&TOPICS.find(x=>x.id===d.id);
+  if(!t||!$('#b-run').hidden||!$('#b-check').hidden){el.hidden=true;return;}
+  el.hidden=false;el.innerHTML=`You have an unfinished blurt on ${esc(t.ref+' '+t.title)}. <button class="b" id="b-resume-go" style="padding:5px 12px;margin-left:4px">Carry on with it</button>`;
+  $('#b-resume-go').onclick=()=>{$('#b-time').value='0';start(TOPICS.indexOf(t),d.text);};}
+function sendBlurt(){
+  if(!sess||sess.sent||!cur)return;sess.sent=true;
+  const lis=[...$('#b-list').querySelectorAll('li')],got=lis.filter(li=>li.querySelector('input').checked).length,part=lis.filter(li=>li.classList.contains('part')).length;
+  A.send('/blurt',{kind:'blurt',ref:cur.ref,topic:cur.title,got,total:lis.length,detail:{id:cur.id,partly:part,ai:sess.ai,missed:lis.filter(li=>!li.querySelector('input').checked).map(li=>+li.dataset.i)}});
+  const h=hist(),o=h[cur.id]||{n:0,best:0};h[cur.id]={got,total:lis.length,best:Math.max(o.best||0,got),n:(o.n||0)+1,t:Date.now()};A.set('blurt:history',h);
+  A.set('draft:blurting',{id:'',text:''});fillTopicsKeep();
+}
+function fillTopicsKeep(){const v=bt.value;fillTopics();bt.value=v;}
+function start(idx,keepText){
   cur=TOPICS[idx];if(+bu.value>=0&&cur.u!==+bu.value){bu.value=String(cur.u);fillTopics();}bt.value=idx;topicDl();
   $('#b-setup').hidden=true;$('#b-run').hidden=false;$('#b-check').hidden=true;$('#b-ai-out').innerHTML='';
   $('#b-ref').textContent=`Unit ${cur.unit} · ${cur.ref}`;$('#b-title').textContent=cur.title;
   $('#b-count').textContent=`There are ${cur.points.length} key points on the blurt sheet for this topic. See how many you can get.`;
-  $('#b-text').value='';photo=null;$('#b-photo-name').textContent='';
+  $('#b-text').value=keepText||'';photo=null;sess=null;$('#b-photo-name').textContent='';
   clearInterval(tick);left=+$('#b-time').value;const tm=$('#b-timer');tm.classList.remove('out');
   if(left>0){const show=()=>{tm.textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`;};show();
     tick=setInterval(()=>{left--;show();if(left<=0){clearInterval(tick);tm.textContent="Time's up";tm.classList.add('out');}},1000);}
   else tm.textContent='';
-  $('#b-text').focus();
+  $('#b-text').focus();showResume();
 }
 $('#b-start').onclick=()=>start(+bt.value);
 $('#b-random').onclick=()=>{const ui=+bu.value;const list=ui<0?TOPICS:TOPICS.filter(t=>t.u===ui);start(TOPICS.indexOf(pick(list)));};
-$('#b-back').onclick=$('#b-new').onclick=()=>{clearInterval(tick);$('#b-setup').hidden=false;$('#b-run').hidden=true;$('#b-check').hidden=true;};
-$('#b-again').onclick=()=>start(TOPICS.indexOf(cur));
-$('#b-done').onclick=()=>{clearInterval(tick);
+$('#b-back').onclick=$('#b-new').onclick=()=>{clearInterval(tick);sendBlurt();$('#b-setup').hidden=false;$('#b-run').hidden=true;$('#b-check').hidden=true;showResume();};
+$('#b-again').onclick=()=>{sendBlurt();start(TOPICS.indexOf(cur));};
+$('#b-done').onclick=()=>{clearInterval(tick);saveDraft();sess={ai:false,sent:false};
   $('#b-list').innerHTML=cur.points.map((p,i)=>`<li data-i="${i}"><input type="checkbox" id="c${i}"><label for="c${i}">${pt(p)}</label><span class="tagx"></span></li>`).join('');
   $('#b-list').querySelectorAll('input').forEach(c=>c.onchange=()=>{const li=c.closest('li');li.classList.toggle('got',c.checked);if(c.checked){li.classList.remove('part');li.querySelector('.tagx').textContent='';}score();});
   $('#b-check').hidden=false;score();$('#b-check').scrollIntoView({behavior:'smooth',block:'start'});};
@@ -257,6 +274,12 @@ function score(){const all=$('#b-list').querySelectorAll('input'),n=[...all].fil
   $('#b-score-txt').textContent=n===all.length?'Every point. Blurt a different topic next.':n>=all.length*0.7?'Good. Revise the points you missed, then try again in a few days.':'Revise the points you missed, then blurt this topic again.';}
 $('#b-print').onclick=()=>{const miss=cur.points.filter((p,i)=>!$('#c'+i).checked);
   printSheet(`<h1>Points to revise - ${esc(cur.title)}</h1><div class="meta">Unit ${cur.unit} · ${cur.ref}</div><ul>${(miss.length?miss:cur.points).map(p=>`<li>${pt(p)}</li>`).join('')}</ul>`);};
+
+let dT=null;$('#b-text').addEventListener('input',()=>{clearTimeout(dT);dT=setTimeout(saveDraft,800);});
+addEventListener('pagehide',()=>{sendBlurt();rfSend();});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){sendBlurt();rfSend();}});
+A.ready.then(()=>{fillTopicsKeep();showResume();});A.onChange(()=>{fillTopicsKeep();showResume();});
+A.bar(document.querySelector('.tabs').closest('.panel'),{text:'Sign in once on the home page and your blurting scores are saved to your account.'});
 
 /* photo */
 $('#b-photo').onchange=e=>{const f=e.target.files[0];if(!f)return;const img=new Image(),r=new FileReader();
@@ -319,6 +342,7 @@ Return JSON only, no other text:
     partMap.forEach((v,k)=>partMap.set(k,you(v)));
     lastAI={topic:cur,text,photo:!!photo,got,partMap,fb,errors:arr('errors').filter(e=>e&&e.wrote),mixups:arr('mixups').filter(e=>e&&e.wrote),
       rewrites:arr('rewrites').filter(e=>e&&e.wrote&&e.better),first:arr('revise_first').filter(Boolean).slice(0,3),extra:arr('extra').filter(Boolean)};
+    if(sess)sess.ai=true;
     $('#b-ai-out').innerHTML=aiHtml(lastAI)+`<div class="btns"><button class="b" id="b-pdf">Save this feedback as a PDF</button></div>`;
     $('#b-pdf').onclick=aiPdf;
   }catch(e){$('#b-ai-out').innerHTML=`<div class="box err">The AI check didn't work: ${esc(e.message)}. Check your connection and try again, or tick the checklist yourself.</div>`;}
@@ -382,14 +406,15 @@ $('#m-ans').onclick=()=>printSheet(`<h1>Blurt sheet - answers</h1><div class="me
 function printSheet(h){$('#printArea').innerHTML=h;window.print();}
 
 /* ---------- rapid fire ---------- */
-let deck=[],di=0,got=0,miss=0,missed=[];
+let deck=[],di=0,got=0,miss=0,missed=[],rfSent=false;
+function rfSend(){if(rfSent||di<5)return;rfSent=true;const us=chosen($('#r-units'));A.send('/blurt',{kind:'rapid',ref:'',topic:us.length===DATA.length?'All units':us.map(i=>DATA[i].unit).join(', '),got,total:di,detail:{missed:missed.slice(0,40).map(p=>p[0])}});}
 function buildDeck(){const us=chosen($('#r-units'));deck=[];
   TOPICS.forEach(t=>{if(us.includes(t.u))t.points.forEach(p=>{if(p[0])deck.push({t,p});});});
-  deck=shuffle(deck);di=0;got=0;miss=0;missed=[];show();}
+  rfSend();deck=shuffle(deck);di=0;got=0;miss=0;missed=[];rfSent=false;show();}
 function show(){const card=$('#r-card');card.classList.remove('on');
   ['#r-got','#r-miss'].forEach(s=>$(s).hidden=true);$('#r-flip').hidden=false;
   if(!deck.length){$('#r-cue').textContent='Choose at least one unit';$('#r-topic').textContent='';$('#r-flip').hidden=true;return;}
-  if(di>=deck.length){$('#r-topic').textContent='Finished';$('#r-cue').textContent=`${got} of ${deck.length}`;$('#r-flip').hidden=true;stats();return;}
+  if(di>=deck.length){rfSend();$('#r-topic').textContent='Finished';$('#r-cue').textContent=`${got} of ${deck.length}`;$('#r-flip').hidden=true;stats();return;}
   const c=deck[di];$('#r-topic').textContent=$('#r-topic2').textContent=`${c.t.ref} ${c.t.title}`;
   $('#r-cue').textContent=c.p[0];setTimeout(()=>{$('#r-cue2').textContent=c.p[0];$('#r-ans').textContent=c.p[1];},200);stats();}
 function stats(){$('#r-s1').textContent=`${got} got`;$('#r-s2').textContent=`${miss} missed`;$('#r-s3').textContent=deck.length?`${Math.min(di+1,deck.length)} of ${deck.length}`:'';
