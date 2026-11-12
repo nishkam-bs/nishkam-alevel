@@ -10,7 +10,33 @@ const A=window.Acct;
 if(!A){window.NTrack={init(){},mark(){}};return;}
 const PAGE=location.pathname.split('/').pop().replace(/\.html$/,'')||'index';
 const DKEY='draft:'+PAGE;
-let bar=null,ta=null,timer=null;
+let bar=null,ta=null,timer=null,linked=null;
+const QP=new URLSearchParams(location.search).get('q');
+
+/* which past-paper question is selected (ids come from the verified question bank) */
+function currentRef(){
+  try{if(typeof selQ!=='undefined'&&selQ!==null&&selQ>=0&&typeof QS!=='undefined'&&QS[selQ]&&QS[selQ].id)return QS[selQ].id;}catch(e){}
+  if(linked&&window._cq&&window._cq===linked.q)return linked.id;
+  return '';
+}
+/* opened from the schedule: select that question */
+async function openLinked(){
+  if(!QP)return;
+  let idx=-1;try{if(typeof QS!=='undefined')idx=QS.findIndex(q=>q.id===QP);}catch(e){}
+  const note=t=>{const p=document.createElement('p');p.style.cssText='font-size:14px;margin:0 0 12px;padding:10px 14px;border-radius:10px;background:rgba(127,127,127,.08)';p.textContent=t;const at=document.querySelector('main')||document.body;at.prepend(p);};
+  if(idx>=0){
+    ['yearFilter','paperFilter'].forEach(id=>{const s=document.getElementById(id);if(s){s.value='all';s.dispatchEvent(new Event('change',{bubbles:true}));}});
+    const b=document.querySelector(`.qopt[data-i="${idx}"]`);if(b){b.click();b.scrollIntoView({block:'center'});}
+    note('This question is on your schedule. Mark it here and it will be ticked off.');return;
+  }
+  /* a question your teacher wrote */
+  try{await A.ready;const d=await A.call('/sched/mine');const it=(d.items||[]).find(x=>x.id===QP);if(!it)return;
+    linked={id:it.id,q:String(it.title).trim()};
+    const q=document.getElementById('customQ'),m=document.getElementById('customMarks'),p=document.getElementById('customPaper'),u=document.getElementById('useCustom');
+    if(q)q.value=it.title;if(m&&it.marks){m.value=String(it.marks);}if(p&&it.marks>=20)p.value='3';if(u)u.click();
+    note('This question was set by your teacher. Mark it here and it will be ticked off.');
+  }catch(e){}
+}
 
 /* the question the student has picked, where the page keeps it */
 function question(){
@@ -60,13 +86,12 @@ window.NTrack={
       ta.addEventListener('input',later);
       document.addEventListener('click',e=>{if(e.target.closest('.qopt,#useCustom'))setTimeout(snapshot,0);});
       addEventListener('pagehide',snapshot);
-      restore();
-      A.ready.then(restore);
+      if(QP){openLinked();}else{restore();A.ready.then(restore);}
       A.onChange(k=>{if(k.includes(DKEY))restore();});
     }
   },
   mark(r){
-    const row={tool:r.tool,question:String(r.question||'').slice(0,500),mark:String(r.mark==null?'':r.mark).slice(0,20),level:String(r.level||'').slice(0,60),
+    const row={ref:currentRef(),tool:r.tool,question:String(r.question||'').slice(0,500),mark:String(r.mark==null?'':r.mark).slice(0,20),level:String(r.level||'').slice(0,60),
       well:String(r.well||'').slice(0,1200),improve:String(r.improve||'').slice(0,1200),answer:String(r.answer||'').slice(0,12000)};
     A.send('/mark',row);
     if(A.on&&!A.user){

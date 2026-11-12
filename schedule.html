@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>My schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{--bg:#FAF7F1;--bg2:#F3ECDB;--card:#fff;--fg:#1A1A1A;--navy:#0E2A47;--muted:#6B6B6B;--line:#E5DFD2;--ok:#2d7a4f;--ok-soft:rgba(45,122,79,.12);--amber:#a7741a;--amber-soft:rgba(183,121,31,.14);--end:#b23b31;--end-soft:rgba(178,59,49,.1)}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1420;--bg2:#121a28;--card:#172133;--fg:#e9ecf2;--navy:#cfe0f5;--muted:#9aa4b6;--line:rgba(255,255,255,.1);--ok:#5fcf80;--ok-soft:rgba(95,207,128,.14);--amber:#e8b04a;--amber-soft:rgba(232,176,74,.14);--end:#ff7d70;--end-soft:rgba(255,125,112,.12);color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:32px max(18px,env(safe-area-inset-right,0px)) 70px max(18px,env(safe-area-inset-left,0px))}
+h1,h2{font-family:"DM Serif Display",Georgia,serif;font-weight:400;color:var(--navy);margin:0;line-height:1.15}
+h1{font-size:2.4rem;margin:6px 0}
+h2{font-size:1.4rem;margin-bottom:4px}
+.top a{color:var(--muted);font-size:.9rem}
+.lead{color:var(--muted);margin:0 0 20px;max-width:660px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:18px}
+.muted{color:var(--muted)}.small{font-size:.86rem}
+.sum{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 16px}
+.sum span{padding:6px 12px;border-radius:999px;background:var(--bg2);font-size:.88rem}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;align-items:center;border-top:1px solid var(--line);padding:12px 0}
+.item:first-of-type{border-top:0}
+.item .t{font-weight:600}
+.item .q{font-size:.92rem;margin-top:2px}
+.item .n{font-size:.82rem;color:var(--muted);margin-top:2px}
+.st{font:600 .75rem "IBM Plex Mono",monospace;padding:4px 9px;border-radius:6px;white-space:nowrap;text-align:center}
+.st.done{background:var(--ok-soft);color:var(--ok)}.st.late{background:var(--amber-soft);color:var(--amber)}.st.missing{background:var(--end-soft);color:var(--end)}.st.todo{background:var(--bg2)}.st.excused{background:var(--bg2);color:var(--muted)}
+.go{display:inline-block;margin-top:6px;padding:7px 14px;border-radius:9px;background:var(--navy);color:var(--card);text-decoration:none;font-weight:600;font-size:.88rem}
+@media (prefers-color-scheme:dark){.go{color:#0e1420}}
+details.wk{border-top:1px solid var(--line);padding:10px 0}
+details.wk summary{cursor:pointer;font-weight:600}
+details.wk summary span{font-weight:400;color:var(--muted);font-size:.88rem;margin-left:8px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="index.html">Back to the main site</a></div>
+  <h1>My schedule</h1>
+  <p class="lead">Every past paper question from 2017 to 2026 and every course, spread over the weeks up to the end of April. Work is due by <b>Wednesday at 11:59pm</b> each week. Anything not done by then means a detention on Friday after school.</p>
+  <div id="bar"></div>
+  <div id="main" hidden>
+    <div class="card" id="thisWeek"></div>
+    <div class="card"><h2>How it works</h2>
+      <p class="small" style="margin:6px 0 0">Click <b>Start</b> to open the question in the right marking tool. Write your answer (or photograph a handwritten one) and get it marked. It is ticked off here as soon as it is marked. For Paper 2 and Paper 3 questions you need the paper or case study, which your teacher will give you. Courses are ticked off when you have passed every stage.</p></div>
+    <div class="card"><h2>Other weeks</h2><div id="weeks"></div></div>
+  </div>
+</div>
+<script src="account.js"></script>
+<script src="exam-bank.js"></script>
+<script src="schedule.js"></script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s),S=window.Sched,Ac=window.Acct;
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LABEL={done:'Done',late:'Done late',missing:'Missed',todo:'To do',excused:'Excused'};
+Ac.bar('#bar',{inside:true,text:'Sign in once on the home page to see your schedule.'});
+async function load(){
+  if(!Ac.user){$('#main').hidden=true;return;}
+  let d;try{d=await Ac.call('/sched/mine');}catch(e){$('#main').hidden=false;$('#thisWeek').innerHTML='<p class="muted">Could not load your schedule. Check your connection.</p>';return;}
+  const store={};Object.keys(S.COURSES).forEach(k=>{const v=Ac.get('course:'+k);if(v)store['course:'+k]=v;});
+  const marks={};(d.marks||[]).forEach(m=>{marks[m.ref]=m.t;});const passes={};(d.passes||[]).forEach(p=>{passes[p.stage]=p.t;});
+  const ctx={marks,passes,store,excused:new Set((d.excused||[]).map(x=>x.sched_id))};
+  const items=d.items||[];
+  $('#main').hidden=false;
+  if(!items.length){$('#thisWeek').innerHTML='<h2>Nothing set yet</h2><p class="muted">Your schedule will appear here.</p>';$('#weeks').innerHTML='';return;}
+  const all=items.map(it=>Object.assign({it,d:S.describe(it)},S.status(it,ctx)));
+  const cur=S.currentDue(items),byDue=due=>all.filter(x=>x.it.due===due);
+  const row=x=>`<div class="item"><div><div class="t">${esc(x.d.title)}</div>${x.d.sub?`<div class="q">${esc(x.d.sub)}</div>`:''}${x.d.needs?`<div class="n">${esc(x.d.needs)}</div>`:''}${x.s==='todo'||x.s==='missing'?`<a class="go" href="${x.d.link}">Start</a>`:''}</div><span class="st ${x.s}">${LABEL[x.s]}</span></div>`;
+  const now=all.filter(x=>x.it.due===cur),done=now.filter(x=>x.s==='done'||x.s==='late'||x.s==='excused').length;
+  const info=S.weekInfo(cur);
+  const missed=all.filter(x=>x.s==='missing').length,late=all.filter(x=>x.s==='late').length,ok=all.filter(x=>x.s==='done').length;
+  $('#thisWeek').innerHTML=`<h2>Due ${esc(S.fmtDay(cur))}, 11:59pm</h2><p class="small muted" style="margin:0">${done} of ${now.length} done${info.note?' · '+esc(info.note):''}</p>
+    <div class="sum"><span>${ok} done on time</span><span>${late} done late</span><span>${missed} missed</span><span>${all.length} in the schedule</span></div>${now.map(row).join('')}`;
+  $('#weeks').innerHTML=S.weeks(items).filter(w=>w!==cur&&byDue(w).length).map(w=>{const xs=byDue(w),dn=xs.filter(x=>x.s!=='todo'&&x.s!=='missing').length,ms=xs.filter(x=>x.s==='missing').length;
+    return `<details class="wk"><summary>Due ${esc(S.fmtDay(w))}<span>${dn} of ${xs.length} done${ms?` · ${ms} missed`:''}${S.weekInfo(w).note?' · '+esc(S.weekInfo(w).note):''}</span></summary>${xs.map(row).join('')}</details>`;}).join('');
+}
+Ac.ready.then(load);Ac.onChange(()=>load());
+})();
+</script>
+</body>
+</html>

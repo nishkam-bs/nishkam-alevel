@@ -85,6 +85,7 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
     <div class="card stat"><b id="sAvg">0</b><span id="lAvg">average stages passed</span></div>
     <div class="card stat"><b id="sWeek">0</b><span id="lWeek">attempts in the last 7 days</span></div>
   </div>
+  <div id="scView" hidden><div id="scSel" style="margin-bottom:14px"></div><div id="scRoot"></div></div>
   <div id="ovView" hidden><div id="ovSel" style="margin-bottom:14px"></div><div id="ovRoot"></div></div>
   <div class="card" id="acctView" hidden>
     <h2>Add students</h2>
@@ -107,7 +108,7 @@ select{border-radius:10px;border:1px solid var(--line);background:var(--card);co
   <div class="grid2" id="mainGrid">
     <div>
       <div class="card">
-        <div class="filters" id="mainFilters"><select id="course" aria-label="Choose course"><option value="o">Overview</option><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option><option value="400">Application Course</option><option value="500">Models Course</option><option value="600">Paper 3 Course</option><option value="m">Marked answers (essay tools)</option><option value="b">Blurting</option><option value="a">Student accounts</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
+        <div class="filters" id="mainFilters"><select id="course" aria-label="Choose course"><option value="s">This week</option><option value="o">Overview</option><option value="0">Start Point/End Point Course</option><option value="100">Judgement Course</option><option value="200">Calculations Course</option><option value="300">Concept Confusions Course</option><option value="400">Application Course</option><option value="500">Models Course</option><option value="600">Paper 3 Course</option><option value="m">Marked answers (essay tools)</option><option value="b">Blurting</option><option value="a">Student accounts</option></select><select id="sort" aria-label="Sort students"><option value="name">Sort by name</option><option value="prog">Sort by progress</option><option value="recent">Sort by last active</option></select></div>
         <div class="tablewrap"><table id="tbl"></table></div>
         <div class="legend" id="legend"><span><span class="cell p">8/10</span> passed (best score)</span><span><span class="cell a">5/10</span> tried, not passed yet</span><span>Click a name to see attempts and written answers</span></div>
       </div>
@@ -155,17 +156,18 @@ $('#lf').onsubmit=async e=>{e.preventDefault();$('#lerr').textContent='';
 $('#logout').onclick=()=>{token=null;try{sessionStorage.removeItem('ct_token');}catch(e){}$('#dash').hidden=true;$('#loginView').hidden=false;};
 $('#refresh').onclick=()=>load();
 $('#sort').onchange=()=>render();
-let MODE='o';
+let MODE='s';
 $('#course').onchange=e=>{const v=e.target.value;$('#detail').hidden=true;
   if(v==='m'){MODE='m';document.querySelector('#dash h1').textContent='Marked answers';render();return;}
   if(v==='b'){MODE='b';document.querySelector('#dash h1').textContent='Blurting';render();return;}
   if(v==='a'){MODE='a';document.querySelector('#dash h1').textContent='Student accounts';render();return;}
   if(v==='o'){MODE='o';document.querySelector('#dash h1').textContent='Overview';render();return;}
+  if(v==='s'){MODE='s';document.querySelector('#dash h1').textContent='This week';render();return;}
   MODE='c';OFF=+v;STAGES=COURSES[OFF].stages;WRITE_STAGE=(OFF===200||OFF===300)?-1:10;document.querySelector('#dash h1').textContent=COURSES[OFF].name;render();};
 
 async function load(){
   $('#refresh').disabled=true;
-  try{data=await api('/dashboard',{token});$('#loginView').hidden=true;$('#dash').hidden=false;if(MODE==='o')document.querySelector('#dash h1').textContent='Overview';render();
+  try{data=await api('/dashboard',{token});$('#loginView').hidden=true;$('#dash').hidden=false;if(MODE==='o')document.querySelector('#dash h1').textContent='Overview';if(MODE==='s')document.querySelector('#dash h1').textContent='This week';render();
     $('#updated').textContent='Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}
   catch(x){if(x.status===401){$('#logout').click();$('#lerr').textContent='Please sign in again.';}else alert(x.message);}
   $('#refresh').disabled=false;
@@ -183,7 +185,8 @@ function students(){
   });
 }
 function render(){
-  const isA=MODE==='a',isO=MODE==='o';$('#acctView').hidden=!isA;$('#ovView').hidden=!isO;$('#mainGrid').hidden=isA||isO;$('#dash>.stats').hidden=isA||isO;$('#sort').hidden=isA||isO;
+  const isA=MODE==='a',isO=MODE==='o',isS=MODE==='s';$('#acctView').hidden=!isA;$('#ovView').hidden=!isO;$('#scView').hidden=!isS;$('#mainGrid').hidden=isA||isO||isS;$('#dash>.stats').hidden=isA||isO||isS;$('#sort').hidden=isA||isO||isS;
+  if(isS){$('#scSel').append($('#course'));if(window.SchedView)SchedView.render($('#scRoot'));return;}
   /* the course picker sits inside the main grid; keep it reachable in the other views */
   if(isA){$('#acctView').prepend($('#course'));$('#course').style.marginBottom='16px';renderAccounts();return;}
   if(isO){$('#ovSel').append($('#course'));if(window.Overview)Overview.render($('#ovRoot'));return;}
@@ -359,5 +362,8 @@ if(token)load();
 <script src="analysis.js"></script>
 <script src="workgen.js"></script>
 <script src="tracker-overview.js"></script>
+<script src="exam-bank.js"></script>
+<script src="schedule.js"></script>
+<script src="tracker-schedule.js"></script>
 </body>
 </html>

@@ -139,7 +139,7 @@ async function signIn(username,password){
 async function changePassword(current,next){
   await api('/password',{current,next});
   auth.mustChange=false;lset('nk_auth',auth);
-  await sync();flush();renderBars();
+  await sync();flush();renderBars();loadSched(true).then(renderBars);
 }
 async function signOut(){
   if(auth){
@@ -151,6 +151,35 @@ async function signOut(){
   store={};dirty=new Set();saveLocal();ldel('nk_queue');
   listeners.forEach(fn=>{try{fn(['*']);}catch(e){}});
   renderBars();
+}
+
+/* ---------- this week's schedule (for the notice on every page) ---------- */
+let schedInfo=null;
+const CO={endpoint_course_v1:0,judgement_course_v1:100,calc_course_v1:200,concepts_course_v1:300,application_course_v1:400,models_course_v1:500,paper3_course_v1:600};
+function ukDeadline(due){const [y,m,d]=due.split('-').map(Number);const ls=mm=>{const x=new Date(Date.UTC(y,mm+1,0));x.setUTCDate(x.getUTCDate()-x.getUTCDay());return x.getTime()+3600000;};
+  const t=Date.UTC(y,m-1,d,12),bst=t>=ls(2)&&t<ls(9);return Date.UTC(y,m-1,d,23,59,59)-(bst?3600000:0);}
+async function loadSched(force){
+  if(!active())return null;
+  try{const c=JSON.parse(sessionStorage.getItem('nk_sched')||'null');if(!force&&c&&c.u===auth.username&&Date.now()-c.at<300000){schedInfo=c.v;return schedInfo;}}catch(e){}
+  try{
+    const d=await api('/sched/mine',{});const now=Date.now();
+    const dues=[...new Set((d.items||[]).map(i=>i.due))].sort();const due=dues.find(x=>ukDeadline(x)>=now);
+    if(!due){schedInfo=null;}else{
+      const mk=new Set((d.marks||[]).map(m=>m.ref)),ps=new Set((d.passes||[]).map(p=>+p.stage)),ex=new Set((d.excused||[]).map(x=>x.sched_id));
+      const items=d.items.filter(i=>i.due===due);
+      const isDone=i=>{if(ex.has(i.id))return true;if(i.kind==='exam')return mk.has(i.ref);if(i.kind==='question')return mk.has(i.id);
+        if(i.kind==='course'&&i.ref in CO){const st=get('course:'+i.ref)||{};for(let k=1;k<=10;k++){if(!ps.has(CO[i.ref]+k)&&!(st.passed&&st.passed[k]))return false;}return true;}return false;};
+      schedInfo={due,total:items.length,done:items.filter(isDone).length};
+    }
+    try{sessionStorage.setItem('nk_sched',JSON.stringify({u:auth.username,at:Date.now(),v:schedInfo}));}catch(e){}
+  }catch(e){}
+  return schedInfo;
+}
+const dayName=due=>new Date(due+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short',timeZone:'UTC'});
+function schedLine(){
+  if(!schedInfo||!schedInfo.total)return '';
+  const left=schedInfo.total-schedInfo.done;
+  return left?`Due ${dayName(schedInfo.due)}, 11:59pm: <b>${schedInfo.done} of ${schedInfo.total} done</b>. <a href="schedule.html">My schedule</a>`:`All done for ${dayName(schedInfo.due)}. <a href="schedule.html">My schedule</a>`;
 }
 
 /* ---------- status strip on each page ---------- */
@@ -175,7 +204,9 @@ function renderBar(b){
   el.hidden=false;
   if(active()){
     el.className='nk-bar';
-    el.innerHTML=`<span>Signed in as <b>${esc(auth.name)}</b></span><span class="nk-st">${esc(statusText())}</span><span class="nk-sp"></span><button type="button" class="nk-out">Sign out</button>`;
+    const sl=schedLine();
+    el.className='nk-bar'+(schedInfo&&schedInfo.done<schedInfo.total?' warn':'');
+    el.innerHTML=`<span>Signed in as <b>${esc(auth.name)}</b></span><span class="nk-st">${esc(statusText())}</span><span class="nk-sp"></span><button type="button" class="nk-out">Sign out</button>${sl?`<span style="flex-basis:100%">${sl}</span>`:''}`;
     el.querySelector('.nk-out').onclick=()=>{if(confirm('Sign out on this device?'))signOut();};
   }else if(auth&&auth.mustChange){
     el.className='nk-bar warn';
@@ -233,10 +264,12 @@ function mountHome(target){
       return `<li><a href="${href}">${esc(t)}</a><span class="nk-bar-t"><i style="width:${p/n*100}%"></i></span><span class="nk-small">${p?`${p} of ${n}`:'Not started'}</span></li>`;}).join('');
     el.innerHTML=`<div class="nk-home"><div class="nk-head"><h3>Signed in as ${esc(auth.name)}</h3><span class="nk-small">${esc(auth.username)}</span>
       <span class="nk-small nk-st2">${esc(statusText())}</span><button type="button" class="nk-link" id="nkOut">Sign out</button></div>
-      <p class="nk-small" id="nkWork" style="margin:-6px 0 16px"></p>
+      <p class="nk-small" id="nkSched" style="margin:-6px 0 4px">${schedLine()}</p>
+      <p class="nk-small" id="nkWork" style="margin:0 0 16px"></p>
       <div class="nk-cols"><div><h4>Courses</h4><ul class="nk-prog">${prog}</ul></div>
       <div><h4>Your marked answers</h4><div id="nkMarks" class="nk-small">Loading...</div></div></div></div>`;
     el.querySelector('#nkOut').onclick=async()=>{if(confirm('Sign out on this device?')){await signOut();draw();}};
+    if(!schedInfo)loadSched().then(()=>{const h=el.querySelector('#nkSched');if(h)h.innerHTML=schedLine();renderBars();});
     api('/work/mine',{}).then(d=>{const el2=el.querySelector('#nkWork');if(!el2)return;const todo=(d.work||[]).filter(w=>w.source==='teacher'&&w.status!=='done');
       el2.innerHTML=todo.length?`<b>Work from your teacher: ${todo.length} to do.</b> <a href="practice.html">Go to practice</a>`:`<a href="practice.html">Practice</a>: make questions on your gaps or any topic.`;}).catch(()=>{});
     try{const d=await api('/mymarks',{});const m=el.querySelector('#nkMarks');if(!m)return;
@@ -256,6 +289,7 @@ async function start(){
   if(!active()){readyResolve();return;}
   try{const me=await api('/me',{});auth.name=me.name;auth.mustChange=me.mustChange;lset('nk_auth',auth);}catch(e){}
   await sync();flush();readyResolve();renderBars();
+  loadSched().then(()=>{renderBars();const h=document.getElementById('nkSched');if(h)h.innerHTML=schedLine();});
 }
 if(ON){
   addEventListener('online',()=>{sync();flush();});
@@ -275,6 +309,7 @@ window.Acct={
   get user(){return active()?{username:auth.username,name:auth.name}:null;},
   ready,get,set,send,sync,signOut,bar,mountHome,
   call(path,body){return api(path,body||{});},
+  refreshSchedule(){return loadSched(true).then(()=>renderBars());},
   merge(prefix,fn){mergers.push({prefix,fn});},
   onChange(fn){listeners.push(fn);}
 };

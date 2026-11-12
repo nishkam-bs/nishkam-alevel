@@ -159,6 +159,7 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
         <option value="p1">Paper 1 (9 marks)</option>
         <option value="p2">Paper 2 (9 marks)</option>
         <option value="p3">Paper 3 Q1/Q2 (12 marks)</option>
+        <option value="practice">Practice questions</option>
       </select>
       <div class="qlist mt" id="qList"></div>
       <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
@@ -265,65 +266,92 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
 const PROXY='https://nishkam-marker.alevelnishkam.workers.dev';
 const MODEL='claude-sonnet-4-6';
 /* ─── QUESTION BANK ─── */
-const QS=[
-{s:'p1',y:'2025',m:9,q:'Analyse how this restructuring of Newtown plc in 2024 might affect its speed of response to customer enquiries. [Table: staff 3906\u21923616, span of control 5\u219215, levels of hierarchy 6\u21924]'},
-{s:'p1',y:'2025',m:9,q:'Analyse how a government changing its fiscal policy might affect a business which produces healthcare products.'},
-{s:'p1',y:'2025',m:9,q:'Analyse how adopting an innovation strategy might affect the human resources function of a business.'},
-{s:'p1',y:'2024',m:9,q:'Analyse why a public limited company might prefer to use share capital as a source of finance, rather than a bank loan.'},
-{s:'p1',y:'2024',m:9,q:'Analyse why an underperforming business with a role culture might choose to move towards a power culture.'},
-{s:'p1',y:'2024',m:9,q:'A UK manufacturer is highly geared and exports 60% of its output. Analyse the impact of a significant increase in UK interest rates on this business.'},
-{s:'p1',y:'2023',m:9,q:'Analyse why a large business might choose to introduce a product into a niche market.'},
-{s:'p1',y:'2023',m:9,q:'Product A has income elasticity +0.5 and price elasticity -2.0. During the next year consumer incomes fall and the price of Product A increases. Analyse how the sales revenue for Product A will change over the next year.'},
-{s:'p1',y:'2023',m:9,q:'A business has recently experienced a decline in its level of sales. This led to some redundancies. Analyse how an understanding of Maslow\u2019s hierarchy of needs might help this business to motivate its remaining employees.'},
-{s:'p1',y:'2022',m:9,q:'Analyse why non-profit organisations set financial objectives.'},
-{s:'p1',y:'2022',m:9,q:'Analyse how widening a manager\u2019s span of control might affect labour productivity within the department she manages.'},
-{s:'p1',y:'2020',m:9,q:'Analyse how employing a more diverse workforce might increase the profit of a business.'},
-{s:'p1',y:'2020',m:9,q:'Analyse the implications of changes in receivables days and payables days for Wilson PLC\u2019s cash levels. [Table: receivables and payables days 2018-2019]'},
-{s:'p1',y:'2020',m:9,q:'Analyse the problems that might arise for a small business from the growth of digital technology.'},
-{s:'p1',y:'2019',m:9,q:'Based on a decision tree, the Marketing Manager chooses Option A. Analyse why choosing Option A might not be the best decision. [Decision tree with probabilities and pay-offs]'},
-{s:'p1',y:'2019',m:9,q:'To fund a new project, a business increases the proportion of its long-term funding that is debt. Analyse how this change might affect the level of dividends received by shareholders.'},
-{s:'p1',y:'2019',m:9,q:'Managers in a business have a range of leadership styles. Analyse how these different leadership styles might impact the effectiveness of a strategy to decentralise this business.'},
-{s:'p1',y:'2018',m:9,q:'Analyse how the changes in labour turnover data over time might have affected the ability of BBB plc to provide higher-quality products than its competitors. [Table: average annual labour turnover rates]'},
-{s:'p1',y:'2018',m:9,q:'Analyse how introducing intrapreneurship can improve the financial performance of a business.'},
-{s:'p1',y:'2018',m:9,q:'Analyse how delayering might affect the level of profit of a business.'},
-{s:'p1',y:'2017',m:9,q:'A caf\u00e9 sells Coffee (YED +2.0) and Tea (YED -0.5). Coffee sales volume is several times greater than tea. Analyse how the caf\u00e9\u2019s overall sales volume would be affected by a rise in consumers\u2019 incomes.'},
-{s:'p1',y:'2017',m:9,q:'Use the balance sheet data for ABC Ltd to explain how the use of debt factoring would benefit ABC Ltd. [Balance sheet extracts showing inventories, receivables, cash, payables over 3 years]'},
-{s:'p3',y:'2025',m:12,q:'Use Lewin\u2019s force field model to analyse why VBM is making major changes now.'},
-{s:'p3',y:'2025',m:12,q:'Analyse the impact of the proposed retrenchment on VBM\u2019s marketing activities in Europe.'},
-{s:'p3',y:'2024',m:12,q:'Analyse how Speed-e-Puds Ltd benefits from operating with a high level of capacity utilisation.'},
-{s:'p3',y:'2024',m:12,q:'Sanjay has a marketing objective of achieving a 15% market share within 3 years. Analyse the factors that influenced Sanjay\u2019s decision to set his marketing objective at a 15% market share.'},
-{s:'p3',y:'2023',m:12,q:'Analyse why Logger Boards Ltd prioritises meeting environmental objectives when making operational decisions.'},
-{s:'p3',y:'2023',m:12,q:'Logger Boards Ltd\u2019s growth has been organic rather than external. Analyse why Bodhi may have preferred organic growth to external growth.'},
-{s:'p3',y:'2022',m:12,q:'Analyse the factors affecting SSN Ltd\u2019s promotional decisions.'},
-{s:'p3',y:'2022',m:12,q:'Analyse how copyright may have been important to the growth of SSN Ltd.'},
-{s:'p3',y:'2020',m:12,q:'Using Lewin\u2019s force field analysis, analyse why Petrenko\u2019s is making changes now.'},
-{s:'p3',y:'2020',m:12,q:'Analyse how improved quality assurance might benefit Petrenko\u2019s.'},
-{s:'p3',y:'2019',m:12,q:'Analyse the usefulness of a SWOT analysis to Coolair Ltd.'},
-{s:'p3',y:'2019',m:12,q:'Analyse why Coolair Ltd might have chosen an emergent strategy rather than a planned strategy.'},
-{s:'p3',y:'2018',m:12,q:'Analyse the importance of branding to DP Ltd.'},
-{s:'p3',y:'2018',m:12,q:'Analyse how DP Ltd might benefit from e-commerce.'},
-{s:'p3',y:'2017',m:12,q:'Analyse, with reference to Kotter and Schlesinger\u2019s work, two barriers to change that KMH plc will face when implementing its new strategy.'},
-{s:'p3',y:'2017',m:12,q:'Analyse, using two financial ratios, the financial constraints faced by KMH plc in attempting to fund the new strategy.'},
-{s:'p3',y:'2026',m:12,q:'Analyse how Danni\u2019s customers may be affected by his decision to change from operating as a sole trader to becoming a private limited company.'},
-{s:'p3',y:'2026',m:12,q:'Analyse how using network analysis can help Danni to ensure customer satisfaction.'},
-{s:'p2',y:'2017',m:9,q:'Analyse the likely effects of a significant increase in interest rates on the profits of car manufacturers. [Case study context: car manufacturer data provided]'},
-{s:'p2',y:'2018',m:9,q:'Analyse actions Lego managers might take to ensure employees share the culture. [Lego case study]'},
-{s:'p2',y:'2019',m:9,q:'Analyse how the combined market share of the largest four manufacturers in the UK RTE breakfast cereal market might affect the threat of entry by other businesses into this market. [Kellogg\u2019s case study, Appendices A-E]'},
-{s:'p2',y:'2019',m:9,q:'WR employs its taxi drivers on flexible employment contracts. Analyse one advantage and one disadvantage of this for the business. [WeRide case study]'},
-{s:'p2',y:'2019',m:9,q:'Galin invests in research and development and owns a number of patents. Analyse how these two factors help Galin to achieve high profit margins on its new products.'},
-{s:'p2',y:'2019',m:9,q:'Analyse why Galin has chosen a regional organisational structure rather than a functional one.'},
-{s:'p2',y:'2020',m:9,q:'Analyse the challenges the Human Resource manager faces as a result of the patterns of room bookings in Appendix E. [Drake hotel case study]'},
-{s:'p2',y:'2020',m:9,q:'Nari uses a \u2018Just in Time\u2019 approach to manufacturing. Analyse the ways in which this might affect Nari\u2019s profits.'},
-{s:'p2',y:'2020',m:9,q:'The price elasticity of demand for Zani PLC\u2019s products has a value of \u20130.4. Analyse reasons why the price elasticity of demand for Zani PLC\u2019s products might have this value.'},
-{s:'p2',y:'2022',m:9,q:'Analyse how contingency planning might have helped DT maintain competitiveness. [DT case study, disrupted supply chain]'},
-{s:'p2',y:'2023',m:9,q:'Analyse why AJS plc has decided to become more capital intensive. [AJS case study]'},
-{s:'p2',y:'2023',m:9,q:'Simply Bake plc decided to remove palm oil from its products. With reference to Lewin\u2019s force field analysis, analyse why this decision was made.'},
-{s:'p2',y:'2024',m:9,q:'Analyse the likely effects on Biggs of launching a new product. [Biggs sports sponsorship case study, financial data from appendices]'},
-{s:'p2',y:'2025',m:9,q:'Using Appendix D and the other information available, analyse why SCF chose Option 2. Your answer should include quantitative and qualitative information. [SCF case study]'},
-{s:'p2',y:'2025',m:9,q:'Analyse why Dodo sets HR objectives in relation to the number of employees and employee engagement. [Dodo case study]'},
-{s:'p2',y:'2026',m:9,q:'Analyse how Shortcut UK\u2019s regional organisational structure could lead its business customers to become brand loyal. [B2B garden machinery, regional structure, sales reps]'},
-{s:'p2',y:'2026',m:9,q:'Analyse why the UK was an attractive market for Shortcut UK. [American manufacturer, market development strategy]'},
-];
+const QS=[{"id":"P3-2026-02","s":"p3","y":"2026","m":12,"q":"Analyse how using network analysis can help Danni to ensure customer satisfaction.","n":"the case study"},
+{"id":"P3-2026-01","s":"p3","y":"2026","m":12,"q":"Analyse how Danni's customers may be affected by his decision to change from operating as a sole trader to becoming a private limited company.","n":"the case study"},
+{"id":"P2-2026-03.2","s":"p2","y":"2026","m":9,"q":"Analyse why Shortcut may have found the UK an attractive market to target.","n":"the case study"},
+{"id":"P2-2026-03.1","s":"p2","y":"2026","m":9,"q":"Analyse how Shortcut UK's regional organisational structure could lead its business customers to become brand loyal.","n":"the case study"},
+{"id":"P2-2026-02.2","s":"p2","y":"2026","m":9,"q":"Analyse how being a social enterprise could provide QWV with a competitive advantage.","n":"the case study"},
+{"id":"P2-2026-02.1","s":"p2","y":"2026","m":9,"q":"Analyse how QWV could measure its business performance.","n":"the case study"},
+{"id":"P2-2026-01.3","s":"p2","y":"2026","m":9,"q":"Using Appendix C, analyse how Metromart would benefit from effective inventory control.","n":"Appendix C"},
+{"id":"P1-2026-20","s":"p1","y":"2026","m":9,"q":"Use the network diagram above in order to answer the following question: The business needs to reduce the length of the critical path. Analyse why the business should focus on its human resources function in order to reduce the length of the critical path.","n":"network diagram above"},
+{"id":"P1-2026-19","s":"p1","y":"2026","m":9,"q":"A business has operated with poor cash flow and low profit levels for a number of years. It decides to use debt factoring as a source of finance. Analyse the possible impact of this decision on its cash flow and profit level.","n":""},
+{"id":"P1-2026-18","s":"p1","y":"2026","m":9,"q":"Analyse how an understanding of Maslow's theory of motivation might help a business to lower its labour turnover.","n":""},
+{"id":"P3-2025-02","s":"p3","y":"2025","m":12,"q":"Analyse the impact of the proposed retrenchment on VBM's marketing activities in Europe.","n":"the case study"},
+{"id":"P3-2025-01","s":"p3","y":"2025","m":12,"q":"Use Lewin's force field model to analyse why VBM is making major changes now.","n":"the case study"},
+{"id":"P2-2025-03.2","s":"p2","y":"2025","m":9,"q":"Analyse how Dodo would benefit from being the best in its market for its chosen quality measures.","n":"the case study"},
+{"id":"P2-2025-03.1","s":"p2","y":"2025","m":9,"q":"Analyse why Dodo sets HR objectives in relation to the number of employees and employee engagement.","n":"the case study"},
+{"id":"P2-2025-02.3","s":"p2","y":"2025","m":9,"q":"Use Herzberg's theory to analyse why Ajinder's plan may not improve motivation levels at Seebus plc.","n":"the case study"},
+{"id":"P2-2025-01.3","s":"p2","y":"2025","m":9,"q":"Using Appendix D and the other information available, analyse why SCF chose Option 2. Your answer should include quantitative and qualitative information.","n":"Appendix D, the case study"},
+{"id":"P1-2025-20","s":"p1","y":"2025","m":9,"q":"Analyse how adopting an innovation strategy might affect the human resources function of a business.","n":""},
+{"id":"P1-2025-19","s":"p1","y":"2025","m":9,"q":"Analyse how a government changing its fiscal policy might affect a business which produces healthcare products.","n":""},
+{"id":"P1-2025-18","s":"p1","y":"2025","m":9,"q":"The table below shows changes to the structure of Newtown plc. \nTable: Number of staff 3906 before 2024, 3616 in 2024 onwards; Average span of control 5 before 2024, 15 in 2024 onwards; Levels of hierarchy 6 before 2024, 4 in 2024 onwards. \nAnalyse how this restructuring of Newtown plc in 2024 might affect its speed of response to customer enquiries.","n":"the table showing changes to the structure of Newtown plc"},
+{"id":"P3-2024-02","s":"p3","y":"2024","m":12,"q":"Sanjay has a marketing objective of achieving a 15% market share within 3 years. Analyse the factors that influenced Sanjay's decision to set his marketing objective at a 15% market share.","n":"the case study"},
+{"id":"P3-2024-01","s":"p3","y":"2024","m":12,"q":"Analyse how Speed-e-Puds Ltd benefits from operating with a high level of capacity utilisation.","n":"the case study"},
+{"id":"P2-2024-03.2","s":"p2","y":"2024","m":9,"q":"WWH Ltd's directors are considering making and selling a portfolio of products rather than a single product, in order to increase growth. Analyse how WWH Ltd's organisational design may change if the directors decide to do this.","n":"the case study"},
+{"id":"P2-2024-03.1","s":"p2","y":"2024","m":9,"q":"Analyse how WWH Ltd could improve its cashflow.","n":"the case study"},
+{"id":"P2-2024-02.2","s":"p2","y":"2024","m":9,"q":"Soundcheck plc has set a corporate objective to achieve an annual profit in 2024. Analyse the difficulties Soundcheck plc may experience when attempting to turn its 2023 loss into a profit in 2024.","n":"the case study"},
+{"id":"P2-2024-02.1","s":"p2","y":"2024","m":9,"q":"When introducing its paid service, Soundcheck plc changed its positioning strategy from position 1 to position 4 on Bowman's strategic clock. Analyse why Soundcheck plc decided to change its positioning strategy.","n":"the case study"},
+{"id":"P2-2024-01.3","s":"p2","y":"2024","m":9,"q":"Analyse how the changes in Biggs Ltd's labour productivity, shown in Appendix B, may cause its market share to fall.","n":"Appendix B"},
+{"id":"P1-2024-20","s":"p1","y":"2024","m":9,"q":"A UK manufacturer is highly geared and exports 60% of its output. \nAnalyse the impact of a significant increase in UK interest rates on this business.","n":""},
+{"id":"P1-2024-19","s":"p1","y":"2024","m":9,"q":"Analyse why an underperforming business with a role culture might choose to move towards a power culture.","n":""},
+{"id":"P1-2024-18","s":"p1","y":"2024","m":9,"q":"Analyse why a public limited company might prefer to use share capital as a source of finance, rather than a bank loan.","n":""},
+{"id":"P3-2023-02","s":"p3","y":"2023","m":12,"q":"Logger Boards Ltd's growth has been organic rather than external. Analyse why Bodhi may have preferred organic growth to external growth.","n":"the case study"},
+{"id":"P3-2023-01","s":"p3","y":"2023","m":12,"q":"Analyse why Logger Boards Ltd prioritises meeting environmental objectives when making operational decisions.","n":"the case study"},
+{"id":"P2-2023-03.3","s":"p2","y":"2023","m":9,"q":"Simply Bake plc decided to remove palm oil from its products. With reference to Lewin's force field analysis, analyse why this decision was made.","n":"the case study"},
+{"id":"P2-2023-02.3","s":"p2","y":"2023","m":9,"q":"The role of a manager has different elements. Analyse the impact of the increase in homeworking by office staff on the way that their managers fulfil their role.","n":"the case study"},
+{"id":"P2-2023-01.3","s":"p2","y":"2023","m":9,"q":"Analyse why AJS plc has decided to become more capital intensive.","n":"Appendix A, Appendix D, the case study"},
+{"id":"P1-2023-20","s":"p1","y":"2023","m":9,"q":"A business has recently experienced a decline in its level of sales. This led to some redundancies. \nAnalyse how an understanding of Maslow's hierarchy of needs might help this business to motivate its remaining employees.","n":""},
+{"id":"P1-2023-19","s":"p1","y":"2023","m":9,"q":"A company sells a single product: Product A. \nTable 2 Income and price elasticity of demand for Product A: Income elasticity of demand +0.5; Price elasticity of demand –2.0 \nDuring the next year: \n• consumer incomes fall \n• the price of Product A increases. \nBased solely on the information provided above, analyse how the sales revenue for Product A will change over the next year.","n":"Table 2"},
+{"id":"P1-2023-18","s":"p1","y":"2023","m":9,"q":"Analyse why a large business might choose to introduce a product into a niche market.","n":""},
+{"id":"P3-2022-02","s":"p3","y":"2022","m":12,"q":"Analyse how copyright may have been important to the growth of SSN Ltd.","n":"the case study"},
+{"id":"P3-2022-01","s":"p3","y":"2022","m":12,"q":"Analyse the factors affecting SSN Ltd's promotional decisions.","n":"the case study"},
+{"id":"P2-2022-03.5","s":"p2","y":"2022","m":9,"q":"Analyse how contingency planning might have helped DT maintain its competitiveness.","n":"the case study"},
+{"id":"P2-2022-02.3","s":"p2","y":"2022","m":9,"q":"With reference to Maslow's theory, analyse the possible impact of this venture on the motivation of senior managers of the two businesses.","n":"the case study"},
+{"id":"P2-2022-01.4","s":"p2","y":"2022","m":9,"q":"Analyse how the data in Appendix C will affect how this business might change the price it charges for each type of tea to increase its sales revenue.","n":"Appendix C"},
+{"id":"P1-2022-21","s":"p1","y":"2022","m":9,"q":"Analyse why a business might choose to use labour intensive processes rather than capital intensive processes.","n":""},
+{"id":"P1-2022-20","s":"p1","y":"2022","m":9,"q":"Analyse how widening a manager's span of control might affect labour productivity within the department she manages.","n":""},
+{"id":"P1-2022-19","s":"p1","y":"2022","m":9,"q":"Analyse why non-profit organisations set financial objectives.","n":""},
+{"id":"P3-2020N-02","s":"p3","y":"Nov 2020","m":12,"q":"Using Appendix B and Appendix C, analyse why Sunport PLC chose a multi-domestic strategy for its food divisions.","n":"Appendix B and Appendix C"},
+{"id":"P3-2020N-01","s":"p3","y":"Nov 2020","m":12,"q":"Analyse the benefits to stakeholders of the rise in the share price of Sunport PLC.","n":"the case study"},
+{"id":"P2-2020N-03.3","s":"p2","y":"Nov 2020","m":9,"q":"The price elasticity of demand for Zani PLC's products has a value of –0.4. Analyse reasons why the price elasticity of demand for Zani PLC's products might have this value.","n":"the case study"},
+{"id":"P2-2020N-02.3","s":"p2","y":"Nov 2020","m":9,"q":"Nari uses a 'Just in Time' approach to manufacturing. Analyse the ways in which this might affect Nari's profits.","n":"the case study"},
+{"id":"P2-2020N-01.3","s":"p2","y":"Nov 2020","m":9,"q":"Analyse the challenges the Human Resource manager faces as a result of the patterns of room bookings in Appendix E.","n":"Appendix E"},
+{"id":"P1-2020N-20","s":"p1","y":"Nov 2020","m":9,"q":"Analyse the problems that might arise for a small business from the growth of digital technology.","n":""},
+{"id":"P1-2020N-19","s":"p1","y":"Nov 2020","m":9,"q":"The table below shows the changes in the two efficiency ratios for Wilson PLC, 2018–2019. Table: Receivables days 30 in 2018, 45 in 2019; Payables days 38 in 2018, 43 in 2019. Analyse the implications of these changes for Wilson PLC's cash levels.","n":"table showing receivables days and payables days for Wilson PLC 2018-2019"},
+{"id":"P1-2020N-18","s":"p1","y":"Nov 2020","m":9,"q":"Analyse how employing a more diverse workforce might increase the profit of a business.","n":""},
+{"id":"P3-2019-02","s":"p3","y":"2019","m":12,"q":"Analyse how setting up the works council may have led to the changes in Human Resource performance data shown in Appendix A.","n":"Appendix A, the case study"},
+{"id":"P3-2019-01","s":"p3","y":"2019","m":12,"q":"Analyse two possible reasons why Mike introduced a budgeting system for DWS Ltd in 1991.","n":"the case study"},
+{"id":"P2-2019-03.2","s":"p2","y":"2019","m":9,"q":"Analyse why Galin has chosen a regional organisational structure rather than a functional one.","n":"the case study"},
+{"id":"P2-2019-03.1","s":"p2","y":"2019","m":9,"q":"Galin: • invests in research and development • owns a number of patents. Analyse how these two factors help Galin to achieve high profit margins on its new products.","n":"the case study"},
+{"id":"P2-2019-02.2","s":"p2","y":"2019","m":9,"q":"WR employs its taxi drivers on flexible employment contracts. Analyse one advantage and one disadvantage of this for the business.","n":"the case study"},
+{"id":"P2-2019-02.1","s":"p2","y":"2019","m":9,"q":"WR has made a strategic decision to move into electric bicycle rentals. Analyse the possible impact of this on the market capitalisation of the company.","n":"the case study"},
+{"id":"P2-2019-01.4","s":"p2","y":"2019","m":9,"q":"Analyse how the combined market share of the largest four manufacturers in the UK RTE breakfast cereal market might affect the threat of entry by other businesses into this market.","n":"Appendix A"},
+{"id":"P1-2019-20","s":"p1","y":"2019","m":9,"q":"Managers in a business have a range of leadership styles. \nAnalyse how these different leadership styles might impact the effectiveness of a strategy to decentralise this business.","n":""},
+{"id":"P1-2019-19","s":"p1","y":"2019","m":9,"q":"To fund a new project, a business increases the proportion of its long-term funding that is debt. Analyse how this change might affect the level of dividends received by shareholders.","n":""},
+{"id":"P1-2019-18","s":"p1","y":"2019","m":9,"q":"The Marketing Manager of a business is considering whether to choose Option A or Option B. \nOption A: Introduce a new product. \nOption B: Use a new promotion for an existing product. \nFigure 4 shows the results of a decision tree for these options and the 'do nothing' option. \nFigure 4: A decision tree showing three options. Option A (Introduce a new product) has two outcomes: Success (probability and financial value indicated) and Failure (probability and financial value indicated). Option B (Use a new promotion for an existing product) has two outcomes: Success and Failure. A 'Do nothing' option is also shown with a single outcome value. The expected monetary values are calculated for each option. \nBased on this decision tree, the Marketing Manager chooses Option A. \nUsing Figure 4, analyse why choosing Option A might not be the best decision.","n":"Figure 4"},
+{"id":"P3-2018-02","s":"p3","y":"2018","m":12,"q":"Analyse the value of effective inventory control to Hopps Clothing Ltd.","n":"the case study"},
+{"id":"P3-2018-01","s":"p3","y":"2018","m":12,"q":"Analyse two benefits to Hopps Clothing Ltd of creating a strong brand.","n":"the case study"},
+{"id":"P2-2018-03.2","s":"p2","y":"2018","m":9,"q":"Lewin's force field analysis identifies driving and restraining forces. Analyse one driving force and one restraining force in Appendix G for the proposed change to the pay levels for cabin crew.","n":"Appendix G"},
+{"id":"P2-2018-02.2","s":"p2","y":"2018","m":9,"q":"Analyse the actions managers at Lego might take to help ensure that its employees share the culture of the business.","n":"the case study"},
+{"id":"P2-2018-02.1","s":"p2","y":"2018","m":9,"q":"Lego is a private limited company. Analyse how the decisions its managers make might be different if it was a public limited company.","n":"the case study"},
+{"id":"P2-2018-01.3","s":"p2","y":"2018","m":9,"q":"Calculate the following ratios for Marks and Spencer plc for the financial year ending 1 April 2017 to two decimal places. The return on capital employed Workings The gearing ratio Workings The current ratio Workings","n":"Appendix A"},
+{"id":"P1-2018-20","s":"p1","y":"2018","m":9,"q":"Analyse how delayering might affect the level of profit of a business.","n":""},
+{"id":"P1-2018-19","s":"p1","y":"2018","m":9,"q":"Analyse how introducing intrapreneurship can improve the financial performance of a business.","n":""},
+{"id":"P1-2018-18","s":"p1","y":"2018","m":9,"q":"The table below shows the changes in the average annual labour turnover rates for BBB plc and its competitors. \nTime period | Annual labour turnover (%) (average for BBB plc) | Annual labour turnover (%) (average for competitors) \n1978–1987: 15, 15; 1988–1997: 12, 18; 1998–2007: 10, 18; 2008–2017: 8, 23 \nAnalyse how the changes in these data over time might have affected the ability of BBB plc to provide higher-quality products than its competitors.","n":"Table showing annual labour turnover rates for BBB plc and its competitors across four time periods"},
+{"id":"P3-2017-02","s":"p3","y":"2017","m":12,"q":"Analyse, using two financial ratios, the financial constraints faced by KMH plc in attempting to fund the new strategy.","n":"the case study"},
+{"id":"P3-2017-01","s":"p3","y":"2017","m":12,"q":"Analyse, with reference to Kotter and Schlesinger's work, two barriers to change that KMH plc will face when implementing its new strategy.","n":"the case study"},
+{"id":"P2-2017-03.2","s":"p2","y":"2017","m":9,"q":"With reference to Figure 8, analyse the actions Kento should take regarding its product portfolio in Europe to improve its long term financial performance.","n":"Figure 8"},
+{"id":"P2-2017-03.1","s":"p2","y":"2017","m":9,"q":"A manager from the UK is moving to South Africa to lead a team of local staff. Explain how the difference in Hofstede's cultural dimension of 'Power Distance' shown in Figure 7 might affect her management style.","n":"Figure 7"},
+{"id":"P2-2017-02.2","s":"p2","y":"2017","m":9,"q":"Analyse the likely effects of a significant increase in interest rates on the profits of car manufacturers.","n":"the case study"},
+{"id":"P2-2017-01.3","s":"p2","y":"2017","m":9,"q":"The discount retailers are said to manage their human resources very effectively. Explain how the data in Figure 6 supports this view. Use calculations to support your answer.","n":"Figure 6"},
+{"id":"P1-2017-21","s":"p1","y":"2017","m":9,"q":"Use the data in Figure 5 to explain how the use of debt factoring would benefit ABC Ltd. \nFigure 5: Extracts from the balance sheet of ABC Ltd. 31.3.2015 (£000) / 31.3.2016 (£000) / 31.3.2017 (£000): Inventories 200 / 230 / 250; Receivables 300 / 500 / 690; Cash 400 / 200 / 0; Total current assets 900 / 930 / 940; Payables 500 / 530 / 550","n":"Figure 5"},
+{"id":"P1-2017-20","s":"p1","y":"2017","m":9,"q":"A café sells two types of hot drinks. These drinks have the following income elasticities of demand: \nCoffee: income elasticity of demand +2.0; Tea: income elasticity of demand -0.5 \nThe volume of coffee sales is several times greater than the volume of tea sales. \nBased on the information above, analyse how the café's overall sales volume of hot drinks would be affected by a rise in consumers' incomes. Assume there are no other changes.","n":"income elasticity of demand data for coffee (+2.0) and tea (-0.5) provided in question"},
+{"s":"p3","y":"Practice","m":12,"q":"Analyse how improved quality assurance might benefit Petrenko’s."},
+{"s":"p3","y":"Practice","m":12,"q":"Analyse the usefulness of a SWOT analysis to Coolair Ltd."},
+{"s":"p3","y":"Practice","m":12,"q":"Analyse why Coolair Ltd might have chosen an emergent strategy rather than a planned strategy."},
+{"s":"p3","y":"Practice","m":12,"q":"Analyse the importance of branding to DP Ltd."},
+{"s":"p3","y":"Practice","m":12,"q":"Analyse how DP Ltd might benefit from e-commerce."},
+{"s":"p2","y":"Practice","m":9,"q":"Analyse the likely effects on Biggs of launching a new product. [Biggs sports sponsorship case study, financial data from appendices]"}];
 
 let selQ=null;
 let uploadedImages=[];
@@ -332,8 +360,8 @@ let lastFb=null,lastQ='',lastMarks=0;
 /* ─── QUESTIONS ─── */
 function renderQ(filter){
   const el=document.getElementById('qList');
-  const f=filter==='all'?QS:QS.filter(q=>q.s===filter);
-  el.innerHTML=f.map((q,i)=>{const idx=QS.indexOf(q);const pLabel={p1:'Paper 1',p2:'Paper 2',p3:'Paper 3'}[q.s]||q.s;return`<button class="qopt${selQ===idx?' sel':''}" data-i="${idx}"><div class="qy">${q.y} \u00b7 ${pLabel} \u00b7 ${q.m} marks</div>${q.q}</button>`;}).join('');
+  const f=filter==='all'?QS:filter==='practice'?QS.filter(q=>q.y==='Practice'):QS.filter(q=>q.y!=='Practice'&&q.s===filter);
+  el.innerHTML=f.map((q,i)=>{const idx=QS.indexOf(q);const pLabel={p1:'Paper 1',p2:'Paper 2',p3:'Paper 3'}[q.s]||q.s;return`<button class="qopt${selQ===idx?' sel':''}" data-i="${idx}"><div class="qy">${q.y==="Practice"?"Practice question":q.y} \u00b7 ${pLabel} \u00b7 ${q.m} marks${q.n?` \u00b7 uses ${q.n}`:""}</div>${q.q}</button>`;}).join('');
   el.querySelectorAll('.qopt').forEach(b=>b.onclick=()=>{selQ=parseInt(b.dataset.i);renderQ(document.getElementById('paperFilter').value);});
 }
 document.getElementById('paperFilter').onchange=function(){renderQ(this.value);};
@@ -379,9 +407,9 @@ function getPrompt(question,marks){
 You are a senior AQA A-Level Business examiner marking a ${mx}-mark analyse question.${is12?' This is a Paper 3 question referencing a case study insert.':' This is a Paper 1 or Paper 2 analyse question. Paper 2 questions reference case study extracts and appendices — reward students who use this contextual data.'}
 
 AQA LEVEL DESCRIPTORS (official):
-Level 3 (7-${mx}): A good response overall that focuses on many of the demands of the question. Demonstrates a depth and range of knowledge and understanding. Analysis is well developed and applied effectively to the context.
-Level 2 (4-6): A reasonable response overall that focuses on some of the demands of the question. Demonstrates limited knowledge of a range of issues OR good knowledge of relatively few issues. Analysis is developed and applied to the context.
-Level 1 (1-3): A limited response overall with little focus on the demands of the question. Demonstrates a limited range and depth of knowledge. Analysis with little development and mainly descriptive application.
+Level 3 (${is12?'9-12':'7-9'}): A good response overall that focuses on many of the demands of the question. Demonstrates a depth and range of knowledge and understanding. Analysis is well developed and applied effectively to the context.
+Level 2 (${is12?'5-8':'4-6'}): A reasonable response overall that focuses on some of the demands of the question. Demonstrates limited knowledge of a range of issues OR good knowledge of relatively few issues. Analysis is developed and applied to the context.
+Level 1 (${is12?'1-4':'1-3'}): A limited response overall with little focus on the demands of the question. Demonstrates a limited range and depth of knowledge. Analysis with little development and mainly descriptive application.
 
 AO SPLIT: ${is12?'AO1=3, AO2=3, AO3=6':'AO1=3, AO2=3, AO3=3'}
 

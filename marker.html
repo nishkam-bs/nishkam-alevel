@@ -244,10 +244,10 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
     <h3>Step 1 — Choose your question</h3>
     <label class="fl" style="margin-top:10px">Filter by year</label>
     <select id="yearFilter" style="max-width:200px">
-      <option value="all">All years (2017-2025)</option>
-      <option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option>
-      <option value="2022">2022</option><option value="2020">2020</option><option value="2019">2019</option>
-      <option value="2018">2018</option><option value="2017">2017</option>
+      <option value="all">All questions</option>
+      <option value="2026">June 2026</option><option value="2025">June 2025</option><option value="2024">June 2024</option><option value="2023">June 2023</option>
+      <option value="2022">June 2022</option><option value="Nov 2020">November 2020</option><option value="2019">June 2019</option>
+      <option value="2018">June 2018</option><option value="2017">June 2017</option><option value="Practice">Practice questions</option>
     </select>
     <div class="qlist mt" id="qList"></div>
     <div class="mt" style="border-top:1px solid var(--line);padding-top:14px">
@@ -746,40 +746,61 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
 
 <script>
 // ══════════ QUESTIONS ══════════
-const QS=[
-{y:"2017",q:"'Limited liability benefits all stakeholders of a PLC.' Do you agree? Justify your view."},
-{y:"2017",q:"'Cash flow is always more important than profit for a new start-up business.' Do you agree? Justify your view."},
-{y:"2017",q:"To what extent is organic growth a better strategic option for a business than external growth?"},
-{y:"2017",q:"'A business should always use a decision tree when making important strategic decisions.' Do you agree? Justify your view."},
-{y:"2018",q:"'Strong leadership is more important than strong management for a business achieving its objectives.' Do you agree? Justify your view."},
-{y:"2018",q:"To what extent is price the most important element of the marketing mix for a budget airline?"},
-{y:"2018",q:"To what extent will UK businesses experience a fall in profit if governments adopt more protectionist policies?"},
-{y:"2018",q:"'Are demographic factors now more significant than economic factors in influencing UK business performance?' Justify your view."},
-{y:"2019",q:"To what extent does corporate social responsibility conflict with a business's other objectives?"},
-{y:"2019",q:"'Which competitive advantage — low-cost or differentiation — is easier for a UK business to maintain?' Justify your view."},
-{y:"2019",q:"'A tall hierarchical structure is always a disadvantage for a large business.' Do you agree? Justify your view."},
-{y:"2019",q:"'Investment appraisal is useful for a business deciding which project to invest in.' To what extent do you agree?"},
-{y:"2020",q:"'Limited liability benefits all stakeholders of a PLC.' Do you agree? Justify your view."},
-{y:"2020",q:"'Technology will always give a business a competitive advantage.' Do you agree? Justify your view."},
-{y:"2020",q:"'Soft HRM always leads to better business performance than hard HRM.' Do you agree? Justify your view."},
-{y:"2020",q:"To what extent should businesses use only internal sources of finance?"},
-{y:"2022",q:"To what extent might the Boston Matrix enable a multi-product business to achieve sales growth?"},
-{y:"2022",q:"To what extent is motivation always the most important factor in a business achieving increased labour productivity?"},
-{y:"2022",q:"'Capital-intensive processes are always more profitable than labour-intensive processes.' Do you agree? Justify your view."},
-{y:"2022",q:"'Is it inevitable that large, growing businesses will eventually experience rising unit costs?' Justify your view."},
-{y:"2023",q:"'Contingency planning is always a worthwhile investment for a business.' Do you agree? Justify your view."},
-{y:"2023",q:"'Price elasticity of demand is the most useful measure of elasticity for a business.' To what extent do you agree?"},
-{y:"2023",q:"'Is it inevitable that large, growing businesses will eventually experience rising unit costs?' Justify your view."},
-{y:"2023",q:"'Emerging economies are beneficial to UK businesses, but only as potential markets.' Do you agree?"},
-{y:"2024",q:"A car manufacturer wants to increase profits. To what extent is retrenchment a better strategy than growth?"},
-{y:"2024",q:"'Herzberg's two-factor theory is the most useful theory of motivation for improving employee motivation.' To what extent do you agree?"},
-{y:"2024",q:"To what extent does rapid change in the external environment mean that strategic drift is inevitable?"},
-{y:"2024",q:"To what extent is lean production the most effective way for a business to reduce unit costs?"},
-{y:"2025",q:"'A UK business's domestic market has stopped growing. It decides to become a multinational.' To what extent is this likely to increase profits?"},
-{y:"2025",q:"'Quality assurance is always a better approach than quality control for improving a business's competitiveness.' Do you agree?"},
-{y:"2025",q:"To what extent is corporate culture the most important influence on the success of a business?"},
-{y:"2025",q:"'Are profitability ratios more important to a business than other types of financial ratios, such as liquidity and gearing ratios?' Justify your view."},
-];
+const QS=[{"id":"P1-2026-24","y":"2026","q":"Are profitability ratios more important to a business than other types of financial ratios, such as liquidity and gearing ratios? Justify your view.","n":""},
+{"id":"P1-2026-23","y":"2026","q":"'Capital-intensive processes are always more profitable than labour-intensive processes.' Do you agree? Justify your view.","n":""},
+{"id":"P1-2026-22","y":"2026","q":"A car manufacturer wishes to increase its profits. To what extent is vertical integration likely to be a better way for it to achieve increased profits than horizontal integration?","n":""},
+{"id":"P1-2026-21","y":"2026","q":"'In the market for sports shoes, the product is always the most important element of the marketing mix.' Do you agree? Justify your view.","n":""},
+{"id":"P1-2025-24","y":"2025","q":"'A system of quality assurance will always lead to greater profits than a system of quality control.' Do you agree? Justify your view.","n":""},
+{"id":"P1-2025-23","y":"2025","q":"'The need to continue investment is the most significant difficulty facing a business which is trying to maintain a competitive advantage.' To what extent do you agree? Justify your view.","n":""},
+{"id":"P1-2025-22","y":"2025","q":"The marketing department of a business wishes to increase its market share in a growing market. To what extent is market research the most important activity of the marketing department in order to achieve this objective?","n":""},
+{"id":"P1-2025-21","y":"2025","q":"A UK business's domestic market has stopped growing. The business has decided to become a multinational corporation. To what extent is this decision likely to increase profits?","n":""},
+{"id":"P1-2024-24","y":"2024","q":"Will the introduction of lean production always lead to lower unit costs? Justify your view.","n":""},
+{"id":"P1-2024-23","y":"2024","q":"To what extent does rapid change in the external environment mean that strategic drift is inevitable for a business?","n":""},
+{"id":"P1-2024-22","y":"2024","q":"A business changes its human resource management (HRM) approach from hard HRM to soft HRM. To what extent is this change guaranteed to increase the motivation of all employees?","n":""},
+{"id":"P1-2024-21","y":"2024","q":"To what extent are financial ratios the best way of assessing the performance of non-profit organisations, such as charities or mutuals?","n":""},
+{"id":"P1-2023-24","y":"2023","q":"A business decides to make increasing profits its main objective. Is it inevitable that this business will need to improve its quality to achieve this objective? Justify your view.","n":""},
+{"id":"P1-2023-23","y":"2023","q":"'Emerging economies are beneficial to UK businesses, but only as potential markets to help UK businesses to achieve growth.' Do you agree? Justify your view.","n":""},
+{"id":"P1-2023-22","y":"2023","q":"Is it inevitable that large, growing businesses will eventually experience rising unit costs? Justify your view.","n":""},
+{"id":"P1-2023-21","y":"2023","q":"Many businesses use contingency planning to prepare for major threats. Some of these contingency plans work well, but others fail to protect the business. To what extent is the success of a contingency plan for a major threat more dependent on internal factors than external factors?","n":""},
+{"id":"P1-2022-25","y":"2022","q":"Businesses using flexible employment contracts can be criticised for being unethical. To what extent should businesses avoid the use of flexible employment contracts?","n":""},
+{"id":"P1-2022-24","y":"2022","q":"Evaluate the extent to which the actions of the finance function of a business can help that business to achieve the lowest cost in its market.","n":""},
+{"id":"P1-2022-23","y":"2022","q":"Will the increased use of e-commerce lead to all retailers operating only online? Justify your view.","n":""},
+{"id":"P1-2022-22","y":"2022","q":"To what extent might the use of the Boston Matrix enable a multi-product business to achieve overall sales growth?","n":""},
+{"id":"P1-2020N-24","y":"Nov 2020","q":"A business is changing from a strategic position of low cost to one of differentiation. Will this lead to the business spending more on marketing and less on the operations function? Justify your view.","n":""},
+{"id":"P1-2020N-23","y":"Nov 2020","q":"'To achieve successful innovation, the level of spending on research and development is more important than the organisational culture of a business.' Do you agree? Justify your view.","n":""},
+{"id":"P1-2020N-22","y":"Nov 2020","q":"'The growth stage is the most challenging stage of the product life cycle for a business when managing its human resource flow.' Do you agree? Justify your view.","n":""},
+{"id":"P1-2020N-21","y":"Nov 2020","q":"'Limited liability benefits all stakeholders of a public limited company.' Do you agree? Justify your view.","n":""},
+{"id":"P1-2019-24","y":"2019","q":"A business plans to improve its flexibility through mass customisation. Is it inevitable that improved flexibility will worsen other measures of its operational performance? Justify your view.","n":""},
+{"id":"P1-2019-23","y":"2019","q":"More businesses are now using broad measures of overall business performance, such as Kaplan & Norton's Balanced Scorecard and Elkington's Triple Bottom Line, rather than focusing solely on financial ratio analysis. To what extent does this mean that financial ratio analysis is no longer important to a business?","n":""},
+{"id":"P1-2019-22","y":"2019","q":"A competitive advantage can be achieved through low-cost or through differentiation. Which of these types of competitive advantage is it easier for a UK business to maintain? Justify your view.","n":""},
+{"id":"P1-2019-21","y":"2019","q":"Online sales have grown significantly in recent years. To what extent has this led to distribution (place) decisions becoming a more important element of an effective marketing mix?","n":""},
+{"id":"P1-2018-24","y":"2018","q":"Are demographic factors now more significant than economic factors in influencing the performance of UK businesses? Justify your view.","n":""},
+{"id":"P1-2018-23","y":"2018","q":"To what extent do you think that UK businesses will experience a fall in profit if governments limit free trade by adopting more protectionist policies?","n":""},
+{"id":"P1-2018-22","y":"2018","q":"A UK business has experienced slow growth in sales in recent years. It has decided to achieve higher growth through new product development. Do you believe that this is a more risky strategy than market development? Justify your view.","n":""},
+{"id":"P1-2018-21","y":"2018","q":"Evaluate the extent to which the use of stakeholder mapping can help the managers of a public limited company to manage change more effectively.","n":""},
+{"id":"P1-2017-25","y":"2017","q":"A business is experiencing a fall in its market share. To what extent might the greater use of digital technology enable the business to increase its market share?","n":""},
+{"id":"P1-2017-24","y":"2017","q":"A business has had a record of poor innovation for many years. To what extent do you think that if the business increases its investment spending on innovation this will lead to more success in this area?","n":""},
+{"id":"P1-2017-23","y":"2017","q":"A business has recently started to use Elkington's Triple Bottom Line to assess its overall performance. To what extent do you think the business is likely to have lower profits as a result of this?","n":""},
+{"id":"P1-2017-22","y":"2017","q":"A business wants to increase the productivity of its workforce. To what extent is the greater use of delegation likely to be an effective way for the business to achieve this?","n":""},
+{"y":"Practice","q":"'Cash flow is always more important than profit for a new start-up business.' Do you agree? Justify your view."},
+{"y":"Practice","q":"To what extent is organic growth a better strategic option for a business than external growth?"},
+{"y":"Practice","q":"'A business should always use a decision tree when making important strategic decisions.' Do you agree? Justify your view."},
+{"y":"Practice","q":"'Strong leadership is more important than strong management for a business achieving its objectives.' Do you agree? Justify your view."},
+{"y":"Practice","q":"To what extent is price the most important element of the marketing mix for a budget airline?"},
+{"y":"Practice","q":"To what extent does corporate social responsibility conflict with a business's other objectives?"},
+{"y":"Practice","q":"'A tall hierarchical structure is always a disadvantage for a large business.' Do you agree? Justify your view."},
+{"y":"Practice","q":"'Investment appraisal is useful for a business deciding which project to invest in.' To what extent do you agree?"},
+{"y":"Practice","q":"'Technology will always give a business a competitive advantage.' Do you agree? Justify your view."},
+{"y":"Practice","q":"'Soft HRM always leads to better business performance than hard HRM.' Do you agree? Justify your view."},
+{"y":"Practice","q":"To what extent should businesses use only internal sources of finance?"},
+{"y":"Practice","q":"To what extent is motivation always the most important factor in a business achieving increased labour productivity?"},
+{"y":"Practice","q":"'Contingency planning is always a worthwhile investment for a business.' Do you agree? Justify your view."},
+{"y":"Practice","q":"'Price elasticity of demand is the most useful measure of elasticity for a business.' To what extent do you agree?"},
+{"y":"Practice","q":"A car manufacturer wants to increase profits. To what extent is retrenchment a better strategy than growth?"},
+{"y":"Practice","q":"'Herzberg's two-factor theory is the most useful theory of motivation for improving employee motivation.' To what extent do you agree?"},
+{"y":"Practice","q":"To what extent is lean production the most effective way for a business to reduce unit costs?"},
+{"y":"Practice","q":"'Quality assurance is always a better approach than quality control for improving a business's competitiveness.' Do you agree?"},
+{"y":"Practice","q":"To what extent is corporate culture the most important influence on the success of a business?"}];
 
 let selQ=null;
 
@@ -787,7 +808,7 @@ let selQ=null;
 function renderQ(yr){
   const el=document.getElementById('qList');
   const f=yr==='all'?QS:QS.filter(q=>q.y===yr);
-  el.innerHTML=f.map((q,i)=>{const idx=QS.indexOf(q);return`<button class="qopt${selQ===idx?' sel':''}" data-i="${idx}"><div class="qy">${q.y}</div>${q.q}</button>`;}).join('');
+  el.innerHTML=f.map((q,i)=>{const idx=QS.indexOf(q);return`<button class="qopt${selQ===idx?' sel':''}" data-i="${idx}"><div class="qy">${q.y==="Practice"?"Practice question (not from a past paper)":q.y}${q.n?` · uses ${q.n}`:""}</div>${q.q}</button>`;}).join('');
   el.querySelectorAll('.qopt').forEach(b=>b.onclick=()=>{selQ=parseInt(b.dataset.i);renderQ(document.getElementById('yearFilter').value);showDecode(QS[selQ].q);});
 }
 document.getElementById('yearFilter').onchange=function(){renderQ(this.value);};

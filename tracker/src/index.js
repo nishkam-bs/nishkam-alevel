@@ -35,6 +35,9 @@ const SCHEMA = [
      status TEXT NOT NULL, created TEXT NOT NULL, due TEXT, answers TEXT, result TEXT, score REAL, total REAL, done_at TEXT)`,
   `CREATE INDEX IF NOT EXISTS work_user ON work(username)`,
   `CREATE TABLE IF NOT EXISTS notes(username TEXT PRIMARY KEY, text TEXT, t TEXT)`,
+  `CREATE TABLE IF NOT EXISTS sched(id TEXT PRIMARY KEY, due TEXT NOT NULL, kind TEXT NOT NULL, ref TEXT, title TEXT, detail TEXT,
+     marks INTEGER, who TEXT NOT NULL DEFAULT 'all', sort INTEGER DEFAULT 0, created TEXT)`,
+  `CREATE TABLE IF NOT EXISTS excuse(sched_id TEXT NOT NULL, username TEXT NOT NULL, note TEXT, t TEXT, PRIMARY KEY(sched_id,username))`,
   `CREATE INDEX IF NOT EXISTS attempts_user ON attempts(username)`,
   `CREATE UNIQUE INDEX IF NOT EXISTS attempts_qid ON attempts(qid)`,
   `CREATE UNIQUE INDEX IF NOT EXISTS marks_qid ON marks(qid)`,
@@ -47,6 +50,8 @@ let schemaReady = false;
 async function ensureSchema(db) {
   if (schemaReady) return;
   await db.batch(SCHEMA.map(s => db.prepare(s)));
+  /* columns added after the first version */
+  for (const sql of ['ALTER TABLE marks ADD COLUMN ref TEXT']) { try { await db.prepare(sql).run(); } catch (e) {} }
   schemaReady = true;
 }
 
@@ -204,9 +209,9 @@ const routes = {
   async '/mark'(db, b) {
     const u = await student(db, b);
     if (!b.tool) throw new HttpError(400, 'Missing tool.');
-    await db.prepare('INSERT OR IGNORE INTO marks(qid,username,t,tool,question,mark,level,well,improve,answer) VALUES(?,?,?,?,?,?,?,?,?,?)')
+    await db.prepare('INSERT OR IGNORE INTO marks(qid,username,t,tool,question,mark,level,well,improve,answer,ref) VALUES(?,?,?,?,?,?,?,?,?,?,?)')
       .bind(qid(b), u.username, nowIso(), str(b.tool, 60), str(b.question, 500), str(b.mark, 20), str(b.level, 60),
-        str(b.well, 1200), str(b.improve, 1200), str(b.answer, 12000)).run();
+        str(b.well, 1200), str(b.improve, 1200), str(b.answer, 12000), str(b.ref, 60) || null).run();
     return { ok: true };
   },
 
@@ -235,14 +240,16 @@ const routes = {
 
   async '/dashboard'(db, b) {
     await session(db, b.token, 'teacher');
-    const [users, att, mk, bl, st, wk, nt] = await db.batch([
+    const [users, att, mk, bl, st, wk, nt, sc, ex] = await db.batch([
       db.prepare('SELECT username,name,must_change,created,last_seen FROM users ORDER BY name'),
       db.prepare('SELECT username,t,stage,title,score,total,passed,missed,answer FROM attempts ORDER BY id DESC LIMIT 8000'),
-      db.prepare('SELECT username,t,tool,question,mark,level,well,improve,answer FROM marks ORDER BY id DESC LIMIT 2000'),
+      db.prepare('SELECT username,t,tool,question,mark,level,well,improve,answer,ref FROM marks ORDER BY id DESC LIMIT 3000'),
       db.prepare('SELECT username,t,kind,ref,topic,got,total,detail FROM blurts ORDER BY id DESC LIMIT 4000'),
       db.prepare("SELECT username,k,data FROM store WHERE k LIKE 'course:%' OR k='blurt:history'"),
       db.prepare('SELECT id,username,source,title,spec,status,created,due,answers,result,score,total,done_at FROM work ORDER BY created DESC LIMIT 1500'),
-      db.prepare('SELECT username,text,t FROM notes')
+      db.prepare('SELECT username,text,t FROM notes'),
+      db.prepare('SELECT id,due,kind,ref,title,detail,marks,who,sort FROM sched ORDER BY due,sort'),
+      db.prepare('SELECT sched_id,username,note,t FROM excuse')
     ]);
     const store = {};
     st.results.forEach(r => { try { (store[r.username] = store[r.username] || {})[r.k] = JSON.parse(r.data); } catch (e) {} });
@@ -259,7 +266,9 @@ const routes = {
       blurts: bl.results.map(r => Object.assign({ exam: r.username, name: name(r.username) }, r)),
       store,
       work: wk.results.map(w => Object.assign({}, w, { exam: w.username, name: name(w.username), spec: parse(w.spec, {}), answers: parse(w.answers, {}), result: parse(w.result, null) })),
-      notes: Object.fromEntries(nt.results.map(n => [n.username, { text: n.text, t: n.t }]))
+      notes: Object.fromEntries(nt.results.map(n => [n.username, { text: n.text, t: n.t }])),
+      sched: sc.results.map(x => Object.assign({}, x, { who: parse(x.who, 'all') })),
+      excuses: ex.results
     };
   },
 
@@ -331,6 +340,49 @@ const routes = {
     return { ok: true };
   },
 
+
+  /* ----- assessment schedule ----- */
+  async '/sched/mine'(db, b) {
+    const u = await student(db, b);
+    const [sc, ex, mk, at] = await db.batch([
+      db.prepare('SELECT id,due,kind,ref,title,detail,marks,who,sort FROM sched ORDER BY due,sort'),
+      db.prepare('SELECT sched_id,note FROM excuse WHERE username=?').bind(u.username),
+      db.prepare('SELECT ref,MIN(t) AS t,COUNT(*) AS n FROM marks WHERE username=? AND ref IS NOT NULL GROUP BY ref').bind(u.username),
+      db.prepare('SELECT stage,MIN(t) AS t FROM attempts WHERE username=? AND passed=1 GROUP BY stage').bind(u.username)
+    ]);
+    const mine = sc.results.filter(x => { if (x.who === 'all') return true; try { return JSON.parse(x.who).includes(u.username); } catch (e) { return false; } });
+    return { items: mine, excused: ex.results, marks: mk.results, passes: at.results };
+  },
+
+  async '/sched/save'(db, b) {
+    await session(db, b.token, 'teacher');
+    const items = (Array.isArray(b.items) ? b.items : []).slice(0, 400);
+    const stmts = items.map(it => {
+      const who = Array.isArray(it.who) && it.who.length ? JSON.stringify(it.who.map(x => str(x, 40))) : 'all';
+      return db.prepare(`INSERT INTO sched(id,due,kind,ref,title,detail,marks,who,sort,created) VALUES(?,?,?,?,?,?,?,?,?,?)
+        ON CONFLICT(id) DO UPDATE SET due=excluded.due, kind=excluded.kind, ref=excluded.ref, title=excluded.title, detail=excluded.detail,
+        marks=excluded.marks, who=excluded.who, sort=excluded.sort`)
+        .bind(str(it.id, 60) || ('s-' + b64u(rand(8))), str(it.due, 10), str(it.kind, 12), str(it.ref, 80), str(it.title, 300), str(it.detail, 4000),
+          it.marks ? int(it.marks) : null, who, int(it.sort), nowIso());
+    });
+    for (let i = 0; i < stmts.length; i += 50) await db.batch(stmts.slice(i, i + 50));
+    return { saved: stmts.length };
+  },
+
+  async '/sched/delete'(db, b) {
+    await session(db, b.token, 'teacher');
+    await db.batch([db.prepare('DELETE FROM sched WHERE id=?').bind(str(b.id, 60)), db.prepare('DELETE FROM excuse WHERE sched_id=?').bind(str(b.id, 60))]);
+    return { ok: true };
+  },
+
+  async '/sched/excuse'(db, b) {
+    await session(db, b.token, 'teacher');
+    if (b.on) await db.prepare('INSERT INTO excuse(sched_id,username,note,t) VALUES(?,?,?,?) ON CONFLICT(sched_id,username) DO UPDATE SET note=excluded.note')
+      .bind(str(b.id, 60), str(b.username, 40), str(b.note, 300), nowIso()).run();
+    else await db.prepare('DELETE FROM excuse WHERE sched_id=? AND username=?').bind(str(b.id, 60), str(b.username, 40)).run();
+    return { ok: true };
+  },
+
   /* one-time import of results from the old Google Sheet tracker */
   async '/import'(db, b) {
     await session(db, b.token, 'teacher');
@@ -391,7 +443,7 @@ const routes = {
   async '/accounts/delete'(db, b) {
     await session(db, b.token, 'teacher');
     const u = str(b.username, 40);
-    await db.batch(['users', 'sessions', 'store', 'attempts', 'marks', 'blurts', 'work', 'notes'].map(t => db.prepare(`DELETE FROM ${t} WHERE username=?`).bind(u)));
+    await db.batch(['users', 'sessions', 'store', 'attempts', 'marks', 'blurts', 'work', 'notes', 'excuse'].map(t => db.prepare(`DELETE FROM ${t} WHERE username=?`).bind(u)));
     return { ok: true };
   }
 };
