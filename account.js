@@ -168,7 +168,7 @@ async function loadSched(force){
     if(!due){schedInfo=null;}else{
       const mk=new Set((d.marks||[]).map(m=>m.ref)),ps=new Set((d.passes||[]).map(p=>+p.stage)),ex=new Set((d.excused||[]).map(x=>x.sched_id));
       const items=d.items.filter(i=>i.due===due);
-      const isDone=i=>{if(ex.has(i.id))return true;if(i.kind==='exam')return mk.has(i.ref);if(i.kind==='choice')return String(i.ref).split(',').some(r=>mk.has(r));if(i.kind==='question')return mk.has(i.id);
+      const isDone=i=>{if(ex.has(i.id))return true;if(i.kind==='exam')return mk.has(i.ref);if(i.kind==='choice')return String(i.ref).split(',').some(r=>mk.has(r));if(i.kind==='question')return mk.has(i.id);if(i.kind==='quiz'){const q=get('quiz:'+i.ref);return !!(q&&q.done);}
         if(i.kind==='course'&&i.ref in CO){const st=get('course:'+i.ref)||{};for(let k=1;k<=10;k++){if(!ps.has(CO[i.ref]+k)&&!(st.passed&&st.passed[k]))return false;}return true;}return false;};
       schedInfo={due,total:items.length,done:items.filter(isDone).length};
     }

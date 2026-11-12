@@ -42,12 +42,12 @@ details.wk summary span{font-weight:400;color:var(--muted);font-size:.88rem;marg
 <div class="wrap">
   <div class="top"><a href="index.html">Back to the main site</a></div>
   <h1>My schedule</h1>
-  <p class="lead">Past paper questions from 2017 to 2026 and the courses, spread over the weeks up to the end of April. Where it says "Choose one", answer one of the questions given. Work is due by <b>Wednesday at 11:59pm</b> each week. Anything not done by then means a detention on Friday after school.</p>
+  <p class="lead">Each week you have written answers to past paper questions (four in a normal week, one in the lighter weeks), 20 multiple-choice questions and 10 calculations. A course is due every few weeks. Where it says "Choose one", answer one of the questions given. Work is due by <b>Wednesday at 11:59pm</b> each week. Anything not done by then means a detention on Friday after school.</p>
   <div id="bar"></div>
   <div id="main" hidden>
     <div class="card" id="thisWeek"></div>
     <div class="card"><h2>How it works</h2>
-      <p class="small" style="margin:6px 0 0">Click <b>Start</b> to open the question in the right marking tool. Write your answer (or photograph a handwritten one) and get it marked. It is ticked off here as soon as it is marked. For Paper 2 and Paper 3 questions you need the paper or case study, which your teacher will give you. Courses are ticked off when you have passed every stage.</p></div>
+      <p class="small" style="margin:6px 0 0">Click <b>Start</b> to open the question in the right marking tool. Write your answer (or photograph a handwritten one) and get it marked. It is ticked off here as soon as it is marked. For Paper 2 and Paper 3 questions you need the paper or case study, which your teacher will give you. The multiple-choice questions and calculations are done on the site: click an answer and you see the explanation straight away. Your first answer is the one that counts, and they are ticked off once you have answered them all. Courses are ticked off when you have passed every stage.</p></div>
     <div class="card"><h2>Other weeks</h2><div id="weeks"></div></div>
   </div>
 </div>
@@ -64,7 +64,7 @@ Ac.bar('#bar',{inside:true,text:'Sign in once on the home page to see your sched
 async function load(){
   if(!Ac.user){$('#main').hidden=true;return;}
   let d;try{d=await Ac.call('/sched/mine');}catch(e){$('#main').hidden=false;$('#thisWeek').innerHTML='<p class="muted">Could not load your schedule. Check your connection.</p>';return;}
-  const store={};Object.keys(S.COURSES).forEach(k=>{const v=Ac.get('course:'+k);if(v)store['course:'+k]=v;});
+  const store={};Object.keys(S.COURSES).forEach(k=>{const v=Ac.get('course:'+k);if(v)store['course:'+k]=v;});(d.items||[]).forEach(i=>{if(i.kind==='quiz'){const v=Ac.get('quiz:'+i.ref);if(v)store['quiz:'+i.ref]=v;}});
   const marks={};(d.marks||[]).forEach(m=>{marks[m.ref]=m.t;});const passes={};(d.passes||[]).forEach(p=>{passes[p.stage]=p.t;});
   const ctx={marks,passes,store,excused:new Set((d.excused||[]).map(x=>x.sched_id))};
   const items=d.items||[];

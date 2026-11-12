@@ -61,14 +61,17 @@ function data(){
 }
 const shortLabel=it=>{if(it.kind==='exam'){const e=S.EX[it.ref];return e?`P${e.paper} ${e.year==='2020N'?'N20':e.year.slice(2)} Q${e.num} (${e.marks})`:it.ref;}
   if(it.kind==='choice'){const os=String(it.ref).split(',').map(id=>S.EX[id]).filter(Boolean);if(!os.length)return it.ref;const e=os[0];return `P${e.paper} ${e.year==='2020N'?'N20':e.year.slice(2)} Q${os.map(o=>o.num).join('/')} (${e.marks})`;}
-  if(it.kind==='course')return (S.COURSES[it.ref]||[0,it.title])[1].replace(' course','');return `Set Q (${it.marks})`;};
+  if(it.kind==='course')return (S.COURSES[it.ref]||[0,it.title])[1].replace(' course','');
+  if(it.kind==='quiz')return /^mcq/.test(it.ref)?'20 MCQs':'10 calcs';return `Set Q (${it.marks})`;};
 const LETTER={done:'✓',late:'L',missing:'✗',todo:'·',excused:'E'};
 const TITLE={done:'Done on time',late:'Done after the deadline',missing:'Not done by the deadline',todo:'Not done yet',excused:'Excused'};
 
 /* ---------- this week ---------- */
 function renderWeek(){
   const {items,students}=data();
-  if(!items.length){root.innerHTML=`<div class="sc-card"><h2>No schedule yet</h2><p class="muted">Load the plan: every past paper question from June 2017 to June 2026 (179 questions) and the seven courses, spread over 15 weeks from 1 December to 28 April in line with the school calendar. You can change anything afterwards.</p><button class="btn" id="scLoad">Load the plan</button> <span class="muted" id="scMsg"></span></div>`;
+  if(!autoTried&&planChanges(items).old.length){autoUpdate(items);return;}
+  let planMsg='';try{planMsg=sessionStorage.getItem('nk_plan_msg')||'';}catch(e){}
+  if(!items.length){root.innerHTML=`<div class="sc-card"><h2>No schedule yet</h2><p class="muted">Load the plan: 15 weeks from 1 December to 28 April, in line with the school calendar. Week A: a 9-marker, a case study 16-marker, a Paper 3 24-marker and a 25-marker. Week B: a 12-marker, an open 16-marker, a Paper 3 20-marker and a 25-marker. Lighter weeks around the KATs have one 9-marker. Every week also has 20 multiple-choice questions and 10 calculations, and the seven courses are spread through. You can change anything afterwards.</p><button class="btn" id="scLoad">Load the plan</button> <span class="muted" id="scMsg"></span></div>`;
     $('#scLoad').onclick=loadPlan;return;}
   const dues=S.weeks(items).filter(d=>items.some(i=>i.due===d));
   const due=view.due&&dues.includes(view.due)?view.due:(S.currentDue(items)||dues[0]);
@@ -89,6 +92,7 @@ function renderWeek(){
     <div class="card stat"><b>${students.filter(s=>wk.every(i=>!s.st[i.id]||['done','late','excused'].includes(s.st[i.id].s))).length} / ${students.length}</b><span>students with everything done</span></div>
     <div class="card stat"><b>${det.length}</b><span>detentions from the last deadline${last?` (${esc(S.fmtDay(last))})`:''}</span></div>
   </div>
+  ${planMsg?`<div class="sc-card" style="padding:12px 16px"><p style="margin:0">${esc(planMsg)} <button class="lnk" id="pmX" style="font-weight:400">Hide</button></p></div>`:''}
   ${info.note?`<p class="muted" style="margin:-6px 0 14px">${esc(info.note)}</p>`:''}
   <div class="sc-card" id="detPrint"><h2>Friday detentions${last?`: deadline ${esc(S.fmtDay(last))}`:''}</h2>
     ${!last?'<p class="muted">No deadline has passed yet.</p>':det.length?`<ul class="det">${det.map(x=>`<li><b>${esc(x.s.name)}</b> <span class="why">${x.miss.length} missing</span><div class="why">${x.miss.map(i=>esc(shortLabel(i))).join(' · ')}</div></li>`).join('')}</ul>`:'<p class="muted">Everyone met the deadline.</p>'}
@@ -97,7 +101,8 @@ function renderWeek(){
     <div class="tablewrap"><table class="sc-grid"><thead><tr><th class="l">Student</th><th>Done</th>${wk.map(i=>`<th class="q" title="${esc(S.describe(i).sub||'')}">${esc(shortLabel(i))}</th>`).join('')}</tr></thead><tbody>
     ${students.map(s=>{const mine=wk.filter(i=>s.st[i.id]);const dn=mine.filter(i=>['done','late','excused'].includes(s.st[i.id].s)).length;
       return `<tr><td class="l">${esc(s.name)}</td><td>${dn}/${mine.length}</td>${wk.map(i=>{const x=s.st[i.id];if(!x)return '<td class="muted">–</td>';
-        return `<td><span class="c ${x.s}" data-u="${esc(s.u)}" data-i="${esc(i.id)}" title="${TITLE[x.s]}${x.t?' · '+new Date(x.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}">${LETTER[x.s]}</span></td>`;}).join('')}</tr>`;}).join('')}
+        const qz=i.kind==='quiz'?((TR.data.store||{})[s.u]||{})['quiz:'+i.ref]:null,sc=qz&&qz.total?` · ${qz.score}/${qz.total} right first time`:'';
+        return `<td><span class="c ${x.s}" data-u="${esc(s.u)}" data-i="${esc(i.id)}" title="${TITLE[x.s]}${x.t?' · '+new Date(x.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}${sc}">${qz&&qz.done&&qz.total?qz.score:LETTER[x.s]}</span></td>`;}).join('')}</tr>`;}).join('')}
     </tbody></table></div>
     <div class="legend"><span><span class="c done">✓</span> on time</span><span><span class="c late">L</span> late</span><span><span class="c missing">✗</span> missed</span><span><span class="c todo">·</span> not yet</span><span><span class="c excused">E</span> excused</span></div></div>
   <div class="sc-card"><h2>The season so far</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Every deadline that has passed.</p>
@@ -105,6 +110,7 @@ function renderWeek(){
     ${tot.sort((a,b)=>b.c.missing-a.c.missing||a.s.name.localeCompare(b.s.name)).map(x=>`<tr><td class="l">${esc(x.s.name)}</td><td>${x.c.done}</td><td>${x.c.late}</td><td>${x.c.missing?`<span class="cell a">${x.c.missing}</span>`:0}</td><td>${x.c.excused}</td><td>${x.weeksMissed}</td></tr>`).join('')}
     </tbody></table></div></div>
   ${coursesCard(items,students)}`;
+  const px=$('#pmX');if(px)px.onclick=()=>{try{sessionStorage.removeItem('nk_plan_msg');}catch(e){}render();};
   $('#scPrev').onclick=()=>{view.due=dues[idx-1];render();};
   $('#scNext').onclick=()=>{view.due=dues[idx+1];render();};
   $('#scNow').onclick=()=>{view.due=null;render();};
@@ -122,6 +128,34 @@ function coursesCard(items,students){
   const cs=items.filter(i=>i.kind==='course');if(!cs.length)return '';
   return `<div class="sc-card"><h2>Courses</h2><div class="tablewrap"><table class="sc-grid"><thead><tr><th class="l">Student</th>${cs.map(i=>`<th class="q" style="height:150px" title="Due ${esc(S.fmtDay(i.due))}">${esc(shortLabel(i))} (${esc(S.fmtDay(i.due).replace(/^\w+ /,''))})</th>`).join('')}</tr></thead><tbody>
     ${students.map(s=>`<tr><td class="l">${esc(s.name)}</td>${cs.map(i=>{const x=s.st[i.id];return x?`<td><span class="c ${x.s}" title="${TITLE[x.s]}">${LETTER[x.s]}</span></td>`:'<td>–</td>';}).join('')}</tr>`).join('')}</tbody></table></div></div>`;
+}
+
+/* ---------- moving to a new version of the plan ---------- */
+const fromPlan=id=>/^e-P\d-\d{4}N?-[\d.]+$/.test(id)||/^ch-/.test(id)||/^c-[a-z0-9_]+_v1$/.test(id)||/^qz-/.test(id);
+function refsOf(it){return it.kind==='choice'?String(it.ref).split(','):it.kind==='exam'?[it.ref]:[];}
+function planChanges(items){
+  const planIds=new Set(SCHED_PLAN.items.map(i=>i.id)),have=new Set(items.map(i=>i.id));
+  return {old:items.filter(i=>fromPlan(i.id)&&!planIds.has(i.id)),missing:SCHED_PLAN.items.filter(i=>!have.has(i.id))};
+}
+/* Old planned items are removed, except that anyone who has already handed one in keeps it, marked as done. */
+async function applyPlan(items){
+  const {old}=planChanges(items);const d=TR.data,keep=[],del=[];
+  old.forEach(it=>{const refs=refsOf(it);const who=[...new Set((d.marks||[]).filter(m=>m.ref&&refs.includes(m.ref)).map(m=>m.exam))];
+    if(who.length)keep.push(Object.assign({},it,{who}));else del.push(it.id);});
+  for(let k=0;k<del.length;k+=100)await TR.api('/sched/delete',{token:TR.token,ids:del.slice(k,k+100)});
+  const its=SCHED_PLAN.items.map(i=>Object.assign({who:'all'},i)).concat(keep);
+  for(let k=0;k<its.length;k+=100)await TR.api('/sched/save',{token:TR.token,items:its.slice(k,k+100)});
+  return {kept:keep,removed:del.length};
+}
+let autoTried=false;
+async function autoUpdate(items){
+  if(autoTried||!items.length)return false;autoTried=true;
+  const m=planChanges(items);if(!m.old.length)return false;
+  root.innerHTML='<div class="sc-card"><h2>Updating the schedule</h2><p class="muted">Moving to the new weekly plan...</p></div>';
+  try{const r=await applyPlan(items);
+    try{sessionStorage.setItem('nk_plan_msg',`The schedule has been moved to the new weekly plan. ${r.kept.length?`${r.kept.length} question${r.kept.length>1?'s':''} already handed in ${r.kept.length>1?'have':'has'} been kept for the students who did ${r.kept.length>1?'them':'it'}, marked as done.`:'Nobody had handed in any of the old questions yet.'}`);}catch(e){}
+    await TR.reload();}catch(e){root.innerHTML=`<div class="sc-card"><h2>Could not update the schedule</h2><p class="muted">${esc(e.message)}</p></div>`;}
+  return true;
 }
 
 /* ---------- editing ---------- */
@@ -153,14 +187,10 @@ function renderEdit(){
   </div></div>`;
   $('#edBack').onclick=()=>{view={page:'week',due:view.due};render();};
   $('#edPlan').onclick=async()=>{
-    const planIds=new Set(SCHED_PLAN.items.map(i=>i.id));
-    const fromPlan=id=>/^e-P\d-\d{4}N?-[\d.]+$/.test(id)||/^ch-/.test(id)||/^c-[a-z0-9_]+_v1$/.test(id);
-    const old=items.filter(i=>fromPlan(i.id)&&!planIds.has(i.id));
-    if(!confirm(`Replace the planned work with the latest plan? ${old.length} old planned items will be removed and the new plan saved. Questions and courses you added yourself are kept, and so are students' marks.`))return;
+    const m=planChanges(items);
+    if(!confirm(`Replace the planned work with the latest plan? ${m.old.length} old planned items will be removed. If a student has already handed in one of them, it stays in that student's schedule, marked as done. Questions and courses you added yourself are kept, and so are students' marks.`))return;
     const b=$('#edPlan');b.disabled=true;$('#edPlanMsg').textContent='Updating...';
-    try{for(let k=0;k<old.length;k+=100)await TR.api('/sched/delete',{token:TR.token,ids:old.slice(k,k+100).map(i=>i.id)});
-      const its=SCHED_PLAN.items.map(i=>Object.assign({who:'all'},i));for(let k=0;k<its.length;k+=100)await TR.api('/sched/save',{token:TR.token,items:its.slice(k,k+100)});
-      await TR.reload();}catch(e){alert(e.message);b.disabled=false;}
+    try{await applyPlan(items);await TR.reload();}catch(e){alert(e.message);b.disabled=false;}
   };
   const kind=()=>$('#adKind').value;
   $('#adKind').onchange=()=>{$('#adExam').hidden=kind()!=='exam';$('#adOwn').hidden=kind()!=='question';$('#adCourse').hidden=kind()!=='course';};

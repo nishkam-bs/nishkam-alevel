@@ -245,7 +245,7 @@ const routes = {
       db.prepare('SELECT username,t,stage,title,score,total,passed,missed,answer FROM attempts ORDER BY id DESC LIMIT 8000'),
       db.prepare('SELECT username,t,tool,question,mark,level,well,improve,answer,ref FROM marks ORDER BY id DESC LIMIT 3000'),
       db.prepare('SELECT username,t,kind,ref,topic,got,total,detail FROM blurts ORDER BY id DESC LIMIT 4000'),
-      db.prepare("SELECT username,k,data FROM store WHERE k LIKE 'course:%' OR k='blurt:history'"),
+      db.prepare("SELECT username,k,data FROM store WHERE k LIKE 'course:%' OR k LIKE 'quiz:%' OR k='blurt:history'"),
       db.prepare('SELECT id,username,source,title,spec,status,created,due,answers,result,score,total,done_at FROM work ORDER BY created DESC LIMIT 1500'),
       db.prepare('SELECT username,text,t FROM notes'),
       db.prepare('SELECT id,due,kind,ref,title,detail,marks,who,sort FROM sched ORDER BY due,sort'),
