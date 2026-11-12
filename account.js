@@ -232,6 +232,37 @@ function bar(target,opts){
 const COURSES=[['endpoint_course_v1','Start Point/End Point',10,'start-end-point-course.html'],['judgement_course_v1','Judgement',10,'judgement-course.html'],
   ['calc_course_v1','Calculations',10,'calculations-course.html'],['concepts_course_v1','Concept Confusions',10,'concepts-course.html'],
   ['application_course_v1','Application',10,'application-course.html'],['models_course_v1','Models',10,'models-course.html'],['paper3_course_v1','Paper 3',10,'paper3-course.html']];
+
+/* ---------- one-off notice on the home page (shown once per student, on any device) ---------- */
+const NOTICE={key:'notice:homework-2026',html:`<h2>How homework works from December</h2>
+<p>From Tuesday 1 December you will have a set of homework every week. It is all on this site, under <b>My schedule</b> on the home page.</p>
+<h3>What is due each week</h3>
+<ul><li><b>Written answers:</b> four past paper questions in a normal week. In the KAT and Easter weeks you only have one. Where it says "Choose one", answer one of the questions given.</li>
+<li><b>20 multiple-choice questions:</b> done on the site. Your first answer is the one that counts, so think before you click.</li>
+<li><b>10 calculations:</b> also done on the site. Work each one out on paper first, then click your answer.</li>
+<li><b>A course:</b> one is due every few weeks.</li></ul>
+<h3>How it gets ticked off</h3>
+<p>Click Start next to a question to open it in the right marking tool, and get your answer marked. It is ticked off in your schedule as soon as it has been marked. The multiple-choice questions and calculations are ticked off once you have answered all of them. After each answer you will see whether it was right, with an explanation. Read the explanation for any you got wrong.</p>
+<p>For Paper 2 and Paper 3 questions you need the paper or case study, and I will give you these.</p>
+<h3>Deadline</h3>
+<p>Everything is due by <b>Wednesday at 11:59pm</b>. If anything is not done by then, you will have a detention on Friday after school. The first deadline is Wednesday 9 December.</p>
+<p>If you have already handed in any of the questions I set earlier, they still count.</p>`};
+let noticeShown=false;
+function showNotice(){
+  if(noticeShown||!active()||auth.mustChange||get(NOTICE.key))return;noticeShown=true;
+  const st=document.createElement('style');st.textContent=`.nk-ov{position:fixed;inset:0;z-index:9999;background:rgba(10,15,25,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.nk-modal{background:#fff;color:#1a1a1a;max-width:620px;width:100%;max-height:88vh;overflow:auto;border-radius:14px;padding:24px 26px;font:15px/1.55 "IBM Plex Sans",system-ui,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.nk-modal h2{font:400 1.6rem "DM Serif Display",Georgia,serif;margin:0 0 10px;color:#0E2A47}.nk-modal h3{font-size:1rem;margin:16px 0 4px}
+.nk-modal p{margin:0 0 8px}.nk-modal ul{margin:0 0 8px;padding-left:20px}.nk-modal li{margin-bottom:4px}
+.nk-modal button{margin-top:12px;padding:10px 22px;border:0;border-radius:9px;background:#0E2A47;color:#fff;font:600 15px "IBM Plex Sans",system-ui,sans-serif;cursor:pointer}
+@media (prefers-color-scheme:dark){.nk-modal{background:#172133;color:#e9ecf2}.nk-modal h2{color:#cfe0f5}.nk-modal button{background:#cfe0f5;color:#0e1420}}`;
+  document.head.appendChild(st);
+  const ov=document.createElement('div');ov.className='nk-ov';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
+  ov.innerHTML=`<div class="nk-modal">${NOTICE.html}<button type="button">Got it</button></div>`;
+  document.body.appendChild(ov);
+  const b=ov.querySelector('button');b.focus();
+  b.onclick=()=>{set(NOTICE.key,{seen:new Date().toISOString()});ov.remove();};
+}
 function mountHome(target){
   if(!ON)return;
   const el=typeof target==='string'?document.querySelector(target):target;if(!el)return;
@@ -270,6 +301,7 @@ function mountHome(target){
       <div class="nk-cols"><div><h4>Courses</h4><ul class="nk-prog">${prog}</ul></div>
       <div><h4>Your marked answers</h4><div id="nkMarks" class="nk-small">Loading...</div></div></div></div>`;
     el.querySelector('#nkOut').onclick=async()=>{if(confirm('Sign out on this device?')){await signOut();draw();}};
+    ready.then(()=>setTimeout(showNotice,300));
     if(!schedInfo)loadSched().then(()=>{const h=el.querySelector('#nkSched');if(h)h.innerHTML=schedLine();renderBars();});
     api('/work/mine',{}).then(d=>{const el2=el.querySelector('#nkWork');if(!el2)return;const todo=(d.work||[]).filter(w=>w.source==='teacher'&&w.status!=='done');
       el2.innerHTML=todo.length?`<b>Work from your teacher: ${todo.length} to do.</b> <a href="practice.html">Go to practice</a>`:`<a href="practice.html">Practice</a>: make questions on your gaps or any topic.`;}).catch(()=>{});
