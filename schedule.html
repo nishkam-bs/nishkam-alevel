@@ -27,6 +27,7 @@ h2{font-size:1.4rem;margin-bottom:4px}
 .item .t{font-weight:600}
 .item .q{font-size:.92rem;margin-top:2px}
 .item .n{font-size:.82rem;color:var(--muted);margin-top:2px}
+.item .opt{font-size:.92rem;margin-top:8px;padding:8px 12px;border-left:3px solid var(--line)}
 .st{font:600 .75rem "IBM Plex Mono",monospace;padding:4px 9px;border-radius:6px;white-space:nowrap;text-align:center}
 .st.done{background:var(--ok-soft);color:var(--ok)}.st.late{background:var(--amber-soft);color:var(--amber)}.st.missing{background:var(--end-soft);color:var(--end)}.st.todo{background:var(--bg2)}.st.excused{background:var(--bg2);color:var(--muted)}
 .go{display:inline-block;margin-top:6px;padding:7px 14px;border-radius:9px;background:var(--navy);color:var(--card);text-decoration:none;font-weight:600;font-size:.88rem}
@@ -41,7 +42,7 @@ details.wk summary span{font-weight:400;color:var(--muted);font-size:.88rem;marg
 <div class="wrap">
   <div class="top"><a href="index.html">Back to the main site</a></div>
   <h1>My schedule</h1>
-  <p class="lead">Every past paper question from 2017 to 2026 and every course, spread over the weeks up to the end of April. Work is due by <b>Wednesday at 11:59pm</b> each week. Anything not done by then means a detention on Friday after school.</p>
+  <p class="lead">Past paper questions from 2017 to 2026 and the courses, spread over the weeks up to the end of April. Where it says "Choose one", answer one of the questions given. Work is due by <b>Wednesday at 11:59pm</b> each week. Anything not done by then means a detention on Friday after school.</p>
   <div id="bar"></div>
   <div id="main" hidden>
     <div class="card" id="thisWeek"></div>
@@ -71,7 +72,7 @@ async function load(){
   if(!items.length){$('#thisWeek').innerHTML='<h2>Nothing set yet</h2><p class="muted">Your schedule will appear here.</p>';$('#weeks').innerHTML='';return;}
   const all=items.map(it=>Object.assign({it,d:S.describe(it)},S.status(it,ctx)));
   const cur=S.currentDue(items),byDue=due=>all.filter(x=>x.it.due===due);
-  const row=x=>`<div class="item"><div><div class="t">${esc(x.d.title)}</div>${x.d.sub?`<div class="q">${esc(x.d.sub)}</div>`:''}${x.d.needs?`<div class="n">${esc(x.d.needs)}</div>`:''}${x.s==='todo'||x.s==='missing'?`<a class="go" href="${x.d.link}">Start</a>`:''}</div><span class="st ${x.s}">${LABEL[x.s]}</span></div>`;
+  const row=x=>`<div class="item"><div><div class="t">${esc(x.d.title)}</div>${x.d.sub?`<div class="q">${esc(x.d.sub)}</div>`:''}${x.d.needs?`<div class="n">${esc(x.d.needs)}</div>`:''}${x.d.choice?x.d.choice.map(o=>`<div class="opt"><b>${esc(o.title)}</b> ${esc(o.sub)}${x.s==='todo'||x.s==='missing'?`<br><a class="go" href="${o.link}">Start ${esc(o.title)}</a>`:''}</div>`).join(''):(x.s==='todo'||x.s==='missing'?`<a class="go" href="${x.d.link}">Start</a>`:'')}</div><span class="st ${x.s}">${LABEL[x.s]}</span></div>`;
   const now=all.filter(x=>x.it.due===cur),done=now.filter(x=>x.s==='done'||x.s==='late'||x.s==='excused').length;
   const info=S.weekInfo(cur);
   const missed=all.filter(x=>x.s==='missing').length,late=all.filter(x=>x.s==='late').length,ok=all.filter(x=>x.s==='done').length;

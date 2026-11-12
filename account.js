@@ -102,6 +102,7 @@ const queue=()=>lget('nk_queue',[]);
 const setQueue=q=>lset('nk_queue',q.slice(-60));
 function send(path,body){
   if(!ON)return;
+  if(path==='/mark'){try{sessionStorage.removeItem('nk_sched');}catch(e){}}
   const id=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
   const q=queue();q.push({path,body:Object.assign({},body,{qid:id}),u:auth&&auth.username});setQueue(q);
   if(active())flush();
@@ -167,7 +168,7 @@ async function loadSched(force){
     if(!due){schedInfo=null;}else{
       const mk=new Set((d.marks||[]).map(m=>m.ref)),ps=new Set((d.passes||[]).map(p=>+p.stage)),ex=new Set((d.excused||[]).map(x=>x.sched_id));
       const items=d.items.filter(i=>i.due===due);
-      const isDone=i=>{if(ex.has(i.id))return true;if(i.kind==='exam')return mk.has(i.ref);if(i.kind==='question')return mk.has(i.id);
+      const isDone=i=>{if(ex.has(i.id))return true;if(i.kind==='exam')return mk.has(i.ref);if(i.kind==='choice')return String(i.ref).split(',').some(r=>mk.has(r));if(i.kind==='question')return mk.has(i.id);
         if(i.kind==='course'&&i.ref in CO){const st=get('course:'+i.ref)||{};for(let k=1;k<=10;k++){if(!ps.has(CO[i.ref]+k)&&!(st.passed&&st.passed[k]))return false;}return true;}return false;};
       schedInfo={due,total:items.length,done:items.filter(isDone).length};
     }

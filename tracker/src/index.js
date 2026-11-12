@@ -362,7 +362,7 @@ const routes = {
       return db.prepare(`INSERT INTO sched(id,due,kind,ref,title,detail,marks,who,sort,created) VALUES(?,?,?,?,?,?,?,?,?,?)
         ON CONFLICT(id) DO UPDATE SET due=excluded.due, kind=excluded.kind, ref=excluded.ref, title=excluded.title, detail=excluded.detail,
         marks=excluded.marks, who=excluded.who, sort=excluded.sort`)
-        .bind(str(it.id, 60) || ('s-' + b64u(rand(8))), str(it.due, 10), str(it.kind, 12), str(it.ref, 80), str(it.title, 300), str(it.detail, 4000),
+        .bind(str(it.id, 200) || ('s-' + b64u(rand(8))), str(it.due, 10), str(it.kind, 12), str(it.ref, 200), str(it.title, 300), str(it.detail, 4000),
           it.marks ? int(it.marks) : null, who, int(it.sort), nowIso());
     });
     for (let i = 0; i < stmts.length; i += 50) await db.batch(stmts.slice(i, i + 50));
@@ -371,15 +371,18 @@ const routes = {
 
   async '/sched/delete'(db, b) {
     await session(db, b.token, 'teacher');
-    await db.batch([db.prepare('DELETE FROM sched WHERE id=?').bind(str(b.id, 60)), db.prepare('DELETE FROM excuse WHERE sched_id=?').bind(str(b.id, 60))]);
+    const ids = (Array.isArray(b.ids) ? b.ids : [b.id]).slice(0, 200).map(x => str(x, 200)).filter(Boolean);
+    const stmts = [];
+    ids.forEach(id => { stmts.push(db.prepare('DELETE FROM sched WHERE id=?').bind(id)); stmts.push(db.prepare('DELETE FROM excuse WHERE sched_id=?').bind(id)); });
+    if (stmts.length) await db.batch(stmts);
     return { ok: true };
   },
 
   async '/sched/excuse'(db, b) {
     await session(db, b.token, 'teacher');
     if (b.on) await db.prepare('INSERT INTO excuse(sched_id,username,note,t) VALUES(?,?,?,?) ON CONFLICT(sched_id,username) DO UPDATE SET note=excluded.note')
-      .bind(str(b.id, 60), str(b.username, 40), str(b.note, 300), nowIso()).run();
-    else await db.prepare('DELETE FROM excuse WHERE sched_id=? AND username=?').bind(str(b.id, 60), str(b.username, 40)).run();
+      .bind(str(b.id, 200), str(b.username, 40), str(b.note, 300), nowIso()).run();
+    else await db.prepare('DELETE FROM excuse WHERE sched_id=? AND username=?').bind(str(b.id, 200), str(b.username, 40)).run();
     return { ok: true };
   },
 

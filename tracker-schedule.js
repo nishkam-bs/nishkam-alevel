@@ -60,6 +60,7 @@ function data(){
   cacheFor=d;cache={items,students};return cache;
 }
 const shortLabel=it=>{if(it.kind==='exam'){const e=S.EX[it.ref];return e?`P${e.paper} ${e.year==='2020N'?'N20':e.year.slice(2)} Q${e.num} (${e.marks})`:it.ref;}
+  if(it.kind==='choice'){const os=String(it.ref).split(',').map(id=>S.EX[id]).filter(Boolean);if(!os.length)return it.ref;const e=os[0];return `P${e.paper} ${e.year==='2020N'?'N20':e.year.slice(2)} Q${os.map(o=>o.num).join('/')} (${e.marks})`;}
   if(it.kind==='course')return (S.COURSES[it.ref]||[0,it.title])[1].replace(' course','');return `Set Q (${it.marks})`;};
 const LETTER={done:'✓',late:'L',missing:'✗',todo:'·',excused:'E'};
 const TITLE={done:'Done on time',late:'Done after the deadline',missing:'Not done by the deadline',todo:'Not done yet',excused:'Excused'};
@@ -128,7 +129,8 @@ function renderEdit(){
   const {items,students}=data();
   const dues=S.weeks(items);
   root.innerHTML=`
-  <div class="sc-top"><button class="btn ghost" id="edBack">Back to this week</button><span class="sp"></span></div>
+  <div class="sc-top"><button class="btn ghost" id="edBack">Back to this week</button><span class="sp"></span><button class="btn ghost" id="edPlan">Update to the latest plan</button></div>
+  <p class="muted" id="edPlanMsg" style="margin:-8px 0 12px;font-size:.85rem"></p>
   <div class="sc-card"><h2>Add work</h2><div class="sc-form">
     <div class="row"><div><label class="f">Type</label><select id="adKind"><option value="exam">A past paper question</option><option value="question">My own question</option><option value="course">A course</option></select></div>
       <div><label class="f">Due (Wednesday 11:59pm)</label><select id="adDue">${dues.map(d=>`<option value="${d}" ${d===view.due?'selected':''}>${esc(S.fmtDay(d))}</option>`).join('')}<option value="other">Another date...</option></select></div></div>
@@ -146,10 +148,20 @@ function renderEdit(){
   <div class="sc-card"><h2>The whole schedule</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Change a due date with the date box, or remove an item. Students see changes straight away.</p><div class="wk-list">
   ${dues.filter(d=>items.some(i=>i.due===d)).map((d,n)=>{const xs=items.filter(i=>i.due===d),w=S.weekInfo(d);
     return `<div class="wk-row"><div class="h"><b>Week ${n+1}: due ${esc(S.fmtDay(d))}</b><span class="pill">${xs.length} items</span>${w.note?`<span class="muted" style="font-size:.84rem">${esc(w.note)}</span>`:''}</div>
-    ${xs.map(i=>{const ds=S.describe(i);return `<div class="it"><div class="tx">${esc(ds.title)}${i.who!=='all'?` <span>· ${Array.isArray(i.who)?i.who.length:0} students</span>`:''}<br><span>${esc(String(ds.sub||'').slice(0,160))}</span></div>
+    ${xs.map(i=>{const ds=S.describe(i);if(ds.choice)ds.sub=ds.choice.map(o=>o.title+': '+o.sub).join('  |  ');return `<div class="it"><div class="tx">${esc(ds.title)}${i.who!=='all'?` <span>· ${Array.isArray(i.who)?i.who.length:0} students</span>`:''}<br><span>${esc(String(ds.sub||'').slice(0,160))}</span></div>
       <input type="date" value="${i.due}" data-move="${esc(i.id)}" style="width:auto;margin:0;padding:4px 6px;font-size:13px"><button class="lnk" data-del="${esc(i.id)}" style="font-weight:400">Remove</button></div>`;}).join('')}</div>`;}).join('')}
   </div></div>`;
   $('#edBack').onclick=()=>{view={page:'week',due:view.due};render();};
+  $('#edPlan').onclick=async()=>{
+    const planIds=new Set(SCHED_PLAN.items.map(i=>i.id));
+    const fromPlan=id=>/^e-P\d-\d{4}N?-[\d.]+$/.test(id)||/^ch-/.test(id)||/^c-[a-z0-9_]+_v1$/.test(id);
+    const old=items.filter(i=>fromPlan(i.id)&&!planIds.has(i.id));
+    if(!confirm(`Replace the planned work with the latest plan? ${old.length} old planned items will be removed and the new plan saved. Questions and courses you added yourself are kept, and so are students' marks.`))return;
+    const b=$('#edPlan');b.disabled=true;$('#edPlanMsg').textContent='Updating...';
+    try{for(let k=0;k<old.length;k+=100)await TR.api('/sched/delete',{token:TR.token,ids:old.slice(k,k+100).map(i=>i.id)});
+      const its=SCHED_PLAN.items.map(i=>Object.assign({who:'all'},i));for(let k=0;k<its.length;k+=100)await TR.api('/sched/save',{token:TR.token,items:its.slice(k,k+100)});
+      await TR.reload();}catch(e){alert(e.message);b.disabled=false;}
+  };
   const kind=()=>$('#adKind').value;
   $('#adKind').onchange=()=>{$('#adExam').hidden=kind()!=='exam';$('#adOwn').hidden=kind()!=='question';$('#adCourse').hidden=kind()!=='course';};
   $$('input[name=adWho]').forEach(r=>r.onchange=()=>{$('#adStudents').hidden=$('input[name=adWho]:checked').value!=='some';});
