@@ -94,7 +94,7 @@ function shuf(arr,seed){const a=arr.map((x,i)=>[x,i]);let h=0;for(const c of id+
 /* ---------- loading the protected case ---------- */
 function b64u(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
 async function load(){
-  if(!/^p[23]-[0-9a-z-]+$/.test(id)){$('#msg').textContent='This drill could not be found.';return;}
+  if(!/^p[23]-[0-9a-z-]+$/i.test(id)){$('#msg').textContent='This drill could not be found.';return;}
   if(!PREVIEW&&!Ac.user){$('#msg').textContent='Sign in on the home page first. The case studies are only available to students with an account.';return;}
   let key;
   try{const tok=PREVIEW?{token:JSON.parse(localStorage.getItem('nk_teacher_preview')).token}:JSON.parse(localStorage.getItem('nk_auth')||'null');
@@ -115,7 +115,7 @@ async function load(){
   render();
 }
 function tick(){const s=st();const end=s.done?Date.parse(s.done):Date.now();const sec=Math.max(0,Math.round((end-(s.start||Date.now()))/1000));
-  const t=$('#timer');t.hidden=false;t.textContent=`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}${s.done?'':' / 15:00'}`;t.classList.toggle('over',sec>900&&!s.done);}
+  const t=$('#timer');t.hidden=false;const lim=(D&&D.mins||15)*60;t.textContent=`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}${s.done?'':' / '+(lim/60)+':00'}`;t.classList.toggle('over',sec>lim&&!s.done);}
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));$('#wrap').dataset.tab=b.dataset.t;scrollTo(0,0);});
 
 /* ---------- number answers ---------- */
@@ -140,14 +140,14 @@ function scoreOf(s){
   }else{
     D.focus.forEach(q=>{total++;const m=(s.map||{})[q];if(m&&m.done&&setOK(m.sel,D.map[q].core,D.map[q].ok))right++;
       const cc=D.calcs[q];if(!cc)return;cc.options.forEach((c,i)=>{total++;const p=(s.pick||{})[q];if(p&&p.done&&!!(p.sel||[]).includes(i)===!!c.right)right++;
-        if(c.right){total+=2;const dd=((s.data||{})[q+'.'+i]);const need=c.data.map((x,j)=>x.right?j:null).filter(x=>x!==null);
+        if((c.right&&c.work!==false)){total+=2;const dd=((s.data||{})[q+'.'+i]);const need=c.data.map((x,j)=>x.right?j:null).filter(x=>x!==null);
           if(dd&&dd.done&&setOK(dd.sel,need,[]))right++;const a=(s.num||{})[q+'.'+i];if(a!=null&&numOK(parseNum(a),c))right++;}});});
   }
   return{right,total};
 }
 function allDone(s){
   if(D.kind==='p2'){if(!(s.pick&&s.pick.done))return false;return D.calcs.every((c,i)=>!c.right||((s.num||{})[i]!=null&&(s.mean||{})[i]!=null&&((s.use||{})[i]||{}).done));}
-  return D.focus.every(q=>(((s.map||{})[q]||{}).done)&&(!D.calcs[q]||(((s.pick||{})[q]||{}).done&&D.calcs[q].options.every((c,i)=>!c.right||((((s.data||{})[q+'.'+i])||{}).done&&(s.num||{})[q+'.'+i]!=null)))));
+  return D.focus.every(q=>(((s.map||{})[q]||{}).done)&&(!D.calcs[q]||(((s.pick||{})[q]||{}).done&&D.calcs[q].options.every((c,i)=>!(c.right&&c.work!==false)||((((s.data||{})[q+'.'+i])||{}).done&&(s.num||{})[q+'.'+i]!=null)))));
 }
 
 /* ---------- rendering ---------- */
@@ -201,8 +201,8 @@ function renderP2(s){
   return h+`</div>`;
 }
 function renderP3(s){
-  let h=`<div class="card"><div class="step">The six questions</div><ul class="qlist">${D.questions.map(q=>`<li ${D.focus.includes(q.num)?'':'class="muted"'}>${qText(q.num)}</li>`).join('')}</ul>
-    <p class="small muted" style="margin:6px 0 0">This drill uses Questions ${D.focus.map(q=>+q).join(', ')}.</p></div>`;
+  let h=`<div class="card"><div class="step">The questions</div><ul class="qlist">${D.questions.map(q=>`<li ${D.focus.includes(q.num)?'':'class="muted"'}>${qText(q.num)}</li>`).join('')}</ul>
+    ${D.focus.length<D.questions.length?`<p class="small muted" style="margin:6px 0 0">Question ${D.questions.filter(q=>!D.focus.includes(q.num)).map(q=>+q.num).join(', ')} is left out because it is on a topic no longer in the course.</p>`:''}</div>`;
   const label=x=>{const sct=D.sections.find(y=>y.id===x);return sct?sct.label:x;};
   h+=`<div class="card"><div class="step">Step 1 of 3</div><h2>Which parts of the case go with which question?</h2><p class="small muted">For each question, click every part of the insert you would use. Then press Submit.</p>`;
   D.focus.forEach(q=>{const m=(s.map||{})[q]||{},key=D.map[q];
@@ -224,8 +224,8 @@ function renderP3(s){
     if(!p.done)h+=`<button class="btn" data-submit="pick${q}">Submit</button>`;});
   h+=`</div>`;
   if(!cq.every(q=>((s.pick||{})[q]||{}).done))return h;
-  h+=`<div class="card"><div class="step">Step 3 of 3</div><h2>Pick the data and work it out</h2><p class="small muted">For each calculation, click the figures from the case you need. Then work it out.</p>`;
-  cq.forEach(q=>D.calcs[q].options.forEach((c,i)=>{if(!c.right)return;const k=q+'.'+i,dd=(s.data||{})[k]||{};
+  h+=`<div class="card"><div class="step">Step 3 of 3</div><h2>Pick the data and work it out</h2><p class="small muted">Two calculations for each question. Click the figures from the insert you need, then work it out.</p>`;
+  cq.forEach(q=>D.calcs[q].options.forEach((c,i)=>{if(!(c.right&&c.work!==false))return;const k=q+'.'+i,dd=(s.data||{})[k]||{};
     h+=`<h3>Question ${+q}: ${esc(c.t)}</h3><div class="formula">${esc(c.formula)}</div><div class="chips">`;
     h+=shuf(c.data,'d'+k).map(([x,j])=>{const on=(dd.sel||[]).includes(j);let cl='chip'+(on?' sel':'');if(dd.done)cl='chip '+(x.right?(on?'good':'miss'):(on?'bad':''));
       return `<button class="${cl}" data-dk="${k}" data-dj="${j}" ${dd.done?'disabled':''}>${esc(x.label)}</button>`;}).join('')+`</div>`;
