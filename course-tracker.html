@@ -160,7 +160,7 @@ async function api(path,body){
 $('#lf').onsubmit=async e=>{e.preventDefault();$('#lerr').textContent='';
   try{const d=await api('/teacher',{password:$('#pw').value});token=d.token;try{sessionStorage.setItem('ct_token',token);}catch(x){}$('#pw').value='';load();}
   catch(x){$('#lerr').textContent=x.message==='Failed to fetch'?'Could not connect.':x.message;}};
-$('#logout').onclick=()=>{token=null;try{sessionStorage.removeItem('ct_token');}catch(e){}$('#dash').hidden=true;$('#loginView').hidden=false;};
+$('#logout').onclick=()=>{token=null;try{sessionStorage.removeItem('ct_token');localStorage.removeItem('nk_teacher_preview');}catch(e){}$('#dash').hidden=true;$('#loginView').hidden=false;};
 $('#refresh').onclick=()=>load();
 $('#sort').onchange=()=>render();
 let MODE='s';

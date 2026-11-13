@@ -185,6 +185,9 @@ function renderWeek(){
         return `<td><span class="c ${x.s}${hw&&hw.k?' '+hw.k:''}" data-u="${esc(s.u)}" data-i="${esc(i.id)}" title="${TITLE[x.s]}${x.t?' · '+new Date(x.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}${sc}${hw?' · '+esc(hw.t):''}">${qz&&qz.done&&qz.total?qz.score:LETTER[x.s]}</span></td>`;}).join('')}</tr>`;}).join('')}
     </tbody></table></div>
     <div class="legend"><span><span class="c done">✓</span> on time</span><span><span class="c late">L</span> late</span><span><span class="c missing">✗</span> missed</span><span><span class="c todo">·</span> not yet</span><span><span class="c excused">E</span> excused</span></div>
+    ${(()=>{const dr=wk.filter(i=>i.kind==='drill');const all=items.filter(i=>i.kind==='drill');if(!all.length)return '';
+      return `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0 4px;font-size:.88rem"><b>Try the drills yourself:</b>${dr.map(i=>`<button class="btn ghost" data-pv="${esc(i.ref)}" style="padding:5px 12px">${esc(shortLabel(i))} this week</button>`).join('')}
+      <select id="pvAll" style="width:auto"><option value="">Any drill...</option>${all.map(i=>`<option value="${esc(i.ref)}">${esc(S.fmtDay(i.due))}: ${esc(i.title)}</option>`).join('')}</select><span class="muted">Opens in a new tab. Nothing is saved.</span></div>`;})()}
     <div class="legend"><span><span class="ring hw"></span>handwritten (photos)</span><span><span class="ring ty"></span>typed</span><span><span class="ring pz"></span>typed, mostly pasted</span><span class="muted">Hover over a cell for the details.</span></div></div>
   ${activityCard(students)}
   ${howCard(students)}
@@ -194,6 +197,9 @@ function renderWeek(){
     </tbody></table></div></div>
   ${coursesCard(items,students)}`;
   wireActivity();
+  const pv=ref=>{if(!ref)return;try{localStorage.setItem('nk_teacher_preview',JSON.stringify({token:TR.token,at:Date.now()}));}catch(e){}window.open('drill.html?d='+encodeURIComponent(ref)+'&preview=1','_blank');};
+  document.querySelectorAll('[data-pv]').forEach(b=>b.onclick=()=>pv(b.dataset.pv));
+  const pa=$('#pvAll');if(pa)pa.onchange=()=>{pv(pa.value);pa.value='';};
   const px=$('#pmX');if(px)px.onclick=()=>{try{sessionStorage.removeItem('nk_plan_msg');}catch(e){}render();};
   $('#scPrev').onclick=()=>{view.due=dues[idx-1];render();};
   $('#scNext').onclick=()=>{view.due=dues[idx+1];render();};

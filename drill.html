@@ -79,11 +79,14 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 const id=(new URLSearchParams(location.search).get('d')||'').replace(/[^a-z0-9-]/gi,'');
 const KEY='drill:'+id;
 let D=null,timerH=null;
+/* teacher preview: opened from the tracker, nothing is saved to any student's account */
+const PREVIEW=(()=>{try{const p=JSON.parse(localStorage.getItem('nk_teacher_preview')||'null');return p&&p.token&&Date.now()-p.at<12*3600000?p.token:null;}catch(e){return null;}})()&&new URLSearchParams(location.search).get('preview')==='1';
+let mem={};
 const API=(()=>{try{return localStorage.getItem('nk_api')||'https://nishkam-tracker.alevelnishkam.workers.dev';}catch(e){return 'https://nishkam-tracker.alevelnishkam.workers.dev';}})();
 
 /* ---------- state ---------- */
-function st(){return Object.assign({},Ac.get(KEY)||{});}
-function save(s){s.score=scoreOf(s).right;s.total=scoreOf(s).total;Ac.set(KEY,s);}
+function st(){return Object.assign({},PREVIEW?mem:(Ac.get(KEY)||{}));}
+function save(s){s.score=scoreOf(s).right;s.total=scoreOf(s).total;if(PREVIEW)mem=s;else Ac.set(KEY,s);}
 /* stable shuffle so options stay in the same order on every device */
 function shuf(arr,seed){const a=arr.map((x,i)=>[x,i]);let h=0;for(const c of id+seed)h=(h*31+c.charCodeAt(0))|0;
   for(let i=a.length-1;i>0;i--){h=(h*1103515245+12345)|0;const j=Math.abs(h)%(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -92,9 +95,9 @@ function shuf(arr,seed){const a=arr.map((x,i)=>[x,i]);let h=0;for(const c of id+
 function b64u(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
 async function load(){
   if(!/^p[23]-[0-9a-z-]+$/.test(id)){$('#msg').textContent='This drill could not be found.';return;}
-  if(!Ac.user){$('#msg').textContent='Sign in on the home page first. The case studies are only available to students with an account.';return;}
+  if(!PREVIEW&&!Ac.user){$('#msg').textContent='Sign in on the home page first. The case studies are only available to students with an account.';return;}
   let key;
-  try{const tok=JSON.parse(localStorage.getItem('nk_auth')||'null');
+  try{const tok=PREVIEW?{token:JSON.parse(localStorage.getItem('nk_teacher_preview')).token}:JSON.parse(localStorage.getItem('nk_auth')||'null');
     const r=await fetch(API+'/content/key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tok&&tok.token})});
     const j=await r.json();if(!r.ok)throw new Error(j.error||'Could not open the case study.');key=j.key;}
   catch(e){$('#msg').textContent=e.message==='Failed to fetch'?'Could not connect. Check your internet and try again.':e.message;return;}
@@ -157,6 +160,7 @@ function checklist(name,items,sel,done,cls){
 const pickCls=(o,i,on)=>o.right?(on?'good':'miss'):(on?'bad':'');
 function render(){
   const s=st(),w=$('#work');let h='';
+  if(PREVIEW)h+=`<div class="card" style="padding:10px 14px"><p class="small" style="margin:0"><b>Teacher preview.</b> Nothing you do here is saved or shown in the tracker. <button class="btn" id="pvReset" style="margin:0 0 0 8px;padding:4px 10px">Start again</button></p></div>`;
   h+=`<p class="small muted" style="margin:0 0 10px">${esc(D.intro||'')}</p>`;
   if(D.kind==='p2')h+=renderP2(s);else h+=renderP3(s);
   const sc=scoreOf(s);
@@ -165,6 +169,7 @@ function render(){
     h+=`<div class="card"><p class="score" style="margin:0"><b>Finished: ${sc.right} out of ${sc.total}.</b> Time taken: ${Math.floor((s.secs||0)/60)} min ${(s.secs||0)%60} s.</p><p class="small muted" style="margin:6px 0 0">This is ticked off in your schedule. Use what you found when you write the answers. <a href="schedule.html">Back to my schedule</a></p></div>`;
   }
   const y=w.scrollTop;w.innerHTML=h;w.scrollTop=y;bind();tick();
+  const pr=document.getElementById('pvReset');if(pr)pr.onclick=()=>{mem={start:Date.now()};render();w.scrollTop=0;};
 }
 function renderP2(s){
   let h=`<div class="card"><div class="step">The questions on this case</div><ul class="qlist">${D.questions.map(q=>`<li>${qText(q.num)}</li>`).join('')}</ul></div>`;
@@ -255,7 +260,7 @@ function bind(){
   w.querySelectorAll('[data-datasub]').forEach(b=>b.onclick=()=>{const s=st(),k=b.dataset.datasub;s.data=Object.assign({},s.data);s.data[k]=Object.assign({sel:[]},s.data[k],{done:true});save(s);render();});
 }
 Ac.bar('#bar',{inside:true,text:'Sign in once on the home page to open the case studies.'});
-Ac.ready.then(load);Ac.onChange(keys=>{if(D&&keys.includes(KEY))render();else if(!D&&Ac.user)load();});
+if(PREVIEW)load();else{Ac.ready.then(load);Ac.onChange(keys=>{if(D&&keys.includes(KEY))render();else if(!D&&Ac.user)load();});}
 })();
 </script>
 <script src="visit.js" defer></script>
