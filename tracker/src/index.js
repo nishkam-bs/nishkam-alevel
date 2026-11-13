@@ -5,6 +5,7 @@
 
    Storage: Cloudflare D1, bound as DB.
    Secret:  TEACHER_PASSWORD (set in Cloudflare, never in this file).
+   Secret:  CONTENT_KEY (unlocks the protected case studies; set in Cloudflare).
    Var:     ALLOWED_ORIGINS (comma separated, set in wrangler.toml).
 
    No student data or passwords are kept in this file or in the repo.
@@ -245,7 +246,7 @@ const routes = {
       db.prepare('SELECT username,t,stage,title,score,total,passed,missed,answer FROM attempts ORDER BY id DESC LIMIT 8000'),
       db.prepare('SELECT username,t,tool,question,mark,level,well,improve,answer,ref FROM marks ORDER BY id DESC LIMIT 3000'),
       db.prepare('SELECT username,t,kind,ref,topic,got,total,detail FROM blurts ORDER BY id DESC LIMIT 4000'),
-      db.prepare("SELECT username,k,data FROM store WHERE k LIKE 'course:%' OR k LIKE 'quiz:%' OR k='blurt:history'"),
+      db.prepare("SELECT username,k,data FROM store WHERE k LIKE 'course:%' OR k LIKE 'quiz:%' OR k LIKE 'drill:%' OR k='blurt:history'"),
       db.prepare('SELECT id,username,source,title,spec,status,created,due,answers,result,score,total,done_at FROM work ORDER BY created DESC LIMIT 1500'),
       db.prepare('SELECT username,text,t FROM notes'),
       db.prepare('SELECT id,due,kind,ref,title,detail,marks,who,sort FROM sched ORDER BY due,sort'),
@@ -342,6 +343,15 @@ const routes = {
 
 
   /* ----- assessment schedule ----- */
+  /* key for the protected case studies (drills); only for signed-in students and the teacher */
+  async '/content/key'(db, b, env) {
+    let ok = false;
+    try { await student(db, b); ok = true; } catch (e) { }
+    if (!ok) await session(db, b.token, 'teacher');
+    if (!env.CONTENT_KEY) throw new HttpError(503, 'The case studies have not been switched on yet. Please tell your teacher.');
+    return { key: env.CONTENT_KEY };
+  },
+
   async '/sched/mine'(db, b) {
     const u = await student(db, b);
     const [sc, ex, mk, at] = await db.batch([
