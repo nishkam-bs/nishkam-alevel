@@ -170,17 +170,30 @@ async function loadSched(force){
       const items=d.items.filter(i=>i.due===due);
       const isDone=i=>{if(ex.has(i.id))return true;if(i.kind==='exam')return mk.has(i.ref);if(i.kind==='choice')return String(i.ref).split(',').some(r=>mk.has(r));if(i.kind==='question')return mk.has(i.id);if(i.kind==='quiz'||i.kind==='drill'){const q=get(i.kind+':'+i.ref);return !!(q&&q.done);}
         if(i.kind==='course'&&i.ref in CO){const st=get('course:'+i.ref)||{};for(let k=1;k<=10;k++){if(!ps.has(CO[i.ref]+k)&&!(st.passed&&st.passed[k]))return false;}return true;}return false;};
-      schedInfo={due,total:items.length,done:items.filter(isDone).length};
+      const grp=i=>i.kind==='drill'?(/^p3/.test(i.ref)?'Paper 3 drill':'Paper 2 drill'):i.kind==='quiz'?(/^mcq/.test(i.ref)?'20 multiple-choice questions':'10 calculations'):i.kind==='course'?'Course':'Written answers';
+      const order=['Written answers','Paper 2 drill','Paper 3 drill','20 multiple-choice questions','10 calculations','Course'];const g={};
+      items.forEach(i=>{const k=grp(i);g[k]=g[k]||{label:k,done:0,total:0};g[k].total++;if(isDone(i))g[k].done++;});
+      schedInfo={due,total:items.length,done:items.filter(isDone).length,groups:order.filter(k=>g[k]).map(k=>g[k])};
     }
     try{sessionStorage.setItem('nk_sched',JSON.stringify({u:auth.username,at:Date.now(),v:schedInfo}));}catch(e){}
   }catch(e){}
   return schedInfo;
 }
 const dayName=due=>new Date(due+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short',timeZone:'UTC'});
+function weekCard(){
+  if(!schedInfo||!schedInfo.total)return `<div class="nk-week"><p class="nk-small" style="margin:0">No homework is due at the moment. <a href="schedule.html">My schedule</a></p></div>`;
+  const pc=Math.round(100*schedInfo.done/schedInfo.total),all=schedInfo.done===schedInfo.total;
+  return `<div class="nk-week"><div class="nk-week-top"><div><div class="nk-due">This week's homework, due ${esc(dayName(schedInfo.due))} at 11:59pm</div>
+    <div class="nk-count">${all?'All done':`${schedInfo.done} of ${schedInfo.total} done`}</div></div><a class="nk-go" href="schedule.html">${all?'View my schedule':'Open my schedule'}</a></div>
+    <span class="nk-bar-t nk-bar-big"><i style="width:${pc}%"></i></span>
+    ${schedInfo.groups?`<ul class="nk-groups">${schedInfo.groups.map(g=>`<li class="${g.done===g.total?'ok':''}"><span class="nk-tick">${g.done===g.total?'✓':''}</span>${esc(g.label)}${g.total>1?` <span class="nk-small">${g.done} of ${g.total}</span>`:''}</li>`).join('')}</ul>`:''}</div>`;
+}
 function schedLine(){
   if(!schedInfo||!schedInfo.total)return '';
   const left=schedInfo.total-schedInfo.done;
-  return left?`Due ${dayName(schedInfo.due)}, 11:59pm: <b>${schedInfo.done} of ${schedInfo.total} done</b>. <a href="schedule.html">My schedule</a>`:`All done for ${dayName(schedInfo.due)}. <a href="schedule.html">My schedule</a>`;
+  if(/schedule\.html$/.test(location.pathname))return '';
+  const link=' <a href="schedule.html">My schedule</a>';
+  return left?`Due ${dayName(schedInfo.due)}, 11:59pm: <b>${schedInfo.done} of ${schedInfo.total} done</b>.${link}`:`All done for ${dayName(schedInfo.due)}.${link}`;
 }
 
 /* ---------- status strip on each page ---------- */
@@ -234,19 +247,20 @@ const COURSES=[['endpoint_course_v1','Start Point/End Point',10,'start-end-point
   ['application_course_v1','Application',10,'application-course.html'],['models_course_v1','Models',10,'models-course.html'],['paper3_course_v1','Paper 3',10,'paper3-course.html']];
 
 /* ---------- one-off notice on the home page (shown once per student, on any device) ---------- */
-const NOTICE={key:'notice:homework-2026',html:`<h2>How homework works from December</h2>
-<p>From Tuesday 1 December you will have a set of homework every week. It is all on this site, under <b>My schedule</b> on the home page.</p>
-<h3>What is due each week</h3>
-<ul><li><b>Written answers:</b> four past paper questions in a normal week. In the KAT and Easter weeks you only have one. Where it says "Choose one", answer one of the questions given.</li>
-<li><b>20 multiple-choice questions:</b> done on the site. Your first answer is the one that counts, so think before you click.</li>
-<li><b>10 calculations:</b> also done on the site. Work each one out on paper first, then click your answer.</li>
-<li><b>A course:</b> one is due every few weeks.</li></ul>
+const NOTICE={key:'notice:homework-2026-v2',html:`<h2>How homework works from December</h2>
+<p>From Tuesday 1 December you will have a set of homework every week. It is all on this site, under <b>My schedule</b>.</p>
+<h3>Each week</h3>
+<ul><li><b>Written answers:</b> four past paper questions. Where it says "Choose one", answer one of them.</li>
+<li><b>Paper 2 drill (about 15 minutes):</b> choose the right calculations for a case study, work them out, then say what the numbers mean.</li>
+<li><b>Paper 3 drill (about 25 minutes):</b> match the insert to all six questions, choose the calculations and work them out. All clicking apart from the numbers.</li>
+<li><b>20 multiple-choice questions and 10 calculations:</b> done on the site. Your first answer is the one that counts.</li>
+<li><b>A course</b> is due every few weeks.</li></ul>
+<p>There is no homework in the KAT weeks or over Easter.</p>
 <h3>How it gets ticked off</h3>
-<p>Click Start next to a question to open it in the right marking tool, and get your answer marked. It is ticked off in your schedule as soon as it has been marked. The multiple-choice questions and calculations are ticked off once you have answered all of them. After each answer you will see whether it was right, with an explanation. Read the explanation for any you got wrong.</p>
-<p>For Paper 2 and Paper 3 questions you need the paper or case study, and I will give you these.</p>
+<p>Click Start next to each piece. A written answer is ticked off once it has been marked: type it, or upload photos of your handwritten answer. If you type, the site records whether the answer was typed or pasted in. Drills, multiple-choice questions and calculations are ticked off when you finish them.</p>
 <h3>Deadline</h3>
-<p>Everything is due by <b>Wednesday at 11:59pm</b>. If anything is not done by then, you will have a detention on Friday after school. The first deadline is Wednesday 9 December.</p>
-<p>If you have already handed in any of the questions I set earlier, they still count.</p>`};
+<p>Everything is due by <b>Wednesday at 11:59pm</b>. Anything not done means a detention on Friday after school. The first deadline is Wednesday 9 December. If you were absent, speak to me.</p>
+<p>Anything you have already handed in from earlier still counts.</p>`};
 let noticeShown=false;
 function showNotice(){
   if(noticeShown||!active()||auth.mustChange||get(NOTICE.key))return;noticeShown=true;
@@ -260,7 +274,7 @@ function showNotice(){
   const ov=document.createElement('div');ov.className='nk-ov';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
   ov.innerHTML=`<div class="nk-modal">${NOTICE.html}<button type="button">Got it</button></div>`;
   document.body.appendChild(ov);
-  const b=ov.querySelector('button');b.focus();
+  const b=ov.querySelector('button');try{b.focus({preventScroll:true});}catch(e){}ov.querySelector('.nk-modal').scrollTop=0;
   b.onclick=()=>{set(NOTICE.key,{seen:new Date().toISOString()});ov.remove();};
 }
 function mountHome(target){
@@ -294,15 +308,15 @@ function mountHome(target){
     }
     const prog=COURSES.map(([k,t,n,href])=>{const s=get('course:'+k)||{};const p=Object.keys(s.passed||{}).filter(x=>s.passed[x]).length;
       return `<li><a href="${href}">${esc(t)}</a><span class="nk-bar-t"><i style="width:${p/n*100}%"></i></span><span class="nk-small">${p?`${p} of ${n}`:'Not started'}</span></li>`;}).join('');
-    el.innerHTML=`<div class="nk-home"><div class="nk-head"><h3>Signed in as ${esc(auth.name)}</h3><span class="nk-small">${esc(auth.username)}</span>
+    el.innerHTML=`<div class="nk-home"><div class="nk-head"><h3>Hello, ${esc(String(auth.name||'').split(' ')[0])}</h3><span class="nk-small">${esc(auth.username)}</span>
       <span class="nk-small nk-st2">${esc(statusText())}</span><button type="button" class="nk-link" id="nkOut">Sign out</button></div>
-      <p class="nk-small" id="nkSched" style="margin:-6px 0 4px">${schedLine()}</p>
-      <p class="nk-small" id="nkWork" style="margin:0 0 16px"></p>
-      <div class="nk-cols"><div><h4>Courses</h4><ul class="nk-prog">${prog}</ul></div>
+      <div id="nkWeek">${weekCard()}</div>
+      <p class="nk-small" id="nkWork" style="margin:14px 0 0"></p>
+      <div class="nk-cols" style="margin-top:22px"><div><h4>Courses</h4><ul class="nk-prog">${prog}</ul></div>
       <div><h4>Your marked answers</h4><div id="nkMarks" class="nk-small">Loading...</div></div></div></div>`;
     el.querySelector('#nkOut').onclick=async()=>{if(confirm('Sign out on this device?')){await signOut();draw();}};
     ready.then(()=>setTimeout(showNotice,300));
-    if(!schedInfo)loadSched().then(()=>{const h=el.querySelector('#nkSched');if(h)h.innerHTML=schedLine();renderBars();});
+    if(!schedInfo||!schedInfo.groups)loadSched(true).then(()=>{const h=el.querySelector('#nkWeek');if(h)h.innerHTML=weekCard();renderBars();});
     api('/work/mine',{}).then(d=>{const el2=el.querySelector('#nkWork');if(!el2)return;const todo=(d.work||[]).filter(w=>w.source==='teacher'&&w.status!=='done');
       el2.innerHTML=todo.length?`<b>Work from your teacher: ${todo.length} to do.</b> <a href="practice.html">Go to practice</a>`:`<a href="practice.html">Practice</a>: make questions on your gaps or any topic.`;}).catch(()=>{});
     try{const d=await api('/mymarks',{});const m=el.querySelector('#nkMarks');if(!m)return;

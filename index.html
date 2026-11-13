@@ -33,7 +33,7 @@ aside a.active{background:rgba(255,255,255,.1);color:white;font-weight:700}
 .hamburger{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--navy);color:white;border:0;width:44px;height:44px;border-radius:10px;font-size:20px}
 .scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
 main{max-width:1080px;margin:0 auto;padding:48px 40px 80px}
-.hero{padding:60px 0 48px;border-bottom:1px solid var(--rule);margin-bottom:40px}
+.hero{padding:44px 0 24px;margin-bottom:6px}
 .hero .spec{font-size:13px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
 .hero h2{font-family:'DM Serif Display',serif;font-size:48px;color:var(--navy);line-height:1.15;margin:8px 0 12px}
 .hero h2 em{font-style:italic;color:var(--gold)}
@@ -127,7 +127,11 @@ footer a{color:var(--muted);display:block;padding:2px 0}footer a:hover{color:var
   .layout{grid-template-columns:1fr}
   aside{position:fixed;left:-320px;z-index:100;width:300px;transition:.3s}
   aside.open{left:0}
-  .hamburger{display:grid;place-items:center}
+  .hamburger{display:grid;place-items:center;top:10px;left:12px;width:40px;height:40px}
+  body .mtop{display:flex;position:fixed;top:0;left:0;right:0;height:60px;z-index:150;background:var(--parchment);border-bottom:1px solid var(--rule);align-items:center;padding-left:64px;font-family:'DM Serif Display',serif;font-size:19px;color:var(--navy)}
+  main{padding-top:84px!important}
+  body .tool-group .tg-label{width:100%}
+  body .hero{padding-top:6px}
   .scrim.show{display:block;z-index:99}
   main{padding:32px 18px 60px}
   .hero h2{font-size:32px}
@@ -140,7 +144,7 @@ footer a{color:var(--muted);display:block;padding:2px 0}footer a:hover{color:var
 }
 
 /* account */
-.acct{margin-bottom:40px;padding:0 0 40px;border-bottom:1px solid var(--rule)}
+.acct{margin:0 0 30px}
 .nk-home{background:var(--paper);border:1px solid var(--rule);border-radius:14px;padding:24px 26px;max-width:980px}
 .nk-home h3{font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);font-weight:400;margin-bottom:6px}
 .nk-home h4{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:0 0 10px}
@@ -154,6 +158,23 @@ footer a{color:var(--muted);display:block;padding:2px 0}footer a:hover{color:var
 .nk-home .nk-err{color:#b23b31;font-size:14px;margin-top:10px;min-height:1em}
 .nk-home .nk-small{font-size:13px;color:var(--muted)}
 .nk-home .nk-link{background:none;border:0;padding:0;font:inherit;font-size:13px;color:var(--navy);text-decoration:underline}
+.nk-week{border:1px solid var(--rule);border-radius:12px;padding:18px 20px;background:var(--parchment)}
+.nk-week-top{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.nk-due{font-size:13px;color:var(--muted);font-weight:600}
+.nk-count{font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);line-height:1.2;margin-top:2px}
+.nk-go{display:inline-block;background:var(--navy);color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 20px;border-radius:10px}.nk-go:hover{background:var(--navy-soft)}
+.nk-bar-big{display:block;height:9px;margin:14px 0 14px}
+.nk-groups{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 18px;margin:0;padding:0}
+.nk-groups li{font-size:14px;color:var(--ink);display:flex;align-items:center;gap:8px}
+.nk-tick{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--rule);font-size:12px;font-weight:700;flex:none}
+.nk-groups li.ok .nk-tick{background:var(--success);border-color:var(--success);color:#fff}
+.tool-groups{display:grid;gap:14px;padding-bottom:40px;margin-bottom:40px;border-bottom:1px solid var(--rule)}
+.tool-group{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tool-group .tg-label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:700;width:150px;flex:none}
+.tool-group a{padding:8px 14px;border-radius:999px;border:1px solid var(--rule);background:var(--paper);color:var(--navy);font-weight:600;font-size:13.5px;text-decoration:none;transition:.15s}
+.tool-group a:hover{border-color:var(--navy)}
+.tool-group a.main{background:var(--navy);color:#fff;border-color:var(--navy)}
+.mtop{display:none}
 .nk-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin-bottom:18px}
 .nk-head h3{margin:0}
 .nk-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px}
@@ -170,6 +191,7 @@ footer a{color:var(--muted);display:block;padding:2px 0}footer a:hover{color:var
 </style>
 </head>
 <body>
+<div class="mtop">A-Level Business</div>
 <button class="hamburger" id="menuBtn" aria-label="Open menu">&#9776;</button>
 <div class="scrim" id="scrim"></div>
 <div class="layout">
@@ -196,7 +218,7 @@ footer a{color:var(--muted);display:block;padding:2px 0}footer a:hover{color:var
   <a href="knowledge-organisers.html">Knowledge Organisers</a>
   <a href="blurting.html">Blurting</a>
   <a href="paper2-revision.html">Paper 2 Revision</a>
-  <a href="paper3-revision.html">Paper 3 Revision</a>
+  
   <h2>Specification Units</h2>
   <a href="Unit%201%20exam%20mastery%20guide.html">1. What is business?</a>
   <a href="Unit%202%20exam%20mastery%20guide.html">2. Managers, leadership and decision making</a>
@@ -220,27 +242,17 @@ footer a{color:var(--muted);display:block;padding:2px 0}footer a:hover{color:var
   <div class="hero">
     <div class="spec">AQA A-Level Business Studies (7132) — Papers 1, 2 and 3</div>
     <h2>Your <em>A-Level Business</em> revision hub.</h2>
-    <div class="btn-row">
-      <a href="#flashcards" class="btn-hero btn-primary">Flashcards</a>
-      <a href="marker.html" class="btn-hero btn-primary">25-Marker Lab</a>
-      <a href="open_essay_lab.html" class="btn-hero btn-primary">Open Essay Lab</a>
-      <a href="nine_marker_lab.html" class="btn-hero btn-primary">9-Marker Lab</a>
-      <a href="redraft.html" class="btn-hero btn-primary">Redraft</a>
-      <a href="calculations.html" class="btn-hero btn-primary">Calculations</a>
-      <a href="quiz.html" class="btn-hero btn-primary">Knowledge Quiz</a>
-      <a href="models_and_theories.html" class="btn-hero btn-primary">Models &amp; Theories</a>
-      <a href="start-end-points.html" class="btn-hero btn-primary">Start &amp; End Points</a>
-      <a href="courses.html" class="btn-hero btn-primary">Courses</a>
-      <a href="practice.html" class="btn-hero btn-primary">Practice</a>
-      <a href="schedule.html" class="btn-hero btn-primary">My schedule</a>
-      <a href="knowledge-organisers.html" class="btn-hero btn-primary">Knowledge Organisers</a>
-      <a href="blurting.html" class="btn-hero btn-primary">Blurting</a>
-      <a href="paper2-revision.html" class="btn-hero btn-primary">Paper 2 Revision</a>
-      <a href="paper3-revision.html" class="btn-hero btn-primary">Paper 3 Revision</a>
-    </div>
   </div>
 
   <div class="acct" id="account" hidden></div>
+
+  <div class="tool-groups">
+    <div class="tool-group"><span class="tg-label">Homework</span><a class="main" href="schedule.html">My schedule</a><a href="courses.html">Courses</a><a href="practice.html">Practice</a></div>
+    <div class="tool-group"><span class="tg-label">Get an answer marked</span><a href="nine_marker_lab.html">9-Marker Lab</a><a href="open_essay_lab.html">Open Essay Lab</a><a href="marker.html">25-Marker Lab</a><a href="redraft.html">Redraft</a></div>
+    <div class="tool-group"><span class="tg-label">Practise</span><a href="calculations.html">Calculations</a><a href="quiz.html">Knowledge Quiz</a><a href="blurting.html">Blurting</a><a href="#flashcards">Flashcards</a></div>
+    <div class="tool-group"><span class="tg-label">Revise</span><a href="knowledge-organisers.html">Knowledge Organisers</a><a href="models_and_theories.html">Models &amp; Theories</a><a href="start-end-points.html">Start &amp; End Points</a><a href="paper2-revision.html">Paper 2 Revision</a><a href="real-world-examples.html">Real-World Examples</a></div>
+  </div>
+
 
   <!-- ════════════════════════════════════════════════════ -->
   <!-- FLASHCARDS — inline on the homepage                 -->
@@ -336,112 +348,106 @@ footer a{color:var(--muted);display:block;padding:2px 0}footer a:hover{color:var
     <div class="tools-grid">
 
       <a href="#flashcards" class="tool-card" id="fc-tool-card">
-        <div class="tool-num">I. Revision</div>
+        <div class="tool-num">Revision</div>
         <h3>Flashcards</h3>
         <p>201 cards covering every concept, formula and key distinction on the AQA specification. Filter by unit, track what you know, and generate custom cards on any topic.</p>
         <span class="tool-arrow">Start revising &#8594;</span>
       </a>
 
       <a href="marker.html" class="tool-card">
-        <div class="tool-num">II. Exam Practice</div>
+        <div class="tool-num">Exam practice</div>
         <h3>25-Marker Lab</h3>
         <p>Choose a past paper question, get content guidance, plan your answer, then submit for feedback with WWW and EBI.</p>
         <span class="tool-arrow">Open the lab &#8594;</span>
       </a>
 
       <a href="open_essay_lab.html" class="tool-card">
-        <div class="tool-num">III. Exam Practice</div>
+        <div class="tool-num">Exam practice</div>
         <h3>Open Essay Lab</h3>
         <p>Practise the 16 and 24 mark "all businesses" questions from Papers 2 and 3. Get feedback on your chains, your evaluation, and whether you genuinely change the business.</p>
         <span class="tool-arrow">Open the lab &#8594;</span>
       </a>
 
       <a href="nine_marker_lab.html" class="tool-card">
-        <div class="tool-num">IV. Exam Practice</div>
+        <div class="tool-num">Exam practice</div>
         <h3>9 and 12-Mark Analysis Lab</h3>
         <p>Write your answer, get it marked, and see exactly where your AO1, AO2 and AO3 marks come from. Colour-coded annotated feedback with numbered examiner notes — 57 past paper questions across all three papers.</p>
         <span class="tool-arrow">Start practising &#8594;</span>
       </a>
 
       <a href="redraft.html" class="tool-card">
-        <div class="tool-num">V. Improve Your Work</div>
+        <div class="tool-num">Improve your work</div>
         <h3>Redraft</h3>
         <p>Upload your feedback PDF from any essay tool, paste your improved version, and get feedback on how your work has developed. Full essays get a new mark. Sections get targeted improvement feedback.</p>
         <span class="tool-arrow">Redraft my work &#8594;</span>
       </a>
 
       <a href="concepts.html" class="tool-card">
-        <div class="tool-num">VI. Knowledge</div>
+        <div class="tool-num">Knowledge</div>
         <h3>Concept Mastery</h3>
         <p>Search any concept on the AQA specification. Understand it, analyse it, apply it, evaluate it — and see the causal chain animate step by step.</p>
         <span class="tool-arrow">Master a concept &#8594;</span>
       </a>
 
       <a href="calculations.html" class="tool-card">
-        <div class="tool-num">VII. Calculations</div>
+        <div class="tool-num">Calculations</div>
         <h3>Calculation Practice Lab</h3>
         <p>Every past exam calculation question from 2017 to 2026 with step-by-step worked solutions, examiner traps and an AI question generator. Covers all 14 formula topics.</p>
         <span class="tool-arrow">Start practising &#8594;</span>
       </a>
 
       <a href="quiz.html" class="tool-card">
-        <div class="tool-num">VIII. Knowledge</div>
+        <div class="tool-num">Knowledge</div>
         <h3>Knowledge Quiz</h3>
         <p>Test yourself across all ten units. Choose your topics, set the weighting, and get instant results with explanations. Your teacher can also set quiz codes for weekly assessments.</p>
         <span class="tool-arrow">Take a quiz &#8594;</span>
       </a>
 
       <a href="models_and_theories.html" class="tool-card">
-        <div class="tool-num">IX. Knowledge</div>
+        <div class="tool-num">Knowledge</div>
         <h3>Business Models &amp; Theories</h3>
         <p>Every model on the current AQA specification — what it is, how examiners test it, how to weave it into essays, common traps, and exemplar paragraphs from real student work. Includes a topic quiz that tracks to your progress sheet.</p>
         <span class="tool-arrow">Open the guide &#8594;</span>
       </a>
 
       <a href="paper2-revision.html" class="tool-card">
-        <div class="tool-num">X. Exam Practice</div>
+        <div class="tool-num">Exam practice</div>
         <h3>Paper 2 Revision</h3>
         <p>Year-by-year breakdowns for every Paper 2 exam from 2017 to 2025. Data analysis guidance, hidden models, traps, question-by-question strategies and downloadable past papers.</p>
         <span class="tool-arrow">Open the guide &#8594;</span>
       </a>
 
-      <a href="paper3-revision.html" class="tool-card">
-        <div class="tool-num">XI. Exam Practice</div>
-        <h3>Paper 3 Revision</h3>
-        <p>Year-by-year breakdowns for every Paper 3 exam from 2017 to 2025. Context analysis, data interpretation, hidden models and question-by-question strategies.</p>
-        <span class="tool-arrow">Open the guide &#8594;</span>
-      </a>
 
       <a href="start-end-points.html" class="tool-card">
-        <div class="tool-num">XII. Exam Technique</div>
+        <div class="tool-num">Exam technique</div>
         <h3>Start Points and End Points</h3>
         <p>Every 9-mark and 12-mark question from 2017–2026 with the start point, the chain, and the exact endpoint your analysis must reach.</p>
         <span class="tool-arrow">Open the guide &#8594;</span>
       </a>
 
       <a href="courses.html" class="tool-card">
-        <div class="tool-num">XIII. Exam Technique</div>
+        <div class="tool-num">Exam technique</div>
         <h3>Courses</h3>
         <p>Step-by-step courses built on real AQA questions and the mistakes examiners keep reporting: the Start Point/End Point Course, the Judgement Course and the Calculations Course. Pass each stage to unlock the next.</p>
         <span class="tool-arrow">See the courses &#8594;</span>
       </a>
 
       <a href="knowledge-organisers.html" class="tool-card">
-        <div class="tool-num">XIV. Knowledge</div>
+        <div class="tool-num">Knowledge</div>
         <h3>Knowledge Organisers</h3>
         <p>One page for every part of the specification, as downloadable PDFs for each unit, plus a models and theories set, a formulas sheet and a specification map. Includes tips on how to revise from them.</p>
         <span class="tool-arrow">Download them &#8594;</span>
       </a>
 
       <a href="blurting.html" class="tool-card">
-        <div class="tool-num">XV. Knowledge</div>
+        <div class="tool-num">Knowledge</div>
         <h3>Blurting</h3>
         <p>Write down everything you can remember about a topic, then check it against the key points - on screen with an AI check, or on printed blurt sheets. Includes a random topic picker, a mixed blurt sheet generator and rapid-fire prompts.</p>
         <span class="tool-arrow">Start blurting &#8594;</span>
       </a>
 
       <a href="real-world-examples.html" class="tool-card">
-        <div class="tool-num">XVI. Resources</div>
+        <div class="tool-num">Resources</div>
         <h3>Real-World Examples Bank</h3>
         <p>A bank of well-understood businesses across different industries, sizes and contexts, each with ready-made analytical chains you can use in essays.</p>
         <span class="tool-arrow">Open the bank &#8594;</span>
@@ -502,7 +508,7 @@ footer a{color:var(--muted);display:block;padding:2px 0}footer a:hover{color:var
       <a href="knowledge-organisers.html">Knowledge Organisers</a>
       <a href="blurting.html">Blurting</a>
       <a href="paper2-revision.html">Paper 2 Revision</a>
-      <a href="paper3-revision.html">Paper 3 Revision</a>
+      
     </div>
     <div>
       <h4>Nishkam School West London</h4>

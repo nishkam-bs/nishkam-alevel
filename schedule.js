@@ -28,7 +28,7 @@ function describe(it){
   if(it.kind==='quiz'){const mcq=/^mcq/.test(it.ref);return {title:it.title||(mcq?'20 multiple-choice questions':'10 calculations'),
     sub:mcq?'Half from past papers, half new. Click an answer and you see straight away whether it is right, with the explanation.':'Half from past papers, half new. Click an answer and the worked solution appears underneath.',link:`weekly.html?set=${encodeURIComponent(it.ref)}`};}
   if(it.kind==='drill'){const p3=/^p3/.test(it.ref);return {title:it.title||(p3?'Paper 3 case drill':'Paper 2 data drill'),
-    sub:p3?'About 25 minutes: match the insert to all six questions, choose the calculations, pick the data and work them out. All clicking, no writing.':'15 minutes: choose the calculations, work them out, then say what the numbers mean. All clicking apart from typing your answers.',link:`drill.html?d=${encodeURIComponent(it.ref)}`};}
+    sub:p3?'About 25 minutes: match the insert to all six questions, choose the calculations, pick the data and work them out. All clicking, no writing.':'About 15 minutes: choose the calculations, work them out, then say what the numbers mean. All clicking apart from typing your answers.',link:`drill.html?d=${encodeURIComponent(it.ref)}`};}
   if(it.kind==='course'){const c=COURSES[it.ref]||[0,it.title||it.ref,'courses.html'];return {title:it.title||c[1],sub:'Pass every stage.',link:c[2]};}
   if(it.kind==='question')return {title:`Set question (${it.marks} marks)`,sub:it.title,needs:it.detail||'',link:`${labFor(+it.marks)}?q=${encodeURIComponent(it.id)}`,marks:+it.marks};
   return {title:it.title||'Task',sub:it.detail||'',link:'#'};

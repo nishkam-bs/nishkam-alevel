@@ -55,8 +55,14 @@ async function openLinked(){
   const note=t=>{const p=document.createElement('p');p.style.cssText='font-size:14px;margin:0 0 12px;padding:10px 14px;border-radius:10px;background:rgba(127,127,127,.08)';p.textContent=t;const at=document.querySelector('main')||document.body;at.prepend(p);};
   if(idx>=0){
     ['yearFilter','paperFilter'].forEach(id=>{const s=document.getElementById(id);if(s){s.value='all';s.dispatchEvent(new Event('change',{bubbles:true}));}});
-    const b=document.querySelector(`.qopt[data-i="${idx}"]`);if(b){b.click();b.scrollIntoView({block:'center'});}
-    note('This question is on your schedule. Mark it here and it will be ticked off.');return;
+    const b=document.querySelector(`.qopt[data-i="${idx}"]`);
+    if(b){b.click();
+      const nb=document.querySelector(`.qopt[data-i="${idx}"]`)||b;
+      if(nb.parentElement){nb.parentElement.prepend(nb);nb.parentElement.scrollTop=0;}
+      }
+    let qt='';try{qt=String(QS[idx].q||QS[idx].text||QS[idx].question||'').trim();}catch(e){}
+    if(!qt&&b)qt=(b.querySelector('p,.qtext,div:last-child')||b).textContent.trim();
+    note('This question from your schedule is selected: '+(qt.length>160?qt.slice(0,160)+'…':qt)+' Write your answer and get it marked, and it will be ticked off.');return;
   }
   /* a question your teacher wrote */
   try{await A.ready;const d=await A.call('/sched/mine');const it=(d.items||[]).find(x=>x.id===QP);if(!it)return;
