@@ -35,6 +35,8 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS work(id TEXT PRIMARY KEY, username TEXT NOT NULL, source TEXT NOT NULL, title TEXT, spec TEXT NOT NULL,
      status TEXT NOT NULL, created TEXT NOT NULL, due TEXT, answers TEXT, result TEXT, score REAL, total REAL, done_at TEXT)`,
   `CREATE INDEX IF NOT EXISTS work_user ON work(username)`,
+  `CREATE TABLE IF NOT EXISTS visits(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, t TEXT NOT NULL, page TEXT NOT NULL, title TEXT)`,
+  `CREATE INDEX IF NOT EXISTS visits_user ON visits(username,page,t)`,
   `CREATE TABLE IF NOT EXISTS notes(username TEXT PRIMARY KEY, text TEXT, t TEXT)`,
   `CREATE TABLE IF NOT EXISTS sched(id TEXT PRIMARY KEY, due TEXT NOT NULL, kind TEXT NOT NULL, ref TEXT, title TEXT, detail TEXT,
      marks INTEGER, who TEXT NOT NULL DEFAULT 'all', sort INTEGER DEFAULT 0, created TEXT)`,
@@ -207,6 +209,16 @@ const routes = {
     return { ok: true };
   },
 
+  async '/visit'(db, b) {
+    const u = await student(db, b);
+    const page = str(b.page, 80).replace(/[^\w .()-]/g, '').slice(0, 80) || 'index';
+    const since = new Date(Date.now() - 10 * 60000).toISOString();
+    const recent = await db.prepare('SELECT id FROM visits WHERE username=? AND page=? AND t>? LIMIT 1').bind(u.username, page, since).first();
+    if (!recent) await db.prepare('INSERT INTO visits(username,t,page,title) VALUES(?,?,?,?)').bind(u.username, nowIso(), page, str(b.title, 120)).run();
+    await db.prepare('UPDATE users SET last_seen=? WHERE username=?').bind(nowIso(), u.username).run();
+    return { ok: true };
+  },
+
   async '/mark'(db, b) {
     const u = await student(db, b);
     if (!b.tool) throw new HttpError(400, 'Missing tool.');
@@ -241,19 +253,20 @@ const routes = {
 
   async '/dashboard'(db, b) {
     await session(db, b.token, 'teacher');
-    const [users, att, mk, bl, st, wk, nt, sc, ex] = await db.batch([
+    const [users, att, mk, bl, st, wk, nt, sc, ex, vs] = await db.batch([
       db.prepare('SELECT username,name,must_change,created,last_seen FROM users ORDER BY name'),
       db.prepare('SELECT username,t,stage,title,score,total,passed,missed,answer FROM attempts ORDER BY id DESC LIMIT 8000'),
       db.prepare('SELECT username,t,tool,question,mark,level,well,improve,answer,ref,how FROM marks ORDER BY id DESC LIMIT 3000'),
       db.prepare('SELECT username,t,kind,ref,topic,got,total,detail FROM blurts ORDER BY id DESC LIMIT 4000'),
-      db.prepare("SELECT username,k,data FROM store WHERE k LIKE 'course:%' OR k LIKE 'quiz:%' OR k LIKE 'drill:%' OR k='blurt:history'"),
+      db.prepare("SELECT username,k,data,t FROM store WHERE k LIKE 'course:%' OR k LIKE 'quiz:%' OR k LIKE 'drill:%' OR k='blurt:history'"),
       db.prepare('SELECT id,username,source,title,spec,status,created,due,answers,result,score,total,done_at FROM work ORDER BY created DESC LIMIT 1500'),
       db.prepare('SELECT username,text,t FROM notes'),
       db.prepare('SELECT id,due,kind,ref,title,detail,marks,who,sort FROM sched ORDER BY due,sort'),
-      db.prepare('SELECT sched_id,username,note,t FROM excuse')
+      db.prepare('SELECT sched_id,username,note,t FROM excuse'),
+      db.prepare('SELECT username,t,page,title FROM visits WHERE t>? ORDER BY id DESC LIMIT 4000').bind(new Date(Date.now() - 31 * 86400000).toISOString())
     ]);
-    const store = {};
-    st.results.forEach(r => { try { (store[r.username] = store[r.username] || {})[r.k] = JSON.parse(r.data); } catch (e) {} });
+    const store = {}, storeT = {};
+    st.results.forEach(r => { try { (store[r.username] = store[r.username] || {})[r.k] = JSON.parse(r.data); (storeT[r.username] = storeT[r.username] || {})[r.k] = r.t; } catch (e) {} });
     const parse = (x, d) => { try { return x ? JSON.parse(x) : d; } catch (e) { return d; } };
     const roster = {};
     users.results.forEach(u => { roster[u.username] = u.name; });
@@ -266,6 +279,8 @@ const routes = {
       marks: mk.results.map(r => Object.assign({ exam: r.username, name: name(r.username) }, r)),
       blurts: bl.results.map(r => Object.assign({ exam: r.username, name: name(r.username) }, r)),
       store,
+      storeT,
+      visits: vs.results.map(v => Object.assign({ exam: v.username, name: name(v.username) }, v)),
       work: wk.results.map(w => Object.assign({}, w, { exam: w.username, name: name(w.username), spec: parse(w.spec, {}), answers: parse(w.answers, {}), result: parse(w.result, null) })),
       notes: Object.fromEntries(nt.results.map(n => [n.username, { text: n.text, t: n.t }])),
       sched: sc.results.map(x => Object.assign({}, x, { who: parse(x.who, 'all') })),

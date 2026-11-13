@@ -21,6 +21,9 @@ const css=`
 .sc-grid td.l,.sc-grid th.l{text-align:left}
 .c{display:inline-block;min-width:26px;padding:3px 4px;border-radius:5px;font:600 .72rem "IBM Plex Mono",monospace;cursor:pointer}
 .c.hw{box-shadow:inset 0 0 0 2px #2f6fdb}.c.ty{box-shadow:inset 0 0 0 2px #8a8f98}.c.pz{box-shadow:inset 0 0 0 2px #c0392b}
+.act-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0}.act-dot.now{background:#1e8e3e}.act-dot.today{background:#2f6fdb}.act-dot.week{background:#b0b4ba}.act-dot.old{background:#c0392b}
+.feed{list-style:none;margin:0;padding:0;font-size:.88rem}.feed li{padding:7px 0;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:baseline}.feed .tm{color:var(--muted);font-size:.8rem;min-width:92px;white-space:nowrap}.feed .who{font-weight:600}
+.feed li.v{color:var(--muted)}
 .ring{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:4px}.ring.hw{box-shadow:inset 0 0 0 2px #2f6fdb}.ring.ty{box-shadow:inset 0 0 0 2px #8a8f98}.ring.pz{box-shadow:inset 0 0 0 2px #c0392b}
 .c.done{background:var(--ok-soft);color:var(--ok)}.c.late{background:var(--amber-soft);color:var(--amber)}.c.missing{background:var(--end-soft);color:var(--end)}.c.todo{color:var(--muted);background:var(--bg2)}.c.excused{color:var(--muted);text-decoration:line-through}
 .det{list-style:none;padding:0;margin:0;display:grid;gap:8px}
@@ -89,6 +92,59 @@ function howCard(students){
   ${rows.sort((a,b)=>b.c.pz-a.c.pz||b.c.ty-a.c.ty||a.s.name.localeCompare(b.s.name)).map(x=>`<tr><td class="l">${esc(x.s.name)}</td><td>${x.c.hw}</td><td>${x.c.ty}</td><td>${x.c.pz?`<span class="cell a">${x.c.pz}</span>`:0}</td></tr>`).join('')}
   </tbody></table></div></div>`;}
 
+
+/* ---------- live activity ---------- */
+function ago(t){const m=Math.round((Date.now()-t)/60000);if(m<1)return 'just now';if(m<60)return m+' min ago';const h=Math.round(m/60);if(h<24)return h+' hour'+(h>1?'s':'')+' ago';const d=Math.round(h/24);return d+' day'+(d>1?'s':'')+' ago';}
+function when(t){const d=new Date(t),today=new Date();const same=d.toDateString()===today.toDateString();
+  return same?d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):d.toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}
+function events(){
+  const d=TR.data,ev=[],T=x=>typeof x==='number'?x:Date.parse(x);
+  const setName=r=>{const m=/^(mcq|calc)-(\d+)/.exec(r);return m?(m[1]==='mcq'?'20 multiple-choice questions':'10 calculations')+' (week '+(+m[2])+')':r;};
+  (d.marks||[]).forEach(m=>{const h=parseHow(m),k=howKind(h);ev.push({u:m.exam,t:T(m.t),what:`had an answer marked in the ${m.tool}: ${m.mark}`+(k==='hw'?' (handwritten)':k==='pz'?' (typed, mostly pasted)':k==='ty'?' (typed)':''),detail:m.question,k:'mark'});});
+  (d.rows||[]).forEach(r=>ev.push({u:r.exam,t:T(r.t),what:`${r.passed?'passed':'had a go at'} ${r.stageTitle||'a course stage'}${r.total?` (${r.score}/${r.total})`:''}`,k:'course'}));
+  (d.blurts||[]).forEach(b=>ev.push({u:b.exam,t:T(b.t),what:`did a ${b.kind==='rapid'?'rapid recall':'blurt'}${b.topic?' on '+b.topic:''}${b.total?` (${b.got}/${b.total})`:''}`,k:'blurt'}));
+  Object.entries(d.storeT||{}).forEach(([u,ks])=>Object.entries(ks).forEach(([key,t])=>{const v=((d.store||{})[u]||{})[key]||{};
+    if(/^quiz:/.test(key))ev.push({u,t:T(t),what:(v.done?`finished ${setName(key.slice(5))}: ${v.score}/${v.total}`:`started ${setName(key.slice(5))}`),k:'quiz'});
+    else if(/^drill:/.test(key)){const it=(d.sched||[]).find(i=>i.kind==='drill'&&i.ref===key.slice(6));const nmd=it?it.title:key.slice(6);
+      ev.push({u,t:T(t),what:(v.done?`finished the ${nmd}: ${v.score}/${v.total} in ${Math.max(1,Math.round((v.secs||0)/60))} min`:`started the ${nmd}`),k:'drill'});}}));
+  (d.work||[]).forEach(w=>{if(w.done_at)ev.push({u:w.exam,t:T(w.done_at),what:`finished set work: ${w.title||'work'}`,k:'work'});});
+  (d.visits||[]).forEach(v=>ev.push({u:v.exam,t:T(v.t),what:`opened ${v.title||v.page}`,k:'visit'}));
+  return ev.filter(e=>e.t&&!isNaN(e.t)).sort((a,b)=>b.t-a.t);
+}
+let actFilter={u:'',visits:true,n:40};
+function activityCard(students){
+  const ev=events(),now=Date.now(),day=new Date();day.setHours(0,0,0,0);
+  const rows=students.map(s=>{const mine=ev.filter(e=>e.u===s.u);const acc=(TR.data.accounts||[]).find(a=>a.username===s.u)||{};
+    const last=Math.max(mine.length?mine[0].t:0,acc.lastSeen?Date.parse(acc.lastSeen):0);
+    const work=mine.filter(e=>e.k!=='visit');
+    return {s,last,today:mine.filter(e=>e.t>=day.getTime()).length,week:work.filter(e=>e.t>=now-7*86400000).length,lastWhat:work[0]};});
+  rows.sort((a,b)=>b.last-a.last);
+  const dot=t=>!t?'old':now-t<3600000?'now':t>=day.getTime()?'today':now-t<7*86400000?'week':'old';
+  return `<div class="sc-card" id="actCard"><h2>Live activity</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Everything students do on the site while signed in, not just the homework. Press Refresh at the top to bring it up to date.</p>
+  <div class="tablewrap"><table><thead><tr><th class="l">Student</th><th class="l">Last on the site</th><th>Actions today</th><th>Work done in the last 7 days</th><th class="l">Last piece of work</th></tr></thead><tbody>
+  ${rows.map(x=>`<tr><td class="l"><button class="lnk" data-act="${esc(x.s.u)}">${esc(x.s.name)}</button></td><td class="l"><span class="act-dot ${dot(x.last)}"></span>${x.last?esc(ago(x.last)):'<span class="muted">never</span>'}</td><td>${x.today}</td><td>${x.week?x.week:'<span class="cell a">0</span>'}</td><td class="l muted" style="white-space:normal;max-width:380px">${x.lastWhat?esc(x.lastWhat.what)+' · '+esc(when(x.lastWhat.t)):'nothing yet'}</td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="legend"><span><span class="act-dot now"></span>in the last hour</span><span><span class="act-dot today"></span>today</span><span><span class="act-dot week"></span>this week</span><span><span class="act-dot old"></span>not for over a week</span></div>
+  <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:16px 0 6px"><select id="actWho" style="width:auto"><option value="">Everyone</option>${students.map(s=>`<option value="${esc(s.u)}" ${actFilter.u===s.u?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
+  <label style="display:flex;gap:6px;align-items:center;font-size:.88rem"><input type="checkbox" id="actVis" style="width:auto" ${actFilter.visits?'checked':''}> Show pages opened</label></div>
+  <ul class="feed" id="actFeed">${feedHtml(ev)}</ul></div>`;
+}
+function feedHtml(ev){
+  const nm=u=>((TR.data.roster||{})[u])||u;
+  const list=ev.filter(e=>(!actFilter.u||e.u===actFilter.u)&&(actFilter.visits||e.k!=='visit'));
+  if(!list.length)return '<li class="muted">Nothing yet.</li>';
+  return list.slice(0,actFilter.n).map(e=>`<li class="${e.k==='visit'?'v':''}"><span class="tm">${esc(when(e.t))}</span><span><span class="who">${esc(nm(e.u))}</span> ${esc(e.what)}${e.detail?`<span class="muted">: ${esc(String(e.detail).slice(0,90))}${String(e.detail).length>90?'…':''}</span>`:''}</span></li>`).join('')
+    +(list.length>actFilter.n?`<li><button class="lnk" id="actMore">Show more (${list.length-actFilter.n} older)</button></li>`:'');
+}
+function wireActivity(){
+  const f=$('#actFeed');if(!f)return;const ev=events();
+  const redraw=()=>{f.innerHTML=feedHtml(ev);const m=$('#actMore');if(m)m.onclick=()=>{actFilter.n+=60;redraw();};};
+  $('#actWho').onchange=e=>{actFilter.u=e.target.value;actFilter.n=40;redraw();};
+  $('#actVis').onchange=e=>{actFilter.visits=e.target.checked;redraw();};
+  document.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{actFilter.u=b.dataset.act;actFilter.n=40;$('#actWho').value=actFilter.u;redraw();f.scrollIntoView({block:'start',behavior:'smooth'});});
+  redraw();
+}
+
 /* ---------- this week ---------- */
 function renderWeek(){
   const {items,students}=data();
@@ -130,12 +186,14 @@ function renderWeek(){
     </tbody></table></div>
     <div class="legend"><span><span class="c done">✓</span> on time</span><span><span class="c late">L</span> late</span><span><span class="c missing">✗</span> missed</span><span><span class="c todo">·</span> not yet</span><span><span class="c excused">E</span> excused</span></div>
     <div class="legend"><span><span class="ring hw"></span>handwritten (photos)</span><span><span class="ring ty"></span>typed</span><span><span class="ring pz"></span>typed, mostly pasted</span><span class="muted">Hover over a cell for the details.</span></div></div>
+  ${activityCard(students)}
   ${howCard(students)}
   <div class="sc-card"><h2>The season so far</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Every deadline that has passed.</p>
     <div class="tablewrap"><table><thead><tr><th class="l">Student</th><th>On time</th><th>Late</th><th>Missed</th><th>Excused</th><th>Weeks with a detention</th></tr></thead><tbody>
     ${tot.sort((a,b)=>b.c.missing-a.c.missing||a.s.name.localeCompare(b.s.name)).map(x=>`<tr><td class="l">${esc(x.s.name)}</td><td>${x.c.done}</td><td>${x.c.late}</td><td>${x.c.missing?`<span class="cell a">${x.c.missing}</span>`:0}</td><td>${x.c.excused}</td><td>${x.weeksMissed}</td></tr>`).join('')}
     </tbody></table></div></div>
   ${coursesCard(items,students)}`;
+  wireActivity();
   const px=$('#pmX');if(px)px.onclick=()=>{try{sessionStorage.removeItem('nk_plan_msg');}catch(e){}render();};
   $('#scPrev').onclick=()=>{view.due=dues[idx-1];render();};
   $('#scNext').onclick=()=>{view.due=dues[idx+1];render();};
