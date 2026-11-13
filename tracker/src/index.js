@@ -13,6 +13,8 @@
    are stored only as SHA-256 hashes.
    ===================================================================== */
 
+import SEED from './seed.js';
+
 const ITER = 20000;                       // PBKDF2 iterations (kept modest for the Workers CPU limit)
 const STUDENT_DAYS = 365;                 // students stay signed in for a school year
 const TEACHER_HOURS = 12;
@@ -51,11 +53,35 @@ const SCHEMA = [
 ];
 let schemaReady = false;
 async function ensureSchema(db) {
-  if (schemaReady) return;
+  if (schemaReady) { if (!seedDone) { try { await runSeed(db); } catch (e) {} } return; }
   await db.batch(SCHEMA.map(s => db.prepare(s)));
   /* columns added after the first version */
   for (const sql of ['ALTER TABLE marks ADD COLUMN ref TEXT', 'ALTER TABLE marks ADD COLUMN how TEXT']) { try { await db.prepare(sql).run(); } catch (e) {} }
   schemaReady = true;
+  try { await runSeed(db); } catch (e) { console.error('seed', e && e.stack || e); }
+}
+
+/* Work and results the teacher has had added in bulk (tracker/src/seed.js).
+   Each entry goes to the one account whose name contains entry.match, once only.
+   If the account does not exist yet, it is tried again later. */
+let seedDone = false;
+async function runSeed(db) {
+  if (!Array.isArray(SEED) || !SEED.length) { seedDone = true; return; }
+  let left = 0;
+  await db.prepare('CREATE TABLE IF NOT EXISTS seeded(id TEXT PRIMARY KEY, username TEXT, t TEXT)').run();
+  for (const e of SEED) {
+    if (await db.prepare('SELECT id FROM seeded WHERE id=?').bind(e.id).first()) continue;
+    const { results } = await db.prepare('SELECT username FROM users WHERE lower(name) LIKE ?').bind('%' + String(e.match).toLowerCase() + '%').all();
+    if (results.length !== 1) { left++; continue; }
+    const u = results[0].username, stmts = [];
+    if (e.work) stmts.push(db.prepare("INSERT OR IGNORE INTO work(id,username,source,title,spec,status,created,due) VALUES(?,?,'teacher',?,?,'set',?,?)")
+      .bind(e.work.id, u, e.work.title, JSON.stringify(e.work.spec), nowIso(), e.work.due || null));
+    for (const m of e.marks || []) stmts.push(db.prepare('INSERT OR IGNORE INTO marks(qid,username,t,tool,question,mark,level,well,improve,answer) VALUES(?,?,?,?,?,?,?,?,?,?)')
+      .bind(m.qid, u, m.t, m.tool, m.question, m.mark, m.level || '', m.well || '', m.improve || '', ''));
+    stmts.push(db.prepare('INSERT INTO seeded(id,username,t) VALUES(?,?,?)').bind(e.id, u, nowIso()));
+    await db.batch(stmts);
+  }
+  seedDone = left === 0;
 }
 
 /* ---------- small helpers ---------- */
