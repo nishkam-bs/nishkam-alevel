@@ -11,6 +11,35 @@ if(!A){window.NTrack={init(){},mark(){}};return;}
 const PAGE=location.pathname.split('/').pop().replace(/\.html$/,'')||'index';
 const DKEY='draft:'+PAGE;
 let bar=null,ta=null,timer=null,linked=null;
+/* how the answer was written: characters typed, characters pasted, the biggest single paste, active minutes */
+const blank=()=>({k:0,p:0,big:0,s:0,n:0});
+let st=blank(),lastT=0,prevLen=0,clip=0;
+function watch(){
+  ta.addEventListener('paste',e=>{try{clip=((e.clipboardData||window.clipboardData).getData('text')||'').length;}catch(x){clip=0;}});
+  ta.addEventListener('drop',e=>{try{clip=(e.dataTransfer.getData('text')||'').length;}catch(x){clip=0;}});
+  ta.addEventListener('beforeinput',()=>{prevLen=ta.value.length;});
+  ta.addEventListener('input',e=>{
+    if(!e.inputType){prevLen=ta.value.length;return;}
+    const d=ta.value.length-prevLen,now=Date.now();
+    if(lastT&&now-lastT<90000)st.s+=(now-lastT)/1000;lastT=now;
+    if(/^insertFrom(Paste|Drop|Yank)/.test(e.inputType)){const n=Math.max(clip,d,0);st.p+=n;st.n++;if(n>st.big)st.big=n;clip=0;}
+    else if(e.inputType==='insertText'||e.inputType==='insertLineBreak'||e.inputType==='insertParagraph')st.k+=Math.max((e.data||'').length,e.inputType==='insertText'?0:1);
+    else if(e.inputType==='insertCompositionText')st.k+=Math.max(d,0);
+    if(!ta.value.trim())st=blank();
+    prevLen=ta.value.length;
+  });
+}
+function photos(){
+  let imgs=[];try{if(typeof uploadedImages!=='undefined'&&Array.isArray(uploadedImages))imgs=uploadedImages;}catch(e){}
+  const um=document.getElementById('uploadMode');
+  const upOn=um&&getComputedStyle(um).display!=='none';
+  return imgs.length&&(upOn||!(ta&&ta.value.trim()))?imgs.length:0;
+}
+function how(){
+  const pg=photos();if(pg)return {m:'photo',pg};
+  const t=ta?ta.value.trim():'';if(!t)return null;
+  return {m:'typed',w:t.split(/\s+/).length,k:st.k,p:st.p,big:st.big,n:st.n,s:Math.round(st.s)};
+}
 const QP=new URLSearchParams(location.search).get('q');
 
 /* which past-paper question is selected (ids come from the verified question bank) */
@@ -48,7 +77,7 @@ function question(){
 }
 function snapshot(){
   if(!ta)return;
-  const d=Object.assign({text:ta.value},question());
+  const d=Object.assign({text:ta.value,st},question());
   const old=A.get(DKEY)||{};
   if(old.text===d.text&&old.sel===d.sel&&old.cq===d.cq)return;
   A.set(DKEY,d);
@@ -58,7 +87,7 @@ function later(){clearTimeout(timer);timer=setTimeout(snapshot,800);}
 function restore(){
   const d=A.get(DKEY);
   if(!ta||!d||!d.text||ta.value.trim())return;
-  ta.value=d.text;ta.dispatchEvent(new Event('input',{bubbles:true}));
+  ta.value=d.text;if(d.st)st=Object.assign(blank(),d.st);ta.dispatchEvent(new Event('input',{bubbles:true}));
   try{
     if(typeof d.sel==='number'&&d.sel>=0){
       let b=document.querySelector(`.qopt[data-i="${d.sel}"]`);
@@ -73,7 +102,7 @@ function restore(){
   const note=document.createElement('p');
   note.style.cssText='font-size:13px;opacity:.75;margin:6px 0 0';
   note.innerHTML='Your unfinished answer has been brought back. <button type="button" style="font:inherit;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:inherit">Start a new one</button>';
-  note.querySelector('button').onclick=()=>{ta.value='';ta.dispatchEvent(new Event('input',{bubbles:true}));A.set(DKEY,{text:''});note.remove();};
+  note.querySelector('button').onclick=()=>{st=blank();ta.value='';ta.dispatchEvent(new Event('input',{bubbles:true}));A.set(DKEY,{text:''});note.remove();};
   ta.insertAdjacentElement('afterend',note);
 }
 
@@ -83,7 +112,7 @@ window.NTrack={
     const top=document.querySelector('main')||document.getElementById('mainContent');
     bar=A.bar(top||ta,{inside:!!top,text:'Sign in once on the home page and your answers and marks are saved to your account.'});
     if(ta){
-      ta.addEventListener('input',later);
+      watch();ta.addEventListener('input',later);
       document.addEventListener('click',e=>{if(e.target.closest('.qopt,#useCustom'))setTimeout(snapshot,0);});
       addEventListener('pagehide',snapshot);
       if(QP){openLinked();}else{restore();A.ready.then(restore);}
@@ -93,6 +122,7 @@ window.NTrack={
   mark(r){
     const row={ref:currentRef(),tool:r.tool,question:String(r.question||'').slice(0,500),mark:String(r.mark==null?'':r.mark).slice(0,20),level:String(r.level||'').slice(0,60),
       well:String(r.well||'').slice(0,1200),improve:String(r.improve||'').slice(0,1200),answer:String(r.answer||'').slice(0,12000)};
+    try{const h=how();if(h)row.how=JSON.stringify(h);}catch(e){}
     A.send('/mark',row);
     if(A.on&&!A.user){
       const panel=r.panel&&document.querySelector(r.panel);

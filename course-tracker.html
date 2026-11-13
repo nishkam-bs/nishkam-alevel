@@ -138,6 +138,13 @@ const COURSES={
 let OFF=0,STAGES=COURSES[0].stages,WRITE_STAGE=10;
 /* rows in the sheet: stage 1-10 = Start/End, 101-110 = Judgement, 201-210 = Calculations, 301-310 = Concepts, 401-410 = Application, 501-510 = Models, 601-610 = Paper 3 */
 const courseOf=st=>st>=100?Math.floor(st/100)*100:0;
+
+function howObj(m){try{return m.how?JSON.parse(m.how):null;}catch(e){return null;}}
+function howLine(m){const h=howObj(m);if(!h)return '';if(h.m==='photo')return `Handwritten: ${h.pg} photo page${h.pg>1?'s':''}.`;const tot=(h.k||0)+(h.p||0),pc=tot?Math.round(100*(h.p||0)/tot):0;
+  return `Typed: ${h.w} words, ${pc}% pasted${h.big?` (largest paste ${h.big} characters)`:''}, about ${Math.max(1,Math.round((h.s||0)/60))} min of typing.`;}
+function howCell(m){const h=howObj(m);if(!h)return '<span class="muted">not recorded</span>';if(h.m==='photo')return '<span style="color:#2f6fdb;font-weight:600">Handwritten</span>';
+  const tot=(h.k||0)+(h.p||0);const pz=((h.p||0)>=300&&(h.p||0)>=tot*0.5)||(h.big||0)>=500;
+  return pz?`<span style="color:#c0392b;font-weight:600" title="${esc(howLine(m))}">Mostly pasted</span>`:`<span class="muted" title="${esc(howLine(m))}">Typed</span>`;}
 function rowsFor(){return data.rows.filter(r=>courseOf(r.stage)===OFF).map(r=>Object.assign({},r,{stage:r.stage-OFF}));}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -231,14 +238,14 @@ function renderMarks(){
   $('#sDone').textContent=marks.length;
   const ps=marks.map(m=>pct(m.mark)).filter(x=>x!=null);$('#sAvg').textContent=ps.length?Math.round(ps.reduce((a,b)=>a+b,0)/ps.length)+'%':'–';
   const wk=Date.now()-7*86400000;$('#sWeek').textContent=marks.filter(m=>Date.parse(m.t)>wk).length;
-  $('#tbl').innerHTML=marks.length?`<thead><tr><th class="l">Student</th><th class="l">Date</th><th class="l">Tool</th><th class="l">Question</th><th>Mark</th><th class="l">Level</th></tr></thead><tbody>${marks.map((m,i)=>`<tr><td class="l"><button data-i="${i}">${esc(m.name)}</button> <span class="muted">${esc(m.exam)}</span></td><td class="l muted">${new Date(m.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td><td class="l">${esc(m.tool)}</td><td class="l" style="white-space:normal;min-width:240px;max-width:420px">${esc(m.question.length>140?m.question.slice(0,140)+'…':m.question)}</td><td><span class="cell ${(pct(m.mark)??0)>=50?'p':'a'}">${esc(m.mark)}</span></td><td class="l muted">${esc(m.level)}</td></tr>`).join('')}</tbody>`:'<tbody><tr><td class="l muted">No marked answers yet. Students\' results appear here when they use the 25-mark lab, Open essay lab, 9-mark lab or Redraft while signed in.</td></tr></tbody>';
+  $('#tbl').innerHTML=marks.length?`<thead><tr><th class="l">Student</th><th class="l">Date</th><th class="l">Tool</th><th class="l">Question</th><th>Mark</th><th class="l">Level</th><th class="l">How</th></tr></thead><tbody>${marks.map((m,i)=>`<tr><td class="l"><button data-i="${i}">${esc(m.name)}</button> <span class="muted">${esc(m.exam)}</span></td><td class="l muted">${new Date(m.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td><td class="l">${esc(m.tool)}</td><td class="l" style="white-space:normal;min-width:240px;max-width:420px">${esc(m.question.length>140?m.question.slice(0,140)+'…':m.question)}</td><td><span class="cell ${(pct(m.mark)??0)>=50?'p':'a'}">${esc(m.mark)}</span></td><td class="l muted">${esc(m.level)}</td><td class="l">${howCell(m)}</td></tr>`).join('')}</tbody>`:'<tbody><tr><td class="l muted">No marked answers yet. Students\' results appear here when they use the 25-mark lab, Open essay lab, 9-mark lab or Redraft while signed in.</td></tr></tbody>';
   document.querySelectorAll('#tbl button').forEach(b=>b.onclick=()=>markDetail(marks[+b.dataset.i]));
 }
 function markDetail(m){
   const d=$('#detail');d.hidden=false;
   d.innerHTML=`<h2>${esc(m.name)} <span class="muted" style="font-size:1rem">${esc(m.exam)} · ${esc(m.tool)} · ${new Date(m.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span></h2>
     <p><b>${esc(m.mark)}</b> ${esc(m.level)}</p><p class="muted" style="margin:6px 0 12px">${esc(m.question)}</p>
-    ${m.well?`<p><b>What went well:</b> ${esc(m.well)}</p>`:''}${m.improve?`<p><b>To improve:</b> ${esc(m.improve)}</p>`:''}${m.answer?`<div class="answer">${esc(m.answer)}</div>`:''}`;
+    ${m.how?`<p class="muted">${esc(howLine(m))}</p>`:''}${m.well?`<p><b>What went well:</b> ${esc(m.well)}</p>`:''}${m.improve?`<p><b>To improve:</b> ${esc(m.improve)}</p>`:''}${m.answer?`<div class="answer">${esc(m.answer)}</div>`:''}`;
   d.scrollIntoView({behavior:'smooth',block:'start'});
 }
 

@@ -52,7 +52,7 @@ async function ensureSchema(db) {
   if (schemaReady) return;
   await db.batch(SCHEMA.map(s => db.prepare(s)));
   /* columns added after the first version */
-  for (const sql of ['ALTER TABLE marks ADD COLUMN ref TEXT']) { try { await db.prepare(sql).run(); } catch (e) {} }
+  for (const sql of ['ALTER TABLE marks ADD COLUMN ref TEXT', 'ALTER TABLE marks ADD COLUMN how TEXT']) { try { await db.prepare(sql).run(); } catch (e) {} }
   schemaReady = true;
 }
 
@@ -210,9 +210,9 @@ const routes = {
   async '/mark'(db, b) {
     const u = await student(db, b);
     if (!b.tool) throw new HttpError(400, 'Missing tool.');
-    await db.prepare('INSERT OR IGNORE INTO marks(qid,username,t,tool,question,mark,level,well,improve,answer,ref) VALUES(?,?,?,?,?,?,?,?,?,?,?)')
+    await db.prepare('INSERT OR IGNORE INTO marks(qid,username,t,tool,question,mark,level,well,improve,answer,ref,how) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)')
       .bind(qid(b), u.username, nowIso(), str(b.tool, 60), str(b.question, 500), str(b.mark, 20), str(b.level, 60),
-        str(b.well, 1200), str(b.improve, 1200), str(b.answer, 12000), str(b.ref, 60) || null).run();
+        str(b.well, 1200), str(b.improve, 1200), str(b.answer, 12000), str(b.ref, 60) || null, str(b.how, 300) || null).run();
     return { ok: true };
   },
 
@@ -244,7 +244,7 @@ const routes = {
     const [users, att, mk, bl, st, wk, nt, sc, ex] = await db.batch([
       db.prepare('SELECT username,name,must_change,created,last_seen FROM users ORDER BY name'),
       db.prepare('SELECT username,t,stage,title,score,total,passed,missed,answer FROM attempts ORDER BY id DESC LIMIT 8000'),
-      db.prepare('SELECT username,t,tool,question,mark,level,well,improve,answer,ref FROM marks ORDER BY id DESC LIMIT 3000'),
+      db.prepare('SELECT username,t,tool,question,mark,level,well,improve,answer,ref,how FROM marks ORDER BY id DESC LIMIT 3000'),
       db.prepare('SELECT username,t,kind,ref,topic,got,total,detail FROM blurts ORDER BY id DESC LIMIT 4000'),
       db.prepare("SELECT username,k,data FROM store WHERE k LIKE 'course:%' OR k LIKE 'quiz:%' OR k LIKE 'drill:%' OR k='blurt:history'"),
       db.prepare('SELECT id,username,source,title,spec,status,created,due,answers,result,score,total,done_at FROM work ORDER BY created DESC LIMIT 1500'),

@@ -20,6 +20,8 @@ const css=`
 .sc-grid th.q{writing-mode:vertical-rl;transform:rotate(180deg);height:120px;font-weight:600;color:var(--fg);vertical-align:bottom;max-width:40px}
 .sc-grid td.l,.sc-grid th.l{text-align:left}
 .c{display:inline-block;min-width:26px;padding:3px 4px;border-radius:5px;font:600 .72rem "IBM Plex Mono",monospace;cursor:pointer}
+.c.hw{box-shadow:inset 0 0 0 2px #2f6fdb}.c.ty{box-shadow:inset 0 0 0 2px #8a8f98}.c.pz{box-shadow:inset 0 0 0 2px #c0392b}
+.ring{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:4px}.ring.hw{box-shadow:inset 0 0 0 2px #2f6fdb}.ring.ty{box-shadow:inset 0 0 0 2px #8a8f98}.ring.pz{box-shadow:inset 0 0 0 2px #c0392b}
 .c.done{background:var(--ok-soft);color:var(--ok)}.c.late{background:var(--amber-soft);color:var(--amber)}.c.missing{background:var(--end-soft);color:var(--end)}.c.todo{color:var(--muted);background:var(--bg2)}.c.excused{color:var(--muted);text-decoration:line-through}
 .det{list-style:none;padding:0;margin:0;display:grid;gap:8px}
 .det li{border-bottom:1px solid var(--line);padding-bottom:8px}
@@ -67,6 +69,26 @@ const shortLabel=it=>{if(it.kind==='exam'){const e=S.EX[it.ref];return e?`P${e.p
 const LETTER={done:'✓',late:'L',missing:'✗',todo:'·',excused:'E'};
 const TITLE={done:'Done on time',late:'Done after the deadline',missing:'Not done by the deadline',todo:'Not done yet',excused:'Excused'};
 
+
+/* ---------- handwritten or typed ---------- */
+function parseHow(m){try{return m&&m.how?JSON.parse(m.how):null;}catch(e){return null;}}
+function howKind(h){if(!h)return '';if(h.m==='photo')return 'hw';const tot=(h.k||0)+(h.p||0);
+  if(((h.p||0)>=300&&(h.p||0)>=tot*0.5)||(h.big||0)>=500)return 'pz';return 'ty';}
+function howText(h){if(!h)return '';if(h.m==='photo')return `Handwritten: ${h.pg} photo page${h.pg>1?'s':''}`;
+  const tot=(h.k||0)+(h.p||0),pc=tot?Math.round(100*(h.p||0)/tot):0;
+  return `Typed: ${h.w} words, ${pc}% pasted${h.big?` (largest paste ${h.big} characters)`:''}, about ${Math.max(1,Math.round((h.s||0)/60))} min of typing`;}
+const RANK={pz:3,ty:2,hw:1,'':0};
+function howOf(u,it){const refs=it.kind==='question'?[it.id]:refsOf(it);if(!refs.length)return null;
+  const hs=(TR.data.marks||[]).filter(m=>m.exam===u&&m.ref&&refs.includes(m.ref)).map(parseHow).filter(Boolean);
+  if(!hs.length)return null;hs.sort((a,b)=>RANK[howKind(b)]-RANK[howKind(a)]);return {k:howKind(hs[0]),t:hs.map(howText).join(' | ')};}
+function howCard(students){
+  const rows=students.map(s=>{const hs=(TR.data.marks||[]).filter(m=>m.exam===s.u).map(parseHow).filter(Boolean);
+    const c={hw:0,ty:0,pz:0};hs.forEach(h=>c[howKind(h)]++);return {s,c,n:hs.length};});
+  return `<div class="sc-card"><h2>Handwritten or typed</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Answers marked with the essay tools since this started being recorded. "Mostly pasted" means at least half of a typed answer was pasted in, or one paste of 500 characters or more.</p>
+  <div class="tablewrap"><table><thead><tr><th class="l">Student</th><th><span class="ring hw"></span>Photos</th><th><span class="ring ty"></span>Typed</th><th><span class="ring pz"></span>Mostly pasted</th></tr></thead><tbody>
+  ${rows.sort((a,b)=>b.c.pz-a.c.pz||b.c.ty-a.c.ty||a.s.name.localeCompare(b.s.name)).map(x=>`<tr><td class="l">${esc(x.s.name)}</td><td>${x.c.hw}</td><td>${x.c.ty}</td><td>${x.c.pz?`<span class="cell a">${x.c.pz}</span>`:0}</td></tr>`).join('')}
+  </tbody></table></div></div>`;}
+
 /* ---------- this week ---------- */
 function renderWeek(){
   const {items,students}=data();
@@ -103,9 +125,12 @@ function renderWeek(){
     ${students.map(s=>{const mine=wk.filter(i=>s.st[i.id]);const dn=mine.filter(i=>['done','late','excused'].includes(s.st[i.id].s)).length;
       return `<tr><td class="l">${esc(s.name)}</td><td>${dn}/${mine.length}</td>${wk.map(i=>{const x=s.st[i.id];if(!x)return '<td class="muted">–</td>';
         const qz=(i.kind==='quiz'||i.kind==='drill')?((TR.data.store||{})[s.u]||{})[i.kind+':'+i.ref]:null,sc=qz&&qz.total?` · ${qz.score}/${qz.total} right${qz.secs?` in ${Math.round(qz.secs/60)} min`:' first time'}`:'';
-        return `<td><span class="c ${x.s}" data-u="${esc(s.u)}" data-i="${esc(i.id)}" title="${TITLE[x.s]}${x.t?' · '+new Date(x.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}${sc}">${qz&&qz.done&&qz.total?qz.score:LETTER[x.s]}</span></td>`;}).join('')}</tr>`;}).join('')}
+        const hw=(x.s==='done'||x.s==='late')?howOf(s.u,i):null;
+        return `<td><span class="c ${x.s}${hw&&hw.k?' '+hw.k:''}" data-u="${esc(s.u)}" data-i="${esc(i.id)}" title="${TITLE[x.s]}${x.t?' · '+new Date(x.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}${sc}${hw?' · '+esc(hw.t):''}">${qz&&qz.done&&qz.total?qz.score:LETTER[x.s]}</span></td>`;}).join('')}</tr>`;}).join('')}
     </tbody></table></div>
-    <div class="legend"><span><span class="c done">✓</span> on time</span><span><span class="c late">L</span> late</span><span><span class="c missing">✗</span> missed</span><span><span class="c todo">·</span> not yet</span><span><span class="c excused">E</span> excused</span></div></div>
+    <div class="legend"><span><span class="c done">✓</span> on time</span><span><span class="c late">L</span> late</span><span><span class="c missing">✗</span> missed</span><span><span class="c todo">·</span> not yet</span><span><span class="c excused">E</span> excused</span></div>
+    <div class="legend"><span><span class="ring hw"></span>handwritten (photos)</span><span><span class="ring ty"></span>typed</span><span><span class="ring pz"></span>typed, mostly pasted</span><span class="muted">Hover over a cell for the details.</span></div></div>
+  ${howCard(students)}
   <div class="sc-card"><h2>The season so far</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Every deadline that has passed.</p>
     <div class="tablewrap"><table><thead><tr><th class="l">Student</th><th>On time</th><th>Late</th><th>Missed</th><th>Excused</th><th>Weeks with a detention</th></tr></thead><tbody>
     ${tot.sort((a,b)=>b.c.missing-a.c.missing||a.s.name.localeCompare(b.s.name)).map(x=>`<tr><td class="l">${esc(x.s.name)}</td><td>${x.c.done}</td><td>${x.c.late}</td><td>${x.c.missing?`<span class="cell a">${x.c.missing}</span>`:0}</td><td>${x.c.excused}</td><td>${x.weeksMissed}</td></tr>`).join('')}
