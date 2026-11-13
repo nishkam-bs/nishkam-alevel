@@ -148,9 +148,9 @@ function wireActivity(){
 /* ---------- this week ---------- */
 function renderWeek(){
   const {items,students}=data();
-  if(!autoTried&&items.length&&(planChanges(items).old.length||planChanges(items).missing.some(i=>/^dr-/.test(i.id)))){autoUpdate(items);return;}
+  if(!autoTried&&items.length&&(()=>{const m=planChanges(items);return m.old.length||m.changed.length||m.missing.some(i=>/^dr-/.test(i.id));})()){autoUpdate(items);return;}
   let planMsg='';try{planMsg=sessionStorage.getItem('nk_plan_msg')||'';}catch(e){}
-  if(!items.length){root.innerHTML=`<div class="sc-card"><h2>No schedule yet</h2><p class="muted">Load the plan: 15 weeks from 1 December to 28 April, in line with the school calendar. Week A: a 9-marker, a case study 16-marker, a Paper 3 24-marker and a 25-marker. Week B: a 12-marker, an open 16-marker, a Paper 3 20-marker and a 25-marker. Lighter weeks around the KATs have one 9-marker. Every week also has 20 multiple-choice questions, 10 calculations, a Paper 2 drill and a Paper 3 drill, and the seven courses are spread through. You can change anything afterwards.</p><button class="btn" id="scLoad">Load the plan</button> <span class="muted" id="scMsg"></span></div>`;
+  if(!items.length){root.innerHTML=`<div class="sc-card"><h2>No schedule yet</h2><p class="muted">Load the plan: 12 weeks of homework from 1 December to 28 April, in line with the school calendar, with nothing set in the KAT weeks. Week A: a 9-marker, a case study 16-marker, a Paper 3 24-marker and a 25-marker. Week B: a 12-marker, an open 16-marker, a Paper 3 20-marker and a 25-marker. Every week also has 20 multiple-choice questions, 10 calculations, a Paper 2 drill and a Paper 3 drill, and the seven courses are spread through. You can change anything afterwards.</p><button class="btn" id="scLoad">Load the plan</button> <span class="muted" id="scMsg"></span></div>`;
     $('#scLoad').onclick=loadPlan;return;}
   const dues=S.weeks(items).filter(d=>items.some(i=>i.due===d));
   const due=view.due&&dues.includes(view.due)?view.due:(S.currentDue(items)||dues[0]);
@@ -225,7 +225,9 @@ const fromPlan=id=>/^e-P\d-\d{4}N?-[\d.]+$/.test(id)||/^ch-/.test(id)||/^c-[a-z0
 function refsOf(it){return it.kind==='choice'?String(it.ref).split(','):it.kind==='exam'?[it.ref]:[];}
 function planChanges(items){
   const planIds=new Set(SCHED_PLAN.items.map(i=>i.id)),have=new Set(items.map(i=>i.id));
-  return {old:items.filter(i=>fromPlan(i.id)&&!planIds.has(i.id)),missing:SCHED_PLAN.items.filter(i=>!have.has(i.id))};
+  const byId=Object.fromEntries(items.map(i=>[i.id,i]));
+  const changed=SCHED_PLAN.items.filter(i=>byId[i.id]&&(byId[i.id].due!==i.due||String(byId[i.id].ref||'')!==String(i.ref||'')||(i.title&&byId[i.id].title!==i.title)));
+  return {old:items.filter(i=>fromPlan(i.id)&&!planIds.has(i.id)),missing:SCHED_PLAN.items.filter(i=>!have.has(i.id)),changed};
 }
 /* Old planned items are removed, except that anyone who has already handed one in keeps it, marked as done. */
 async function applyPlan(items){
@@ -240,10 +242,10 @@ async function applyPlan(items){
 let autoTried=false;
 async function autoUpdate(items){
   if(autoTried||!items.length)return false;autoTried=true;
-  const m=planChanges(items);if(!m.old.length&&!m.missing.some(i=>/^dr-/.test(i.id)))return false;
+  const m=planChanges(items);if(!m.old.length&&!m.changed.length&&!m.missing.some(i=>/^dr-/.test(i.id)))return false;
   root.innerHTML='<div class="sc-card"><h2>Updating the schedule</h2><p class="muted">Moving to the new weekly plan...</p></div>';
   try{const r=await applyPlan(items);
-    try{sessionStorage.setItem('nk_plan_msg',`The schedule has been updated to the latest weekly plan, including the Paper 2 and Paper 3 drills. ${r.kept.length?`${r.kept.length} question${r.kept.length>1?'s':''} already handed in ${r.kept.length>1?'have':'has'} been kept for the students who did ${r.kept.length>1?'them':'it'}, marked as done.`:'Nobody had handed in any of the old questions yet.'}`);}catch(e){}
+    try{sessionStorage.setItem('nk_plan_msg',`The schedule has been updated to the latest weekly plan: Paper 2 and Paper 3 drills every week, and no homework in the KAT weeks. ${r.kept.length?`${r.kept.length} question${r.kept.length>1?'s':''} already handed in ${r.kept.length>1?'have':'has'} been kept for the students who did ${r.kept.length>1?'them':'it'}, marked as done.`:'Nobody had handed in any of the old questions yet.'}`);}catch(e){}
     await TR.reload();}catch(e){root.innerHTML=`<div class="sc-card"><h2>Could not update the schedule</h2><p class="muted">${esc(e.message)}</p></div>`;}
   return true;
 }
