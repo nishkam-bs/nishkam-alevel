@@ -170,6 +170,13 @@ a{color:var(--blue);text-decoration:none}
 </div>
 
 <script>
+function extractJSON(txt){
+  const t=String(txt||'').replace(/```json|```/g,'').trim();
+  const a=t.indexOf('{'),b=t.lastIndexOf('}');
+  if(a===-1||b<=a)throw new Error('The marker did not send back any feedback');
+  return JSON.parse(t.slice(a,b+1));
+}
+
 // ══════════ AQA 7132 CONCEPT DATABASE ══════════
 const CONCEPTS=[
   // Unit 3.1 — What is business?
@@ -526,7 +533,7 @@ Example:
     if(!resp.ok)throw new Error('Server error '+resp.status);
     const data=await resp.json();
     const txt=data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
-    const chain=JSON.parse(txt);
+    const chain=extractJSON(txt);
 
     // Build the player
     btn.style.display='none';

@@ -518,7 +518,7 @@ async function runMark(){
   }catch(err){
     document.getElementById('ldPanel').classList.remove('show');
     document.getElementById('fbPanel').style.display='block';
-    document.getElementById('fbPanel').innerHTML=`<div class="al al-r"><b>Something went wrong</b>${err.message}. Your work is saved. Go back to Mark My Answer and try again.</div>`;
+    document.getElementById('fbPanel').innerHTML=`<div class="al al-r"><b>Something went wrong</b>${err.message}. Your answer is still there. Go back to Mark My Answer and try again.</div>`;
   }
 }
 

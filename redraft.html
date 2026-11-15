@@ -321,11 +321,10 @@ ${isFullEssay ? `{
       })
     });
 
+    if(!response.ok) throw new Error('server '+response.status);
     const data = await response.json();
-    let txt = data.content ? data.content.map(c=>c.text||'').join('') : '';
-    txt = txt.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
-
-    const result = JSON.parse(txt);
+    const txt = data.content ? data.content.map(c=>c.text||'').join('') : '';
+    const result = extractJSON(txt);
     clearInterval(interval);
 
     showFeedback(result);
@@ -335,8 +334,15 @@ ${isFullEssay ? `{
     console.error('Error:',e);
     document.getElementById('loadingState').classList.add('hidden');
     document.getElementById('step1').classList.remove('hidden');
-    alert('Something went wrong. Please try again.');
+    alert('The feedback did not come through. Your work is still here, so press the button to try again.');
   }
+}
+
+function extractJSON(txt){
+  const t=String(txt||'').replace(/```json|```/g,'').trim();
+  const a=t.indexOf('{'),b=t.lastIndexOf('}');
+  if(a===-1||b<=a)throw new Error('The marker did not send back any feedback');
+  return JSON.parse(t.slice(a,b+1));
 }
 
 /* ── Display feedback ── */
