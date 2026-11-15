@@ -1306,7 +1306,7 @@ document.querySelectorAll('.drill-submit').forEach(btn=>{
       const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:700,system:`You are an AQA A-level Business examiner giving drill feedback. Be supportive but examiner-strict. Respond ONLY with JSON (no markdown, no backticks): {"rating":"Weak|Developing|Strong|Excellent","www":"<what went well - 2-3 sentences>","ebi":"<even better if - 2-3 sentences>","upgrade":"<if not Excellent, write a stronger version in 3-4 sentences showing what a stronger answer looks like>"}`,messages:[{role:"user",content:`SKILL: ${skill}\nTASK: ${taskText}\nSTUDENT RESPONSE: ${input}`}]})});
       const data=await resp.json();
       const txt=data.content.map(c=>c.text||'').join('');
-      const r=JSON.parse(txt.replace(/```json|```/g,'').trim());
+      const r=(()=>{const t=txt.replace(/```json|```/g,'').trim();const a=t.indexOf('{'),b=t.lastIndexOf('}');if(a===-1||b<=a)throw new Error('The marker did not send back any feedback');return JSON.parse(t.slice(a,b+1));})();
       const col={Weak:'al-r',Developing:'al-y',Strong:'al-b',Excellent:'al-g'}[r.rating]||'al-b';
       fb.innerHTML=`<div class="al ${col}"><b>${r.rating} — What went well</b>${r.www}</div><div class="al al-y mt"><b>Even better if</b>${r.ebi}</div>${r.upgrade?`<div class="al al-g mt"><b>A stronger version</b>${r.upgrade}</div>`:''}`;
     }catch(err){fb.innerHTML=`<div class="al al-r"><b>Error</b>${err.message||'Could not connect.'}</div>`;}
