@@ -97,6 +97,7 @@ async function load(){
   if(!/^(mcq|calc)-\d{2}$/.test(set)){$('#qs').innerHTML='<p class="muted">This set of questions could not be found.</p>';return;}
   try{const r=await fetch('weekly/'+set+'.json',{cache:'no-cache'});if(!r.ok)throw 0;Q=await r.json();}
   catch(e){$('#qs').innerHTML='<p class="muted">Could not load the questions. Check your connection and try again.</p>';return;}
+  {const st=Ac.get(KEY);if(st&&Array.isArray(st.a)){const f=score(Object.assign({},st));if(f.score!==st.score||f.total!==st.total)Ac.set(KEY,f);}}
   document.title=Q.title;$('#title').textContent=Q.title;
   if(/^calc/.test(set))$('#lead').textContent='Work each one out on paper first, then click your answer. The worked solution appears underneath. Your first answer is the one that counts.';
   render();

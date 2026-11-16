@@ -70,6 +70,12 @@ const shortLabel=it=>{if(it.kind==='exam'){const e=S.EX[it.ref];return e?`P${e.p
   if(it.kind==='quiz')return /^mcq/.test(it.ref)?'20 MCQs':'10 calcs';
   if(it.kind==='drill')return /^p3/.test(it.ref)?'P3 drill':'P2 drill';return `Set Q (${it.marks})`;};
 const LETTER={done:'✓',late:'L',missing:'✗',todo:'·',excused:'E'};
+/* quiz scores are worked out again from the saved answers, so a stale saved score can never show */
+const KEYS={};
+function loadKeys(refs){const need=[...new Set(refs)].filter(r=>/^(mcq|calc)-\d{2}$/.test(r)&&!(r in KEYS));if(!need.length)return;
+  need.forEach(r=>{KEYS[r]=null;fetch('weekly/'+r+'.json',{cache:'no-cache'}).then(x=>x.ok?x.json():null).then(j=>{if(j&&j.items){KEYS[r]=j.items.map(i=>i.ans);render();}}).catch(()=>{});});}
+function qFix(key,v){if(!v||!/^quiz:/.test(key))return v;const k=KEYS[key.slice(5)];if(!k||!Array.isArray(v.a))return v;
+  return Object.assign({},v,{total:k.length,score:v.a.filter((x,i)=>x!=null&&x===k[i]).length});}
 const TITLE={done:'Done on time',late:'Done after the deadline',missing:'Not done by the deadline',todo:'Not done yet',excused:'Excused'};
 
 
@@ -103,7 +109,7 @@ function events(){
   (d.marks||[]).forEach(m=>{const h=parseHow(m),k=howKind(h);ev.push({u:m.exam,t:T(m.t),what:`had an answer marked in the ${m.tool}: ${m.mark}`+(k==='hw'?' (handwritten)':k==='pz'?' (typed, mostly pasted)':k==='ty'?' (typed)':''),detail:m.question,k:'mark'});});
   (d.rows||[]).forEach(r=>ev.push({u:r.exam,t:T(r.t),what:`${r.passed?'passed':'had a go at'} ${r.stageTitle||'a course stage'}${r.total?` (${r.score}/${r.total})`:''}`,k:'course'}));
   (d.blurts||[]).forEach(b=>ev.push({u:b.exam,t:T(b.t),what:`did a ${b.kind==='rapid'?'rapid recall':'blurt'}${b.topic?' on '+b.topic:''}${b.total?` (${b.got}/${b.total})`:''}`,k:'blurt'}));
-  Object.entries(d.storeT||{}).forEach(([u,ks])=>Object.entries(ks).forEach(([key,t])=>{const v=((d.store||{})[u]||{})[key]||{};
+  Object.entries(d.storeT||{}).forEach(([u,ks])=>Object.entries(ks).forEach(([key,t])=>{const v=qFix(key,((d.store||{})[u]||{})[key]||{});
     if(/^quiz:/.test(key))ev.push({u,t:T(t),what:(v.done?`finished ${setName(key.slice(5))}: ${v.score}/${v.total}`:`started ${setName(key.slice(5))}`),k:'quiz'});
     else if(/^drill:/.test(key)){const it=(d.sched||[]).find(i=>i.kind==='drill'&&i.ref===key.slice(6));const nmd=it?it.title:key.slice(6);
       ev.push({u,t:T(t),what:(v.done?`finished the ${nmd}: ${v.score}/${v.total} in ${Math.max(1,Math.round((v.secs||0)/60))} min`:`started the ${nmd}`),k:'drill'});}}));
@@ -147,6 +153,7 @@ function wireActivity(){
 
 /* ---------- this week ---------- */
 function renderWeek(){
+  loadKeys(((TR.data||{}).sched||[]).filter(i=>i.kind==='quiz').map(i=>i.ref));
   const {items,students}=data();
   if(!autoTried&&items.length&&(()=>{const m=planChanges(items);return m.old.length||m.changed.length||m.missing.some(i=>/^dr-/.test(i.id));})()){autoUpdate(items);return;}
   let planMsg='';try{planMsg=sessionStorage.getItem('nk_plan_msg')||'';}catch(e){}
@@ -180,7 +187,7 @@ function renderWeek(){
     <div class="tablewrap"><table class="sc-grid"><thead><tr><th class="l">Student</th><th>Done</th>${wk.map(i=>`<th class="q" title="${esc(S.describe(i).sub||'')}">${esc(shortLabel(i))}</th>`).join('')}</tr></thead><tbody>
     ${students.map(s=>{const mine=wk.filter(i=>s.st[i.id]);const dn=mine.filter(i=>['done','late','excused'].includes(s.st[i.id].s)).length;
       return `<tr><td class="l">${esc(s.name)}</td><td>${dn}/${mine.length}</td>${wk.map(i=>{const x=s.st[i.id];if(!x)return '<td class="muted">–</td>';
-        const qz=(i.kind==='quiz'||i.kind==='drill')?((TR.data.store||{})[s.u]||{})[i.kind+':'+i.ref]:null,sc=qz&&qz.total?` · ${qz.score}/${qz.total} right${qz.secs?` in ${Math.round(qz.secs/60)} min`:' first time'}`:'';
+        const qz=(i.kind==='quiz'||i.kind==='drill')?qFix(i.kind+':'+i.ref,((TR.data.store||{})[s.u]||{})[i.kind+':'+i.ref]):null,sc=qz&&qz.total?` · ${qz.score}/${qz.total} right${qz.secs?` in ${Math.round(qz.secs/60)} min`:' first time'}`:'';
         const hw=(x.s==='done'||x.s==='late')?howOf(s.u,i):null;
         return `<td><span class="c ${x.s}${hw&&hw.k?' '+hw.k:''}" data-u="${esc(s.u)}" data-i="${esc(i.id)}" title="${TITLE[x.s]}${x.t?' · '+new Date(x.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}${sc}${hw?' · '+esc(hw.t):''}">${qz&&qz.done&&qz.total?qz.score:LETTER[x.s]}</span></td>`;}).join('')}</tr>`;}).join('')}
     </tbody></table></div>
