@@ -183,7 +183,7 @@ function renderWeek(){
   <div class="sc-card" id="detPrint"><h2>Friday detentions${last?`: deadline ${esc(S.fmtDay(last))}`:''}</h2>
     ${!last?'<p class="muted">No deadline has passed yet.</p>':det.length?`<ul class="det">${det.map(x=>`<li><b>${esc(x.s.name)}</b> <span class="why">${x.miss.length} missing</span><div class="why">${x.miss.map(i=>esc(shortLabel(i))).join(' · ')}</div></li>`).join('')}</ul>`:'<p class="muted">Everyone met the deadline.</p>'}
     ${det.length?`<div style="margin-top:12px;display:flex;gap:10px"><button class="btn ghost" id="detCopy">Copy the list</button><button class="btn ghost" id="detPrintBtn">Print</button></div>`:''}</div>
-  <div class="sc-card"><h2>Week ${idx+1}: due ${esc(S.fmtDay(due))}</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Click a cell to excuse a student (for example if they were absent), or click again to undo.${passed?'':' The deadline has not passed yet.'}</p>
+  <div class="sc-card"><h2>Week ${idx+1}: due ${esc(S.fmtDay(due))}</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Click a cell to excuse a student (for example if they were absent), or click again to undo. Clicking a finished MCQ, calculation or drill set lets you reset it so the student has to do it again.${passed?'':' The deadline has not passed yet.'}</p>
     <div class="tablewrap"><table class="sc-grid"><thead><tr><th class="l">Student</th><th>Done</th>${wk.map(i=>`<th class="q" title="${esc(S.describe(i).sub||'')}">${esc(shortLabel(i))}</th>`).join('')}</tr></thead><tbody>
     ${students.map(s=>{const mine=wk.filter(i=>s.st[i.id]);const dn=mine.filter(i=>['done','late','excused'].includes(s.st[i.id].s)).length;
       return `<tr><td class="l">${esc(s.name)}</td><td>${dn}/${mine.length}</td>${wk.map(i=>{const x=s.st[i.id];if(!x)return '<td class="muted">–</td>';
@@ -217,6 +217,12 @@ function renderWeek(){
   const p=$('#detPrintBtn');if(p)p.onclick=()=>window.print();
   $$('.c[data-i]',root).forEach(el=>el.onclick=async()=>{
     const u=el.dataset.u,id=el.dataset.i,on=!el.classList.contains('excused');
+    const it=items.find(i=>i.id===id);
+    if(it&&(it.kind==='quiz'||it.kind==='drill')&&(el.classList.contains('done')||el.classList.contains('late'))){
+      const nm=((TR.data.accounts||[]).find(a=>a.username===u)||{}).name||u;
+      if(!confirm(`Reset ${shortLabel(it)} for ${nm}? Their answers are cleared and they have to do it again. It will show as not done until they finish it.`))return;
+      try{await TR.api('/sched/reset',{token:TR.token,username:u,key:it.kind+':'+it.ref});await TR.reload();}catch(e){alert(e.message);}
+      return;}
     let note='';if(on){note=prompt('Excuse this student from this piece of work? Add a note if you like (e.g. absent).','Absent');if(note===null)return;}
     try{await TR.api('/sched/excuse',{token:TR.token,id,username:u,on,note});await TR.reload();}catch(e){alert(e.message);}
   });

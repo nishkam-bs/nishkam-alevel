@@ -60,7 +60,7 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 const set=(new URLSearchParams(location.search).get('set')||'').replace(/[^a-z0-9-]/gi,'');
 const KEY='quiz:'+set;
 let Q=null;
-Ac.merge('quiz:',(a,b)=>{const out=Object.assign({},b,a);const n=Math.max((a.a||[]).length,(b.a||[]).length);out.a=[];
+Ac.merge('quiz:',(a,b)=>{if((b.reset||0)>(a.reset||0))return b;const out=Object.assign({},b,a);const n=Math.max((a.a||[]).length,(b.a||[]).length);out.a=[];
   for(let i=0;i<n;i++){const x=(a.a||[])[i],y=(b.a||[])[i];out.a[i]=x!=null?x:(y!=null?y:null);}
   out.done=a.done&&b.done?(a.done<b.done?a.done:b.done):(a.done||b.done||null);return score(out);});
 function score(st){if(!Q)return st;st.total=Q.items.length;st.score=(st.a||[]).filter((x,i)=>x!=null&&Q.items[i]&&x===Q.items[i].ans).length;return st;}

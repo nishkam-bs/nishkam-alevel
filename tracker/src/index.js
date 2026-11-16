@@ -429,6 +429,17 @@ const routes = {
     return { ok: true };
   },
 
+  /* clear a student's MCQ/calculation set or drill so they have to do it again */
+  async '/sched/reset'(db, b) {
+    await session(db, b.token, 'teacher');
+    const k = str(b.key, 120), username = str(b.username, 40);
+    if (!/^(quiz|drill):[a-z0-9-]+$/i.test(k) || !username) throw new HttpError(400, 'Nothing to reset.');
+    const t = Date.now();
+    await db.prepare(`INSERT INTO store(username,k,data,t) VALUES(?,?,?,?)
+      ON CONFLICT(username,k) DO UPDATE SET data=excluded.data, t=excluded.t`).bind(username, k, JSON.stringify({ reset: t }), t).run();
+    return { ok: true };
+  },
+
   async '/sched/excuse'(db, b) {
     await session(db, b.token, 'teacher');
     if (b.on) await db.prepare('INSERT INTO excuse(sched_id,username,note,t) VALUES(?,?,?,?) ON CONFLICT(sched_id,username) DO UPDATE SET note=excluded.note')
