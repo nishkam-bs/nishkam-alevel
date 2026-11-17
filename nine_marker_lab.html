@@ -185,8 +185,8 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
         <div class="upload-zone" id="dropZone">
           <p style="font-size:24px;margin-bottom:8px">&#128247;</p>
           <p style="font-weight:700;color:var(--navy)">Upload photos of your handwritten answer</p>
-          <p class="tiny" style="margin-top:4px">Tap to choose photos or drag and drop. Up to 4 pages.</p>
-          <input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
+          <p class="tiny" style="margin-top:4px">Tap to choose photos or a PDF. Up to 4 pages. One page per photo, in good light.</p>
+          <input type="file" id="fileInput" accept="image/*,application/pdf" multiple style="display:none" />
         </div>
         <div class="upload-previews" id="previews"></div>
       </div>
@@ -262,6 +262,7 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
 </main>
 </div>
 
+<script src="marking-uploads.js"></script>
 <script>
 const PROXY='https://nishkam-marker.alevelnishkam.workers.dev';
 const MODEL='claude-sonnet-4-6';
@@ -383,16 +384,9 @@ dropZone.onclick=()=>fileInput.click();
 dropZone.ondragover=e=>{e.preventDefault();dropZone.style.borderColor='var(--blue)';};
 dropZone.ondragleave=()=>{dropZone.style.borderColor='var(--line)';};
 dropZone.ondrop=e=>{e.preventDefault();dropZone.style.borderColor='var(--line)';handleFiles(e.dataTransfer.files);};
-fileInput.onchange=()=>handleFiles(fileInput.files);
+fileInput.onchange=()=>{handleFiles(fileInput.files);fileInput.value='';};
 function handleFiles(files){
-  const previews=document.getElementById('previews');
-  for(const f of files){
-    if(uploadedImages.length>=4)break;
-    if(!f.type.startsWith('image/'))continue;
-    const reader=new FileReader();
-    reader.onload=e=>{uploadedImages.push(e.target.result);const img=document.createElement('img');img.src=e.target.result;previews.appendChild(img);};
-    reader.readAsDataURL(f);
-  }
+  return NMark.addFiles(files,uploadedImages,document.getElementById('previews'),4);
 }
 
 /* ─── TABS ─── */
@@ -468,10 +462,11 @@ RESPOND WITH ONLY THIS JSON (no markdown, no backticks):
 }
 
 /* ─── SUBMIT ─── */
-document.getElementById('submitBtn').onclick=()=>{
+document.getElementById('submitBtn').onclick=async()=>{
+  if(NMark.pending){const b=document.getElementById('submitBtn'),t=b.textContent;b.disabled=true;b.textContent='Getting your pages ready…';await NMark.ready();b.disabled=false;b.textContent=t;}
   const hasText=document.getElementById('essay').value.trim().length>0;
   const hasImages=uploadedImages.length>0;
-  if(!hasText&&!hasImages){alert('Please write your answer or upload photos of it.');return;}
+  if(!hasText&&!hasImages){alert('Please write your answer or upload photos (or a PDF) of it.');return;}
   if(selQ===null&&!window._cq){alert('Please select a question first.');return;}
   runMark();
 };
@@ -494,37 +489,36 @@ async function runMark(){
 
   lastQ=qText;lastMarks=marks;
 
-  const essayText=document.getElementById('essay').value.trim();
+  const photoMode=NMark.usePhotos(uploadedImages,document.getElementById('essay').value);
+  const essayText=photoMode?'':document.getElementById('essay').value.trim();
+  window._photoMode=photoMode;
   const sysPrompt=getPrompt(qText,marks);
 
   let messages;
-  if(uploadedImages.length>0&&!essayText){
-    const content=uploadedImages.map(d=>({type:'image',source:{type:'base64',media_type:'image/jpeg',data:d.split(',')[1]}}));
-    content.push({type:'text',text:`Question: ${qText}\n\nThe student's handwritten answer is in the images above. Read it carefully, then mark it and break it into annotated segments. Reply with the JSON object only: your first character must be { and your last must be }. Do not write anything before or after it.`});
+  if(photoMode){
+    const content=NMark.blocks(uploadedImages);
+    content.push({type:'text',text:`Question: ${qText}\n\nThe student's handwritten answer is in the images above. Read it carefully, then mark it and break it into annotated segments. Reply with the JSON object only: your first character must be { and your last must be }. Do not write anything before or after it.`+NMark.UNREADABLE_NOTE});
     messages=[{role:'user',content:content}];
   }else{
     messages=[{role:'user',content:`Question: ${qText}\n\nStudent's answer:\n${essayText}\n\nReply with the JSON object only: your first character must be { and your last must be }.`}];
   }
 
   try{
-    const resp=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,max_tokens:4000,system:sysPrompt,messages})});
-    if(!resp.ok)throw new Error('API error: '+resp.status);
-    const data=await resp.json();
-    const txt=data.content.map(c=>c.text||'').join('');
-    if(data.stop_reason==='max_tokens')throw new Error('The feedback was too long to finish');
-    const fb=extractJSON(txt);
+    const fb=await NMark.markJSON({model:MODEL,max_tokens:4000,system:sysPrompt,messages});
+    if(isNaN(parseInt(fb.mark)))throw new Error('The marker\'s reply came back incomplete. Press the button again.');
+    fb.mark=Math.max(0,Math.min(marks,parseInt(fb.mark)));
     lastFb=fb;
     showFeedback(fb,qText,marks);
   }catch(err){
     document.getElementById('ldPanel').classList.remove('show');
     document.getElementById('fbPanel').style.display='block';
-    document.getElementById('fbPanel').innerHTML=`<div class="al al-r"><b>Something went wrong</b>${err.message}. Your answer is still there. Go back to Mark My Answer and try again.</div>`;
+    document.getElementById('fbPanel').innerHTML=`<div class="al al-r"><b>Not marked</b>${String(err.message||'Couldn\'t reach the marker').replace(/\.$/,'')}. Your answer is still there. Go back to Mark My Answer and try again.</div>`;
   }
 }
 
 /* ─── RENDER FEEDBACK ─── */
 function showFeedback(fb,qText,maxMark){
-  if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'9-mark lab',question:qText,mark:fb.mark+'/'+maxMark,level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:fb.overall_feedback||'',improve:fb.improvement_note||'',answer:document.getElementById('essay').value.trim()});
+  if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'9-mark lab',question:qText,mark:fb.mark+'/'+maxMark,level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:fb.overall_feedback||'',improve:fb.improvement_note||'',answer:(window._photoMode?'[Handwritten answer uploaded as photos]':document.getElementById('essay').value.trim())});
   document.getElementById('ldPanel').classList.remove('show');
   document.getElementById('fbPanel').style.display='block';
   const col={3:'var(--green)',2:'var(--gold)',1:'var(--red)'}[fb.level]||'var(--muted)';

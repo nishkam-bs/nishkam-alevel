@@ -323,8 +323,8 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
     <div id="uploadMode" style="display:none">
       <div class="upload-zone" id="dropZone">
         <p style="font-weight:700;color:var(--navy)">Upload photos of your handwritten essay</p>
-        <p class="tiny" style="margin-top:4px">Tap to choose photos or drag and drop. Up to 6 pages.</p>
-        <input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
+        <p class="tiny" style="margin-top:4px">Tap to choose photos or a PDF. Up to 6 pages. One page per photo, in good light.</p>
+        <input type="file" id="fileInput" accept="image/*,application/pdf" multiple style="display:none" />
       </div>
       <div class="upload-previews" id="previews"></div>
     </div>
@@ -744,6 +744,7 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
 
 <!-- No pre-submit modal - goes straight to marking -->
 
+<script src="marking-uploads.js"></script>
 <script>
 // ══════════ QUESTIONS ══════════
 const QS=[{"id":"P1-2026-24","y":"2026","q":"Are profitability ratios more important to a business than other types of financial ratios, such as liquidity and gearing ratios? Justify your view.","n":""},
@@ -845,7 +846,7 @@ document.getElementById('step2Btn').onclick=async function(){
   document.getElementById('step2Loading').style.display='block';
   document.getElementById('step2Result').innerHTML='';
   try{
-    const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    const data=await NMark.ask({
       model:"claude-sonnet-4-6",max_tokens:2000,
       system:`You are an AQA A-level Business Studies teacher preparing a Year 13 student to answer a specific 25-mark essay. The student wants to know what they need to understand before writing.
 
@@ -877,9 +878,8 @@ Suggest 3-4 real businesses or industries with one sentence explaining why each 
 
 Do NOT include any HTML outside of these div structures. Do NOT add a preamble or conclusion. CRITICAL: Do NOT use grid layouts, tables, multi-column structures, pre tags, code blocks, or any inline width/min-width styles. Every element must stack vertically in a single column. Go straight into the content.`,
       messages:[{role:"user",content:`QUESTION: ${qText}\n\nWhat key content do I need to know to answer this question well?`}]
-    })});
-    const data=await resp.json();
-    const txt=data.content.map(c=>c.text||'').join('');
+    });
+    const txt=NMark.text(data);
     document.getElementById('step2Loading').style.display='none';
     document.getElementById('step2Result').innerHTML=txt;
     sanitiseResult(document.getElementById('step2Result'));
@@ -906,7 +906,7 @@ document.querySelectorAll('.plan-opt').forEach(btn=>{
     document.querySelectorAll('.plan-opt').forEach(x=>{x.classList.remove('btn-g');x.classList.add('btn-o');});
     this.classList.remove('btn-o');this.classList.add('btn-g');
     try{
-      const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      const data=await NMark.ask({
         model:"claude-sonnet-4-6",max_tokens:1500,
         system:`You are an AQA A-level Business teacher helping a Year 13 student plan a 25-mark essay. The student needs help with: ${labels[aspect]}.
 
@@ -924,9 +924,8 @@ LANGUAGE: Use "One could argue" / "One might suggest" / "This could lead to" thr
 
 Format as HTML. Use <div class="al al-b"> for blue guidance boxes, <div class="al al-g"> for green examples. Use <h4> for section headers. CRITICAL: Do NOT use grid layouts, tables, multi-column structures, pre tags, code blocks, or any inline width/min-width styles. Every element must stack vertically in a single column. Be direct and specific.`,
         messages:[{role:"user",content:`QUESTION: ${qText}\n\nHelp me with: ${labels[aspect]}`}]
-      })});
-      const data=await resp.json();
-      const txt=data.content.map(c=>c.text||'').join('');
+      });
+      const txt=NMark.text(data);
       document.getElementById('step3Loading').style.display='none';
       document.getElementById('step3Result').innerHTML=txt;
       sanitiseResult(document.getElementById('step3Result'));
@@ -957,19 +956,10 @@ dropZone.onclick=()=>fileInput.click();
 dropZone.ondragover=e=>{e.preventDefault();dropZone.style.borderColor='var(--blue)';};
 dropZone.ondragleave=()=>{dropZone.style.borderColor='var(--line)';};
 dropZone.ondrop=e=>{e.preventDefault();dropZone.style.borderColor='var(--line)';handleFiles(e.dataTransfer.files);};
-fileInput.onchange=()=>handleFiles(fileInput.files);
+fileInput.onchange=()=>{handleFiles(fileInput.files);fileInput.value='';};
 
 function handleFiles(files){
-  const previews=document.getElementById('previews');
-  for(const f of files){
-    if(uploadedImages.length>=6)break;
-    if(!f.type.startsWith('image/'))continue;
-    compressImage(f,1400,0.65).then(dataUrl=>{
-      uploadedImages.push(dataUrl);
-      const img=document.createElement('img');img.src=dataUrl;
-      previews.appendChild(img);
-    });
-  }
+  return NMark.addFiles(files,uploadedImages,document.getElementById('previews'),6);
 }
 
 function compressImage(file,maxDim,quality){
@@ -996,10 +986,11 @@ function compressImage(file,maxDim,quality){
 }
 
 // ── Submit ──
-document.getElementById('submitBtn').onclick=()=>{
+document.getElementById('submitBtn').onclick=async()=>{
+  if(NMark.pending){const b=document.getElementById('submitBtn'),t=b.textContent;b.disabled=true;b.textContent='Getting your pages ready…';await NMark.ready();b.disabled=false;b.textContent=t;}
   const hasText=document.getElementById('essay').value.trim().length>0;
   const hasImages=uploadedImages.length>0;
-  if(!hasText&&!hasImages){alert('Please write your essay or upload photos of it.');return;}
+  if(!hasText&&!hasImages){alert('Please write your essay or upload photos (or a PDF) of it.');return;}
   if(selQ===null&&!window._cq){alert('Please select a question first.');return;}
   runMark();
 };
@@ -1011,7 +1002,9 @@ async function runMark(){
   document.getElementById('fbPanel').style.display='none';
 
   const qText=selQ>=0?QS[selQ].q:(window._cq||'');
-  const essayText=document.getElementById('essay').value.trim();
+  const photoMode=NMark.usePhotos(uploadedImages,document.getElementById('essay').value);
+  const essayText=photoMode?'':document.getElementById('essay').value.trim();
+  window._photoMode=photoMode;
 
   const sysPrompt=`ROLE
 You are marking an AQA A-level Business 25-mark response. Apply AQA's standard accurately and consistently. Do not inflate marks, but do not suppress marks merely to appear rigorous. Reward what the student actually demonstrates.
@@ -1117,50 +1110,26 @@ Respond with ONLY valid JSON (no markdown, no backticks):
   // Build messages
   const messages=[{role:"user",content:`QUESTION: ${qText}\n\nSTUDENT ESSAY:\n${essayText}`}];
 
-  // If images uploaded, include them
-  if(uploadedImages.length>0 && !essayText){
-    const imgContent=uploadedImages.map(d=>({type:"image",source:{type:"base64",media_type:"image/jpeg",data:d.split(',')[1]}}));
-    imgContent.push({type:"text",text:`QUESTION: ${qText}\n\nThe student's handwritten essay is in the images above. Read it carefully, then mark it.`});
+  // If photos uploaded, mark those
+  if(photoMode){
+    const imgContent=NMark.blocks(uploadedImages);
+    imgContent.push({type:"text",text:`QUESTION: ${qText}\n\nThe student's handwritten essay is in the pages above. Read it carefully, then mark it.`+NMark.UNREADABLE_NOTE});
     messages[0]={role:"user",content:imgContent};
   }
 
   try{
-    const body=JSON.stringify({model:"claude-sonnet-4-6",max_tokens:3000,system:sysPrompt,messages});
-    // Check payload size — Cloudflare Workers have a body limit
-    const bodySize=new Blob([body]).size;
-    if(bodySize>4500000){
-      document.getElementById('ldPanel').classList.remove('show');
-      document.getElementById('fbPanel').style.display='block';
-      document.getElementById('rMark').textContent='Error';
-      document.getElementById('rLevel').textContent='Your photos are too large. Try uploading fewer pages or taking photos at a lower resolution.';
-      return;
-    }
-    const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body});
-    if(!resp.ok){
-      const errTxt=await resp.text().catch(()=>'');
-      throw new Error(`Server error ${resp.status}. ${errTxt.slice(0,200)}`);
-    }
-    const data=await resp.json();
-    const txt=data.content.map(c=>c.text||'').join('');
-    let fb;
-    try{
-      let cleaned=txt.replace(/```json|```/g,'').trim();
-      // Find the JSON object if there's preamble text
-      const jsonStart=cleaned.indexOf('{');
-      const jsonEnd=cleaned.lastIndexOf('}');
-      if(jsonStart>=0&&jsonEnd>jsonStart){
-        cleaned=cleaned.slice(jsonStart,jsonEnd+1);
-      }
-      fb=JSON.parse(cleaned);
-    }
-    catch(parseErr){throw new Error('Could not read the marking response. Please try again.');}
+    const fb=await NMark.markJSON({model:"claude-sonnet-4-6",max_tokens:3000,system:sysPrompt,messages});
+    if(typeof fb.mark!=='number'&&isNaN(parseInt(fb.mark)))throw new Error('The marker\'s reply came back incomplete. Press the button again.');
+    fb.mark=Math.max(0,Math.min(25,parseInt(fb.mark)));
+    ['www','ebi'].forEach(k=>{if(!Array.isArray(fb[k]))fb[k]=fb[k]?[String(fb[k])]:[];});
     showFeedback(fb,qText);
   }catch(err){
     document.getElementById('ldPanel').classList.remove('show');
     document.getElementById('fbPanel').style.display='block';
     document.getElementById('rMark').textContent='Error';
-    const isPhotos=uploadedImages.length>0;
-    document.getElementById('rLevel').textContent=(err.message||'Could not connect.')+(isPhotos?' (Photo upload — try fewer or smaller photos, or type your essay instead.)':' Try refreshing the page.');
+    document.getElementById('rMark').textContent='Not marked';
+    document.getElementById('rLevel').style.color='';
+    document.getElementById('rLevel').textContent=err.message||'Couldn\'t reach the marker. Press the button again.';
   }
 }
 
@@ -1168,7 +1137,7 @@ let lastFb=null,lastQ='';
 
 function showFeedback(fb,qText){
   lastFb=fb;lastQ=qText;
-  if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'25-mark lab',question:qText,mark:fb.mark+'/25',level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:(Array.isArray(fb.www)?fb.www.join(' / '):(fb.www||'')),improve:fb.priority||'',answer:(document.getElementById('essay').value.trim()||(typeof uploadedImages!=='undefined'&&uploadedImages.length?'[Handwritten answer uploaded as photos]':''))});
+  if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'25-mark lab',question:qText,mark:fb.mark+'/25',level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:(Array.isArray(fb.www)?fb.www.join(' / '):(fb.www||'')),improve:fb.priority||'',answer:(window._photoMode?'[Handwritten answer uploaded as photos]':document.getElementById('essay').value.trim())});
   document.getElementById('ldPanel').classList.remove('show');
   document.getElementById('fbPanel').style.display='block';
   const col={5:'var(--green)',4:'var(--blue)',3:'var(--gold)',2:'var(--red)',1:'var(--red)'}[fb.level]||'var(--muted)';
@@ -1244,18 +1213,15 @@ FORMAT AS HTML:
 <div class="al al-g mt"><b>What you could have written</b>[Improved version — same idea, better execution]</div>
 <p class="muted" style="margin-top:8px;font-size:13px">[One sentence explaining what changed and why it earns more marks]</p>`;
 
-  let studentContent=essayText;
-  if(!studentContent&&uploadedImages.length>0) studentContent='[Handwritten essay submitted via photos]';
-
+  const photoMode=!!window._photoMode;
+  const ask=`QUESTION: ${qText}\n\nSTUDENT'S ESSAY:\n${photoMode?'(handwritten - in the pages above; quote their words exactly as written)':essayText}\n\nMark: ${fb.mark}/25 (Level ${fb.level})\nMain improvement: ${fb.priority||''}\nBlocker: ${fb.blocker||''}`;
   try{
-    const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    const data=await NMark.ask({
       model:"claude-sonnet-4-6",max_tokens:800,
       system:rewritePrompt,
-      messages:[{role:"user",content:`QUESTION: ${qText}\n\nSTUDENT'S ESSAY:\n${studentContent}\n\nMark: ${fb.mark}/25 (Level ${fb.level})\nMain improvement: ${fb.priority||''}\nBlocker: ${fb.blocker||''}`}]
-    })});
-    if(!resp.ok) throw new Error('Server error '+resp.status);
-    const data=await resp.json();
-    const txt=data.content.map(c=>c.text||'').join('');
+      messages:[{role:"user",content:photoMode?[...NMark.blocks(uploadedImages),{type:"text",text:ask}]:ask}]
+    });
+    const txt=NMark.text(data);
     document.getElementById('rewriteLoading').style.display='none';
     document.getElementById('rewriteResult').innerHTML=txt;
     sanitiseResult(document.getElementById('rewriteResult'));
@@ -1408,9 +1374,8 @@ document.querySelectorAll('.drill-submit').forEach(btn=>{
     const card=document.getElementById('sk-'+skill);
     const taskText=card.querySelector('.al.al-b').innerText;
     try{
-      const resp=await fetch("https://nishkam-marker.alevelnishkam.workers.dev",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:700,system:`You are an AQA A-level Business examiner giving drill feedback. Be supportive but examiner-strict. Respond ONLY with JSON (no markdown, no backticks): {"rating":"Weak|Developing|Strong|Excellent","www":"<what went well - 2-3 sentences>","ebi":"<even better if - 2-3 sentences>","upgrade":"<if not Excellent, write a stronger version in 3-4 sentences showing what a stronger answer looks like>"}`,messages:[{role:"user",content:`SKILL: ${skill}\nTASK: ${taskText}\nSTUDENT RESPONSE: ${input}`}]})});
-      const data=await resp.json();
-      const txt=data.content.map(c=>c.text||'').join('');
+      const data=await NMark.ask({model:"claude-sonnet-4-6",max_tokens:700,system:`You are an AQA A-level Business examiner giving drill feedback. Be supportive but examiner-strict. Respond ONLY with JSON (no markdown, no backticks): {"rating":"Weak|Developing|Strong|Excellent","www":"<what went well - 2-3 sentences>","ebi":"<even better if - 2-3 sentences>","upgrade":"<if not Excellent, write a stronger version in 3-4 sentences showing what a stronger answer looks like>"}`,messages:[{role:"user",content:`SKILL: ${skill}\nTASK: ${taskText}\nSTUDENT RESPONSE: ${input}`}]});
+      const txt=NMark.text(data);
       const r=(()=>{const t=txt.replace(/```json|```/g,'').trim();const a=t.indexOf('{'),b=t.lastIndexOf('}');if(a===-1||b<=a)throw new Error('The marker did not send back any feedback');return JSON.parse(t.slice(a,b+1));})();
       const col={Weak:'al-r',Developing:'al-y',Strong:'al-b',Excellent:'al-g'}[r.rating]||'al-b';
       fb.innerHTML=`<div class="al ${col}"><b>${r.rating} — What went well</b>${r.www}</div><div class="al al-y mt"><b>Even better if</b>${r.ebi}</div>${r.upgrade?`<div class="al al-g mt"><b>A stronger version</b>${r.upgrade}</div>`:''}`;
