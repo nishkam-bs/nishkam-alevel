@@ -348,76 +348,7 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
     <p class="muted" style="margin-top:4px">This takes about 15 seconds. Hang tight.</p>
   </div>
 
-  <div id="fbPanel">
-    <!-- Mark -->
-    <div class="card markbox" style="border-top:5px solid var(--navy);text-align:center;padding:28px">
-      <div class="tiny" style="letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--muted)">YOUR MARK</div>
-      <div class="mark-num" id="rMark">—</div>
-      <div class="mark-level" id="rLevel">—</div>
-      <div class="mark-bar"><span id="rBar" style="width:0;background:var(--green)"></span></div>
-      <button class="btn btn-o btn-sm mt" onclick="document.getElementById('rubricOv').classList.add('show')">What does this level mean?</button>
-    </div>
-
-    <!-- What you did well -->
-    <div class="card mt" style="border-top:5px solid var(--green)">
-      <h3 style="color:var(--green)">What you did well</h3>
-      <div id="rWWW"></div>
-    </div>
-
-    <!-- Your main improvement -->
-    <div class="card mt" style="border-top:5px solid var(--red)">
-      <h3 style="color:var(--red)">Your main improvement</h3>
-      <p id="rPriority" style="font-size:14px;line-height:1.7;margin-top:6px">—</p>
-    </div>
-
-    <!-- What you could have done better -->
-    <div class="card mt" style="border-top:5px solid var(--navy)">
-      <h3>What you could have done better</h3>
-      <p class="muted" style="margin-top:4px;margin-bottom:14px">Your weakest section, rewritten to show you what the examiner is looking for.</p>
-      <div id="rewriteLoading" class="ld"><div class="spin"></div><p class="tiny">Building your improved version — takes about 15 seconds.</p></div>
-      <div id="rewriteResult" style="width:100%;min-width:0;overflow:hidden"></div>
-    </div>
-
-    <!-- Quick checks -->
-    <div class="grid g2 mt">
-      <div class="card" style="border-top:4px solid #7c5cbf">
-        <h3 style="color:#7c5cbf">Models and theories</h3>
-        <div id="rModels">—</div>
-      </div>
-      <div class="card" style="border-top:4px solid #e08a2e">
-        <h3 style="color:#e08a2e">Your business examples</h3>
-        <p id="rAppCheck" style="font-size:13px;line-height:1.7">—</p>
-      </div>
-      <div class="card" style="border-top:4px solid var(--green)">
-        <h3 style="color:var(--green)">Your conclusion</h3>
-        <p id="rConclusion" style="font-size:13px;line-height:1.7">—</p>
-      </div>
-      <div class="card" style="border-top:4px solid var(--blue)">
-        <h3 style="color:var(--blue)">The all-businesses test</h3>
-        <div id="rCTB">—</div>
-      </div>
-    </div>
-
-    <!-- See detailed feedback (collapsed) -->
-    <div style="margin-top:16px;text-align:center">
-      <button class="btn btn-o btn-sm" id="detailToggle">See detailed feedback</button>
-    </div>
-    <div id="detailPanel" style="display:none;margin-top:16px">
-      <div class="card">
-        <h3>Detailed breakdown</h3>
-        <div class="al al-y mt" id="rBlocker"></div>
-        <div id="rEBI" class="mt"></div>
-        <div id="rNext" class="mt"></div>
-      </div>
-    </div>
-
-    <!-- Actions -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px">
-      <button class="btn btn-p" onclick="generatePDF()">Save as PDF</button>
-      <button class="btn btn-o" onclick="openTab('mark')">Write another essay</button>
-      <button class="btn btn-o" onclick="openTab('train')">Improve my technique</button>
-    </div>
-  </div>
+  <div id="fbPanel"></div>
 </section>
 
 <!-- ══════════ IMPROVE MY EXAM TECHNIQUE TAB (merged) ══════════ -->
@@ -750,6 +681,7 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
 <!-- No pre-submit modal - goes straight to marking -->
 
 <script src="marking-uploads.js"></script>
+<script src="feedback-ui.js"></script>
 <script>
 // ══════════ QUESTIONS ══════════
 const QS=[{"id":"P3-2026-06","y":"2026","m":24,"p":"3","q":"Danni's suppliers import many of their products from businesses located in China and other East Asian countries. Should all UK businesses try to use only UK suppliers?","n":"the case study"},
@@ -1056,10 +988,7 @@ async function runMark(){
   }catch(err){
     document.getElementById('ldPanel').classList.remove('show');
     document.getElementById('fbPanel').style.display='block';
-    document.getElementById('rMark').textContent='Error';
-    document.getElementById('rMark').textContent='Not marked';
-    document.getElementById('rLevel').style.color='';
-    document.getElementById('rLevel').textContent=err.message||'Couldn\'t reach the marker. Press the button again.';
+    document.getElementById('fbPanel').innerHTML=NFb.error(err.message||'Couldn\'t reach the marker. Press the button again.','<button class="btn btn-g" onclick="openTab(\'mark\')">Back to my essay</button>');
   }
 }
 
@@ -1069,52 +998,35 @@ function showFeedback(fb,qText){
   lastFb=fb;lastQ=qText;
   if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'Open essay lab',question:qText,mark:fb.mark+'/'+(fb._maxMark||16),level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:(Array.isArray(fb.www)?fb.www.join(' / '):(fb.www||'')),improve:fb.priority||'',answer:(window._photoMode?'[Handwritten answer uploaded as photos]':document.getElementById('essay').value.trim())});
   document.getElementById('ldPanel').classList.remove('show');
-  document.getElementById('fbPanel').style.display='block';
+  const panel=document.getElementById('fbPanel');panel.style.display='block';
   const mx=fb._maxMark||16;
-  const col={5:'var(--green)',4:'var(--blue)',3:'var(--gold)',2:'var(--red)',1:'var(--red)'}[fb.level]||'var(--muted)';
-  document.getElementById('rMark').textContent=fb.mark+'/'+mx;
-  document.getElementById('rLevel').textContent=`LEVEL ${fb.level} · ${(fb.level_label||'').toUpperCase()}`;
-  document.getElementById('rLevel').style.color=col;
-  document.getElementById('rBar').style.width=(fb.mark/mx*100)+'%';
-  document.getElementById('rBar').style.background=col;
-
-  document.getElementById('rWWW').innerHTML='<ul style="margin:8px 0 0 18px;font-size:14px;line-height:1.7">'+(fb.www||[]).slice(0,2).map(p=>`<li style="margin-bottom:6px">${p}</li>`).join('')+'</ul>';
-  document.getElementById('rPriority').textContent=fb.priority||fb.verdict||'';
-
-  const ms=fb.model_status||'none_needed';const md=fb.model_detail||'';
-  let mh='';
-  if(ms==='model_used_well')mh=`<div class="al al-g"><b>Good use of a model</b>${md}</div>`;
-  else if(ms==='missed_opportunity')mh=`<div class="al al-y"><b>You could have used a model here</b>${md}</div>`;
-  else if(ms==='model_dumping')mh=`<div class="al al-r"><b>Model mentioned but not used</b>${md}</div>`;
-  else if(ms==='model_misapplied')mh=`<div class="al al-r"><b>Model used incorrectly</b>${md}</div>`;
-  else mh=`<p style="font-size:13px;color:var(--muted)">No model needed here.</p>`;
-  document.getElementById('rModels').innerHTML=mh;
-
-  document.getElementById('rAppCheck').textContent=fb.application_check||'—';
-  document.getElementById('rConclusion').textContent=fb.conclusion_check||'—';
-
-  const ctb=fb.change_the_business||'';
-  const ctbR=ctb.split(/[—-]/)[0].trim();
-  const ctbN=ctb.includes('—')?ctb.split('—').slice(1).join('—').trim():(ctb.includes(' - ')?ctb.split(' - ').slice(1).join(' - ').trim():'');
-  const ctbC={Exceptional:'al-g',Strong:'al-g',Developing:'al-y','Not demonstrated':'al-r'}[ctbR]||'al-b';
-  document.getElementById('rCTB').innerHTML=ctbR?`<div class="al ${ctbC}"><b>${ctbR}</b>${ctbN}</div>`:'—';
-
-  document.getElementById('rBlocker').innerHTML=`<b>What's holding the mark back</b>${fb.blocker||''}`;
-  document.getElementById('rEBI').innerHTML='<ul style="margin:8px 0 0 18px;font-size:14px;line-height:1.7">'+(fb.ebi||[]).map(p=>`<li style="margin-bottom:6px">${p}</li>`).join('')+'</ul>';
-  document.getElementById('rNext').innerHTML=`<div class="al al-b">${fb.tip||''}</div>`;
-
-  document.getElementById('detailToggle').onclick=function(){
-    const p=document.getElementById('detailPanel');
-    if(p.style.display==='none'){p.style.display='block';this.textContent='Hide detailed feedback';}
-    else{p.style.display='none';this.textContent='See detailed feedback';}
-  };
+  const MODEL={model_used_well:['Used well','good'],missed_opportunity:['Missed a chance','amber'],model_dumping:['Named but not used','bad'],model_misapplied:['Used incorrectly','bad'],none_needed:['Not needed','mid']}[fb.model_status||'none_needed']||['Not needed','mid'];
+  const ctb=String(fb.change_the_business||'');
+  const m=ctb.match(/^\s*(Not demonstrated|Developing|Strong|Exceptional)\s*[—–-]?\s*(.*)$/s);
+  const ctbR=m?m[1]:'',ctbN=m?m[2]:ctb;
+  const ctbT={Exceptional:'good',Strong:'good',Developing:'amber','Not demonstrated':'bad'}[ctbR];
+  panel.innerHTML=NFb.build({
+    mark:fb.mark,max:mx,question:qText,verdict:fb.verdict,
+    help:"document.getElementById('rubricOv').classList.add('show')",
+    facts:[{label:'All-businesses test',value:ctbR,tone:ctbT},{label:'Models',value:MODEL[0],tone:MODEL[1]}],
+    well:(fb.www||[]).slice(0,3),
+    fix:{text:fb.priority||fb.blocker,how:fb.tip},
+    rewrite:{wait:'Rewriting your weakest paragraph to show what a stronger version looks like. This takes about 15 seconds.'},rewriteId:'nfbRewrite',
+    more:[
+      {title:"What's holding the mark back",text:fb.blocker,wide:true},
+      {title:'Other things to work on',list:fb.ebi},
+      {title:'Models and theories',tag:MODEL[0],tone:MODEL[1],text:fb.model_detail},
+      {title:'Your business examples',text:fb.application_check},
+      {title:'Your conclusion',text:fb.conclusion_check},
+      {title:'The all-businesses test',tag:ctbR,tone:ctbT,text:ctbN}
+    ],
+    actions:'<button class="btn btn-p" onclick="generatePDF()">Save as PDF</button><button class="btn btn-o" onclick="openTab(\'mark\')">Write another essay</button><button class="btn btn-o" onclick="openTab(\'train\')">Improve my technique</button>'
+  });
 
   runRewrite(qText,fb);
 }
 
 async function runRewrite(qText,fb){
-  document.getElementById('rewriteLoading').style.display='block';
-  document.getElementById('rewriteResult').innerHTML='';
   const photoMode=!!window._photoMode;
   const essayText=photoMode?'':document.getElementById('essay').value.trim();
   const rewritePrompt=`You are an AQA A-level Business Studies teacher. A student has submitted a ${fb._maxMark||16}-mark "all businesses" essay and received feedback. Your job is to take their WEAKEST section and rewrite it to show them exactly what they should have written.
@@ -1123,13 +1035,11 @@ CRITICAL RULES:
 1. You MUST use the student's own words, ideas and arguments as your starting point. Do not invent a completely new answer. Take what they wrote and make it better.
 2. Write like a well-prepared Year 13 student — use "One could argue", "This means that", "This is because", "Therefore", "However, on balance". Natural student language, not textbook language.
 3. Keep the same argument the student was trying to make — but develop it properly: explain the mechanism, use context that changes the reasoning, reach the endpoint, and weigh significance.
-4. Your rewrite should be 150-250 words maximum — one or two paragraphs, not a whole essay.
+4. Your rewrite should be 100-150 words — one paragraph, not a whole essay.
 5. THE LAST SENTENCE MUST LINK DIRECTLY BACK TO THE EXACT WORDING OF THE QUESTION. If the question asks whether something is "always a disadvantage", your final sentence must explicitly address whether it is always a disadvantage. If the question asks about "the most important element", your final sentence must address whether it is the most important element. Use the same key words from the question in your final sentence so the student can see the chain connecting back to the question being asked.
 
-FORMAT YOUR RESPONSE AS HTML:
-<div class="al al-y"><b>Your original</b>[Quote the student's weakest 2-3 sentences exactly as they wrote them]</div>
-<div class="al al-g mt"><b>What you could have written instead</b>[Your rewritten version that develops their argument properly — same idea, better execution. Write as a Year 13 student would.]</div>
-<div class="al al-b mt"><b>What changed and why it is important</b>[2-3 sentences explaining the specific improvements and which marks they earn. Refer to the marking rubric: endpoint, mechanism, context, weighing.]</div>`;
+Reply with ONLY a JSON object (no markdown, no backticks):
+{"wrote":"<the student's weakest 2-3 sentences, quoted exactly as they wrote them>","could":"<your rewritten version, 100-150 words, written as a Year 13 student would>","why":"<one or two short sentences: what changed and why it earns more marks>"}`;
 
   // Get the essay content
   const ask=`QUESTION: ${qText}\n\nSTUDENT'S ESSAY:\n${photoMode?'(handwritten - in the pages above; quote their words exactly as written)':essayText}\n\nFEEDBACK RECEIVED:\nMark: ${fb.mark}/${fb._maxMark||16} (Level ${fb.level})\nBlocker: ${fb.blocker}\nEBI: ${(fb.ebi||[]).join('; ')}\n\nNow identify the student's weakest section and rewrite it to show them what they should have done.`;
@@ -1141,13 +1051,12 @@ FORMAT YOUR RESPONSE AS HTML:
       system:rewritePrompt,
       messages:[{role:"user",content}]
     });
-    const txt=NMark.text(data);
-    document.getElementById('rewriteLoading').style.display='none';
-    document.getElementById('rewriteResult').innerHTML=txt;
-    sanitiseResult(document.getElementById('rewriteResult'));
+    const r=NMark.json(NMark.text(data));
+    if(!r.wrote||!r.could)throw new Error('incomplete');
+    lastFb._rewrite=r;
+    NFb.fillRewrite('nfbRewrite',r);
   }catch(err){
-    document.getElementById('rewriteLoading').style.display='none';
-    document.getElementById('rewriteResult').innerHTML=`<div class="al al-r"><b>Error</b>${err.message||'Could not connect.'}</div>`;
+    NFb.fillRewrite('nfbRewrite',{error:'The rewritten example didn\'t load this time. Your mark and feedback above are not affected.'});
   }
 }
 
@@ -1186,6 +1095,7 @@ ul{padding-left:18px;margin:6px 0}li{margin-bottom:4px;font-size:13px}
 <p><strong>All-businesses test:</strong> ${fb.change_the_business||''}</p>
 <h2 class="red">Biggest limitation</h2>
 <p>${fb.blocker||''}</p>
+${fb._rewrite?`<h2>What it could look like</h2><p><strong>You wrote:</strong> ${NFb.text(fb._rewrite.wrote)}</p><p><strong>It could read:</strong> ${NFb.text(fb._rewrite.could)}</p><p style="color:#6a7485">${NFb.text(fb._rewrite.why||'')}</p>`:''}
 <p class="meta">Nishkam School West London — Generated from nishkam-bs.github.io</p>
 </body></html>`);
   w.document.close();

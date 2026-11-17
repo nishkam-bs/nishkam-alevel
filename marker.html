@@ -344,75 +344,7 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
     <p class="muted" style="margin-top:4px">This takes about 15 seconds. Hang tight.</p>
   </div>
 
-  <div id="fbPanel">
-    <!-- Mark -->
-    <div class="card markbox" style="border-top:5px solid var(--navy);text-align:center;padding:28px">
-      <div class="tiny" style="letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--muted)">YOUR MARK</div>
-      <div class="mark-num" id="rMark">—</div>
-      <div class="mark-level" id="rLevel">—</div>
-      <div class="mark-bar"><span id="rBar" style="width:0;background:var(--green)"></span></div>
-      <button class="btn btn-o btn-sm mt" onclick="document.getElementById('rubricOv').classList.add('show')">What does this level mean?</button>
-    </div>
-
-    <!-- What you did well -->
-    <div class="card mt" style="border-top:5px solid var(--green)">
-      <h3 style="color:var(--green)">What you did well</h3>
-      <div id="rWWW"></div>
-    </div>
-
-    <!-- Your main improvement -->
-    <div class="card mt" style="border-top:5px solid var(--red)">
-      <h3 style="color:var(--red)">Your main improvement</h3>
-      <p id="rPriority" style="font-size:14px;line-height:1.7;margin-top:6px">—</p>
-    </div>
-
-    <!-- What you could have done better -->
-    <div class="card mt" style="border-top:5px solid var(--navy)">
-      <h3>What you could have done better</h3>
-      <div class="al al-y mt"><b>You wrote</b><div id="rExtract">—</div></div>
-      <div class="al al-g mt"><b>What you could have written</b><div id="rImproved">—</div></div>
-      <p id="rChanged" class="muted mt" style="font-size:13px;line-height:1.6">—</p>
-    </div>
-
-    <!-- Quick checks -->
-    <div class="grid g2 mt">
-      <div class="card" style="border-top:4px solid #7c5cbf">
-        <h3 style="color:#7c5cbf">Models and theories</h3>
-        <p id="rModels" style="font-size:13px;line-height:1.7">—</p>
-      </div>
-      <div class="card" style="border-top:4px solid var(--blue)">
-        <h3 style="color:var(--blue)">Your introduction</h3>
-        <p id="rIntro" style="font-size:13px;line-height:1.7">—</p>
-      </div>
-      <div class="card" style="border-top:4px solid #e08a2e">
-        <h3 style="color:#e08a2e">Your business examples</h3>
-        <p id="rAppCheck" style="font-size:13px;line-height:1.7">—</p>
-      </div>
-      <div class="card" style="border-top:4px solid var(--green)">
-        <h3 style="color:var(--green)">Your conclusion</h3>
-        <p id="rConclusion" style="font-size:13px;line-height:1.7">—</p>
-      </div>
-    </div>
-
-    <!-- See detailed feedback (collapsed) -->
-    <div style="margin-top:16px;text-align:center">
-      <button class="btn btn-o btn-sm" id="detailToggle">See detailed feedback</button>
-    </div>
-    <div id="detailPanel" style="display:none;margin-top:16px">
-      <div class="card">
-        <h3>Detailed breakdown</h3>
-        <div id="rBlocker" class="al al-y mt"></div>
-        <div id="rEBI" class="mt"></div>
-      </div>
-    </div>
-
-    <!-- Actions -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px">
-      <button class="btn btn-p" onclick="generatePDF()">Save as PDF</button>
-      <button class="btn btn-o" onclick="openTab('mark')">Write another essay</button>
-      <button class="btn btn-o" onclick="openTab('train')">Improve my technique</button>
-    </div>
-  </div>
+  <div id="fbPanel"></div>
 </section>
 
 <!-- ══════════ IMPROVE MY EXAM TECHNIQUE TAB (merged) ══════════ -->
@@ -745,6 +677,7 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
 <!-- No pre-submit modal - goes straight to marking -->
 
 <script src="marking-uploads.js"></script>
+<script src="feedback-ui.js"></script>
 <script>
 // ══════════ QUESTIONS ══════════
 const QS=[{"id":"P1-2026-24","y":"2026","q":"Are profitability ratios more important to a business than other types of financial ratios, such as liquidity and gearing ratios? Justify your view.","n":""},
@@ -1126,10 +1059,7 @@ Respond with ONLY valid JSON (no markdown, no backticks):
   }catch(err){
     document.getElementById('ldPanel').classList.remove('show');
     document.getElementById('fbPanel').style.display='block';
-    document.getElementById('rMark').textContent='Error';
-    document.getElementById('rMark').textContent='Not marked';
-    document.getElementById('rLevel').style.color='';
-    document.getElementById('rLevel').textContent=err.message||'Couldn\'t reach the marker. Press the button again.';
+    document.getElementById('fbPanel').innerHTML=NFb.error(err.message||'Couldn\'t reach the marker. Press the button again.','<button class="btn btn-g" onclick="openTab(\'mark\')">Back to my essay</button>');
   }
 }
 
@@ -1139,59 +1069,33 @@ function showFeedback(fb,qText){
   lastFb=fb;lastQ=qText;
   if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'25-mark lab',question:qText,mark:fb.mark+'/25',level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:(Array.isArray(fb.www)?fb.www.join(' / '):(fb.www||'')),improve:fb.priority||'',answer:(window._photoMode?'[Handwritten answer uploaded as photos]':document.getElementById('essay').value.trim())});
   document.getElementById('ldPanel').classList.remove('show');
-  document.getElementById('fbPanel').style.display='block';
-  const col={5:'var(--green)',4:'var(--blue)',3:'var(--gold)',2:'var(--red)',1:'var(--red)'}[fb.level]||'var(--muted)';
-  document.getElementById('rMark').textContent=fb.mark+'/25';
-  document.getElementById('rLevel').textContent=`LEVEL ${fb.level} · ${fb.level_label.toUpperCase()}`;
-  document.getElementById('rLevel').style.color=col;
-  document.getElementById('rBar').style.width=(fb.mark/25*100)+'%';
-  document.getElementById('rBar').style.background=col;
-
-  // What you did well (max 2)
-  document.getElementById('rWWW').innerHTML='<ul style="margin:8px 0 0 18px;font-size:14px;line-height:1.7">'+(fb.www||[]).slice(0,2).map(p=>`<li style="margin-bottom:6px">${p}</li>`).join('')+'</ul>';
-
-  // Main improvement (ONE priority)
-  document.getElementById('rPriority').textContent=fb.priority||'';
-
-  // What you could have done better
-  document.getElementById('rExtract').textContent=fb.student_extract||'';
-  document.getElementById('rImproved').textContent=fb.improved_extract||'';
-  document.getElementById('rChanged').textContent=fb.what_changed||'';
-
-  // Quick checks
-  const ms=fb.model_status||'none_needed';
-  const md=fb.model_detail||'';
-  let modelHtml='';
-  if(ms==='model_used_well'){
-    modelHtml=`<div class="al al-g"><b>Good use of a model</b>${md}</div>`;
-  }else if(ms==='missed_opportunity'){
-    modelHtml=`<div class="al al-y"><b>You could have used a model here</b>${md}</div>`;
-  }else if(ms==='model_dumping'){
-    modelHtml=`<div class="al al-r"><b>Model mentioned but not used</b>${md}</div>`;
-  }else if(ms==='model_misapplied'){
-    modelHtml=`<div class="al al-r"><b>Model used incorrectly</b>${md}</div>`;
-  }else{
-    modelHtml=`<p style="font-size:13px;color:var(--muted)">No model needed here — your reasoning is strong without one.</p>`;
-  }
-  document.getElementById('rModels').innerHTML=modelHtml;
-  document.getElementById('rIntro').textContent=fb.intro_check||'—';
-  document.getElementById('rAppCheck').textContent=fb.application_check||'—';
-  document.getElementById('rConclusion').textContent=fb.conclusion_check||'—';
-
-  // Detailed feedback (hidden)
-  document.getElementById('rBlocker').innerHTML=`<b>What's holding the mark back</b>${fb.blocker||''}`;
-  document.getElementById('rEBI').innerHTML='<ul style="margin:8px 0 0 18px;font-size:14px;line-height:1.7">'+(fb.ebi||[]).map(p=>`<li style="margin-bottom:6px">${p}</li>`).join('')+'</ul>';
-
-  // Detail toggle
-  document.getElementById('detailToggle').onclick=function(){
-    const panel=document.getElementById('detailPanel');
-    if(panel.style.display==='none'){panel.style.display='block';this.textContent='Hide detailed feedback';}
-    else{panel.style.display='none';this.textContent='See detailed feedback';}
-  };
-
-  // Fire the rewrite
-  runRewrite(qText,fb);
+  const panel=document.getElementById('fbPanel');panel.style.display='block';
+  const LV={5:'Level 5 means a well organised answer with a logical chain of reasoning and a well-supported, focused judgement.',
+    4:'Level 4 means developed analysis and a balanced, supported judgement, but the evaluation is not as sustained or precise as Level 5.',
+    3:'Level 3 means relevant knowledge and some analysis, but the evaluation is not fully developed or sustained.',
+    2:'Level 2 means some relevant knowledge, but the analysis is underdeveloped and the evaluation is weak.',
+    1:'Level 1 means isolated or basic knowledge with little effective reasoning.'};
+  const MODEL={model_used_well:['Used well','good'],missed_opportunity:['Missed a chance','amber'],model_dumping:['Named but not used','bad'],model_misapplied:['Used incorrectly','bad'],none_needed:['Not needed','mid']}[fb.model_status||'none_needed']||['Not needed','mid'];
+  const SKILL={endpoint:'Reaching the endpoint',analysis:'Analysis',application:'Application',evaluation:'Evaluation',judgement:'Judgement',models:'Using models',conceptual_accuracy:'Accuracy',question_focus:'Question focus',introduction:'Introduction',conclusion:'Conclusion'}[fb.priority_skill];
+  panel.innerHTML=NFb.build({
+    mark:fb.mark,max:25,question:qText,verdict:LV[NFb.levelOf(fb.mark,25)],
+    help:"document.getElementById('rubricOv').classList.add('show')",
+    facts:[{label:'Skill to work on',value:SKILL,tone:'amber'},{label:'Models',value:MODEL[0],tone:MODEL[1]}],
+    well:(fb.www||[]).slice(0,3),
+    fix:{text:fb.priority||fb.blocker},
+    rewrite:fb.student_extract&&fb.improved_extract?{wrote:fb.student_extract,could:fb.improved_extract,why:fb.what_changed}:null,
+    more:[
+      {title:"What's holding the mark back",text:fb.blocker,wide:true},
+      {title:'Other things to work on',list:fb.ebi},
+      {title:'Models and theories',tag:MODEL[0],tone:MODEL[1],text:fb.model_detail},
+      {title:'Your introduction',text:fb.intro_check},
+      {title:'Your business examples',text:fb.application_check},
+      {title:'Your conclusion',text:fb.conclusion_check}
+    ],
+    actions:'<button class="btn btn-p" onclick="generatePDF()">Save as PDF</button><button class="btn btn-o" onclick="openTab(\'mark\')">Write another essay</button><button class="btn btn-o" onclick="openTab(\'train\')">Improve my technique</button>'
+  });
 }
+
 
 // ══════════ REWRITE ══════════
 async function runRewrite(qText,fb){

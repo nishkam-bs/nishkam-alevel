@@ -198,7 +198,7 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
 <!-- FEEDBACK TAB -->
 <section id="feedback" class="tab">
   <div class="topbar">
-    <div><div class="eyebrow">Annotated Feedback</div><h2>How did I do?</h2><div class="sub">Your answer with AO colour-coding and examiner-style margin notes.</div></div>
+    <div><div class="eyebrow">Your feedback</div><h2>How did I do?</h2></div>
   </div>
   <div class="ld" id="ldPanel"><div class="spin"></div><p style="font-weight:700;color:var(--navy);font-size:16px">Marking your answer...</p><p class="muted" style="margin-top:4px">Reading every sentence. Counting causal links. Checking the endpoint.</p></div>
   <div id="fbPanel">
@@ -263,6 +263,7 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
 </div>
 
 <script src="marking-uploads.js"></script>
+<script src="feedback-ui.js"></script>
 <script>
 const PROXY='https://nishkam-marker.alevelnishkam.workers.dev';
 const MODEL='claude-sonnet-4-6';
@@ -512,7 +513,7 @@ async function runMark(){
   }catch(err){
     document.getElementById('ldPanel').classList.remove('show');
     document.getElementById('fbPanel').style.display='block';
-    document.getElementById('fbPanel').innerHTML=`<div class="al al-r"><b>Not marked</b>${String(err.message||'Couldn\'t reach the marker').replace(/\.$/,'')}. Your answer is still there. Go back to Mark My Answer and try again.</div>`;
+    document.getElementById('fbPanel').innerHTML=NFb.error(String(err.message||'Couldn\'t reach the marker').replace(/\.$/,'')+'. Your answer is still there.','<button class="btn btn-g" onclick="openTab(\'mark\')">Back to my answer</button>');
   }
 }
 
@@ -524,30 +525,9 @@ function showFeedback(fb,qText,maxMark){
   const col={3:'var(--green)',2:'var(--gold)',1:'var(--red)'}[fb.level]||'var(--muted)';
   const pct=Math.round(fb.mark/maxMark*100);
 
-  let html='';
-
-  // Score + diagnostics
-  html+=`<div class="grid g3">
-    <div class="card" style="text-align:center;padding:24px 16px">
-      <div class="tiny">MARK</div>
-      <div class="mark-num">${fb.mark}/${maxMark}</div>
-      <div class="mark-level" style="color:${col}">${fb.level_label?fb.level_label.toUpperCase():'LEVEL '+fb.level}</div>
-      <div class="mark-bar"><span style="width:${pct}%;background:${col}"></span></div>
-    </div>
-    <div class="card" style="padding:20px;border-top:4px solid ${fb.endpoint_hit?'var(--green)':'var(--red)'}">
-      <h4>Endpoint</h4>
-      <div style="font-size:18px;font-weight:900;color:${fb.endpoint_hit?'var(--green)':'var(--red)'};margin:6px 0">${fb.endpoint_hit?'Reached':'Not reached'}</div>
-      <p class="tiny">${fb.endpoint_note||''}</p>
-    </div>
-    <div class="card" style="padding:20px;border-top:4px solid var(--blue)">
-      <h4>Chain depth</h4>
-      <div style="font-size:18px;font-weight:900;color:var(--navy);margin:6px 0">${fb.chain_count} link${fb.chain_count!==1?'s':''}</div>
-      <p class="tiny">${fb.chain_count>=5?'Strong chain depth — this is Level 3 territory.':fb.chain_count>=3?'Developing — aim for 5-7 links to reach Level 3.':'Too shallow — build more causal steps between start and endpoint.'}</p>
-    </div>
-  </div>`;
-
+  let anno='';
   // AO colour key
-  html+=`<div class="ao-key mt">
+  anno+=`<div class="ao-key mt">
     <div class="ao-key-item"><div class="ao-key-swatch" style="background:var(--ao1-bg);border-color:var(--ao1)"></div>Knowledge (AO1)</div>
     <div class="ao-key-item"><div class="ao-key-swatch" style="background:var(--ao2-bg);border-color:var(--ao2)"></div>Application (AO2)</div>
     <div class="ao-key-item"><div class="ao-key-swatch" style="background:var(--ao3-bg);border-color:var(--ao3)"></div>Analysis (AO3)</div>
@@ -557,7 +537,7 @@ function showFeedback(fb,qText,maxMark){
 
   // Annotated essay
   if(fb.segments&&fb.segments.length>0){
-    html+=`<div class="anno-wrap mt">
+    anno+=`<div class="anno-wrap mt">
       <div class="anno-essay"><div class="anno-label">Your answer — annotated</div>`;
     fb.segments.forEach((seg,i)=>{
       let cls='';
@@ -566,9 +546,9 @@ function showFeedback(fb,qText,maxMark){
       else if(seg.ao==='AO2') cls='seg seg-ao2';
       else if(seg.ao==='AO3') cls='seg seg-ao3';
       else if(seg.ao==='EVAL') cls='seg seg-eval';
-      html+=`<span class="${cls}" data-seg="${i}" title="${(seg.annotation||'').replace(/"/g,'&quot;')}"><span class="seg-num">${i+1}</span>${seg.text} </span>`;
+      anno+=`<span class="${cls}" data-seg="${i}" title="${(seg.annotation||'').replace(/"/g,'&quot;')}"><span class="seg-num">${i+1}</span>${seg.text} </span>`;
     });
-    html+=`</div><div class="anno-sidebar"><div class="anno-label">Examiner notes</div>`;
+    anno+=`</div><div class="anno-sidebar"><div class="anno-label">Examiner notes</div>`;
     fb.segments.forEach((seg,i)=>{
       if(!seg.annotation)return;
       let ncls='anno-note ';
@@ -579,50 +559,24 @@ function showFeedback(fb,qText,maxMark){
       else if(seg.ao==='EVAL') ncls+='anno-note-eval';
       else ncls+='anno-note-ao1';
       const tag=seg.quality==='WEAK'?'Needs work':seg.ao==='EVAL'?'Evaluation':seg.ao;
-      html+=`<div class="${ncls}" data-seg="${i}"><div style="display:flex;align-items:center;gap:4px;margin-bottom:3px"><span class="anno-num">${i+1}</span><span class="ao-tag">${tag}</span></div><div>${seg.annotation}</div></div>`;
+      anno+=`<div class="${ncls}" data-seg="${i}"><div style="display:flex;align-items:center;gap:4px;margin-bottom:3px"><span class="anno-num">${i+1}</span><span class="ao-tag">${tag}</span></div><div>${seg.annotation}</div></div>`;
     });
-    html+=`</div></div>`;
+    anno+=`</div></div>`;
   }
 
-  // REWRITE CARD — NEW
-  if(fb.rewrite_original && fb.rewrite_improved){
-    html+=`<div class="rewrite-card">
-      <h3>You wrote / It could read</h3>
-      <div class="rw-box rw-original">
-        <div class="rw-label">You wrote</div>
-        ${fb.rewrite_original}
-      </div>
-      <div class="rw-box rw-improved">
-        <div class="rw-label">It could read</div>
-        ${fb.rewrite_improved}
-      </div>
-    </div>`;
-  }
+  const panel=document.getElementById('fbPanel');
+  panel.innerHTML=NFb.build({
+    mark:fb.mark,max:maxMark,question:qText,
+    facts:[{label:'Endpoint',value:fb.endpoint_hit?'Reached':'Not reached',tone:fb.endpoint_hit?'good':'bad'},{label:'Chain',value:(fb.chain_count||0)+' link'+(fb.chain_count===1?'':'s'),tone:fb.chain_count>=5?'good':fb.chain_count>=3?'amber':'bad'}],
+    well:fb.overall_feedback,
+    fix:{text:fb.blocker||fb.improvement_note,how:fb.blocker?fb.improvement_note:''},
+    rewrite:fb.rewrite_original&&fb.rewrite_improved?{wrote:fb.rewrite_original,could:fb.rewrite_improved}:null,
+    annotated:anno,
+    more:[{title:'Endpoint',tag:fb.endpoint_hit?'Reached':'Not reached',tone:fb.endpoint_hit?'good':'bad',text:fb.endpoint_note},{title:'Next time',text:fb.tip}],
+    actions:'<button class="btn btn-p" onclick="generatePDF()">Save feedback as PDF</button><button class="btn btn-g" onclick="openTab(\'mark\');document.getElementById(\'essay\').value=\'\';uploadedImages=[];document.getElementById(\'previews\').innerHTML=\'\';document.getElementById(\'wc\').textContent=\'0 words\';window.scrollTo({top:0})">Try another question</button>',
+    moreNote:'Save the PDF to use it in Redraft later.'
+  });
 
-  // Overall feedback
-  html+=`<div class="grid g2 mt">
-    <div class="card">
-      <h3>Overall feedback</h3>
-      <p style="font-size:14px;line-height:1.8">${fb.overall_feedback||''}</p>
-    </div>
-    <div class="card">
-      <h3>To move up a level</h3>
-      <div class="al al-y">${fb.improvement_note||''}</div>
-      ${fb.blocker?`<div class="al al-r mt"><b>Main focus</b>${fb.blocker}</div>`:''}
-      ${fb.tip?`<div class="al al-b mt"><b>Next time</b>${fb.tip}</div>`:''}
-    </div>
-  </div>`;
-
-  // Action buttons — save PDF + try again
-  html+=`<div class="card mt" style="text-align:center;padding:30px">
-    <div class="row" style="justify-content:center;gap:14px">
-      <button class="btn btn-p" onclick="generatePDF()">Save feedback as PDF</button>
-      <button class="btn btn-g" onclick="openTab('mark');document.getElementById('essay').value='';uploadedImages=[];document.getElementById('previews').innerHTML='';document.getElementById('wc').textContent='0 words';window.scrollTo({top:0})">Try another question</button>
-    </div>
-    <p class="tiny mt">Save the PDF so you can use it in the Redraft tool later.</p>
-  </div>`;
-
-  document.getElementById('fbPanel').innerHTML=html;
 
   // Hover sync
   document.querySelectorAll('[data-seg]').forEach(el=>{
