@@ -330,6 +330,6 @@ async function loadPlan(){
 
 function render(){if(!root)return;if(view.page==='edit')renderEdit();else renderWeek();}
 let cssDone=false;
-window.SchedView={render(el){if(!cssDone){const s=document.createElement('style');s.textContent=css;document.head.appendChild(s);cssDone=true;}root=el;
+window.SchedView={qFix:(k,v)=>qFix(k,v),render(el){if(!cssDone){const s=document.createElement('style');s.textContent=css;document.head.appendChild(s);cssDone=true;}root=el;
   if(view.page==='edit'&&$('#adText',root)&&$('#adText',root).value)return;render();}};
 })();
