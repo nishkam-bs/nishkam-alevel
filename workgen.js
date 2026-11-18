@@ -17,7 +17,8 @@ const RULES=`Rules for every question:
 - Multiple choice: exactly 4 options, one clearly correct, three plausible wrong answers based on real misconceptions. All four options must be about the same length and written in the same style, and the correct one must not be the longest or the most detailed; students should not be able to spot it from its length. No "all of the above" or "none of the above". The explanation says why the answer is right in one or two sentences, without referring to option letters or positions.
 - Calculations: give every figure needed, ask for one number, state the unit. "answer" is the number only. "working" shows the method briefly.
 - Short questions (2 to 6 marks): "points" lists what a good answer must include, one point per mark.
-- Extended questions (9 or 16 marks): use a short case with data; "guidance" lists what a strong answer would do (analysis chains, use of the case, judgement for 16 marks).`;
+- Extended questions (9 or 16 marks): use a short case with data; "guidance" lists what a strong answer would do (analysis chains, use of the case, judgement for 16 marks).${window.NSTANDARD?`
+- For 16, 20 and 25-mark extended questions, "guidance" follows the teacher's standard (a real answer AQA marked 16/16): no introduction for 16-markers; paragraph 1 "On one hand... This can be illustrated by [real industry]", explained steps to the end point, a model used to explain a step, "This shows that..."; paragraph 2 "However, on the other hand... This can be explored by [a completely different industry]"; conclusion "Overall... as it depends on...", "For [industry 1]...", "For [industry 2]...", "However, it also depends on...", "Therefore..." in the words of the question. For 9-markers, guidance follows its analysis paragraph only (one developed argument to the end point, no conclusion).`:''}`;
 
 const FORMAT=`Return JSON only, no other text:
 {"title":"...","items":[
@@ -96,7 +97,8 @@ async function mark(spec,answers){
   if(open.length){
     const sys=`You mark a Year 13 student's answers to AQA A-level Business (7132) practice questions. Mark fairly against the points or guidance given, as an AQA examiner would. Give credit for correct points made in different words. Feedback is to the student as "you", in plain British English, one or two sentences: what was good and the one thing that would gain more marks. "better" is a short example of how one weak sentence could read (empty if the answer was strong). Return JSON only: {"marks":[{"i":0,"marks":0,"feedback":"","better":""}]}`;
     const body=open.map(i=>{const it=items[i];return `Item ${i} (${it.marks} marks): ${it.case?'Case: '+it.case+'\n':''}Question: ${it.q}\n${it.type==='short'?'Mark points: '+it.points.join(' | '):'A strong answer would: '+it.guidance.join(' | ')}\nStudent's answer: ${String(answers[i]||'').trim()||'(no answer)'}`;}).join('\n\n');
-    const d=await ask(sys,body,1500+open.length*500);
+    const std=window.NSTANDARD&&open.some(i=>items[i].type==='extended'&&items[i].marks>=16)?'\n\n'+NSTANDARD.anchor()+'\nUse it to judge 16-mark and longer answers, and their conclusions in particular. In feedback and "better", show the student how to write it the way the standard answer does.':'';
+    const d=await ask(sys+std,body,1500+open.length*500);
     (d.marks||[]).forEach((m,k)=>{const i=open.includes(+m.i)?+m.i:open[k];if(i==null||res[i])return;const it=items[i];const mk=Math.max(0,Math.min(it.marks,+m.marks||0));
       res[i]={ok:mk/it.marks,marks:mk,max:it.marks,feedback:String(m.feedback||''),better:String(m.better||'')};});
     open.forEach(i=>{if(!res[i])res[i]={ok:0,marks:0,max:items[i].marks,feedback:'This answer could not be marked. Ask your teacher to look at it.'};});

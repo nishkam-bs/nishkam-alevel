@@ -262,6 +262,7 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
 </main>
 </div>
 
+<script src="standards.js"></script>
 <script src="marking-uploads.js"></script>
 <script src="feedback-ui.js"></script>
 <script>
@@ -435,7 +436,7 @@ YOUR TASK:
 3. Count genuine causal links.
 4. Check whether the chain reaches the question's endpoint.
 5. Give overall feedback.
-6. REWRITE: Find the weakest 1-2 sentences in the answer. Quote them exactly. Then rewrite them to show what stronger work looks like. The rewrite must sound like a good Year 13 student — use natural connectives (This means, This could lead to, Therefore, As a result), include models in brackets where appropriate. Do not write like an academic.
+${window.NSTANDARD?NSTANDARD.block({full:false,p1:true})+'\n(For 9 and 12-mark answers use only its analysis paragraph as the model: explained steps to the end point, a model used to explain a step, and a concluding sentence that links to the question. Keep the 9-mark rules: one developed argument, no counter-argument and no conclusion.)\n\n':''}6. REWRITE: Find the weakest 1-2 sentences in the answer. Quote them exactly. Then rewrite them to show what stronger work looks like. The rewrite must sound like a good Year 13 student — use natural connectives (This means, This could lead to, Therefore, As a result), include models in brackets where appropriate. Do not write like an academic.
 
 SEGMENT RULES:
 - Break at sentence boundaries. Every sentence in exactly one segment.
