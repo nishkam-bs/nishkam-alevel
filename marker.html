@@ -676,7 +676,6 @@ textarea{min-height:280px;resize:vertical;line-height:1.7}
 
 <!-- No pre-submit modal - goes straight to marking -->
 
-<script src="standards.js"></script>
 <script src="marking-uploads.js"></script>
 <script src="feedback-ui.js"></script>
 <script>
@@ -1039,7 +1038,7 @@ When assessing the conclusion, check for these elements:
 - Final answer using the exact words from the question
 Suggest specific phrases the student could use: "to a greater extent", "the most significant factor is", "this outweighs", "ultimately", "the decisive factor".
 
-${window.NSTANDARD?'FOR THE IMPROVED EXTRACT, PRIORITY AND CONCLUSION CHECK (not for setting the mark): '+NSTANDARD.block()+'\n\nWhen the weakness is analysis, end points, models, concluding sentences or the conclusion, write improved_extract in the pattern of the standard answer and judge conclusion_check against its conclusion.\n\n':''}Respond with ONLY valid JSON (no markdown, no backticks):
+Respond with ONLY valid JSON (no markdown, no backticks):
 {"mark":<0-25>,"level":<1-5>,"level_label":"<Weak|Limited|Reasonable|Good|Excellent>","www":["<specific strength>","<another>"],"priority":"<ONE improvement, max 3 sentences>","priority_skill":"<endpoint|analysis|application|evaluation|judgement|models|conceptual_accuracy|question_focus|introduction|conclusion>","student_extract":"<quote 2-3 weak sentences exactly>","improved_extract":"<smallest change, max 80 words. Write exactly as a Year 13 student would — use phrases like: This suggests that, However on balance, This is because, One could argue, Therefore, This could lead to, meaning that, which determines whether. Put models in brackets naturally: (Porter's Generic Strategies), (Ansoff's Matrix). Keep sentences simple. Do NOT write like a textbook.>","what_changed":"<one sentence>","model_status":"<none_needed|missed_opportunity|model_dumping|model_misapplied|model_used_well>","model_detail":"<one sentence about models>","intro_check":"<one sentence>","application_check":"<one sentence>","conclusion_check":"<one sentence>","blocker":"<biggest limitation>","ebi":["<improvement>","<another>"]}`;
   // Build messages
   const messages=[{role:"user",content:`QUESTION: ${qText}\n\nSTUDENT ESSAY:\n${essayText}`}];
