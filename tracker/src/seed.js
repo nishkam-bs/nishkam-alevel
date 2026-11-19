@@ -1422,7 +1422,7 @@ export default [
   ],
   "catmcq": {
    "answers": "BCCDDBABDDBACBACCAACCADDCBDCAACCBBCDACBDCABCBDBDACCACCCBDBADABCDACAAACBDDBACACAB",
-   "t": "2026-11-19T13:00:00.000Z",
+   "t": "2026-11-19T14:00:00.000Z",
    "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
   }
  },
@@ -1645,7 +1645,7 @@ export default [
   ],
   "catmcq": {
    "answers": "BCCDABABDDABCBACDAACBDADABDCABCCABDDACBACABCDBBDACCACBCBDAADBCDACBDBACBDDBACACDD",
-   "t": "2026-11-19T13:00:00.000Z",
+   "t": "2026-11-19T14:00:00.000Z",
    "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
   }
  },
@@ -1783,7 +1783,7 @@ export default [
   ],
   "catmcq": {
    "answers": "BCADABAADDABCBACCAACBDADCBDCABCCABDDACBACABCDBBDDDCACBCBDACDACDACBDAACBDDBACACDD",
-   "t": "2026-11-19T13:00:00.000Z",
+   "t": "2026-11-19T14:00:00.000Z",
    "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
   }
  },
@@ -2277,7 +2277,7 @@ export default [
   ],
   "catmcq": {
    "answers": "-C-B-B-BD-A-CBA--AACB-ADCBDCABCC-BDDA--AB-BD-B-D--DA-B-BDAADBD-B-BAB--BD-BA-ACDD",
-   "t": "2026-11-19T13:00:00.000Z",
+   "t": "2026-11-19T14:00:00.000Z",
    "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
   }
  },
@@ -2463,7 +2463,7 @@ export default [
   ],
   "catmcq": {
    "answers": "BCABABABDDABBBCDDAACBDADBBDBABCCABDAACBACCBCDBBDACCACBCBDBADBCDAABDBACBDDBACACDD",
-   "t": "2026-11-19T13:00:00.000Z",
+   "t": "2026-11-19T14:00:00.000Z",
    "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
   }
  },
@@ -2573,5 +2573,170 @@ export default [
    "improve": "Q2: start with January and carry each closing balance forward (the working skipped January). Q6: the working left out distribution costs; give margins to two decimal places when asked. Q12(b): extra zero. Q13(b): compare the lowest balance with the £10 000 limit. Q20 was not attempted."
   }
  ]
+},
+ /* KAT MCQ paper sheets for Karam and Sanam, marked 19 Nov 2026 */
+{
+ "id": "seed-2026-11-19-karam-kat",
+ "match": "karam",
+ "catmcq": {
+  "answers": "BCCDABAADDAACBACDAACBDADCBDCABCCABDDACBACABCDBBDACCACBCBDAADBCDACBDBACBDDBACACDD",
+  "t": "2026-11-19T14:00:00.000Z",
+  "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
+ },
+ "work": {
+  "id": "w-karam-kat2-1911",
+  "title": "KAT quiz: the two you missed",
+  "due": "2026-11-23",
+  "spec": {
+   "title": "KAT quiz: the two you missed",
+   "intro": "78 out of 80 on the KAT quiz. You missed Q8 (minimum wage) and Q12 (working backwards from an expected value). These four questions go over both. For the decision trees, check your answer by working the expected value forwards.\n\nType numbers only: no £ signs or commas needed. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.2.2c",
+     "skill": "quant",
+     "q": "A decision has two possible outcomes, with pay-offs of £80 000 and £20 000. The expected value is £56 000. Calculate the probability of the £80 000 outcome. Give your answer as a decimal.",
+     "answer": 0.6,
+     "unit": "",
+     "working": "Let p be the probability of £80 000. 80 000p + 20 000(1 – p) = 56 000, so 60 000p = 36 000 and p = 0.6. Check: 0.6 × 80 000 + 0.4 × 20 000 = 48 000 + 8000 = 56 000.",
+     "hint": "The two probabilities add up to 1. Write the expected value as an equation and solve for p."
+    },
+    {
+     "type": "calc",
+     "topic": "3.2.2c",
+     "skill": "quant",
+     "q": "A project has a 0.25 chance of a pay-off of £150 000. Otherwise it earns a lower pay-off. The expected value is £75 000. Calculate the lower pay-off.",
+     "answer": 50000,
+     "unit": "£",
+     "working": "0.25 × 150 000 = 37 500. The other probability is 0.75, so 0.75 × pay-off = 75 000 – 37 500 = 37 500. Pay-off = 37 500 ÷ 0.75 = £50 000.",
+     "hint": "Take the known part of the expected value away first, then divide by the other probability."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.7.4b",
+     "skill": "analysis",
+     "q": "The government makes a large increase in the national minimum wage. Which business is most likely to see demand for its products rise?",
+     "options": [
+      "A discount clothing retailer whose customers are mostly on low pay",
+      "A luxury car dealer",
+      "A firm that sells factory machinery to other businesses",
+      "A private jet charter company"
+     ],
+     "answer": 0,
+     "explain": "The minimum wage rise gives low-paid workers more income, so businesses that sell to them gain demand. This is the second half of the KAT question: the supermarket's costs rise, but so does demand from low-paid shoppers."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.7.4b",
+     "skill": "analysis",
+     "q": "A care home employs mostly minimum-wage staff and cannot raise its fees. After a large rise in the minimum wage, what is most likely to happen to its profit?",
+     "options": [
+      "It falls, because costs rise and revenue does not",
+      "It rises, because staff will spend more",
+      "It stays the same, because wages are a fixed cost",
+      "It rises, because demand for care goes up"
+     ],
+     "answer": 0,
+     "explain": "Wages are a large cost for the care home. With fees fixed, revenue stays the same while costs go up, so profit falls."
+    }
+   ]
+  }
+ }
+},
+{
+ "id": "seed-2026-11-19-sanam-kat",
+ "match": "sanam",
+ "catmcq": {
+  "answers": "BCCDADABDDABCBACDAACBDADCBDCABCCABDDCCBACABCDBBDACCACBABDDADBCDACBDBACBDDAACACDD",
+  "t": "2026-11-19T14:00:00.000Z",
+  "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
+ },
+ "work": {
+  "id": "w-sanam-kat2-1911",
+  "title": "KAT quiz: the five you missed",
+  "due": "2026-11-23",
+  "spec": {
+   "title": "KAT quiz: the five you missed",
+   "intro": "75 out of 80 on the KAT quiz. Four of the five you missed were knowledge questions: social enterprise, what changes capacity utilisation, Herzberg and Porter's cost leadership. The other was the span of control calculation, where a level was missed out. Read each option carefully before choosing.\n\nType numbers only: no £ signs or commas needed. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "mcq",
+     "topic": "3.1.2b",
+     "skill": "knowledge",
+     "q": "Which of these best describes a social enterprise?",
+     "options": [
+      "A business that trades to make money and uses most of its profit for social or environmental aims",
+      "A charity that is not allowed to make a profit",
+      "An organisation owned and run by the government",
+      "A business that must share all of its profit among its customers"
+     ],
+     "answer": 0,
+     "explain": "A social enterprise can make a profit. What matters is that the profit is mainly used for its social or environmental aims. It does not have to be a charity. On the KAT, statement 1 was true."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.4.2",
+     "skill": "analysis",
+     "q": "Demand for a manufacturer's products stays the same. Which action would increase its capacity utilisation?",
+     "options": [
+      "Selling one of its production lines while keeping output the same",
+      "Leasing a second factory",
+      "Buying faster machines that raise its maximum output",
+      "Moving some production to a subcontractor"
+     ],
+     "answer": 0,
+     "explain": "Capacity utilisation = output ÷ maximum capacity. Selling a production line cuts maximum capacity while output stays the same, so utilisation rises. Extra machines raise capacity, so utilisation falls."
+    },
+    {
+     "type": "calc",
+     "topic": "3.4.2",
+     "skill": "quant",
+     "q": "A factory has a maximum capacity of 24 000 units a month. Last month it produced 18 000 units. It then sells some machinery, cutting maximum capacity to 20 000 units, and output stays at 18 000. Calculate the new capacity utilisation (%).",
+     "answer": 90,
+     "unit": "%",
+     "working": "18 000 ÷ 20 000 × 100 = 90%. Before, it was 18 000 ÷ 24 000 × 100 = 75%.",
+     "hint": "Output ÷ maximum capacity × 100."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.6.4b",
+     "skill": "knowledge",
+     "q": "According to Herzberg, which of these is most likely to motivate an employee?",
+     "options": [
+      "A pay rise",
+      "Better canteen food",
+      "More responsibility for planning their own work",
+      "A newer office"
+     ],
+     "answer": 2,
+     "explain": "Responsibility is a motivator. Pay, conditions and the working environment are hygiene factors: improving them removes dissatisfaction but does not motivate."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.3b",
+     "skill": "quant",
+     "q": "A business has a managing director at the top and 4 levels of hierarchy in total, including the managing director. Every manager, including the managing director, has a span of control of 3. How many people work in the business?",
+     "answer": 40,
+     "unit": "people",
+     "working": "Level 1: 1. Level 2: 3. Level 3: 9. Level 4: 27. Total = 1 + 3 + 9 + 27 = 40.",
+     "hint": "Write each level down on its own line, starting with the managing director, and count 4 lines."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.8.2a",
+     "skill": "knowledge",
+     "q": "A business follows a cost leadership strategy. Which statement is correct?",
+     "options": [
+      "It aims to have the lowest costs in the industry, and may charge prices close to its rivals' to earn higher margins",
+      "It must charge the lowest prices in the market",
+      "It aims to make its product clearly different from rivals' products",
+      "It only sells to a small niche of customers"
+     ],
+     "answer": 0,
+     "explain": "Cost leadership is about having the lowest costs, not the lowest price. A cost leader can price close to rivals and make a bigger margin. On the KAT, statement 2 was false."
+    }
+   ]
+  }
+ }
 }
 ];
