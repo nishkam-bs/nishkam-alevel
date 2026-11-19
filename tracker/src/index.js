@@ -60,6 +60,7 @@ async function ensureSchema(db) {
   await db.batch(SCHEMA.map(s => db.prepare(s)));
   /* columns added after the first version */
   for (const sql of ['ALTER TABLE marks ADD COLUMN ref TEXT', 'ALTER TABLE marks ADD COLUMN how TEXT']) { try { await db.prepare(sql).run(); } catch (e) {} }
+  try { await db.batch([db.prepare("UPDATE marks SET t='2026-11-19T14:00:00.000Z' WHERE tool='KAT MCQ' AND how LIKE 'Paper answer sheet%' AND t='2026-11-19T13:00:00.000Z'"), db.prepare("UPDATE catmcq SET t='2026-11-19T14:00:00.000Z' WHERE photo IS NULL AND t='2026-11-19T13:00:00.000Z'")]); } catch (e) {}
   schemaReady = true;
   try { await runSeed(db); } catch (e) { console.error('seed', e && e.stack || e); }
 }

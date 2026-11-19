@@ -64,6 +64,8 @@ function data(){
   const cnt={};students.forEach(s=>{cnt[s.first]=(cnt[s.first]||0)+1;});students.forEach(s=>{if(cnt[s.first]>1)s.first=s.name;});
   cacheFor=d;cache={items,students};return cache;
 }
+const isKat=m=>m.ref==='catmcq'||/KAT MCQ/i.test(m.tool||'');
+const katOf=u=>{const m=(TR.data.marks||[]).filter(x=>x.exam===u&&isKat(x)).sort((a,b)=>String(b.t).localeCompare(String(a.t)))[0];return m?m.mark:'';};
 const shortLabel=it=>{if(it.kind==='exam'){const e=S.EX[it.ref];return e?`P${e.paper} ${e.year==='2020N'?'N20':e.year.slice(2)} Q${e.num} (${e.marks})`:it.ref;}
   if(it.kind==='choice'){const os=String(it.ref).split(',').map(id=>S.EX[id]).filter(Boolean);if(!os.length)return it.ref;const e=os[0];return `P${e.paper} ${e.year==='2020N'?'N20':e.year.slice(2)} Q${os.map(o=>o.num).join('/')} (${e.marks})`;}
   if(it.kind==='course')return (S.COURSES[it.ref]||[0,it.title])[1].replace(' course','');
@@ -106,7 +108,7 @@ function when(t){const d=new Date(t),today=new Date();const same=d.toDateString(
 function events(){
   const d=TR.data,ev=[],T=x=>typeof x==='number'?x:Date.parse(x);
   const setName=r=>{const m=/^(mcq|calc)-(\d+)/.exec(r);return m?(m[1]==='mcq'?'20 multiple-choice questions':'10 calculations')+' (week '+(+m[2])+')':r;};
-  (d.marks||[]).forEach(m=>{const h=parseHow(m),k=howKind(h);ev.push({u:m.exam,t:T(m.t),what:`had an answer marked in the ${m.tool}: ${m.mark}`+(k==='hw'?' (handwritten)':k==='pz'?' (typed, mostly pasted)':k==='ty'?' (typed)':''),detail:m.question,k:'mark'});});
+  (d.marks||[]).forEach(m=>{if(isKat(m)){ev.push({u:m.exam,t:T(m.t),what:`KAT multiple-choice quiz: ${m.mark}`+(/^Paper/i.test(m.how||'')?' (paper answer sheet)':' (photo upload)'),detail:m.level||m.question,k:'mark'});return;}if(m.tool==='calcpractice'&&m.question){ev.push({u:m.exam,t:T(m.t),what:`${String(m.question).replace(/\s*\(.*$/,'')}: ${m.mark}`,detail:m.question,k:'mark'});return;}const h=parseHow(m),k=howKind(h);ev.push({u:m.exam,t:T(m.t),what:`had an answer marked in the ${m.tool}: ${m.mark}`+(k==='hw'?' (handwritten)':k==='pz'?' (typed, mostly pasted)':k==='ty'?' (typed)':''),detail:m.question,k:'mark'});});
   (d.rows||[]).forEach(r=>ev.push({u:r.exam,t:T(r.t),what:`${r.passed?'passed':'had a go at'} ${r.stageTitle||'a course stage'}${r.total?` (${r.score}/${r.total})`:''}`,k:'course'}));
   (d.blurts||[]).forEach(b=>ev.push({u:b.exam,t:T(b.t),what:`did a ${b.kind==='rapid'?'rapid recall':'blurt'}${b.topic?' on '+b.topic:''}${b.total?` (${b.got}/${b.total})`:''}`,k:'blurt'}));
   Object.entries(d.storeT||{}).forEach(([u,ks])=>Object.entries(ks).forEach(([key,t])=>{const v=qFix(key,((d.store||{})[u]||{})[key]||{});
@@ -127,8 +129,8 @@ function activityCard(students){
   rows.sort((a,b)=>b.last-a.last);
   const dot=t=>!t?'old':now-t<3600000?'now':t>=day.getTime()?'today':now-t<7*86400000?'week':'old';
   return `<div class="sc-card" id="actCard"><h2>Live activity</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Everything students do on the site while signed in, not just the homework. Press Refresh at the top to bring it up to date.</p>
-  <div class="tablewrap"><table><thead><tr><th class="l">Student</th><th class="l">Last on the site</th><th>Actions today</th><th>Work done in the last 7 days</th><th class="l">Last piece of work</th></tr></thead><tbody>
-  ${rows.map(x=>`<tr><td class="l"><button class="lnk" data-act="${esc(x.s.u)}">${esc(x.s.name)}</button></td><td class="l"><span class="act-dot ${dot(x.last)}"></span>${x.last?esc(ago(x.last)):'<span class="muted">never</span>'}</td><td>${x.today}</td><td>${x.week?x.week:'<span class="cell a">0</span>'}</td><td class="l muted" style="white-space:normal;max-width:380px">${x.lastWhat?esc(x.lastWhat.what)+' · '+esc(when(x.lastWhat.t)):'nothing yet'}</td></tr>`).join('')}
+  <div class="tablewrap"><table><thead><tr><th class="l">Student</th><th class="l">Last on the site</th><th>Actions today</th><th>Work done in the last 7 days</th><th>KAT MCQ /80</th><th class="l">Last piece of work</th></tr></thead><tbody>
+  ${rows.map(x=>`<tr><td class="l"><button class="lnk" data-act="${esc(x.s.u)}">${esc(x.s.name)}</button></td><td class="l"><span class="act-dot ${dot(x.last)}"></span>${x.last?esc(ago(x.last)):'<span class="muted">never</span>'}</td><td>${x.today}</td><td>${x.week?x.week:'<span class="cell a">0</span>'}</td><td>${katOf(x.s.u)?'<b>'+esc(katOf(x.s.u))+'</b>':'<span class="muted">–</span>'}</td><td class="l muted" style="white-space:normal;max-width:380px">${x.lastWhat?esc(x.lastWhat.what)+' · '+esc(when(x.lastWhat.t)):'nothing yet'}</td></tr>`).join('')}
   </tbody></table></div>
   <div class="legend"><span><span class="act-dot now"></span>in the last hour</span><span><span class="act-dot today"></span>today</span><span><span class="act-dot week"></span>this week</span><span><span class="act-dot old"></span>not for over a week</span></div>
   <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:16px 0 6px"><select id="actWho" style="width:auto"><option value="">Everyone</option>${students.map(s=>`<option value="${esc(s.u)}" ${actFilter.u===s.u?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
