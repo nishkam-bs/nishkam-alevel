@@ -30,11 +30,29 @@ const FORMAT=`Return JSON only, no other text:
 "skill" is one of: ${SKILLS.join(', ')}. "topic" is one of the topic ids given.`;
 
 async function ask(system,content,maxTokens){
-  const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,max_tokens:maxTokens||6000,system,messages:[{role:'user',content}]})});
+  const ctl=typeof AbortController!=='undefined'?new AbortController():null,tm=ctl?setTimeout(()=>ctl.abort(),150000):0;
+  let r;
+  try{r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,max_tokens:maxTokens||6000,system,messages:[{role:'user',content}]}),signal:ctl?ctl.signal:undefined});}
+  catch(e){throw new Error(e&&e.name==='AbortError'?'The AI took too long to reply. Try again.':'Could not reach the AI. Check your connection and try again.');}
+  finally{clearTimeout(tm);}
   if(!r.ok)throw new Error('The AI did not respond ('+r.status+'). Try again in a minute.');
   const d=await r.json();const raw=(d.content||[]).map(c=>c.text||'').join('');
-  const a=raw.indexOf('{'),b=raw.lastIndexOf('}');if(a<0||b<a)throw new Error('The reply could not be read. Try again.');
-  return JSON.parse(raw.slice(a,b+1));
+  const obj=firstObject(raw);if(!obj)throw new Error('The reply could not be read. Try again.');
+  return obj;
+}
+/* the first complete JSON object in the reply, ignoring any text before or after it */
+function firstObject(raw){
+  for(let a=raw.indexOf('{');a>=0;a=raw.indexOf('{',a+1)){
+    let depth=0,inStr=false,esc=false;
+    for(let i=a;i<raw.length;i++){
+      const c=raw[i];
+      if(inStr){if(esc)esc=false;else if(c==='\\')esc=true;else if(c==='"')inStr=false;continue;}
+      if(c==='"')inStr=true;else if(c==='{')depth++;else if(c==='}'&&--depth===0){
+        try{return JSON.parse(raw.slice(a,i+1));}catch(e){break;}
+      }
+    }
+  }
+  return null;
 }
 const topicLine=id=>{const t=TOP[id];return t?`${id} = ${t.ref} ${t.title}`:'';};
 
@@ -75,7 +93,9 @@ async function generate(req){
     req.note?`Teacher's note: ${req.note}`:'',
     `Title for the set: ${req.title||'a short plain title naming the topics'}`
   ].filter(Boolean).join('\n\n');
-  const spec=clean(await ask(sys,user,Math.min(12000,1500+total*700)),topics);
+  let spec;
+  try{spec=clean(await ask(sys,user,Math.min(12000,1500+total*700)),topics);}
+  catch(e){spec=clean(await ask(sys,user,Math.min(12000,1500+total*700)),topics);}
   if(!spec.items.length)throw new Error('No usable questions came back. Try again.');
   if(req.title)spec.title=req.title;
   return spec;

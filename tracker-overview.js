@@ -251,7 +251,7 @@ function renderSet(){
       <div><label class="f">Short answers</label><input type="number" id="nS" min="0" max="6" value="2"></div><div><label class="f">Extended answer</label><select id="nE" style="width:100%"><option value="0">None</option><option value="9" selected>One 9-marker</option><option value="16">One 16-marker</option></select></div></div>
     <div class="row"><div><label class="f">Title (optional)</label><input type="text" id="sTitle" placeholder="Made from the topics if left blank"></div><div><label class="f">Due (optional)</label><input type="date" id="sDue"></div></div>
     <div><label class="f">Note for the AI (optional)</label><input type="text" id="sNote" placeholder="e.g. use a hotel business; keep the calculations short"></div>
-    <div style="display:flex;gap:10px;align-items:center"><button class="btn" id="setGen">Make the work</button><span class="muted" id="setMsg" style="font-size:.9rem"></span></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn" id="setGen">Make the work</button><span class="muted" id="setMsg" style="font-size:.9rem"></span></div>
     <p class="note" style="margin:0">Each student gets their own set. You can check and edit every question before anything is sent.</p>
   </div></div>
   <div id="setPrev"></div>`;
@@ -270,24 +270,26 @@ function renderSet(){
     if(!users.length){$('#setMsg').textContent='Choose at least one student.';return;}
     if(!mine&&!tset.size){$('#setMsg').textContent='Choose at least one topic.';return;}
     const counts={mcq:+$('#nM').value||0,calc:+$('#nC').value||0,short:+$('#nS').value||0,extended:+$('#nE').value?1:0};
-    const btn=$('#setGen');btn.disabled=true;drafts=[];let done=0;
+    const btn=$('#setGen');btn.disabled=true;drafts=[];let done=0;$('#setPrev').innerHTML='';
+    const msg=()=>{$('#setMsg').textContent=`Making the work: ${done} of ${users.length} ready. This takes about a minute${users.length>3?' or two':''}. Keep this page open.`;};msg();
     const jobs=users.map(u=>async()=>{
       const s=list.find(x=>x.u===u);
       const topics=mine?s.a.gaps.slice(0,4).map(g=>g.id):[...tset];
-      try{const spec=await W.generate({topics,counts,extendedMarks:+$('#nE').value||9,about:A.summary(s.a,6),title:$('#sTitle').value.trim(),note:$('#sNote').value.trim()});
-        drafts.push({u,name:s.name,spec});}
-      catch(e){drafts.push({u,name:s.name,error:e.message});}
-      done++;$('#setMsg').textContent=`Made ${done} of ${users.length}...`;
+      const req={topics,counts,extendedMarks:+$('#nE').value||9,about:A.summary(s.a,6),title:$('#sTitle').value.trim(),note:$('#sNote').value.trim()};
+      try{const spec=await W.generate(req);drafts.push({u,name:s.name,spec,req});}
+      catch(e){drafts.push({u,name:s.name,error:e.message,req});}
+      done++;msg();
     });
     /* three at a time */
     let i=0;await Promise.all([0,1,2].map(async()=>{while(i<jobs.length){const j=jobs[i++];await j();}}));
     drafts.sort((a,b)=>a.name.localeCompare(b.name));
-    $('#setMsg').textContent='Check the work below, then send it.';btn.disabled=false;preview();
+    $('#setMsg').textContent='Done. Check the work below, then send it.';btn.disabled=false;preview();
+    try{$('#setPrev').scrollIntoView({behavior:'smooth',block:'start'});}catch(e){}
   };
 }
 function preview(){
   const box=$('#setPrev');const ok=drafts.filter(d=>d.spec);
-  box.innerHTML=`<div class="ov-card"><h2>Check before sending</h2>${drafts.map((d,di)=>d.error?`<div class="pv"><b>${esc(d.name)}</b>: <span class="err">${esc(d.error)}</span></div>`:`
+  box.innerHTML=`<div class="ov-card"><h2>Check before sending</h2>${drafts.map((d,di)=>d.error?`<div class="pv"><b>${esc(d.name)}</b>: <span class="err">${esc(d.error)}</span> <button class="btn ghost" data-retry="${di}" style="padding:4px 12px;margin-left:8px">Try again</button></div>`:`
     <details class="pv" ${drafts.length<=2?'open':''}><summary>${esc(d.name)}: ${esc(d.spec.title)} <span class="muted" style="font-weight:400">(${d.spec.items.length} questions)</span></summary>
     <div style="margin-top:8px"><label class="f" style="font-size:.8rem;color:var(--muted)">Title</label><input type="text" data-d="${di}" data-f="title" value="${esc(d.spec.title)}"></div>
     ${d.spec.items.map((it,ii)=>`<div class="pq" data-d="${di}" data-i="${ii}"><div class="meta">${W.typeName[it.type]} · ${esc(W.label(it))} · ${esc(A.SKILL[it.skill]||'')}<span style="flex:1"></span><button class="lnk" data-rm style="font-weight:400">Remove</button></div>
@@ -297,6 +299,8 @@ function preview(){
       ${it.type==='short'?`<textarea data-k="points" title="Mark points, one per line">${esc(it.points.join('\n'))}</textarea>`:''}
       ${it.type==='extended'?`<textarea data-k="guidance" title="What a strong answer would do, one per line">${esc(it.guidance.join('\n'))}</textarea>`:''}</div>`).join('')}</details>`).join('')}
     ${ok.length?`<div style="display:flex;gap:10px;align-items:center;margin-top:14px"><button class="btn" id="setSend">Send to ${ok.length} student${ok.length>1?'s':''}</button><span class="muted" id="sendMsg"></span></div>`:''}</div>`;
+  $$('[data-retry]',box).forEach(b=>b.onclick=async()=>{const d=drafts[+b.dataset.retry];b.disabled=true;b.textContent='Making...';
+    try{d.spec=await W.generate(d.req);delete d.error;}catch(e){d.error=e.message;}preview();});
   $$('input[data-f=title]',box).forEach(inp=>inp.oninput=()=>{drafts[+inp.dataset.d].spec.title=inp.value;});
   $$('.pq',box).forEach(q=>{
     const it=drafts[+q.dataset.d].spec.items[+q.dataset.i];
