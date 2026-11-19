@@ -2466,6 +2466,112 @@ export default [
    "t": "2026-11-19T13:00:00.000Z",
    "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
   }
- }
-
+ },
+{
+ "id": "seed-2026-11-19-sanam",
+ "match": "sanam",
+ "work": {
+  "id": "w-sanam-kat-1911",
+  "title": "Follow-up: cash flow and profit",
+  "due": "2026-11-23",
+  "spec": {
+   "title": "Follow-up: cash flow and profit",
+   "intro": "Good pack overall, with clear working and strong margins. This set is on the parts you dropped: building a forecast from January onwards (Q2), comparing balances with an overdraft limit (Q13b), what counts in operating profit, rounding to two decimal places, and grossing up for tax (Q20, which you did not attempt).\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.5.2c",
+     "skill": "quant",
+     "q": "Fenwick Garden Care has an opening balance of £4000 on 1 January. Its cash inflows for January, February and March are £15 000, £12 000 and £18 000. Its cash outflows are £16 500, £14 200 and £15 100. Calculate its closing balance at the end of March.",
+     "answer": 3200,
+     "unit": "£",
+     "working": "Net cash flows: –1500, –2200, +2900. Closing balances: Jan £2500, Feb £300, Mar £3200. Each month's closing balance is the next month's opening balance.",
+     "hint": "Do it one month at a time. January's closing balance becomes February's opening balance."
+    },
+    {
+     "type": "calc",
+     "topic": "3.5.2c",
+     "skill": "quant",
+     "q": "Mason Tiles gets 30% of each month's sales in cash in the month of sale and the other 70% one month later. Sales were £20 000 in December, £24 000 in January and £30 000 in February. Calculate its cash inflow from sales in February.",
+     "answer": 25800,
+     "unit": "£",
+     "working": "30% of February sales = £9000. 70% of January sales = £16 800. Total = £25 800. December sales are paid in January, so they are not part of February.",
+     "hint": "February's cash comes from two months: some of February's sales and the rest of January's."
+    },
+    {
+     "type": "calc",
+     "topic": "3.5.2c",
+     "skill": "quant",
+     "q": "Penny Lane Cycles has an opening balance of £3000 and an overdraft limit of £6000. Its net cash flows for the next four months are (£4000), (£3500), (£2000) and £5000. Calculate by how much the overdraft limit is exceeded in the worst month.",
+     "answer": 500,
+     "unit": "£",
+     "working": "Closing balances: –£1000, –£4500, –£6500, –£1500. The lowest is –£6500 in month 3, against a limit of –£6000, so the limit is exceeded by £500.",
+     "hint": "Work out each month's closing balance, find the lowest, and compare it with –£6000."
+    },
+    {
+     "type": "calc",
+     "topic": "3.5.1c",
+     "skill": "quant",
+     "q": "Data for Kestrel Freight (£000): revenue 3200, cost of sales 1900, administration expenses 420, selling costs 260, interest paid 75, tax 90. Calculate its operating profit in £.",
+     "answer": 620000,
+     "unit": "£",
+     "working": "Gross profit = 3200 – 1900 = 1300. Operating profit = 1300 – 420 – 260 = 620, so £620 000. Interest and tax come after operating profit.",
+     "hint": "Interest is not an operating expense. Stop before interest and tax."
+    },
+    {
+     "type": "calc",
+     "topic": "3.5.2f",
+     "skill": "quant",
+     "q": "Using the Kestrel Freight data (£000: revenue 3200, cost of sales 1900, administration 420, selling costs 260, interest 75, tax 90), calculate the operating profit margin. Give your answer to two decimal places.",
+     "answer": 19.375,
+     "unit": "%",
+     "working": "Operating profit = 620. 620 ÷ 3200 × 100 = 19.375% = 19.38% to 2 d.p.",
+     "hint": "Operating profit ÷ revenue × 100. Round only at the end."
+    },
+    {
+     "type": "calc",
+     "topic": "3.5.1c",
+     "skill": "quant",
+     "q": "A business made a profit for the year of £60 000 after paying tax at 25% of its profit before tax. Calculate its profit before tax.",
+     "answer": 80000,
+     "unit": "£",
+     "working": "Profit for the year is 75% of profit before tax, so PBT = 60 000 ÷ 0.75 = £80 000. Check: 25% of 80 000 = 20 000; 80 000 – 20 000 = 60 000.",
+     "hint": "Do not take 25% of £60 000. £60 000 is what is left after tax, so it is 75% of the figure you want."
+    },
+    {
+     "type": "calc",
+     "topic": "3.5.2f",
+     "skill": "quant",
+     "q": "Redfern Labs wants a profit for the year of £90 000. Tax will be 20% of profit before tax, finance costs will be £15 000, other operating expenses £210 000 and the gross profit margin 30%. Calculate the revenue it needs.",
+     "answer": 1125000,
+     "unit": "£",
+     "working": "PBT = 90 000 ÷ 0.8 = £112,500. Operating profit = 112,500 + 15 000 = £127,500. Gross profit = 127,500 + 210 000 = £337,500. Revenue = 337,500 ÷ 0.30 = £1,125,000.",
+     "hint": "Work up the income statement from the bottom: add back tax (divide by 0.8), then finance costs, then operating expenses, then divide by the margin."
+    },
+    {
+     "type": "calc",
+     "topic": "3.5.1b",
+     "skill": "quant",
+     "q": "Orchard Office Supplies sells on 60 days' credit. In June it made sales of £45 000. It received £31 000 in cash from April's sales. All of June's costs, £38 000, were paid in June. Calculate its net cash flow for June.",
+     "answer": -7000,
+     "unit": "£",
+     "working": "Net cash flow uses cash received: 31 000 – 38 000 = –£7000. The business made a profit of £7000 but cash fell.",
+     "hint": "Only count money that actually came in during June."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-cf-sanam",
+   "t": "2026-11-19T14:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+   "mark": "64/74",
+   "level": "",
+   "well": "Margins (Q5, Q7–Q11, Q17), the missing forecast figures (Q16) and the full forecast with credit sales and a loan (Q19) were right.",
+   "improve": "Q2: start with January and carry each closing balance forward (the working skipped January). Q6: the working left out distribution costs; give margins to two decimal places when asked. Q12(b): extra zero. Q13(b): compare the lowest balance with the £10 000 limit. Q20 was not attempted."
+  }
+ ]
+}
 ];

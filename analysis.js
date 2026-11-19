@@ -73,7 +73,11 @@ function analyse(d){
       qt.forEach(t=>ev.push({topic:t,skill:calc?'quant':null,w:calc?1:1.5,ok:p/100,src:'mark',label:m.tool}));
       if(essay)essays.push({t:m.t,tool:m.tool,p,q:m.question,mark:m.mark});
       if(calc&&!qt.length)ev.push({topic:null,skill:'quant',w:1,ok:p/100,src:'mark',label:m.tool});
-      if(!qt.length){
+      const kat=m.ref==='catmcq'||/KAT MCQ/i.test(m.tool||'');
+      if(kat){
+        /* KAT multiple-choice quiz: one score per unit, e.g. "3.1 8/10, 3.2 9/10, ..." */
+        String(m.level||'').split(',').forEach(x=>{const mm=x.trim().match(/^(3\.\d+)\s+(\d+)\/(\d+)/);if(mm&&+mm[3])ev.push({unit:mm[1],topic:null,skill:'knowledge',w:1,ok:+mm[2]/+mm[3],src:'mark',label:'KAT MCQ'});});
+      }else if(!qt.length){
         /* quizzes on a whole unit, e.g. "Unit 7: ..." or "Units 1-6" */
         const um=String(m.question).match(/units?\s*(\d+)(?:\s*[-–]\s*(\d+))?/i)||String(m.question).match(/units?\s*3\.(\d+)(?:\s*[-–]\s*3\.(\d+))?/i);
         if(um){const a1=+um[1],b1=+(um[2]||um[1]);for(let u=a1;u<=Math.min(b1,10);u++)ev.push({unit:'3.'+u,topic:null,skill:null,w:1/(b1-a1+1),ok:p/100,src:'mark',label:m.tool});}

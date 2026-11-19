@@ -89,6 +89,8 @@ let root=null,opts={},st={p:'7',from:'',to:'',u:'',type:''};
 
 /* ---------- helpers ---------- */
 const T=x=>typeof x==='number'?x:Date.parse(x);
+const isKat=m=>m.ref==='catmcq'||/KAT MCQ/i.test(m.tool||'');
+const isCalcPack=m=>/calc/i.test(m.tool||'');
 function parseMark(m){const x=String(m||'').match(/(\d+(?:\.\d+)?)\s*\/\s*(\d+)/);return x&&+x[2]?{got:+x[1],max:+x[2],pct:Math.min(100,+x[1]/+x[2]*100)}:null;}
 function parseHow(m){try{return m&&m.how?JSON.parse(m.how):null;}catch(e){return null;}}
 function howKind(h){if(!h)return '';if(h.m==='photo')return 'hw';const tot=(h.k||0)+(h.p||0);if(((h.p||0)>=300&&(h.p||0)>=tot*0.5)||(h.big||0)>=500)return 'pz';return 'ty';}
@@ -118,6 +120,9 @@ function gather(from,to,u){
     const ex=m.ref?exams.find(e=>e.id===m.ref):null;
     return Object.assign({},m,{p,type:red?'redraft':p?p.max:null,full:ex?ex.q:m.question,label:ex?`${ex.label||ex.year} Paper ${ex.paper} Q${ex.num}`:'',hk:howKind(parseHow(m))});
   }).filter(m=>m.type);
+  /* marked paper/website quizzes logged as marks: KAT multiple choice and calculation packs go with the other quizzes, not the written answers */
+  const quizMarks=marks.filter(m=>m.p&&(isKat(m)||isCalcPack(m)));
+  for(let i=marks.length-1;i>=0;i--)if(quizMarks.includes(marks[i]))marks.splice(i,1);
   const essays=marks.filter(m=>m.type!=='redraft'&&m.p);
   const rows=(d.rows||[]).filter(r=>me(r.exam)&&inR(r.t));
   const blurts=(d.blurts||[]).filter(b=>me(b.exam)&&inR(b.t));
@@ -129,6 +134,7 @@ function gather(from,to,u){
     const p=v.score/v.total*100;
     if(/^quiz:mcq/.test(key))quiz.mcq.push({u:usr,p,t});else if(/^quiz:calc/.test(key))quiz.calc.push({u:usr,p,t});else if(/^drill:/.test(key))quiz.drill.push({u:usr,p,t,ref:key.slice(6)});
   });});
+  quizMarks.forEach(m=>(isKat(m)?quiz.mcq:quiz.calc).push({u:m.exam,p:m.p.pct,t:T(m.t),label:m.tool+' '+m.mark}));
   const actUsers=new Set([...marks.map(m=>m.exam),...rows.map(r=>r.exam),...blurts.map(b=>b.exam),...work.map(w=>w.exam),...quiz.mcq.map(q=>q.u),...quiz.calc.map(q=>q.u),...quiz.drill.map(q=>q.u),
     ...(d.visits||[]).filter(v=>me(v.exam)&&inR(v.t)).map(v=>v.exam)]);
   return {marks,essays,rows,blurts,work,quiz,actUsers};
