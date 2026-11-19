@@ -310,7 +310,7 @@ function drawTeacher(){
   const unitHead=C.units.map(u=>`<th class="num">${esc(u.split(' ')[0])}</th>`).join('');
   const rows=res.map(r=>`<tr><td>${esc(names[r.username]||r.username)}</td><td class="num"><b>${r.score}</b></td>${r.units.map(u=>`<td class="num">${u.got}</td>`).join('')}
     <td class="num">${r.edited?r.edited.split(' ').length:0}</td>
-    <td><button class="btn ghost small" data-photo="${esc(r.username)}">Photo</button> <button class="btn ghost small" data-reset="${esc(r.username)}">Reset</button></td></tr>`).join('');
+    <td>${r.hasPhoto?`<button class="btn ghost small" data-photo="${esc(r.username)}">Photo</button>`:'<span class="small muted">Paper</span>'} <button class="btn ghost small" data-reset="${esc(r.username)}">Reset</button></td></tr>`).join('');
   const qrows=hard.map(q=>`<tr><td class="num">${q.k.n}</td><td>${esc(q.k.topic)}</td><td class="num">${q.right}/${n}</td><td>${q.k.ans}</td>
     <td>${n&&q.cnt[q.top]?`${q.top} (${q.cnt[q.top]}): ${esc(q.k.wrong[q.top])}`:''}</td></tr>`).join('');
   $('#tBody').innerHTML=`<p><b>${n}</b> of ${C.roster.length} handed in. Class average <b>${mean.toFixed(1)} / 80</b> (${(mean/80*100).toFixed(0)}%).</p>

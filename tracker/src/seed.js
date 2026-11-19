@@ -843,5 +843,1629 @@ export default [
     "improve": "Payback for Project X was given as 3 years 3 months; it pays back at exactly 3 years. Label which project each working belongs to."
    }
   ]
+ },
+ /* KAT MCQ paper sheets and cash flow and profit pack, marked 19 Nov 2026, with follow-up sets */
+ {
+  "id": "seed-2026-11-19-jeeval",
+  "match": "jeeval",
+  "work": {
+   "id": "w-jeeval-kat-1911",
+   "title": "Follow-up: cash flow and profit",
+   "due": "2026-11-23",
+   "spec": {
+    "title": "Follow-up: cash flow and profit",
+    "intro": "These questions are on the parts of the cash flow and profit pack you lost marks on: negative balances, building a forecast month by month, profit against cash, what counts in operating profit and profit for the year, mark-ups and grossing up for tax. Write the formula down first each time.\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+    "items": [
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Hartley Print's closing balance at the end of May was –£3600. Its net cash flow in May was +£2100. Calculate its opening balance for May.",
+      "answer": -5700,
+      "unit": "£",
+      "working": "Closing = opening + net cash flow, so opening = closing – net cash flow = –3600 – 2100 = –£5700. Check: –5700 + 2100 = –3600.",
+      "hint": "Rearrange: opening = closing – net cash flow. Be careful with the minus signs."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "A shop has an opening balance of £1800. In the month its cash inflows are £22 400 and its cash outflows are £27 150. Calculate its closing balance.",
+      "answer": -2950,
+      "unit": "£",
+      "working": "Net cash flow = 22 400 – 27 150 = –4750. Closing = 1800 + (–4750) = –£2950.",
+      "hint": "Work out the net cash flow first, then add it to the opening balance. The answer can be negative."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Fenwick Garden Care has an opening balance of £4000 on 1 January. Its cash inflows for January, February and March are £15 000, £12 000 and £18 000. Its cash outflows are £16 500, £14 200 and £15 100. Calculate its closing balance at the end of March.",
+      "answer": 3200,
+      "unit": "£",
+      "working": "Net cash flows: –1500, –2200, +2900. Closing balances: Jan £2500, Feb £300, Mar £3200. Each month's closing balance is the next month's opening balance.",
+      "hint": "Do it one month at a time. January's closing balance becomes February's opening balance."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Mason Tiles gets 30% of each month's sales in cash in the month of sale and the other 70% one month later. Sales were £20 000 in December, £24 000 in January and £30 000 in February. Calculate its cash inflow from sales in February.",
+      "answer": 25800,
+      "unit": "£",
+      "working": "30% of February sales = £9000. 70% of January sales = £16 800. Total = £25 800. December sales are paid in January, so they are not part of February.",
+      "hint": "February's cash comes from two months: some of February's sales and the rest of January's."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1b",
+      "skill": "quant",
+      "q": "Orchard Office Supplies sells on 60 days' credit. In June it made sales of £45 000. It received £31 000 in cash from April's sales. All of June's costs, £38 000, were paid in June. Calculate its profit for June.",
+      "answer": 7000,
+      "unit": "£",
+      "working": "Profit uses sales made, not cash received: 45 000 – 38 000 = £7000. (Its net cash flow would be 31 000 – 38 000 = –£7000.)",
+      "hint": "Profit: sales made in the month. Cash flow: cash actually received."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1b",
+      "skill": "quant",
+      "q": "Orchard Office Supplies sells on 60 days' credit. In June it made sales of £45 000. It received £31 000 in cash from April's sales. All of June's costs, £38 000, were paid in June. Calculate its net cash flow for June.",
+      "answer": -7000,
+      "unit": "£",
+      "working": "Net cash flow uses cash received: 31 000 – 38 000 = –£7000. The business made a profit of £7000 but cash fell.",
+      "hint": "Only count money that actually came in during June."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1c",
+      "skill": "quant",
+      "q": "Data for Kestrel Freight (£000): revenue 3200, cost of sales 1900, administration expenses 420, selling costs 260, interest paid 75, tax 90. Calculate its operating profit in £.",
+      "answer": 620000,
+      "unit": "£",
+      "working": "Gross profit = 3200 – 1900 = 1300. Operating profit = 1300 – 420 – 260 = 620, so £620 000. Interest and tax come after operating profit.",
+      "hint": "Interest is not an operating expense. Stop before interest and tax."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Using the Kestrel Freight data (£000: revenue 3200, cost of sales 1900, administration 420, selling costs 260, interest 75, tax 90), calculate the profit for the year margin. Give your answer to two decimal places.",
+      "answer": 14.219,
+      "unit": "%",
+      "working": "Operating profit 620 – interest 75 – tax 90 = 455. 455 ÷ 3200 × 100 = 14.219% = 14.22%.",
+      "hint": "Profit for the year = operating profit – finance costs – tax."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "A gift shop sets its prices by adding 40% to the cost of sales. Its revenue last year was £350 000. Calculate its gross profit margin to two decimal places.",
+      "answer": 28.571,
+      "unit": "%",
+      "working": "Revenue = cost × 1.4, so cost of sales = 350 000 ÷ 1.4 = £250 000. Gross profit = £100 000. Margin = 100 000 ÷ 350 000 × 100 = 28.57%, not 40%.",
+      "hint": "A 40% mark-up is on cost. The margin is gross profit as a percentage of revenue, so it is lower than 40%."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Corner Kitchen sold 3500 meals last month at an average of £12. Food costs (cost of sales) are 35% of revenue. Its other costs for the month were £16 800. Calculate its operating profit margin.",
+      "answer": 25,
+      "unit": "%",
+      "working": "Revenue = £42,000. Cost of sales = £14,700. Gross profit = £27,300. Operating profit = 27,300 – 16 800 = £10,500. 10,500 ÷ 42,000 × 100 = 25%.",
+      "hint": "Profit goes on top of the fraction, revenue underneath. A margin is never bigger than 100%."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1c",
+      "skill": "quant",
+      "q": "A business made a profit for the year of £60 000 after paying tax at 25% of its profit before tax. Calculate its profit before tax.",
+      "answer": 80000,
+      "unit": "£",
+      "working": "Profit for the year is 75% of profit before tax, so PBT = 60 000 ÷ 0.75 = £80 000. Check: 25% of 80 000 = 20 000; 80 000 – 20 000 = 60 000.",
+      "hint": "Do not take 25% of £60 000. £60 000 is what is left after tax, so it is 75% of the figure you want."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Redfern Labs wants a profit for the year of £90 000. Tax will be 20% of profit before tax, finance costs will be £15 000, other operating expenses £210 000 and the gross profit margin 30%. Calculate the revenue it needs.",
+      "answer": 1125000,
+      "unit": "£",
+      "working": "PBT = 90 000 ÷ 0.8 = £112,500. Operating profit = 112,500 + 15 000 = £127,500. Gross profit = 127,500 + 210 000 = £337,500. Revenue = 337,500 ÷ 0.30 = £1,125,000.",
+      "hint": "Work up the income statement from the bottom: add back tax (divide by 0.8), then finance costs, then operating expenses, then divide by the margin."
+     }
+    ]
+   }
+  },
+  "marks": [
+   {
+    "qid": "seed-cf-jeeval",
+    "t": "2026-11-19T14:00:00.000Z",
+    "tool": "calcpractice",
+    "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+    "mark": "48/74",
+    "level": "",
+    "well": "Credit sales timing (Q4), gross profit margin (Q5), working back from a margin (Q8, Q9), percentage change and margins (Q11), the overdraft question (Q13), Q14 and all six missing forecast figures (Q16) were right.",
+    "improve": "Negative balances: Q1(b) and Q3 had sign errors. Build forecasts month by month (Q2). Profit uses sales made, not cash received (Q12b). Operating profit leaves out interest; profit for the year then takes off finance costs and tax (Q6, Q7). Mark-up (Q15) and grossing up for tax (Q20) need practice. Q19: remember the opening balance."
+   }
+  ]
+ },
+ {
+  "id": "seed-2026-11-19-karam",
+  "match": "karam",
+  "work": {
+   "id": "w-karam-kat-1911",
+   "title": "Follow-up: cash flow and profit",
+   "due": "2026-11-23",
+   "spec": {
+    "title": "Follow-up: cash flow and profit",
+    "intro": "Full marks on the cash flow and profit pack, so this is a stretch set: a harder forecast, a longer working-back question, and the ratio and investment appraisal calculations that came up on the KAT practice.\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+    "items": [
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Brook Lane Nursery has an opening balance of £1500 on 1 January. 40% of each month's sales are paid in cash in the month; the other 60% are paid one month later. December sales were £18 000. Sales for January, February and March are £20 000, £25 000 and £32 000. Costs of £21 000 are paid each month. A bank loan of £8000 will be received in February. Calculate the closing balance at the end of March.",
+      "answer": 15100,
+      "unit": "£",
+      "working": "Inflows: Jan 8000 + 10 800 = £18800; Feb 10 000 + 12 000 + 8000 loan = £30000; Mar 12 800 + 15 000 = £27800. Outflows £21 000 each month. Closing balances: Jan £-700, Feb £8300, Mar £15100.",
+      "hint": "Set it out as a table: inflows, outflows, net cash flow, opening and closing balance for each month. Remember December's sales are partly paid in January."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Redfern Labs wants a profit for the year of £90 000. Tax will be 20% of profit before tax, finance costs will be £15 000, other operating expenses £210 000 and the gross profit margin 30%. Calculate the revenue it needs.",
+      "answer": 1125000,
+      "unit": "£",
+      "working": "PBT = 90 000 ÷ 0.8 = £112,500. Operating profit = 112,500 + 15 000 = £127,500. Gross profit = 127,500 + 210 000 = £337,500. Revenue = 337,500 ÷ 0.30 = £1,125,000.",
+      "hint": "Work up the income statement from the bottom: add back tax (divide by 0.8), then finance costs, then operating expenses, then divide by the margin."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Dale Engineering had revenue of £900 000, an operating profit margin of 8% and operating expenses (not including cost of sales) of £225 000. Calculate its cost of sales.",
+      "answer": 603000,
+      "unit": "£",
+      "working": "Operating profit = 8% × 900 000 = £72,000. Gross profit = 72,000 + 225 000 = £297,000. Cost of sales = 900 000 – 297,000 = £603,000.",
+      "hint": "Find operating profit, add back the operating expenses to get gross profit, then take gross profit off revenue."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "A gift shop sets its prices by adding 40% to the cost of sales. Its revenue last year was £350 000. Calculate its gross profit margin to two decimal places.",
+      "answer": 28.571,
+      "unit": "%",
+      "working": "Revenue = cost × 1.4, so cost of sales = 350 000 ÷ 1.4 = £250 000. Gross profit = £100 000. Margin = 100 000 ÷ 350 000 × 100 = 28.57%, not 40%.",
+      "hint": "A 40% mark-up is on cost. The margin is gross profit as a percentage of revenue, so it is lower than 40%."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.8b",
+      "skill": "quant",
+      "q": "A machine costs £60 000. It will bring in net returns of £35 000 at the end of Year 1 and £35 000 at the end of Year 2. The discount factors are 0.909 (Year 1) and 0.826 (Year 2). Calculate the net present value.",
+      "answer": 725,
+      "unit": "£",
+      "working": "PV = 35 000 × 0.909 + 35 000 × 0.826 = £60,725. NPV = 60,725 – 60 000 = £725.",
+      "hint": "Discount each year, add them up, then take off the cost."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £4.5 million and non-current liabilities of £1.5 million. Its ROCE is 9%. Calculate its operating profit.",
+      "answer": 540000,
+      "unit": "£",
+      "working": "Capital employed = 4.5m + 1.5m = £6m. Operating profit = 9% × 6m = £540 000.",
+      "hint": "Capital employed includes non-current liabilities."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £9 million and non-current liabilities of £3 million. It takes out a further £3 million long-term loan. Calculate its new gearing.",
+      "answer": 40,
+      "unit": "%",
+      "working": "New non-current liabilities = £6m. Capital employed = 9m + 6m = £15m. Gearing = 6 ÷ 15 × 100 = 40%.",
+      "hint": "Gearing = non-current liabilities ÷ (total equity + non-current liabilities). Both go up with the loan."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A business has current assets of £300 000 and current liabilities of £200 000. It uses £40 000 of cash to pay some of its suppliers (payables). Calculate its new current ratio to two decimal places.",
+      "answer": 1.625,
+      "unit": ":1",
+      "working": "Current assets fall to £260 000 and current liabilities fall to £160 000. 260 ÷ 160 = 1.625, so 1.63 : 1.",
+      "hint": "Paying suppliers with cash changes both figures."
+     }
+    ]
+   }
+  },
+  "marks": [
+   {
+    "qid": "seed-cf-karam",
+    "t": "2026-11-19T14:00:00.000Z",
+    "tool": "calcpractice",
+    "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+    "mark": "74/74",
+    "level": "",
+    "well": "Full marks (74/74). Every step was set out clearly, including the forecast with credit sales and the tax gross-up, which you corrected yourself.",
+    "improve": "Nothing lost. Keep setting out multi-step questions the same way."
+   }
+  ]
+ },
+ {
+  "id": "seed-2026-11-19-pravneet",
+  "match": "pravneet",
+  "work": {
+   "id": "w-pravneet-kat-1911",
+   "title": "Follow-up: cash flow and profit",
+   "due": "2026-11-23",
+   "spec": {
+    "title": "Follow-up: cash flow and profit",
+    "intro": "You only dropped marks on Q7 in the cash flow and profit pack, so this set starts with the income statement order (operating profit, then finance costs and tax) and then stretches you on harder forecasts and ratios.\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+    "items": [
+     {
+      "type": "calc",
+      "topic": "3.5.1c",
+      "skill": "quant",
+      "q": "Data for Kestrel Freight (£000): revenue 3200, cost of sales 1900, administration expenses 420, selling costs 260, interest paid 75, tax 90. Calculate its operating profit in £.",
+      "answer": 620000,
+      "unit": "£",
+      "working": "Gross profit = 3200 – 1900 = 1300. Operating profit = 1300 – 420 – 260 = 620, so £620 000. Interest and tax come after operating profit.",
+      "hint": "Interest is not an operating expense. Stop before interest and tax."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Using the Kestrel Freight data (£000: revenue 3200, cost of sales 1900, administration 420, selling costs 260, interest 75, tax 90), calculate the profit for the year margin. Give your answer to two decimal places.",
+      "answer": 14.219,
+      "unit": "%",
+      "working": "Operating profit 620 – interest 75 – tax 90 = 455. 455 ÷ 3200 × 100 = 14.219% = 14.22%.",
+      "hint": "Profit for the year = operating profit – finance costs – tax."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Brook Lane Nursery has an opening balance of £1500 on 1 January. 40% of each month's sales are paid in cash in the month; the other 60% are paid one month later. December sales were £18 000. Sales for January, February and March are £20 000, £25 000 and £32 000. Costs of £21 000 are paid each month. A bank loan of £8000 will be received in February. Calculate the closing balance at the end of March.",
+      "answer": 15100,
+      "unit": "£",
+      "working": "Inflows: Jan 8000 + 10 800 = £18800; Feb 10 000 + 12 000 + 8000 loan = £30000; Mar 12 800 + 15 000 = £27800. Outflows £21 000 each month. Closing balances: Jan £-700, Feb £8300, Mar £15100.",
+      "hint": "Set it out as a table: inflows, outflows, net cash flow, opening and closing balance for each month. Remember December's sales are partly paid in January."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Redfern Labs wants a profit for the year of £90 000. Tax will be 20% of profit before tax, finance costs will be £15 000, other operating expenses £210 000 and the gross profit margin 30%. Calculate the revenue it needs.",
+      "answer": 1125000,
+      "unit": "£",
+      "working": "PBT = 90 000 ÷ 0.8 = £112,500. Operating profit = 112,500 + 15 000 = £127,500. Gross profit = 127,500 + 210 000 = £337,500. Revenue = 337,500 ÷ 0.30 = £1,125,000.",
+      "hint": "Work up the income statement from the bottom: add back tax (divide by 0.8), then finance costs, then operating expenses, then divide by the margin."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £4.5 million and non-current liabilities of £1.5 million. Its ROCE is 9%. Calculate its operating profit.",
+      "answer": 540000,
+      "unit": "£",
+      "working": "Capital employed = 4.5m + 1.5m = £6m. Operating profit = 9% × 6m = £540 000.",
+      "hint": "Capital employed includes non-current liabilities."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £9 million and non-current liabilities of £3 million. It takes out a further £3 million long-term loan. Calculate its new gearing.",
+      "answer": 40,
+      "unit": "%",
+      "working": "New non-current liabilities = £6m. Capital employed = 9m + 6m = £15m. Gearing = 6 ÷ 15 × 100 = 40%.",
+      "hint": "Gearing = non-current liabilities ÷ (total equity + non-current liabilities). Both go up with the loan."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.8b",
+      "skill": "quant",
+      "q": "A machine costs £60 000. It will bring in net returns of £35 000 at the end of Year 1 and £35 000 at the end of Year 2. The discount factors are 0.909 (Year 1) and 0.826 (Year 2). Calculate the net present value.",
+      "answer": 725,
+      "unit": "£",
+      "working": "PV = 35 000 × 0.909 + 35 000 × 0.826 = £60,725. NPV = 60,725 – 60 000 = £725.",
+      "hint": "Discount each year, add them up, then take off the cost."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A business has current assets of £300 000 and current liabilities of £200 000. It uses £40 000 of cash to pay some of its suppliers (payables). Calculate its new current ratio to two decimal places.",
+      "answer": 1.625,
+      "unit": ":1",
+      "working": "Current assets fall to £260 000 and current liabilities fall to £160 000. 260 ÷ 160 = 1.625, so 1.63 : 1.",
+      "hint": "Paying suppliers with cash changes both figures."
+     }
+    ]
+   }
+  },
+  "marks": [
+   {
+    "qid": "seed-cf-pravneet",
+    "t": "2026-11-19T14:00:00.000Z",
+    "tool": "calcpractice",
+    "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+    "mark": "72/74",
+    "level": "",
+    "well": "Everything except Q7 was right, including both forecasts and the tax gross-up.",
+    "improve": "Q7: finance costs come after operating profit. You took them off twice and left the answer box blank. Write MCQ answers as a letter (Q18)."
+   }
+  ]
+ },
+ {
+  "id": "seed-2026-11-19-prabhleen",
+  "match": "prabhleen",
+  "work": {
+   "id": "w-prabhleen-kat-1911",
+   "title": "Follow-up: cash flow, profit and KAT gaps",
+   "due": "2026-11-23",
+   "spec": {
+    "title": "Follow-up: cash flow, profit and KAT gaps",
+    "intro": "This set covers both the cash flow and profit pack and the KAT multiple-choice quiz. The biggest gaps on the quiz were investment appraisal and ratios (Unit 3.7: 2 out of 10), elasticity and reverse percentages. On the pack, watch which way up the fraction goes and keep the minus signs. Work every calculation out on paper before typing the answer.\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+    "items": [
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Hartley Print's closing balance at the end of May was –£3600. Its net cash flow in May was +£2100. Calculate its opening balance for May.",
+      "answer": -5700,
+      "unit": "£",
+      "working": "Closing = opening + net cash flow, so opening = closing – net cash flow = –3600 – 2100 = –£5700. Check: –5700 + 2100 = –3600.",
+      "hint": "Rearrange: opening = closing – net cash flow. Be careful with the minus signs."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Penny Lane Cycles has an opening balance of £3000 and an overdraft limit of £6000. Its net cash flows for the next four months are (£4000), (£3500), (£2000) and £5000. Calculate by how much the overdraft limit is exceeded in the worst month.",
+      "answer": 500,
+      "unit": "£",
+      "working": "Closing balances: –£1000, –£4500, –£6500, –£1500. The lowest is –£6500 in month 3, against a limit of –£6000, so the limit is exceeded by £500.",
+      "hint": "Work out each month's closing balance, find the lowest, and compare it with –£6000."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Corner Kitchen sold 3500 meals last month at an average of £12. Food costs (cost of sales) are 35% of revenue. Its other costs for the month were £16 800. Calculate its operating profit margin.",
+      "answer": 25,
+      "unit": "%",
+      "working": "Revenue = £42,000. Cost of sales = £14,700. Gross profit = £27,300. Operating profit = 27,300 – 16 800 = £10,500. 10,500 ÷ 42,000 × 100 = 25%.",
+      "hint": "Profit goes on top of the fraction, revenue underneath. A margin is never bigger than 100%."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Redfern Labs wants a profit for the year of £90 000. Tax will be 20% of profit before tax, finance costs will be £15 000, other operating expenses £210 000 and the gross profit margin 30%. Calculate the revenue it needs.",
+      "answer": 1125000,
+      "unit": "£",
+      "working": "PBT = 90 000 ÷ 0.8 = £112,500. Operating profit = 112,500 + 15 000 = £127,500. Gross profit = 127,500 + 210 000 = £337,500. Revenue = 337,500 ÷ 0.30 = £1,125,000.",
+      "hint": "Work up the income statement from the bottom: add back tax (divide by 0.8), then finance costs, then operating expenses, then divide by the margin."
+     },
+     {
+      "type": "calc",
+      "topic": "3.2.2c",
+      "skill": "quant",
+      "q": "Launching a new service costs £40 000. There is a 0.7 chance of a pay-off of £100 000 and a 0.3 chance of a pay-off of £10 000. Calculate the net gain.",
+      "answer": 33000,
+      "unit": "£",
+      "working": "Expected value = 70 000 + 3000 = £73 000. Net gain = 73 000 – 40 000 = £33 000.",
+      "hint": "Net gain = expected value – cost."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.2.2b",
+      "skill": "knowledge",
+      "q": "A student can either take a Saturday job paying £60, help at a family shop for £45, or revise. She chooses to revise. What is the opportunity cost?",
+      "options": [
+       "£105",
+       "£15",
+       "£60",
+       "£45"
+      ],
+      "answer": 2,
+      "explain": "Opportunity cost is the next best alternative given up, which is the £60 job. You do not add the alternatives together, because she could only have done one."
+     },
+     {
+      "type": "calc",
+      "topic": "3.3.2e",
+      "skill": "quant",
+      "q": "A product earns revenue of £200 000. The business cuts its price by 10%. The price elasticity of demand is –1.8. Calculate the new revenue.",
+      "answer": 212400,
+      "unit": "£",
+      "working": "Quantity rises by 1.8 × 10% = 18%. New revenue = 200 000 × 0.9 × 1.18 = £212 400.",
+      "hint": "Apply both changes: price × 0.9 and quantity × 1.18."
+     },
+     {
+      "type": "calc",
+      "topic": "3.3.2f",
+      "skill": "quant",
+      "q": "A business sells 12 000 units a year. The income elasticity of demand is –0.8. Real incomes rise by 4%. Calculate the new sales in units.",
+      "answer": 11616,
+      "unit": "units",
+      "working": "Change in demand = –0.8 × 4% = –3.2%. 12 000 × 0.968 = 11 616 units.",
+      "hint": "Negative YED: incomes up, demand down."
+     },
+     {
+      "type": "calc",
+      "topic": "3.3.2c",
+      "skill": "quant",
+      "q": "A business's revenue rose by 8% this year to £648 000. Calculate last year's revenue.",
+      "answer": 600000,
+      "unit": "£",
+      "working": "648 000 ÷ 1.08 = £600 000. Check: 600 000 × 1.08 = 648 000.",
+      "hint": "Divide by 1.08. Do not take 8% off this year's figure."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2b",
+      "skill": "quant",
+      "q": "A business budgeted for revenue of £180 000 and costs of £140 000. Actual revenue was 5% above budget and actual costs were 10% above budget. Calculate the profit variance. Give an adverse variance as a negative number.",
+      "answer": -5000,
+      "unit": "£",
+      "working": "Budgeted profit £40 000. Actual = 189 000 – 154 000 = £35 000. Variance = –£5000 (adverse).",
+      "hint": "Profit lower than budget = adverse."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.8a",
+      "skill": "quant",
+      "q": "A project costs £80 000. Its net returns are £25 000, £30 000, £35 000 and £30 000 over four years. Calculate its average rate of return (ARR).",
+      "answer": 12.5,
+      "unit": "%",
+      "working": "Total returns £120 000 – cost £80 000 = £40 000 profit. Average per year = £10 000. ARR = 10 000 ÷ 80 000 × 100 = 12.5%.",
+      "hint": "Take off the initial cost before you average."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.8a",
+      "skill": "quant",
+      "q": "A project costs £50 000. Net cash flows are £20 000 in Year 1, £18 000 in Year 2 and £24 000 in Year 3, spread evenly through each year. Calculate the payback period in months.",
+      "answer": 30,
+      "unit": "months",
+      "working": "After 2 years: £38 000. Still needed: £12 000. 12 000 ÷ 24 000 × 12 = 6 months. Payback = 2 years 6 months = 30 months.",
+      "hint": "Find what is still needed after Year 2, then divide by the Year 3 cash flow (not Year 2's)."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.8b",
+      "skill": "quant",
+      "q": "A machine costs £60 000. It will bring in net returns of £35 000 at the end of Year 1 and £35 000 at the end of Year 2. The discount factors are 0.909 (Year 1) and 0.826 (Year 2). Calculate the net present value.",
+      "answer": 725,
+      "unit": "£",
+      "working": "PV = 35 000 × 0.909 + 35 000 × 0.826 = £60,725. NPV = 60,725 – 60 000 = £725.",
+      "hint": "Discount each year, add them up, then take off the cost."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £4.5 million and non-current liabilities of £1.5 million. Its ROCE is 9%. Calculate its operating profit.",
+      "answer": 540000,
+      "unit": "£",
+      "working": "Capital employed = 4.5m + 1.5m = £6m. Operating profit = 9% × 6m = £540 000.",
+      "hint": "Capital employed includes non-current liabilities."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £9 million and non-current liabilities of £3 million. It takes out a further £3 million long-term loan. Calculate its new gearing.",
+      "answer": 40,
+      "unit": "%",
+      "working": "New non-current liabilities = £6m. Capital employed = 9m + 6m = £15m. Gearing = 6 ÷ 15 × 100 = 40%.",
+      "hint": "Gearing = non-current liabilities ÷ (total equity + non-current liabilities). Both go up with the loan."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A business has current assets of £300 000 and current liabilities of £200 000. It uses £40 000 of cash to pay some of its suppliers (payables). Calculate its new current ratio to two decimal places.",
+      "answer": 1.625,
+      "unit": ":1",
+      "working": "Current assets fall to £260 000 and current liabilities fall to £160 000. 260 ÷ 160 = 1.625, so 1.63 : 1.",
+      "hint": "Paying suppliers with cash changes both figures."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.5a",
+      "skill": "quant",
+      "q": "A UK firm sells a product to the USA for £80 and keeps its sterling price the same. The exchange rate changes from £1 = $1.30 to £1 = $1.20. Calculate the new price in dollars.",
+      "answer": 96,
+      "unit": "$",
+      "working": "£80 × 1.20 = $96 (it was $104). The pound has weakened, so UK exports are cheaper abroad.",
+      "hint": "To turn pounds into dollars, multiply by the exchange rate."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.8.1b",
+      "skill": "knowledge",
+      "q": "A coffee chain introduces a loyalty app so that its existing customers buy its existing drinks more often. According to Ansoff, this is:",
+      "options": [
+       "market penetration.",
+       "diversification.",
+       "product development.",
+       "market development."
+      ],
+      "answer": 0,
+      "explain": "Existing products, existing customers: market penetration."
+     }
+    ]
+   }
+  },
+  "marks": [
+   {
+    "qid": "seed-cf-prabhleen",
+    "t": "2026-11-19T14:00:00.000Z",
+    "tool": "calcpractice",
+    "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+    "mark": "63/74",
+    "level": "",
+    "well": "Both forecasts (Q2, Q19), the profit margins (Q5–Q7), Q9, Q11, Q12 and Q14 were right.",
+    "improve": "Check which way up the fraction goes: profit ÷ revenue (Q10, Q17). Keep minus signs and brackets on negative figures (Q1, Q16). The two parts of a cash inflow are added, not subtracted (Q4). Q8: place value. Q13(b) was left blank. Q20: work up the income statement by adding expenses back, not taking them off."
+   }
+  ],
+  "catmcq": {
+   "answers": "BCCDDBABDDBACBACCAACCADDCBDCAACCBBCDACBDCABCBDBDACCACCCBDBADABCDACAAACBDDBACACAB",
+   "t": "2026-11-19T13:00:00.000Z",
+   "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
+  }
+ },
+ {
+  "id": "seed-2026-11-19-sukhchain",
+  "match": "sukhchain",
+  "work": {
+   "id": "w-sukhchain-kat-1911",
+   "title": "Follow-up: cash flow and profit",
+   "due": "2026-11-23",
+   "spec": {
+    "title": "Follow-up: cash flow and profit",
+    "intro": "Very strong pack. This set checks the two places you slipped (rearranging with negatives and the overdraft question) and then stretches you on longer forecasts, working back and ratios.\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+    "items": [
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Hartley Print's closing balance at the end of May was –£3600. Its net cash flow in May was +£2100. Calculate its opening balance for May.",
+      "answer": -5700,
+      "unit": "£",
+      "working": "Closing = opening + net cash flow, so opening = closing – net cash flow = –3600 – 2100 = –£5700. Check: –5700 + 2100 = –3600.",
+      "hint": "Rearrange: opening = closing – net cash flow. Be careful with the minus signs."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Penny Lane Cycles has an opening balance of £3000 and an overdraft limit of £6000. Its net cash flows for the next four months are (£4000), (£3500), (£2000) and £5000. Calculate by how much the overdraft limit is exceeded in the worst month.",
+      "answer": 500,
+      "unit": "£",
+      "working": "Closing balances: –£1000, –£4500, –£6500, –£1500. The lowest is –£6500 in month 3, against a limit of –£6000, so the limit is exceeded by £500.",
+      "hint": "Work out each month's closing balance, find the lowest, and compare it with –£6000."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Brook Lane Nursery has an opening balance of £1500 on 1 January. 40% of each month's sales are paid in cash in the month; the other 60% are paid one month later. December sales were £18 000. Sales for January, February and March are £20 000, £25 000 and £32 000. Costs of £21 000 are paid each month. A bank loan of £8000 will be received in February. Calculate the closing balance at the end of March.",
+      "answer": 15100,
+      "unit": "£",
+      "working": "Inflows: Jan 8000 + 10 800 = £18800; Feb 10 000 + 12 000 + 8000 loan = £30000; Mar 12 800 + 15 000 = £27800. Outflows £21 000 each month. Closing balances: Jan £-700, Feb £8300, Mar £15100.",
+      "hint": "Set it out as a table: inflows, outflows, net cash flow, opening and closing balance for each month. Remember December's sales are partly paid in January."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Redfern Labs wants a profit for the year of £90 000. Tax will be 20% of profit before tax, finance costs will be £15 000, other operating expenses £210 000 and the gross profit margin 30%. Calculate the revenue it needs.",
+      "answer": 1125000,
+      "unit": "£",
+      "working": "PBT = 90 000 ÷ 0.8 = £112,500. Operating profit = 112,500 + 15 000 = £127,500. Gross profit = 127,500 + 210 000 = £337,500. Revenue = 337,500 ÷ 0.30 = £1,125,000.",
+      "hint": "Work up the income statement from the bottom: add back tax (divide by 0.8), then finance costs, then operating expenses, then divide by the margin."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £4.5 million and non-current liabilities of £1.5 million. Its ROCE is 9%. Calculate its operating profit.",
+      "answer": 540000,
+      "unit": "£",
+      "working": "Capital employed = 4.5m + 1.5m = £6m. Operating profit = 9% × 6m = £540 000.",
+      "hint": "Capital employed includes non-current liabilities."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £9 million and non-current liabilities of £3 million. It takes out a further £3 million long-term loan. Calculate its new gearing.",
+      "answer": 40,
+      "unit": "%",
+      "working": "New non-current liabilities = £6m. Capital employed = 9m + 6m = £15m. Gearing = 6 ÷ 15 × 100 = 40%.",
+      "hint": "Gearing = non-current liabilities ÷ (total equity + non-current liabilities). Both go up with the loan."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.8b",
+      "skill": "quant",
+      "q": "A machine costs £60 000. It will bring in net returns of £35 000 at the end of Year 1 and £35 000 at the end of Year 2. The discount factors are 0.909 (Year 1) and 0.826 (Year 2). Calculate the net present value.",
+      "answer": 725,
+      "unit": "£",
+      "working": "PV = 35 000 × 0.909 + 35 000 × 0.826 = £60,725. NPV = 60,725 – 60 000 = £725.",
+      "hint": "Discount each year, add them up, then take off the cost."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "A gift shop sets its prices by adding 40% to the cost of sales. Its revenue last year was £350 000. Calculate its gross profit margin to two decimal places.",
+      "answer": 28.571,
+      "unit": "%",
+      "working": "Revenue = cost × 1.4, so cost of sales = 350 000 ÷ 1.4 = £250 000. Gross profit = £100 000. Margin = 100 000 ÷ 350 000 × 100 = 28.57%, not 40%.",
+      "hint": "A 40% mark-up is on cost. The margin is gross profit as a percentage of revenue, so it is lower than 40%."
+     }
+    ]
+   }
+  },
+  "marks": [
+   {
+    "qid": "seed-cf-sukhchain",
+    "t": "2026-11-19T14:00:00.000Z",
+    "tool": "calcpractice",
+    "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+    "mark": "72/74",
+    "level": "",
+    "well": "All the profit and margin questions, both forecasts and the tax gross-up were right.",
+    "improve": "Two arithmetic slips (Q13 October, Q14). Q3: the answer was right but the rearranging had a sign error, so check by putting your answer back in."
+   }
+  ]
+ },
+ {
+  "id": "seed-2026-11-19-sanchipreet",
+  "match": "sanchipreet",
+  "work": {
+   "id": "w-sanchipreet-kat-1911",
+   "title": "Follow-up: cash flow, profit and KAT gaps",
+   "due": "2026-11-23",
+   "spec": {
+    "title": "Follow-up: cash flow, profit and KAT gaps",
+    "intro": "Very strong on both the pack and the KAT quiz (79/80). This set targets the tax gross-up from Q20, careful copying in multi-step margins, the one quiz question you missed (correlation), and some stretch questions.\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+    "items": [
+     {
+      "type": "calc",
+      "topic": "3.5.1c",
+      "skill": "quant",
+      "q": "A business made a profit for the year of £60 000 after paying tax at 25% of its profit before tax. Calculate its profit before tax.",
+      "answer": 80000,
+      "unit": "£",
+      "working": "Profit for the year is 75% of profit before tax, so PBT = 60 000 ÷ 0.75 = £80 000. Check: 25% of 80 000 = 20 000; 80 000 – 20 000 = 60 000.",
+      "hint": "Do not take 25% of £60 000. £60 000 is what is left after tax, so it is 75% of the figure you want."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Redfern Labs wants a profit for the year of £90 000. Tax will be 20% of profit before tax, finance costs will be £15 000, other operating expenses £210 000 and the gross profit margin 30%. Calculate the revenue it needs.",
+      "answer": 1125000,
+      "unit": "£",
+      "working": "PBT = 90 000 ÷ 0.8 = £112,500. Operating profit = 112,500 + 15 000 = £127,500. Gross profit = 127,500 + 210 000 = £337,500. Revenue = 337,500 ÷ 0.30 = £1,125,000.",
+      "hint": "Work up the income statement from the bottom: add back tax (divide by 0.8), then finance costs, then operating expenses, then divide by the margin."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Corner Kitchen sold 3500 meals last month at an average of £12. Food costs (cost of sales) are 35% of revenue. Its other costs for the month were £16 800. Calculate its operating profit margin.",
+      "answer": 25,
+      "unit": "%",
+      "working": "Revenue = £42,000. Cost of sales = £14,700. Gross profit = £27,300. Operating profit = 27,300 – 16 800 = £10,500. 10,500 ÷ 42,000 × 100 = 25%.",
+      "hint": "Profit goes on top of the fraction, revenue underneath. A margin is never bigger than 100%."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.3.2d",
+      "skill": "knowledge",
+      "q": "Sales of umbrellas and sales of hot drinks at a station both rise on rainy days. Which statement is correct?",
+      "options": [
+       "Buying umbrellas causes people to buy hot drinks.",
+       "There is no correlation.",
+       "There is a positive correlation, but that does not prove one causes the other.",
+       "There is a negative correlation."
+      ],
+      "answer": 2,
+      "explain": "Both rise together, so the correlation is positive. A third factor (rain) drives both, which shows why correlation does not prove causation."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Brook Lane Nursery has an opening balance of £1500 on 1 January. 40% of each month's sales are paid in cash in the month; the other 60% are paid one month later. December sales were £18 000. Sales for January, February and March are £20 000, £25 000 and £32 000. Costs of £21 000 are paid each month. A bank loan of £8000 will be received in February. Calculate the closing balance at the end of March.",
+      "answer": 15100,
+      "unit": "£",
+      "working": "Inflows: Jan 8000 + 10 800 = £18800; Feb 10 000 + 12 000 + 8000 loan = £30000; Mar 12 800 + 15 000 = £27800. Outflows £21 000 each month. Closing balances: Jan £-700, Feb £8300, Mar £15100.",
+      "hint": "Set it out as a table: inflows, outflows, net cash flow, opening and closing balance for each month. Remember December's sales are partly paid in January."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Dale Engineering had revenue of £900 000, an operating profit margin of 8% and operating expenses (not including cost of sales) of £225 000. Calculate its cost of sales.",
+      "answer": 603000,
+      "unit": "£",
+      "working": "Operating profit = 8% × 900 000 = £72,000. Gross profit = 72,000 + 225 000 = £297,000. Cost of sales = 900 000 – 297,000 = £603,000.",
+      "hint": "Find operating profit, add back the operating expenses to get gross profit, then take gross profit off revenue."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.8b",
+      "skill": "quant",
+      "q": "A machine costs £60 000. It will bring in net returns of £35 000 at the end of Year 1 and £35 000 at the end of Year 2. The discount factors are 0.909 (Year 1) and 0.826 (Year 2). Calculate the net present value.",
+      "answer": 725,
+      "unit": "£",
+      "working": "PV = 35 000 × 0.909 + 35 000 × 0.826 = £60,725. NPV = 60,725 – 60 000 = £725.",
+      "hint": "Discount each year, add them up, then take off the cost."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £4.5 million and non-current liabilities of £1.5 million. Its ROCE is 9%. Calculate its operating profit.",
+      "answer": 540000,
+      "unit": "£",
+      "working": "Capital employed = 4.5m + 1.5m = £6m. Operating profit = 9% × 6m = £540 000.",
+      "hint": "Capital employed includes non-current liabilities."
+     }
+    ]
+   }
+  },
+  "marks": [
+   {
+    "qid": "seed-cf-sanchipreet",
+    "t": "2026-11-19T14:00:00.000Z",
+    "tool": "calcpractice",
+    "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+    "mark": "71/74",
+    "level": "",
+    "well": "All the cash flow questions, including the full forecast, and all the margin questions were right.",
+    "improve": "Q20: profit for the year is 75% of profit before tax, so divide by 0.75, not 1.25. Q10: revenue was copied as 146 000. Show working every time, even when you can do it in your head."
+   }
+  ],
+  "catmcq": {
+   "answers": "BCCDABABDDABCBACDAACBDADABDCABCCABDDACBACABCDBBDACCACBCBDAADBCDACBDBACBDDBACACDD",
+   "t": "2026-11-19T13:00:00.000Z",
+   "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
+  }
+ },
+ {
+  "id": "seed-2026-11-19-anhadvir",
+  "match": "anhadvir",
+  "work": {
+   "id": "w-anhadvir-kat-1911",
+   "title": "Follow-up: cash flow, profit and KAT gaps",
+   "due": "2026-11-23",
+   "spec": {
+    "title": "Follow-up: cash flow, profit and KAT gaps",
+    "intro": "Strong on both. This set goes back over the KAT quiz questions you missed (dividend units, opportunity cost, break-even and contribution, delayering, cash flow methods, ARR and exchange rates) and the Q11 slip on the pack, where you answered for revenue instead of operating profit.\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+    "items": [
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "A business's operating profit rose from £84 000 to £96 600, while its revenue rose from £700 000 to £840 000. Calculate the percentage change in operating profit.",
+      "answer": 15,
+      "unit": "%",
+      "working": "(96 600 – 84 000) ÷ 84 000 × 100 = 15%. (Revenue rose by 20%, which is not what was asked.)",
+      "hint": "Read the question: it asks about operating profit, not revenue."
+     },
+     {
+      "type": "calc",
+      "topic": "3.1.2c",
+      "skill": "quant",
+      "q": "A plc has 25 million shares and pays total dividends of £3 million. Calculate the dividend per share in pence.",
+      "answer": 12,
+      "unit": "p",
+      "working": "£3 000 000 ÷ 25 000 000 = £0.12 = 12p.",
+      "hint": "Check your units: £0.12 is 12p."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.2.2b",
+      "skill": "knowledge",
+      "q": "A student can either take a Saturday job paying £60, help at a family shop for £45, or revise. She chooses to revise. What is the opportunity cost?",
+      "options": [
+       "£45",
+       "£15",
+       "£105",
+       "£60"
+      ],
+      "answer": 3,
+      "explain": "Opportunity cost is the next best alternative given up, which is the £60 job. You do not add the alternatives together, because she could only have done one."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.5.2d",
+      "skill": "analysis",
+      "q": "A business raises its selling price by £2 and its variable cost per unit rises by £5. Fixed costs stay the same. What happens to its break-even output?",
+      "options": [
+       "It cannot be worked out",
+       "It stays the same",
+       "It falls",
+       "It rises"
+      ],
+      "answer": 3,
+      "explain": "Contribution per unit falls by £3, so more units are needed to cover the same fixed costs. Break-even rises."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.6.3b",
+      "skill": "knowledge",
+      "q": "A business removes one layer of middle management but keeps the same number of staff. What is the most likely effect?",
+      "options": [
+       "There are more levels of hierarchy",
+       "Decisions are more centralised",
+       "Spans of control get narrower",
+       "Spans of control get wider"
+      ],
+      "answer": 3,
+      "explain": "With fewer managers for the same number of staff, each remaining manager has more people reporting to them, so spans widen."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.5.4a",
+      "skill": "analysis",
+      "q": "Which of the following improves cash flow but is likely to reduce profit?",
+      "options": [
+       "Raising the price of a product with inelastic demand",
+       "Debt factoring",
+       "Selling more products at a higher price",
+       "Cutting wastage"
+      ],
+      "answer": 1,
+      "explain": "The factor pays most of the invoice value straight away (better cash flow), but charges a fee, so profit falls."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.8a",
+      "skill": "quant",
+      "q": "A project costs £80 000. Its net returns are £25 000, £30 000, £35 000 and £30 000 over four years. Calculate its average rate of return (ARR).",
+      "answer": 12.5,
+      "unit": "%",
+      "working": "Total returns £120 000 – cost £80 000 = £40 000 profit. Average per year = £10 000. ARR = 10 000 ÷ 80 000 × 100 = 12.5%.",
+      "hint": "Take off the initial cost before you average."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.5a",
+      "skill": "quant",
+      "q": "A UK firm sells a product to the USA for £80 and keeps its sterling price the same. The exchange rate changes from £1 = $1.30 to £1 = $1.20. Calculate the new price in dollars.",
+      "answer": 96,
+      "unit": "$",
+      "working": "£80 × 1.20 = $96 (it was $104). The pound has weakened, so UK exports are cheaper abroad.",
+      "hint": "To turn pounds into dollars, multiply by the exchange rate."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Redfern Labs wants a profit for the year of £90 000. Tax will be 20% of profit before tax, finance costs will be £15 000, other operating expenses £210 000 and the gross profit margin 30%. Calculate the revenue it needs.",
+      "answer": 1125000,
+      "unit": "£",
+      "working": "PBT = 90 000 ÷ 0.8 = £112,500. Operating profit = 112,500 + 15 000 = £127,500. Gross profit = 127,500 + 210 000 = £337,500. Revenue = 337,500 ÷ 0.30 = £1,125,000.",
+      "hint": "Work up the income statement from the bottom: add back tax (divide by 0.8), then finance costs, then operating expenses, then divide by the margin."
+     }
+    ]
+   }
+  },
+  "marks": [
+   {
+    "qid": "seed-cf-anhadvir",
+    "t": "2026-11-19T14:00:00.000Z",
+    "tool": "calcpractice",
+    "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+    "mark": "72/74",
+    "level": "",
+    "well": "Everything except Q11(a) was right, including both forecasts and the tax gross-up.",
+    "improve": "Q11(a) asked for the percentage change in operating profit. You worked out the change in revenue. Underline what the question asks for."
+   }
+  ],
+  "catmcq": {
+   "answers": "BCADABAADDABCBACCAACBDADCBDCABCCABDDACBACABCDBBDDDCACBCBDACDACDACBDAACBDDBACACDD",
+   "t": "2026-11-19T13:00:00.000Z",
+   "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
+  }
+ },
+ {
+  "id": "seed-2026-11-19-jeevan",
+  "match": "jeevan",
+  "work": {
+   "id": "w-jeevan-kat-1911",
+   "title": "Follow-up: cash flow and profit",
+   "due": "2026-11-23",
+   "spec": {
+    "title": "Follow-up: cash flow and profit",
+    "intro": "This set is mostly cash flow: building a forecast month by month, credit sales, negative balances, profit against cash and the overdraft limit. It finishes with grossing up for tax (Q20) and rounding to two decimal places.\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+    "items": [
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Fenwick Garden Care has an opening balance of £4000 on 1 January. Its cash inflows for January, February and March are £15 000, £12 000 and £18 000. Its cash outflows are £16 500, £14 200 and £15 100. Calculate its closing balance at the end of March.",
+      "answer": 3200,
+      "unit": "£",
+      "working": "Net cash flows: –1500, –2200, +2900. Closing balances: Jan £2500, Feb £300, Mar £3200. Each month's closing balance is the next month's opening balance.",
+      "hint": "Do it one month at a time. January's closing balance becomes February's opening balance."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Mason Tiles gets 30% of each month's sales in cash in the month of sale and the other 70% one month later. Sales were £20 000 in December, £24 000 in January and £30 000 in February. Calculate its cash inflow from sales in February.",
+      "answer": 25800,
+      "unit": "£",
+      "working": "30% of February sales = £9000. 70% of January sales = £16 800. Total = £25 800. December sales are paid in January, so they are not part of February.",
+      "hint": "February's cash comes from two months: some of February's sales and the rest of January's."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Hartley Print's closing balance at the end of May was –£3600. Its net cash flow in May was +£2100. Calculate its opening balance for May.",
+      "answer": -5700,
+      "unit": "£",
+      "working": "Closing = opening + net cash flow, so opening = closing – net cash flow = –3600 – 2100 = –£5700. Check: –5700 + 2100 = –3600.",
+      "hint": "Rearrange: opening = closing – net cash flow. Be careful with the minus signs."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1b",
+      "skill": "quant",
+      "q": "Orchard Office Supplies sells on 60 days' credit. In June it made sales of £45 000. It received £31 000 in cash from April's sales. All of June's costs, £38 000, were paid in June. Calculate its profit for June.",
+      "answer": 7000,
+      "unit": "£",
+      "working": "Profit uses sales made, not cash received: 45 000 – 38 000 = £7000. (Its net cash flow would be 31 000 – 38 000 = –£7000.)",
+      "hint": "Profit: sales made in the month. Cash flow: cash actually received."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1b",
+      "skill": "quant",
+      "q": "Orchard Office Supplies sells on 60 days' credit. In June it made sales of £45 000. It received £31 000 in cash from April's sales. All of June's costs, £38 000, were paid in June. Calculate its net cash flow for June.",
+      "answer": -7000,
+      "unit": "£",
+      "working": "Net cash flow uses cash received: 31 000 – 38 000 = –£7000. The business made a profit of £7000 but cash fell.",
+      "hint": "Only count money that actually came in during June."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Penny Lane Cycles has an opening balance of £3000 and an overdraft limit of £6000. Its net cash flows for the next four months are (£4000), (£3500), (£2000) and £5000. Calculate by how much the overdraft limit is exceeded in the worst month.",
+      "answer": 500,
+      "unit": "£",
+      "working": "Closing balances: –£1000, –£4500, –£6500, –£1500. The lowest is –£6500 in month 3, against a limit of –£6000, so the limit is exceeded by £500.",
+      "hint": "Work out each month's closing balance, find the lowest, and compare it with –£6000."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Brook Lane Nursery has an opening balance of £1500 on 1 January. 40% of each month's sales are paid in cash in the month; the other 60% are paid one month later. December sales were £18 000. Sales for January, February and March are £20 000, £25 000 and £32 000. Costs of £21 000 are paid each month. A bank loan of £8000 will be received in February. Calculate the closing balance at the end of March.",
+      "answer": 15100,
+      "unit": "£",
+      "working": "Inflows: Jan 8000 + 10 800 = £18800; Feb 10 000 + 12 000 + 8000 loan = £30000; Mar 12 800 + 15 000 = £27800. Outflows £21 000 each month. Closing balances: Jan £-700, Feb £8300, Mar £15100.",
+      "hint": "Set it out as a table: inflows, outflows, net cash flow, opening and closing balance for each month. Remember December's sales are partly paid in January."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1c",
+      "skill": "quant",
+      "q": "A business made a profit for the year of £60 000 after paying tax at 25% of its profit before tax. Calculate its profit before tax.",
+      "answer": 80000,
+      "unit": "£",
+      "working": "Profit for the year is 75% of profit before tax, so PBT = 60 000 ÷ 0.75 = £80 000. Check: 25% of 80 000 = 20 000; 80 000 – 20 000 = 60 000.",
+      "hint": "Do not take 25% of £60 000. £60 000 is what is left after tax, so it is 75% of the figure you want."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Redfern Labs wants a profit for the year of £90 000. Tax will be 20% of profit before tax, finance costs will be £15 000, other operating expenses £210 000 and the gross profit margin 30%. Calculate the revenue it needs.",
+      "answer": 1125000,
+      "unit": "£",
+      "working": "PBT = 90 000 ÷ 0.8 = £112,500. Operating profit = 112,500 + 15 000 = £127,500. Gross profit = 127,500 + 210 000 = £337,500. Revenue = 337,500 ÷ 0.30 = £1,125,000.",
+      "hint": "Work up the income statement from the bottom: add back tax (divide by 0.8), then finance costs, then operating expenses, then divide by the margin."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Using the Kestrel Freight data (£000: revenue 3200, cost of sales 1900, administration 420, selling costs 260, interest 75, tax 90), calculate the operating profit margin. Give your answer to two decimal places.",
+      "answer": 19.375,
+      "unit": "%",
+      "working": "Operating profit = 620. 620 ÷ 3200 × 100 = 19.375% = 19.38% to 2 d.p.",
+      "hint": "Operating profit ÷ revenue × 100. Round only at the end."
+     }
+    ]
+   }
+  },
+  "marks": [
+   {
+    "qid": "seed-cf-jeevan",
+    "t": "2026-11-19T14:00:00.000Z",
+    "tool": "calcpractice",
+    "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+    "mark": "60/74",
+    "level": "",
+    "well": "The profit and margin questions (Q5, Q7–Q10, Q14–Q17) were mostly right, with clear working.",
+    "improve": "Q2: start with January and carry each closing balance forward. Q12(b) and Q13(b) were not done in your own work. Q19: finish the forecast (outflows, net cash flow and balances). Q20: tax is 25% of profit before tax, so divide by 0.75. Round to two decimal places when asked (Q6b)."
+   }
+  ]
+ },
+ {
+  "id": "seed-2026-11-19-tandrika",
+  "match": "tandrika",
+  "work": {
+   "id": "w-tandrika-kat-1911",
+   "title": "Follow-up: cash flow and profit",
+   "due": "2026-11-23",
+   "spec": {
+    "title": "Follow-up: cash flow and profit",
+    "intro": "Start with the cash flow basics: net cash flow = inflows – outflows, and closing balance = opening balance + net cash flow. The set then builds up to a three-month forecast, credit sales, profit against cash, and working back from a margin. Use the clue on any question you are stuck on.\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+    "items": [
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "A shop has an opening balance of £1800. In the month its cash inflows are £22 400 and its cash outflows are £27 150. Calculate its closing balance.",
+      "answer": -2950,
+      "unit": "£",
+      "working": "Net cash flow = 22 400 – 27 150 = –4750. Closing = 1800 + (–4750) = –£2950.",
+      "hint": "Work out the net cash flow first, then add it to the opening balance. The answer can be negative."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "A business starts the month with an overdraft (an opening balance of –£2500). Its net cash flow for the month is –£1800. Calculate its closing balance.",
+      "answer": -4300,
+      "unit": "£",
+      "working": "Closing = –2500 + (–1800) = –£4300. Adding a negative makes the balance more negative.",
+      "hint": "Adding a negative number makes the balance more negative."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Hartley Print's closing balance at the end of May was –£3600. Its net cash flow in May was +£2100. Calculate its opening balance for May.",
+      "answer": -5700,
+      "unit": "£",
+      "working": "Closing = opening + net cash flow, so opening = closing – net cash flow = –3600 – 2100 = –£5700. Check: –5700 + 2100 = –3600.",
+      "hint": "Rearrange: opening = closing – net cash flow. Be careful with the minus signs."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Fenwick Garden Care has an opening balance of £4000 on 1 January. Its cash inflows for January, February and March are £15 000, £12 000 and £18 000. Its cash outflows are £16 500, £14 200 and £15 100. Calculate its closing balance at the end of March.",
+      "answer": 3200,
+      "unit": "£",
+      "working": "Net cash flows: –1500, –2200, +2900. Closing balances: Jan £2500, Feb £300, Mar £3200. Each month's closing balance is the next month's opening balance.",
+      "hint": "Do it one month at a time. January's closing balance becomes February's opening balance."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Mason Tiles gets 30% of each month's sales in cash in the month of sale and the other 70% one month later. Sales were £20 000 in December, £24 000 in January and £30 000 in February. Calculate its cash inflow from sales in February.",
+      "answer": 25800,
+      "unit": "£",
+      "working": "30% of February sales = £9000. 70% of January sales = £16 800. Total = £25 800. December sales are paid in January, so they are not part of February.",
+      "hint": "February's cash comes from two months: some of February's sales and the rest of January's."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1b",
+      "skill": "quant",
+      "q": "Orchard Office Supplies sells on 60 days' credit. In June it made sales of £45 000. It received £31 000 in cash from April's sales. All of June's costs, £38 000, were paid in June. Calculate its profit for June.",
+      "answer": 7000,
+      "unit": "£",
+      "working": "Profit uses sales made, not cash received: 45 000 – 38 000 = £7000. (Its net cash flow would be 31 000 – 38 000 = –£7000.)",
+      "hint": "Profit: sales made in the month. Cash flow: cash actually received."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1b",
+      "skill": "quant",
+      "q": "Orchard Office Supplies sells on 60 days' credit. In June it made sales of £45 000. It received £31 000 in cash from April's sales. All of June's costs, £38 000, were paid in June. Calculate its net cash flow for June.",
+      "answer": -7000,
+      "unit": "£",
+      "working": "Net cash flow uses cash received: 31 000 – 38 000 = –£7000. The business made a profit of £7000 but cash fell.",
+      "hint": "Only count money that actually came in during June."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Penny Lane Cycles has an opening balance of £3000 and an overdraft limit of £6000. Its net cash flows for the next four months are (£4000), (£3500), (£2000) and £5000. Calculate by how much the overdraft limit is exceeded in the worst month.",
+      "answer": 500,
+      "unit": "£",
+      "working": "Closing balances: –£1000, –£4500, –£6500, –£1500. The lowest is –£6500 in month 3, against a limit of –£6000, so the limit is exceeded by £500.",
+      "hint": "Work out each month's closing balance, find the lowest, and compare it with –£6000."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1c",
+      "skill": "quant",
+      "q": "Data for Kestrel Freight (£000): revenue 3200, cost of sales 1900, administration expenses 420, selling costs 260, interest paid 75, tax 90. Calculate its operating profit in £.",
+      "answer": 620000,
+      "unit": "£",
+      "working": "Gross profit = 3200 – 1900 = 1300. Operating profit = 1300 – 420 – 260 = 620, so £620 000. Interest and tax come after operating profit.",
+      "hint": "Interest is not an operating expense. Stop before interest and tax."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "A retailer has a gross profit margin of 45%. Its cost of sales last year was £165 000. Calculate its revenue.",
+      "answer": 300000,
+      "unit": "£",
+      "working": "If gross profit is 45% of revenue, cost of sales is 55% of revenue. Revenue = 165 000 ÷ 0.55 = £300 000.",
+      "hint": "Cost of sales is not 45% of revenue. What percentage is it?"
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "A gift shop sets its prices by adding 40% to the cost of sales. Its revenue last year was £350 000. Calculate its gross profit margin to two decimal places.",
+      "answer": 28.571,
+      "unit": "%",
+      "working": "Revenue = cost × 1.4, so cost of sales = 350 000 ÷ 1.4 = £250 000. Gross profit = £100 000. Margin = 100 000 ÷ 350 000 × 100 = 28.57%, not 40%.",
+      "hint": "A 40% mark-up is on cost. The margin is gross profit as a percentage of revenue, so it is lower than 40%."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1c",
+      "skill": "quant",
+      "q": "A business made a profit for the year of £60 000 after paying tax at 25% of its profit before tax. Calculate its profit before tax.",
+      "answer": 80000,
+      "unit": "£",
+      "working": "Profit for the year is 75% of profit before tax, so PBT = 60 000 ÷ 0.75 = £80 000. Check: 25% of 80 000 = 20 000; 80 000 – 20 000 = 60 000.",
+      "hint": "Do not take 25% of £60 000. £60 000 is what is left after tax, so it is 75% of the figure you want."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "Corner Kitchen sold 3500 meals last month at an average of £12. Food costs (cost of sales) are 35% of revenue. Its other costs for the month were £16 800. Calculate its operating profit margin.",
+      "answer": 25,
+      "unit": "%",
+      "working": "Revenue = £42,000. Cost of sales = £14,700. Gross profit = £27,300. Operating profit = 27,300 – 16 800 = £10,500. 10,500 ÷ 42,000 × 100 = 25%.",
+      "hint": "Profit goes on top of the fraction, revenue underneath. A margin is never bigger than 100%."
+     }
+    ]
+   }
+  },
+  "marks": [
+   {
+    "qid": "seed-cf-tandrika",
+    "t": "2026-11-19T14:00:00.000Z",
+    "tool": "calcpractice",
+    "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+    "mark": "37/74",
+    "level": "",
+    "well": "The margin questions were good: Q5, Q7, Q10, Q17 and the MCQ (Q18) were right, and four of the six missing forecast figures (Q16).",
+    "improve": "Cash flow basics first: net cash flow and closing balance (Q1, Q2, Q3). Credit sales timing (Q4, Q19). Profit uses sales made; cash flow uses cash received (Q12). Interest is not an operating cost (Q6). Q4 and Q20 were not attempted."
+   }
+  ]
+ },
+ {
+  "id": "seed-2026-11-19-avleen-kaur",
+  "match": "avleen kaur",
+  "work": {
+   "id": "w-avleen-kaur-kat-1911",
+   "title": "Follow-up: cash flow, profit and KAT gaps",
+   "due": "2026-11-23",
+   "spec": {
+    "title": "Follow-up: cash flow, profit and KAT gaps",
+    "intro": "This set covers the cash flow pack and the KAT quiz. On the quiz you left 25 questions blank, so many of these are on topics you skipped: investment appraisal, ratios, break-even, decision trees and elasticity. Have a go at every question. A blank always scores 0.\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+    "items": [
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Fenwick Garden Care has an opening balance of £4000 on 1 January. Its cash inflows for January, February and March are £15 000, £12 000 and £18 000. Its cash outflows are £16 500, £14 200 and £15 100. Calculate its closing balance at the end of March.",
+      "answer": 3200,
+      "unit": "£",
+      "working": "Net cash flows: –1500, –2200, +2900. Closing balances: Jan £2500, Feb £300, Mar £3200. Each month's closing balance is the next month's opening balance.",
+      "hint": "Do it one month at a time. January's closing balance becomes February's opening balance."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Hartley Print's closing balance at the end of May was –£3600. Its net cash flow in May was +£2100. Calculate its opening balance for May.",
+      "answer": -5700,
+      "unit": "£",
+      "working": "Closing = opening + net cash flow, so opening = closing – net cash flow = –3600 – 2100 = –£5700. Check: –5700 + 2100 = –3600.",
+      "hint": "Rearrange: opening = closing – net cash flow. Be careful with the minus signs."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1c",
+      "skill": "quant",
+      "q": "Data for Kestrel Freight (£000): revenue 3200, cost of sales 1900, administration expenses 420, selling costs 260, interest paid 75, tax 90. Calculate its operating profit in £.",
+      "answer": 620000,
+      "unit": "£",
+      "working": "Gross profit = 3200 – 1900 = 1300. Operating profit = 1300 – 420 – 260 = 620, so £620 000. Interest and tax come after operating profit.",
+      "hint": "Interest is not an operating expense. Stop before interest and tax."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.1b",
+      "skill": "quant",
+      "q": "Orchard Office Supplies sells on 60 days' credit. In June it made sales of £45 000. It received £31 000 in cash from April's sales. All of June's costs, £38 000, were paid in June. Calculate its profit for June.",
+      "answer": 7000,
+      "unit": "£",
+      "working": "Profit uses sales made, not cash received: 45 000 – 38 000 = £7000. (Its net cash flow would be 31 000 – 38 000 = –£7000.)",
+      "hint": "Profit: sales made in the month. Cash flow: cash actually received."
+     },
+     {
+      "type": "calc",
+      "topic": "3.1.1c",
+      "skill": "quant",
+      "q": "A business's total costs were 80% of its revenue, and it made a profit of £36 000. Calculate its revenue.",
+      "answer": 180000,
+      "unit": "£",
+      "working": "Profit is 20% of revenue, so revenue = 36 000 ÷ 0.2 = £180 000.",
+      "hint": "What percentage of revenue is the profit?"
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2d",
+      "skill": "quant",
+      "q": "A product breaks even at 4000 units. Fixed costs are £60 000 and the variable cost is £11 per unit. Calculate the selling price.",
+      "answer": 26,
+      "unit": "£",
+      "working": "Contribution = 60 000 ÷ 4000 = £15. Price = 15 + 11 = £26.",
+      "hint": "Find contribution per unit first, then add the variable cost back on."
+     },
+     {
+      "type": "calc",
+      "topic": "3.6.2",
+      "skill": "quant",
+      "q": "A business had 80 staff at the start of the year and 120 at the end. 18 staff left during the year. Calculate its labour turnover.",
+      "answer": 18,
+      "unit": "%",
+      "working": "Average staff = (80 + 120) ÷ 2 = 100. Labour turnover = 18 ÷ 100 × 100 = 18%.",
+      "hint": "Use the average number of staff."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.8a",
+      "skill": "quant",
+      "q": "A project costs £50 000. Net cash flows are £20 000 in Year 1, £18 000 in Year 2 and £24 000 in Year 3, spread evenly through each year. Calculate the payback period in months.",
+      "answer": 30,
+      "unit": "months",
+      "working": "After 2 years: £38 000. Still needed: £12 000. 12 000 ÷ 24 000 × 12 = 6 months. Payback = 2 years 6 months = 30 months.",
+      "hint": "Find what is still needed after Year 2, then divide by the Year 3 cash flow (not Year 2's)."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £4.5 million and non-current liabilities of £1.5 million. Its ROCE is 9%. Calculate its operating profit.",
+      "answer": 540000,
+      "unit": "£",
+      "working": "Capital employed = 4.5m + 1.5m = £6m. Operating profit = 9% × 6m = £540 000.",
+      "hint": "Capital employed includes non-current liabilities."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A business has current assets of £300 000 and current liabilities of £200 000. It uses £40 000 of cash to pay some of its suppliers (payables). Calculate its new current ratio to two decimal places.",
+      "answer": 1.625,
+      "unit": ":1",
+      "working": "Current assets fall to £260 000 and current liabilities fall to £160 000. 260 ÷ 160 = 1.625, so 1.63 : 1.",
+      "hint": "Paying suppliers with cash changes both figures."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2d",
+      "skill": "quant",
+      "q": "A product sells for £40 and has variable costs of £25 per unit. Fixed costs are £90 000. At its current output it makes a profit of £30 000. Calculate its margin of safety in units.",
+      "answer": 2000,
+      "unit": "units",
+      "working": "Contribution = £15. Break-even = 90 000 ÷ 15 = 6000 units. Current output = (90 000 + 30 000) ÷ 15 = 8000. Margin of safety = 2000 units (or profit ÷ contribution = 30 000 ÷ 15).",
+      "hint": "Margin of safety is in units, not pounds."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.8b",
+      "skill": "quant",
+      "q": "A machine costs £60 000. It will bring in net returns of £35 000 at the end of Year 1 and £35 000 at the end of Year 2. The discount factors are 0.909 (Year 1) and 0.826 (Year 2). Calculate the net present value.",
+      "answer": 725,
+      "unit": "£",
+      "working": "PV = 35 000 × 0.909 + 35 000 × 0.826 = £60,725. NPV = 60,725 – 60 000 = £725.",
+      "hint": "Discount each year, add them up, then take off the cost."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £9 million and non-current liabilities of £3 million. It takes out a further £3 million long-term loan. Calculate its new gearing.",
+      "answer": 40,
+      "unit": "%",
+      "working": "New non-current liabilities = £6m. Capital employed = 9m + 6m = £15m. Gearing = 6 ÷ 15 × 100 = 40%.",
+      "hint": "Gearing = non-current liabilities ÷ (total equity + non-current liabilities). Both go up with the loan."
+     },
+     {
+      "type": "calc",
+      "topic": "3.3.2f",
+      "skill": "quant",
+      "q": "A business sells 12 000 units a year. The income elasticity of demand is –0.8. Real incomes rise by 4%. Calculate the new sales in units.",
+      "answer": 11616,
+      "unit": "units",
+      "working": "Change in demand = –0.8 × 4% = –3.2%. 12 000 × 0.968 = 11 616 units.",
+      "hint": "Negative YED: incomes up, demand down."
+     },
+     {
+      "type": "calc",
+      "topic": "3.2.2c",
+      "skill": "quant",
+      "q": "Launching a new service costs £40 000. There is a 0.7 chance of a pay-off of £100 000 and a 0.3 chance of a pay-off of £10 000. Calculate the net gain.",
+      "answer": 33000,
+      "unit": "£",
+      "working": "Expected value = 70 000 + 3000 = £73 000. Net gain = 73 000 – 40 000 = £33 000.",
+      "hint": "Net gain = expected value – cost."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.6.4b",
+      "skill": "knowledge",
+      "q": "According to Herzberg, which of these is most likely to motivate an employee?",
+      "options": [
+       "More responsibility for planning their own work",
+       "Better canteen food",
+       "A newer office",
+       "A pay rise"
+      ],
+      "answer": 0,
+      "explain": "Responsibility is a motivator. Pay, conditions and the working environment are hygiene factors: improving them removes dissatisfaction but does not motivate."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.7.6b",
+      "skill": "knowledge",
+      "q": "Which statement best describes the stakeholder concept?",
+      "options": [
+       "Managers try to maximise returns for shareholders only.",
+       "Managers take account of the interests of all stakeholder groups when making decisions.",
+       "Every stakeholder group gets exactly what it wants.",
+       "Stakeholders own the business."
+      ],
+      "answer": 1,
+      "explain": "The stakeholder concept means considering the interests of all stakeholders. Their needs often conflict, so they cannot all be satisfied at once."
+     }
+    ]
+   }
+  },
+  "marks": [
+   {
+    "qid": "seed-cf-avleen-kaur",
+    "t": "2026-11-19T14:00:00.000Z",
+    "tool": "calcpractice",
+    "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+    "mark": "65/74",
+    "level": "",
+    "well": "All the profit, margin and working-back questions (Q7–Q11, Q15, Q17, Q20) and both long forecasts (Q16, Q19) were right.",
+    "improve": "Opening balances: Q2 left out the £1500 and Q3 took away a negative instead of rearranging. Q6: interest is not an operating cost. Q12(a): profit uses sales made, not cash received."
+   }
+  ],
+  "catmcq": {
+   "answers": "-C-B-B-BD-A-CBA--AACB-ADCBDCABCC-BDDA--AB-BD-B-D--DA-B-BDAADBD-B-BAB--BD-BA-ACDD",
+   "t": "2026-11-19T13:00:00.000Z",
+   "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
+  }
+ },
+ {
+  "id": "seed-2026-11-19-rashmeet",
+  "match": "rashmeet",
+  "work": {
+   "id": "w-rashmeet-kat-1911",
+   "title": "Follow-up: cash flow, profit and KAT gaps",
+   "due": "2026-11-23",
+   "spec": {
+    "title": "Follow-up: cash flow, profit and KAT gaps",
+    "intro": "This set covers the three-month forecast you left out (Q19 on the pack) and the KAT quiz questions you missed, several of which were knowledge questions on leadership, stakeholders, segmentation, correlation and quality.\n\nType numbers only: no £ signs or commas needed. Use a minus sign for negative figures. Round to 2 decimal places unless the question says otherwise.",
+    "items": [
+     {
+      "type": "calc",
+      "topic": "3.5.2c",
+      "skill": "quant",
+      "q": "Brook Lane Nursery has an opening balance of £1500 on 1 January. 40% of each month's sales are paid in cash in the month; the other 60% are paid one month later. December sales were £18 000. Sales for January, February and March are £20 000, £25 000 and £32 000. Costs of £21 000 are paid each month. A bank loan of £8000 will be received in February. Calculate the closing balance at the end of March.",
+      "answer": 15100,
+      "unit": "£",
+      "working": "Inflows: Jan 8000 + 10 800 = £18800; Feb 10 000 + 12 000 + 8000 loan = £30000; Mar 12 800 + 15 000 = £27800. Outflows £21 000 each month. Closing balances: Jan £-700, Feb £8300, Mar £15100.",
+      "hint": "Set it out as a table: inflows, outflows, net cash flow, opening and closing balance for each month. Remember December's sales are partly paid in January."
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2f",
+      "skill": "quant",
+      "q": "A business's operating profit rose from £84 000 to £96 600, while its revenue rose from £700 000 to £840 000. Calculate the percentage change in operating profit.",
+      "answer": 15,
+      "unit": "%",
+      "working": "(96 600 – 84 000) ÷ 84 000 × 100 = 15%. (Revenue rose by 20%, which is not what was asked.)",
+      "hint": "Read the question: it asks about operating profit, not revenue."
+     },
+     {
+      "type": "calc",
+      "topic": "3.1.2c",
+      "skill": "quant",
+      "q": "A plc has 25 million shares and pays total dividends of £3 million. Calculate the dividend per share in pence.",
+      "answer": 12,
+      "unit": "p",
+      "working": "£3 000 000 ÷ 25 000 000 = £0.12 = 12p.",
+      "hint": "Check your units: £0.12 is 12p."
+     },
+     {
+      "type": "calc",
+      "topic": "3.1.1c",
+      "skill": "quant",
+      "q": "A business's total costs were 80% of its revenue, and it made a profit of £36 000. Calculate its revenue.",
+      "answer": 180000,
+      "unit": "£",
+      "working": "Profit is 20% of revenue, so revenue = 36 000 ÷ 0.2 = £180 000.",
+      "hint": "What percentage of revenue is the profit?"
+     },
+     {
+      "type": "calc",
+      "topic": "3.5.2d",
+      "skill": "quant",
+      "q": "A product sells for £40 and has variable costs of £25 per unit. Fixed costs are £90 000. At its current output it makes a profit of £30 000. Calculate its margin of safety in units.",
+      "answer": 2000,
+      "unit": "units",
+      "working": "Contribution = £15. Break-even = 90 000 ÷ 15 = 6000 units. Current output = (90 000 + 30 000) ÷ 15 = 8000. Margin of safety = 2000 units (or profit ÷ contribution = 30 000 ÷ 15).",
+      "hint": "Margin of safety is in units, not pounds."
+     },
+     {
+      "type": "calc",
+      "topic": "3.6.3b",
+      "skill": "quant",
+      "q": "A business has a managing director at the top and 3 levels of hierarchy in total. Every manager, including the MD, has a span of control of 5. How many people work in the business?",
+      "answer": 31,
+      "unit": "people",
+      "working": "1 + 5 + 25 = 31.",
+      "hint": "Count every level, including the MD."
+     },
+     {
+      "type": "calc",
+      "topic": "3.7.2b",
+      "skill": "quant",
+      "q": "A company has total equity of £9 million and non-current liabilities of £3 million. It takes out a further £3 million long-term loan. Calculate its new gearing.",
+      "answer": 40,
+      "unit": "%",
+      "working": "New non-current liabilities = £6m. Capital employed = 9m + 6m = £15m. Gearing = 6 ÷ 15 × 100 = 40%.",
+      "hint": "Gearing = non-current liabilities ÷ (total equity + non-current liabilities). Both go up with the loan."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.2.1b",
+      "skill": "knowledge",
+      "q": "A manager asks her team for their views, discusses the options with them and then lets the group decide together. This is:",
+      "options": [
+       "paternalistic leadership.",
+       "laissez-faire leadership.",
+       "autocratic leadership.",
+       "democratic leadership."
+      ],
+      "answer": 3,
+      "explain": "The team takes part in the decision, so it is democratic. Paternalistic leaders still make the decision themselves; laissez-faire leaders leave staff to get on with it."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.2.3b",
+      "skill": "knowledge",
+      "q": "On a stakeholder map, a group that has low power but high interest should be:",
+      "options": [
+       "monitored with minimum effort.",
+       "managed closely.",
+       "kept satisfied.",
+       "kept informed."
+      ],
+      "answer": 3,
+      "explain": "Low power, high interest = keep informed. High power, low interest = keep satisfied. High power, high interest = manage closely."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.7.6b",
+      "skill": "knowledge",
+      "q": "Which statement best describes the stakeholder concept?",
+      "options": [
+       "Managers take account of the interests of all stakeholder groups when making decisions.",
+       "Managers try to maximise returns for shareholders only.",
+       "Stakeholders own the business.",
+       "Every stakeholder group gets exactly what it wants."
+      ],
+      "answer": 0,
+      "explain": "The stakeholder concept means considering the interests of all stakeholders. Their needs often conflict, so they cannot all be satisfied at once."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.3.2d",
+      "skill": "knowledge",
+      "q": "Sales of umbrellas and sales of hot drinks at a station both rise on rainy days. Which statement is correct?",
+      "options": [
+       "There is a positive correlation, but that does not prove one causes the other.",
+       "There is no correlation.",
+       "There is a negative correlation.",
+       "Buying umbrellas causes people to buy hot drinks."
+      ],
+      "answer": 0,
+      "explain": "Both rise together, so the correlation is positive. A third factor (rain) drives both, which shows why correlation does not prove causation."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.3.3a",
+      "skill": "knowledge",
+      "q": "A gym offers cheaper membership to people living within two miles, and a loyalty discount to members who visit at least 12 times a month. Which two methods of segmentation are used?",
+      "options": [
+       "Geographic and behavioural",
+       "Demographic and income",
+       "Geographic and demographic",
+       "Income and behavioural"
+      ],
+      "answer": 0,
+      "explain": "Where people live is geographic. How often they visit (usage) is behavioural."
+     },
+     {
+      "type": "mcq",
+      "topic": "3.4.4a",
+      "skill": "knowledge",
+      "q": "Which of these is an example of quality assurance rather than quality control?",
+      "options": [
+       "Removing faulty products before they are packed",
+       "Testing a sample of finished goods each day",
+       "Inspecting every tenth product at the end of the line",
+       "Training workers to check their own work at every stage"
+      ],
+      "answer": 3,
+      "explain": "Quality assurance builds quality into each stage to prevent faults. The other three detect faults after the product is made, which is quality control."
+     }
+    ]
+   }
+  },
+  "marks": [
+   {
+    "qid": "seed-cf-rashmeet",
+    "t": "2026-11-19T14:00:00.000Z",
+    "tool": "calcpractice",
+    "question": "Cash flow and profit calculations (20 questions, 74 marks)",
+    "mark": "66/74",
+    "level": "",
+    "well": "Nearly every profit and margin question was right, along with Q16 and Q20.",
+    "improve": "Q19 (three-month forecast with credit sales) was not attempted. Q11(a): 15.8% with no working; the answer is 14.58%. Show working on every calculation."
+   }
+  ],
+  "catmcq": {
+   "answers": "BCABABABDDABBBCDDAACBDADBBDBABCCABDAACBACCBCDBBDACCACBCBDBADBCDAABDBACBDDBACACDD",
+   "t": "2026-11-19T13:00:00.000Z",
+   "how": "Paper answer sheet, handed in during the lesson and marked by the teacher"
+  }
  }
+
 ];

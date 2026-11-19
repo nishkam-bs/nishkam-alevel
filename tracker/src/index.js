@@ -81,6 +81,9 @@ async function runSeed(db) {
       .bind(e.work.id, u, e.work.title, JSON.stringify(e.work.spec), nowIso(), e.work.due || null));
     for (const m of e.marks || []) stmts.push(db.prepare('INSERT OR IGNORE INTO marks(qid,username,t,tool,question,mark,level,well,improve,answer) VALUES(?,?,?,?,?,?,?,?,?,?)')
       .bind(m.qid, u, m.t, m.tool, m.question, m.mark, m.level || '', m.well || '', m.improve || '', ''));
+    /* a paper KAT MCQ answer sheet marked by the teacher: same record as a photo hand-in, without the photo */
+    if (e.catmcq && !(await db.prepare('SELECT 1 FROM catmcq WHERE quiz=? AND username=?').bind(CAT.id, u).first()))
+      stmts.push(...catStatements(db, u, catClean(e.catmcq.answers), catClean(e.catmcq.answers), null, e.catmcq.t || nowIso(), e.catmcq.how || 'Paper answer sheet, marked by the teacher'));
     stmts.push(db.prepare('INSERT INTO seeded(id,username,t) VALUES(?,?,?)').bind(e.id, u, nowIso()));
     await db.batch(stmts);
   }
@@ -169,6 +172,23 @@ const clearFails = (db, k) => db.prepare('DELETE FROM fails WHERE k=?').bind(k).
 function catClean(v) {
   const a = Array.isArray(v) ? v : String(v || '').split('');
   return Array.from({ length: CAT.items.length }, (_, i) => { const c = String(a[i] || '').trim().toUpperCase(); return /^[ABCD]$/.test(c) ? c : '-'; }).join('');
+}
+function catStatements(db, username, ans, read, photo, t, how) {
+  const res = catReview(ans, t);
+  const edited = [];
+  for (let i = 0; i < ans.length; i++) if (read[i] !== ans[i]) edited.push((i + 1) + ':' + read[i] + '>' + ans[i]);
+  const unitTxt = res.units.map(x => x.code + ' ' + x.got + '/' + x.total).join(', ');
+  const weak = res.units.slice().sort((a, c) => a.got - c.got).slice(0, 2).map(x => x.code + ' ' + x.name);
+  const strong = res.units.slice().sort((a, c) => c.got - a.got).slice(0, 2).map(x => x.code + ' ' + x.name);
+  const missedTopics = res.items.filter(x => !x.ok).map(x => x.topic);
+  return [
+    db.prepare('INSERT INTO catmcq(quiz,username,t,answers,read,edited,score,units,photo) VALUES(?,?,?,?,?,?,?,?,?)')
+      .bind(CAT.id, username, t, ans, read, edited.join(' '), res.score, JSON.stringify(res.units), photo),
+    db.prepare('INSERT OR IGNORE INTO marks(qid,username,t,tool,question,mark,level,well,improve,answer,ref,how) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)')
+      .bind('catmcq-' + username, username, t, 'KAT MCQ', CAT.title, res.score + '/' + res.total, unitTxt,
+        'Strongest: ' + strong.join('; '), str('Weakest: ' + weak.join('; ') + '. Questions to go over: ' + (missedTopics.join('; ') || 'none'), 1200),
+        ans, 'catmcq', how || ('Photo of paper answer sheet' + (edited.length ? '; ' + edited.length + ' letters changed by the student after reading' : '')))
+  ];
 }
 function catReview(ans, t) {
   ans = catClean(ans);
@@ -504,42 +524,30 @@ const routes = {
     if (!/^data:image\/jpeg;base64,/.test(photo)) throw new HttpError(400, 'Add a photo of your answer sheet first.');
     if (await db.prepare('SELECT 1 FROM catmcq WHERE quiz=? AND username=?').bind(CAT.id, u.username).first())
       throw new HttpError(409, 'You have already handed this in. Ask your teacher if you need to hand it in again.');
-    const res = catReview(ans, nowIso());
-    const edited = [];
-    for (let i = 0; i < ans.length; i++) if (read[i] !== ans[i]) edited.push((i + 1) + ':' + read[i] + '>' + ans[i]);
-    const unitTxt = res.units.map(x => x.code + ' ' + x.got + '/' + x.total).join(', ');
-    const weak = res.units.slice().sort((a, c) => a.got - c.got).slice(0, 2).map(x => x.code + ' ' + x.name);
-    const strong = res.units.slice().sort((a, c) => c.got - a.got).slice(0, 2).map(x => x.code + ' ' + x.name);
-    const missedTopics = res.items.filter(x => !x.ok).map(x => x.topic);
-    await db.batch([
-      db.prepare('INSERT INTO catmcq(quiz,username,t,answers,read,edited,score,units,photo) VALUES(?,?,?,?,?,?,?,?,?)')
-        .bind(CAT.id, u.username, res.t, ans, read, edited.join(' '), res.score, JSON.stringify(res.units), photo),
-      db.prepare('INSERT OR IGNORE INTO marks(qid,username,t,tool,question,mark,level,well,improve,answer,ref,how) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)')
-        .bind('catmcq-' + u.username, u.username, res.t, 'KAT MCQ', CAT.title, res.score + '/' + res.total, unitTxt,
-          'Strongest: ' + strong.join('; '), str('Weakest: ' + weak.join('; ') + '. Questions to go over: ' + missedTopics.join('; '), 1200),
-          ans, 'catmcq', 'Photo of paper answer sheet' + (edited.length ? '; ' + edited.length + ' letters changed by the student after reading' : ''))
-    ]);
+    const t = nowIso();
+    await db.batch(catStatements(db, u.username, ans, read, photo, t, null));
+    const res = catReview(ans, t);
     return Object.assign({ done: true }, res);
   },
 
   async '/catmcq/class'(db, b) {
     await session(db, b.token, 'teacher');
     const [rows, users] = await db.batch([
-      db.prepare('SELECT username,t,answers,read,edited,score,units FROM catmcq WHERE quiz=? ORDER BY score DESC').bind(CAT.id),
+      db.prepare('SELECT username,t,answers,read,edited,score,units,photo IS NOT NULL AS hasPhoto FROM catmcq WHERE quiz=? ORDER BY score DESC').bind(CAT.id),
       db.prepare('SELECT username,name FROM users ORDER BY name')
     ]);
     return {
       title: CAT.title, units: CAT.units,
       key: CAT.items.map(x => ({ n: x.n, u: x.u, ans: x.ans, topic: x.topic, trap: x.trap, wrong: x.wrong })),
       roster: users.results,
-      results: rows.results.map(r => ({ username: r.username, t: r.t, answers: r.answers, read: r.read, edited: r.edited, score: r.score, units: JSON.parse(r.units || '[]') }))
+      results: rows.results.map(r => ({ username: r.username, t: r.t, answers: r.answers, read: r.read, edited: r.edited, score: r.score, units: JSON.parse(r.units || '[]'), hasPhoto: !!r.hasPhoto }))
     };
   },
 
   async '/catmcq/photo'(db, b) {
     await session(db, b.token, 'teacher');
     const r = await db.prepare('SELECT photo FROM catmcq WHERE quiz=? AND username=?').bind(CAT.id, str(b.username, 40)).first();
-    if (!r) throw new HttpError(404, 'No photo for that student.');
+    if (!r || !r.photo) throw new HttpError(404, 'This answer sheet was handed in on paper, so there is no photo.');
     return { photo: r.photo };
   },
 
