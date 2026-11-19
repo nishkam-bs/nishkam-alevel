@@ -164,7 +164,7 @@ async function fail(db, k) {
 const clearFails = (db, k) => db.prepare('DELETE FROM fails WHERE k=?').bind(k).run();
 
 
-/* ---------- CAT multiple-choice quiz ---------- */
+/* ---------- KAT multiple-choice quiz ---------- */
 /* 80 characters, each A-D, or - for blank or unreadable */
 function catClean(v) {
   const a = Array.isArray(v) ? v : String(v || '').split('');
@@ -489,7 +489,7 @@ const routes = {
   },
 
 
-  /* ----- CAT multiple-choice quiz (paper answer sheet, photo uploaded from home) ----- */
+  /* ----- KAT multiple-choice quiz (paper answer sheet, photo uploaded from home) ----- */
   async '/catmcq/mine'(db, b) {
     const u = await student(db, b);
     const r = await db.prepare('SELECT t,answers,score,units FROM catmcq WHERE quiz=? AND username=?').bind(CAT.id, u.username).first();
@@ -515,7 +515,7 @@ const routes = {
       db.prepare('INSERT INTO catmcq(quiz,username,t,answers,read,edited,score,units,photo) VALUES(?,?,?,?,?,?,?,?,?)')
         .bind(CAT.id, u.username, res.t, ans, read, edited.join(' '), res.score, JSON.stringify(res.units), photo),
       db.prepare('INSERT OR IGNORE INTO marks(qid,username,t,tool,question,mark,level,well,improve,answer,ref,how) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)')
-        .bind('catmcq-' + u.username, u.username, res.t, 'CAT MCQ', CAT.title, res.score + '/' + res.total, unitTxt,
+        .bind('catmcq-' + u.username, u.username, res.t, 'KAT MCQ', CAT.title, res.score + '/' + res.total, unitTxt,
           'Strongest: ' + strong.join('; '), str('Weakest: ' + weak.join('; ') + '. Questions to go over: ' + missedTopics.join('; '), 1200),
           ans, 'catmcq', 'Photo of paper answer sheet' + (edited.length ? '; ' + edited.length + ' letters changed by the student after reading' : ''))
     ]);

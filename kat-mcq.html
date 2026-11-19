@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>CAT multiple-choice quiz</title>
+<title>KAT multiple-choice quiz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -74,7 +74,7 @@ input[type=password]{border-radius:10px;border:1px solid var(--line);background:
 <body>
 <div class="wrap">
   <div class="top"><a href="index.html">Back to the main site</a></div>
-  <h1>CAT multiple-choice quiz</h1>
+  <h1>KAT multiple-choice quiz</h1>
   <p class="lead">Units 3.1 to 3.8, 80 questions. Do the quiz on paper using the booklet, then hand in your answer sheet here.</p>
   <div id="bar"></div>
 
@@ -334,7 +334,7 @@ function drawTeacher(){
     const txt=C.title+'\nAnswer key: '+C.key.map(k=>k.ans).join('')+'\n'+lines().join('\n');
     try{await navigator.clipboard.writeText(txt);$('#tMsg').textContent='Copied. Paste it into the chat with Claude.';}catch(x){prompt('Copy this:',txt);}
   };
-  $('#tCsv').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lines().join('\n')],{type:'text/csv'}));a.download='cat-mcq-results.csv';a.click();};
+  $('#tCsv').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lines().join('\n')],{type:'text/csv'}));a.download='kat-mcq-results.csv';a.click();};
   $('#tRefresh').onclick=tLoad;
 }
 })();

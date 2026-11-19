@@ -328,13 +328,13 @@ function mountHome(target){
       <span class="nk-small nk-st2">${esc(statusText())}</span><button type="button" class="nk-link" id="nkOut">Sign out</button></div>
       <div id="nkWeek">${weekCard()}</div>
       <p class="nk-small" id="nkWork" style="margin:14px 0 0"></p>
-      <p class="nk-small" id="nkCat" style="margin:8px 0 0"><b>CAT multiple-choice quiz:</b> when you have finished the paper answer sheet, <a href="cat-mcq.html">take a photo of it and hand it in here</a>.</p>
+      <p class="nk-small" id="nkCat" style="margin:8px 0 0"><b>KAT multiple-choice quiz:</b> when you have finished the paper answer sheet, <a href="kat-mcq.html">take a photo of it and hand it in here</a>.</p>
       <div class="nk-cols" style="margin-top:22px"><div><h4>Courses</h4><ul class="nk-prog">${prog}</ul></div>
       <div><h4>Your marked answers</h4><div id="nkMarks" class="nk-small">Loading...</div></div></div></div>`;
     el.querySelector('#nkOut').onclick=async()=>{if(confirm('Sign out on this device?')){await signOut();draw();}};
     ready.then(()=>setTimeout(showNotice,300));
     if(!schedInfo||!schedInfo.groups)loadSched(true).then(()=>{const h=el.querySelector('#nkWeek');if(h)h.innerHTML=weekCard();renderBars();});
-    api('/catmcq/mine',{}).then(d=>{const c=el.querySelector('#nkCat');if(c&&d.done)c.innerHTML=`<b>CAT multiple-choice quiz:</b> handed in, ${d.score} out of ${d.total}. <a href="cat-mcq.html">Go through the worked solutions</a>`;}).catch(()=>{});
+    api('/catmcq/mine',{}).then(d=>{const c=el.querySelector('#nkCat');if(c&&d.done)c.innerHTML=`<b>KAT multiple-choice quiz:</b> handed in, ${d.score} out of ${d.total}. <a href="kat-mcq.html">Go through the worked solutions</a>`;}).catch(()=>{});
     api('/work/mine',{}).then(d=>{const el2=el.querySelector('#nkWork');if(!el2)return;const todo=(d.work||[]).filter(w=>w.source==='teacher'&&w.status!=='done');
       el2.innerHTML=todo.length?`<b>Work from your teacher: ${todo.length} to do.</b> <a href="practice.html">Go to practice</a>`:`<a href="practice.html">Practice</a>: make questions on your gaps or any topic.`;}).catch(()=>{});
     try{const d=await api('/mymarks',{});const m=el.querySelector('#nkMarks');if(!m)return;
