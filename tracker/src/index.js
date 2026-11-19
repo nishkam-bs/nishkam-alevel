@@ -14,6 +14,7 @@
    ===================================================================== */
 
 import SEED from './seed.js';
+import CAT from './catmcq.js';
 
 const ITER = 20000;                       // PBKDF2 iterations (kept modest for the Workers CPU limit)
 const STUDENT_DAYS = 365;                 // students stay signed in for a school year
@@ -49,7 +50,9 @@ const SCHEMA = [
   `CREATE UNIQUE INDEX IF NOT EXISTS blurts_qid ON blurts(qid)`,
   `CREATE INDEX IF NOT EXISTS marks_user ON marks(username)`,
   `CREATE INDEX IF NOT EXISTS blurts_user ON blurts(username)`,
-  `CREATE INDEX IF NOT EXISTS sessions_user ON sessions(username)`
+  `CREATE INDEX IF NOT EXISTS sessions_user ON sessions(username)`,
+  `CREATE TABLE IF NOT EXISTS catmcq(quiz TEXT NOT NULL, username TEXT NOT NULL, t TEXT NOT NULL, answers TEXT NOT NULL, read TEXT, edited TEXT,
+     score INTEGER, units TEXT, photo TEXT, PRIMARY KEY(quiz,username))`
 ];
 let schemaReady = false;
 async function ensureSchema(db) {
@@ -159,6 +162,23 @@ async function fail(db, k) {
   await db.prepare('INSERT INTO fails(k,n,until) VALUES(?,?,?) ON CONFLICT(k) DO UPDATE SET n=excluded.n, until=excluded.until').bind(k, n, until).run();
 }
 const clearFails = (db, k) => db.prepare('DELETE FROM fails WHERE k=?').bind(k).run();
+
+
+/* ---------- CAT multiple-choice quiz ---------- */
+/* 80 characters, each A-D, or - for blank or unreadable */
+function catClean(v) {
+  const a = Array.isArray(v) ? v : String(v || '').split('');
+  return Array.from({ length: CAT.items.length }, (_, i) => { const c = String(a[i] || '').trim().toUpperCase(); return /^[ABCD]$/.test(c) ? c : '-'; }).join('');
+}
+function catReview(ans, t) {
+  ans = catClean(ans);
+  const items = CAT.items.map((q, i) => Object.assign({}, q, { given: ans[i], ok: ans[i] === q.ans }));
+  const units = CAT.units.map((name, u) => {
+    const its = items.filter(x => x.u === u);
+    return { code: name.split(' ')[0], name: name.slice(name.indexOf(' ') + 1), got: its.filter(x => x.ok).length, total: its.length };
+  });
+  return { t, title: CAT.title, score: items.filter(x => x.ok).length, total: items.length, units, items, answers: ans };
+}
 
 /* =====================================================================
    Routes
@@ -468,6 +488,71 @@ const routes = {
     return { saved: stmts.length };
   },
 
+
+  /* ----- CAT multiple-choice quiz (paper answer sheet, photo uploaded from home) ----- */
+  async '/catmcq/mine'(db, b) {
+    const u = await student(db, b);
+    const r = await db.prepare('SELECT t,answers,score,units FROM catmcq WHERE quiz=? AND username=?').bind(CAT.id, u.username).first();
+    if (!r) return { done: false, title: CAT.title, count: CAT.items.length };
+    return Object.assign({ done: true }, catReview(r.answers, r.t));
+  },
+
+  async '/catmcq/submit'(db, b) {
+    const u = await student(db, b);
+    const ans = catClean(b.answers), read = catClean(b.read);
+    const photo = str(b.photo, 900000);
+    if (!/^data:image\/jpeg;base64,/.test(photo)) throw new HttpError(400, 'Add a photo of your answer sheet first.');
+    if (await db.prepare('SELECT 1 FROM catmcq WHERE quiz=? AND username=?').bind(CAT.id, u.username).first())
+      throw new HttpError(409, 'You have already handed this in. Ask your teacher if you need to hand it in again.');
+    const res = catReview(ans, nowIso());
+    const edited = [];
+    for (let i = 0; i < ans.length; i++) if (read[i] !== ans[i]) edited.push((i + 1) + ':' + read[i] + '>' + ans[i]);
+    const unitTxt = res.units.map(x => x.code + ' ' + x.got + '/' + x.total).join(', ');
+    const weak = res.units.slice().sort((a, c) => a.got - c.got).slice(0, 2).map(x => x.code + ' ' + x.name);
+    const strong = res.units.slice().sort((a, c) => c.got - a.got).slice(0, 2).map(x => x.code + ' ' + x.name);
+    const missedTopics = res.items.filter(x => !x.ok).map(x => x.topic);
+    await db.batch([
+      db.prepare('INSERT INTO catmcq(quiz,username,t,answers,read,edited,score,units,photo) VALUES(?,?,?,?,?,?,?,?,?)')
+        .bind(CAT.id, u.username, res.t, ans, read, edited.join(' '), res.score, JSON.stringify(res.units), photo),
+      db.prepare('INSERT OR IGNORE INTO marks(qid,username,t,tool,question,mark,level,well,improve,answer,ref,how) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)')
+        .bind('catmcq-' + u.username, u.username, res.t, 'CAT MCQ', CAT.title, res.score + '/' + res.total, unitTxt,
+          'Strongest: ' + strong.join('; '), str('Weakest: ' + weak.join('; ') + '. Questions to go over: ' + missedTopics.join('; '), 1200),
+          ans, 'catmcq', 'Photo of paper answer sheet' + (edited.length ? '; ' + edited.length + ' letters changed by the student after reading' : ''))
+    ]);
+    return Object.assign({ done: true }, res);
+  },
+
+  async '/catmcq/class'(db, b) {
+    await session(db, b.token, 'teacher');
+    const [rows, users] = await db.batch([
+      db.prepare('SELECT username,t,answers,read,edited,score,units FROM catmcq WHERE quiz=? ORDER BY score DESC').bind(CAT.id),
+      db.prepare('SELECT username,name FROM users ORDER BY name')
+    ]);
+    return {
+      title: CAT.title, units: CAT.units,
+      key: CAT.items.map(x => ({ n: x.n, u: x.u, ans: x.ans, topic: x.topic, trap: x.trap, wrong: x.wrong })),
+      roster: users.results,
+      results: rows.results.map(r => ({ username: r.username, t: r.t, answers: r.answers, read: r.read, edited: r.edited, score: r.score, units: JSON.parse(r.units || '[]') }))
+    };
+  },
+
+  async '/catmcq/photo'(db, b) {
+    await session(db, b.token, 'teacher');
+    const r = await db.prepare('SELECT photo FROM catmcq WHERE quiz=? AND username=?').bind(CAT.id, str(b.username, 40)).first();
+    if (!r) throw new HttpError(404, 'No photo for that student.');
+    return { photo: r.photo };
+  },
+
+  async '/catmcq/reset'(db, b) {
+    await session(db, b.token, 'teacher');
+    const un = str(b.username, 40);
+    await db.batch([
+      db.prepare('DELETE FROM catmcq WHERE quiz=? AND username=?').bind(CAT.id, un),
+      db.prepare('DELETE FROM marks WHERE qid=?').bind('catmcq-' + un)
+    ]);
+    return { ok: true };
+  },
+
   async '/accounts/create'(db, b) {
     await session(db, b.token, 'teacher');
     const name = str(b.name, 80).trim();
@@ -508,7 +593,7 @@ const routes = {
   async '/accounts/delete'(db, b) {
     await session(db, b.token, 'teacher');
     const u = str(b.username, 40);
-    await db.batch(['users', 'sessions', 'store', 'attempts', 'marks', 'blurts', 'work', 'notes', 'excuse'].map(t => db.prepare(`DELETE FROM ${t} WHERE username=?`).bind(u)));
+    await db.batch(['users', 'sessions', 'store', 'attempts', 'marks', 'blurts', 'work', 'notes', 'excuse', 'catmcq'].map(t => db.prepare(`DELETE FROM ${t} WHERE username=?`).bind(u)));
     return { ok: true };
   }
 };

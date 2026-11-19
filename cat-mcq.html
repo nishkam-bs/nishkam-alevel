@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CAT multiple-choice quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{--bg:#FAF7F1;--bg2:#F3ECDB;--card:#fff;--fg:#1A1A1A;--navy:#0E2A47;--muted:#6B6B6B;--line:#E5DFD2;--gold:#B08A3E;--ok:#2d7a4f;--ok-soft:rgba(45,122,79,.12);--amber:#a7741a;--amber-soft:rgba(183,121,31,.13);--end:#b23b31;--end-soft:rgba(178,59,49,.1)}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1420;--bg2:#121a28;--card:#172133;--fg:#e9ecf2;--navy:#cfe0f5;--muted:#9aa4b6;--line:rgba(255,255,255,.1);--gold:#e0b553;--ok:#5fcf80;--ok-soft:rgba(95,207,128,.14);--amber:#e8b04a;--amber-soft:rgba(232,176,74,.14);--end:#ff7d70;--end-soft:rgba(255,125,112,.12);color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:32px max(18px,env(safe-area-inset-right,0px)) 70px max(18px,env(safe-area-inset-left,0px))}
+h1,h2{font-family:"DM Serif Display",Georgia,serif;font-weight:400;color:var(--navy);margin:0;line-height:1.15}
+h1{font-size:2.3rem;margin:6px 0 6px}
+h2{font-size:1.4rem;margin-bottom:10px}
+a{color:var(--fg)}
+.top a{color:var(--muted);font-size:.9rem}
+.lead{color:var(--muted);margin:0 0 20px;max-width:640px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:20px}
+.btn{border:0;cursor:pointer;border-radius:10px;padding:10px 18px;font:600 .92rem "IBM Plex Sans",sans-serif;background:var(--navy);color:var(--card);display:inline-block;text-decoration:none}
+@media (prefers-color-scheme:dark){.btn{color:#0e1420}}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn.small{padding:6px 12px;font-size:.84rem}
+.btn:disabled{opacity:.55;cursor:default}
+.muted{color:var(--muted)}.small{font-size:.86rem}.err{color:var(--end)}
+ol.steps{margin:6px 0 0;padding-left:20px}
+#previews{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+#previews img{max-height:160px;border-radius:8px;border:1px solid var(--line)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.sheet{display:grid;grid-template-columns:repeat(4,1fr);gap:4px 14px;margin-top:12px}
+@media (max-width:620px){.sheet{grid-template-columns:repeat(2,1fr)}}
+.cell{display:flex;align-items:center;gap:8px}
+.cell b{width:26px;text-align:right;font:600 .9rem "IBM Plex Mono",monospace}
+.cell select{flex:1;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:5px 8px;font:600 15px "IBM Plex Mono",monospace}
+.cell.unsure select{border-color:var(--amber);background:var(--amber-soft)}
+.cell.blank select{border-color:var(--end);background:var(--end-soft)}
+.check{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:760px){.check{grid-template-columns:1fr}}
+.check img{width:100%;border-radius:8px;border:1px solid var(--line);cursor:zoom-in}
+.score{font:400 2.6rem "DM Serif Display",Georgia,serif;color:var(--navy)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:.8rem}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.q{border-top:1px solid var(--line);padding:18px 0}
+.q:first-child{border-top:0}
+.q .meta{font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.q p{margin:0 0 8px}
+.opt{display:flex;gap:10px;border:1px solid var(--line);border-radius:10px;padding:7px 12px;margin-bottom:5px;font-size:.95rem}
+.opt b{font-family:"IBM Plex Mono",monospace}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}.opt.wrong{border-color:var(--end);background:var(--end-soft)}
+.tag{font:600 .74rem "IBM Plex Mono",monospace;padding:3px 8px;border-radius:6px;background:var(--bg2)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}.tag.no{background:var(--end-soft);color:var(--end)}
+.work{background:var(--bg2);border-radius:10px;padding:10px 14px;margin:8px 0;font-size:.92rem}
+.work div{margin:2px 0}
+.why{font-size:.94rem;margin-top:8px}
+.why ul{margin:4px 0 0;padding-left:20px}
+.trap{font-size:.92rem;border-left:3px solid var(--amber);padding:2px 0 2px 12px;margin-top:8px}
+.qtable{width:auto;margin:6px 0 10px}
+.qtable td,.qtable th{border:1px solid var(--line)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--card);color:var(--fg);padding:7px 14px;font:600 .86rem "IBM Plex Sans",sans-serif;cursor:pointer}
+.seg button.on{background:var(--fg);color:var(--card)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:20px;z-index:50}
+.modal img{max-width:min(100%,900px);background:#fff;border-radius:8px}
+.modal button{position:fixed;top:14px;right:14px}
+input[type=password]{border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:9px 12px;font:15px "IBM Plex Sans",sans-serif}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="index.html">Back to the main site</a></div>
+  <h1>CAT multiple-choice quiz</h1>
+  <p class="lead">Units 3.1 to 3.8, 80 questions. Do the quiz on paper using the booklet, then hand in your answer sheet here.</p>
+  <div id="bar"></div>
+
+  <div id="signedOut" class="card" hidden><h2>Sign in first</h2><p>Sign in on the <a href="index.html#account">home page</a> with your username and password, then come back to this page to hand in your answer sheet.</p></div>
+
+  <!-- step 1: photo -->
+  <div id="stepPhoto" class="card" hidden>
+    <h2>1. Take a photo of your answer sheet</h2>
+    <ol class="steps small">
+      <li>Lay the sheet flat in good light. Hold the phone straight above it so the whole sheet fills the photo.</li>
+      <li>Make sure all 80 boxes and your name are in the picture and the letters are sharp.</li>
+      <li>If you can't fit it in one photo, take two (top half and bottom half).</li>
+    </ol>
+    <div class="btns">
+      <label class="btn">Take a photo<input type="file" id="cam" accept="image/*" capture="environment" hidden></label>
+      <label class="btn ghost">Choose a photo<input type="file" id="pick" accept="image/*" multiple hidden></label>
+    </div>
+    <div id="previews"></div>
+    <div class="btns"><button class="btn" id="readBtn" disabled>Read my answers</button><span class="small muted" id="readMsg" aria-live="polite"></span></div>
+  </div>
+
+  <!-- step 2: check -->
+  <div id="stepCheck" class="card" hidden>
+    <h2>2. Check your answers</h2>
+    <p class="small">These are the letters read from your photo. Check every one against your sheet and change any that are wrong. Boxes in orange were hard to read. Boxes in red were read as blank. Your teacher can see your photo and any letters you change.</p>
+    <div class="check">
+      <div><img id="checkImg" alt="Your answer sheet"></div>
+      <div><div class="sheet" id="sheet"></div></div>
+    </div>
+    <div class="btns">
+      <button class="btn" id="handIn">Hand in</button>
+      <button class="btn ghost" id="again">Use a different photo</button>
+      <span class="small muted" id="handMsg" aria-live="polite"></span>
+    </div>
+    <p class="small muted">You can only hand in once, so check carefully first.</p>
+  </div>
+
+  <!-- step 3: results -->
+  <div id="results" hidden></div>
+
+  <!-- teacher -->
+  <div class="card" id="teacher" hidden>
+    <h2>Teacher view</h2>
+    <div id="tLogin">
+      <p class="small muted">Sign in with the tracker password.</p>
+      <form id="tForm" class="btns" style="margin-top:0"><input type="password" id="tPw" autocomplete="current-password" placeholder="Password"><button class="btn" type="submit">Sign in</button><span class="small err" id="tErr"></span></form>
+    </div>
+    <div id="tBody" hidden></div>
+  </div>
+  <p class="small muted" style="margin-top:30px"><a href="#" id="tLink">Teacher view</a></p>
+</div>
+<div class="modal" id="modal" hidden><button class="btn" id="modalClose">Close</button><img id="modalImg" alt="Answer sheet"></div>
+
+<script src="account.js"></script>
+<script src="marking-uploads.js"></script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const Ac=window.Acct,N=window.NMark,TOTAL=80,L='ABCD';
+const API=(()=>{try{return localStorage.getItem('nk_api');}catch(e){return null;}})()||'https://nishkam-tracker.alevelnishkam.workers.dev';
+let photos=[],read='',review=null;
+
+/* ---------- student ---------- */
+Ac.bar('#bar',{inside:true,text:'Sign in once on the home page to hand in your answer sheet. Your result is saved to your account.'});
+
+async function load(){
+  if(!Ac.user){$('#stepPhoto').hidden=true;$('#signedOut').hidden=false;return;}
+  $('#signedOut').hidden=true;
+  try{
+    const d=await Ac.call('/catmcq/mine');
+    if(d.done){showResults(d);return;}
+    $('#stepPhoto').hidden=false;
+  }catch(e){$('#bar').insertAdjacentHTML('afterend','<p class="err">'+esc(e.message)+'</p>');}
+}
+Ac.ready.then(load);
+
+function addPhotos(files){
+  N.addFiles(files,photos,$('#previews'),2).then(()=>{$('#readBtn').disabled=!photos.length;});
+}
+$('#cam').onchange=e=>{addPhotos(e.target.files);e.target.value='';};
+$('#pick').onchange=e=>{addPhotos(e.target.files);e.target.value='';};
+new MutationObserver(()=>{$('#readBtn').disabled=!photos.length;}).observe($('#previews'),{childList:true});
+
+const READ_SYS=`You read students' handwritten multiple-choice answer sheets. The sheet has 80 numbered boxes in four columns (1-20, 21-40, 41-60, 61-80). Each box should contain one capital letter: A, B, C or D.
+Copy exactly what the student wrote. Do not correct anything and do not guess the right answer to any question.
+- If a letter is crossed out and another letter is written beside it, give the new letter.
+- If a box is empty, give "-".
+- If you cannot tell which letter it is, give your best reading and add the question number to "unsure".
+- There may be one photo or two (top and bottom of the same sheet). Combine them.
+Reply with JSON only, no other text:
+{"answers":{"1":"B","2":"-",...,"80":"D"},"unsure":[12,47],"name":"the name written on the sheet, or empty"}
+Include every number from 1 to 80.`;
+
+$('#readBtn').onclick=async()=>{
+  const btn=$('#readBtn'),msg=$('#readMsg');
+  btn.disabled=true;msg.className='small muted';msg.textContent='Reading your sheet. This takes about 20 seconds. Keep this page open.';
+  try{
+    await N.ready();
+    const content=[...N.blocks(photos),{type:'text',text:'Read this answer sheet.'+N.UNREADABLE_NOTE}];
+    const o=await N.markJSON({model:'claude-sonnet-4-6',max_tokens:2500,system:READ_SYS,messages:[{role:'user',content}]});
+    const a=o.answers||{};
+    read=Array.from({length:TOTAL},(_,i)=>{const c=String(a[i+1]||'').trim().toUpperCase();return L.includes(c)&&c?c:'-';}).join('');
+    const unsure=new Set((o.unsure||[]).map(Number));
+    showCheck(unsure);
+    msg.textContent='';
+  }catch(e){msg.className='small err';msg.textContent=e.message;btn.disabled=false;}
+};
+
+function showCheck(unsure){
+  $('#stepPhoto').hidden=true;$('#stepCheck').hidden=false;
+  $('#checkImg').src=photos[0];
+  $('#checkImg').onclick=()=>openImg(photos[0]);
+  let h='';
+  /* fill column by column so it matches the paper sheet */
+  const cells=[];
+  for(let i=0;i<TOTAL;i++){
+    const c=read[i],cls=c==='-'?'blank':unsure.has(i+1)?'unsure':'';
+    cells[i]=`<label class="cell ${cls}" data-i="${i}"><b>${i+1}</b><select aria-label="Question ${i+1}" data-i="${i}">
+      <option value="-"${c==='-'?' selected':''}>blank</option>${[...L].map(x=>`<option${x===c?' selected':''}>${x}</option>`).join('')}</select></label>`;
+  }
+  /* grid order: row by row across the four columns 1, 21, 41, 61 */
+  for(let r=0;r<20;r++)for(let col=0;col<4;col++)h+=cells[col*20+r];
+  $('#sheet').innerHTML=h;
+  if(matchMedia('(max-width:620px)').matches){ /* two columns on a phone: keep numbers in order */
+    let h2='';for(let r=0;r<40;r++)for(let col=0;col<2;col++)h2+=cells[col*40+r];$('#sheet').innerHTML=h2;
+  }
+  $('#sheet').onchange=e=>{const s=e.target;if(s.tagName==='SELECT'){const c=s.closest('.cell');c.classList.remove('unsure');c.classList.toggle('blank',s.value==='-');}};
+  window.scrollTo({top:$('#stepCheck').offsetTop-10,behavior:'smooth'});
+}
+$('#again').onclick=()=>{photos.length=0;$('#previews').innerHTML='';$('#stepCheck').hidden=true;$('#stepPhoto').hidden=false;$('#readBtn').disabled=true;};
+
+/* one smaller JPEG of the sheet (two photos are joined top to bottom) for the teacher */
+function storePhoto(list){
+  return Promise.all(list.map(u=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=u;}))).then(imgs=>{
+    const W=1100;const hs=imgs.map(i=>Math.round(i.height*W/i.width));
+    const c=document.createElement('canvas');c.width=W;c.height=hs.reduce((a,b)=>a+b,0);
+    const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
+    let y=0;imgs.forEach((im,k)=>{x.drawImage(im,0,y,W,hs[k]);y+=hs[k];});
+    for(const q of [0.62,0.5,0.4]){const d=c.toDataURL('image/jpeg',q);if(d.length<850000)return d;}
+    const s=document.createElement('canvas');s.width=800;s.height=Math.round(c.height*800/W);s.getContext('2d').drawImage(c,0,0,s.width,s.height);
+    return s.toDataURL('image/jpeg',0.5);
+  });
+}
+
+$('#handIn').onclick=async()=>{
+  const ans=[...document.querySelectorAll('#sheet select')].sort((a,b)=>a.dataset.i-b.dataset.i).map(s=>s.value).join('');
+  const blanks=[...ans].filter(c=>c==='-').length;
+  if(blanks&&!confirm(blanks+' question'+(blanks>1?'s are':' is')+' blank. Blank answers are marked wrong. Hand in anyway?'))return;
+  if(!confirm('Hand in now? You can only hand in once.'))return;
+  const btn=$('#handIn'),msg=$('#handMsg');btn.disabled=true;msg.className='small muted';msg.textContent='Handing in...';
+  try{
+    const photo=await storePhoto(photos);
+    const d=await Ac.call('/catmcq/submit',{answers:ans,read,photo});
+    $('#stepCheck').hidden=true;showResults(d);
+  }catch(e){msg.className='small err';msg.textContent=e.message==='Failed to fetch'?'Could not connect. Check your internet and press Hand in again.':e.message;btn.disabled=false;}
+};
+
+/* ---------- results and worked solutions ---------- */
+function showResults(d){
+  review=d;$('#stepPhoto').hidden=true;$('#stepCheck').hidden=true;
+  const units=d.units.map(u=>`<tr><td>${esc(u.code)}</td><td>${esc(u.name)}</td><td class="num">${u.got} / ${u.total}</td></tr>`).join('');
+  $('#results').hidden=false;
+  $('#results').innerHTML=`<div class="card"><h2>Your result</h2>
+    <div class="score">${d.score} / ${d.total}</div><p class="small muted">Handed in ${new Date(d.t).toLocaleDateString('en-GB',{day:'numeric',month:'long'})}. Your teacher has this result.</p>
+    <table><tr><th>Unit</th><th></th><th class="num">Score</th></tr>${units}</table></div>
+    <div class="card"><h2>Worked solutions</h2>
+    <p class="small">Go through the ones you got wrong first. For each one, read why the right answer is right and why the option you picked is wrong. Most wrong options are a trap based on a common mistake, so it is worth reading the ones you got right too.</p>
+    <div class="seg" role="group" aria-label="Show"><button class="on" data-f="wrong">Ones I got wrong (${d.total-d.score})</button><button data-f="all">All 80</button></div>
+    <div id="qs" style="margin-top:10px"></div></div>`;
+  const seg=$('#results .seg');
+  seg.onclick=e=>{const b=e.target.closest('button');if(!b)return;seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));drawQs(b.dataset.f);};
+  drawQs(d.score===d.total?'all':'wrong');
+  if(d.score===d.total)seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.f==='all'));
+}
+function qHtml(q){
+  const table=q.table?`<table class="qtable"><tr>${q.table.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr>${q.table.rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table>`:'';
+  const stem=q.stem.map((s,i)=>(i===q.tpos&&table?table:'')+`<p>${esc(s)}</p>`).join('')+(q.tpos>=q.stem.length?table:'');
+  const opts=q.opts.map((o,i)=>{const l=L[i];const cls=l===q.ans?'right':l===q.given?'wrong':'';
+    return `<div class="opt ${cls}"><b>${l}</b><span>${esc(o)}</span></div>`;}).join('');
+  const work=q.work?`<div class="work"><div class="small muted">Working</div>${q.work.map(w=>`<div>${esc(w)}</div>`).join('')}</div>`:'';
+  const wr=[...L].filter(l=>l!==q.ans).map(l=>`<li${l===q.given?' style="font-weight:600"':''}><b>${l}</b> ${esc(q.wrong[l])}${l===q.given?' (your answer)':''}</li>`).join('');
+  const yours=q.given==='-'?'<span class="tag no">Blank</span>':q.ok?'<span class="tag ok">Right</span>':`<span class="tag no">You put ${q.given}</span>`;
+  return `<div class="q"><div class="meta">Question ${q.n} &middot; Unit ${esc(review.units[q.u].code)} &middot; ${esc(q.topic)}</div>
+    <div style="margin-bottom:8px">${yours} <span class="tag">Answer: ${q.ans}</span></div>
+    ${stem}${opts}${work}
+    <div class="why"><b>Why ${q.ans} is right.</b> ${esc(q.right)}<ul>${wr}</ul></div>
+    ${q.trap?`<div class="trap"><b>The trap:</b> ${esc(q.trap)}</div>`:''}</div>`;
+}
+function drawQs(f){
+  const list=review.items.filter(q=>f==='all'||!q.ok);
+  $('#qs').innerHTML=list.length?list.map(qHtml).join(''):'<p>You got every question right.</p>';
+}
+
+/* ---------- photo viewer ---------- */
+function openImg(src){$('#modalImg').src=src;$('#modal').hidden=false;}
+$('#modalClose').onclick=()=>{$('#modal').hidden=true;$('#modalImg').src='';};
+$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modalClose').onclick();};
+
+/* ---------- teacher view ---------- */
+let tok=null;try{tok=sessionStorage.getItem('ct_token');}catch(e){}
+async function tcall(path,body){
+  const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({token:tok},body||{}))});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok){const e=new Error(d.error||'Something went wrong.');e.status=r.status;throw e;}
+  return d;
+}
+$('#tLink').onclick=e=>{e.preventDefault();$('#teacher').hidden=false;if(tok)tLoad();$('#teacher').scrollIntoView({behavior:'smooth'});};
+if(/[?&]teacher\b/.test(location.search)){$('#teacher').hidden=false;if(tok)tLoad();}
+$('#tForm').onsubmit=async e=>{e.preventDefault();$('#tErr').textContent='';
+  try{const d=await tcall('/teacher',{password:$('#tPw').value});tok=d.token;try{sessionStorage.setItem('ct_token',tok);}catch(x){}$('#tPw').value='';tLoad();}
+  catch(x){$('#tErr').textContent=x.message;}};
+
+let C=null;
+async function tLoad(){
+  try{C=await tcall('/catmcq/class');}
+  catch(e){if(e.status===401){tok=null;$('#tLogin').hidden=false;$('#tBody').hidden=true;return;}$('#tErr').textContent=e.message;return;}
+  $('#tLogin').hidden=true;$('#tBody').hidden=false;drawTeacher();
+}
+function drawTeacher(){
+  const names=Object.fromEntries(C.roster.map(u=>[u.username,u.name]));
+  const res=C.results,n=res.length;
+  const done=new Set(res.map(r=>r.username));
+  const missing=C.roster.filter(u=>!done.has(u.username)).map(u=>u.name);
+  const mean=n?(res.reduce((a,r)=>a+r.score,0)/n):0;
+  const unitMeans=C.units.map((u,i)=>{const t=res.reduce((a,r)=>a+(r.units[i]?r.units[i].got:0),0);return n?t/n:0;});
+  /* per question */
+  const qs=C.key.map((k,i)=>{const cnt={A:0,B:0,C:0,D:0,'-':0};res.forEach(r=>{cnt[r.answers[i]]=(cnt[r.answers[i]]||0)+1;});
+    const right=cnt[k.ans];const wrongs=[...L].filter(l=>l!==k.ans).sort((a,b)=>cnt[b]-cnt[a]);
+    return {k,right,pct:n?right/n*100:0,cnt,top:wrongs[0]};});
+  const hard=qs.slice().sort((a,b)=>a.pct-b.pct);
+  const unitHead=C.units.map(u=>`<th class="num">${esc(u.split(' ')[0])}</th>`).join('');
+  const rows=res.map(r=>`<tr><td>${esc(names[r.username]||r.username)}</td><td class="num"><b>${r.score}</b></td>${r.units.map(u=>`<td class="num">${u.got}</td>`).join('')}
+    <td class="num">${r.edited?r.edited.split(' ').length:0}</td>
+    <td><button class="btn ghost small" data-photo="${esc(r.username)}">Photo</button> <button class="btn ghost small" data-reset="${esc(r.username)}">Reset</button></td></tr>`).join('');
+  const qrows=hard.map(q=>`<tr><td class="num">${q.k.n}</td><td>${esc(q.k.topic)}</td><td class="num">${q.right}/${n}</td><td>${q.k.ans}</td>
+    <td>${n&&q.cnt[q.top]?`${q.top} (${q.cnt[q.top]}): ${esc(q.k.wrong[q.top])}`:''}</td></tr>`).join('');
+  $('#tBody').innerHTML=`<p><b>${n}</b> of ${C.roster.length} handed in. Class average <b>${mean.toFixed(1)} / 80</b> (${(mean/80*100).toFixed(0)}%).</p>
+    ${missing.length?`<p class="small muted">Not handed in yet: ${missing.map(esc).join(', ')}</p>`:''}
+    <table style="margin:10px 0 18px"><tr><th>Unit</th>${C.units.map(u=>`<th class="num">${esc(u.split(' ')[0])}</th>`).join('')}</tr>
+      <tr><td>Average / 10</td>${unitMeans.map(m=>`<td class="num">${m.toFixed(1)}</td>`).join('')}</tr></table>
+    <h3 style="margin:16px 0 6px">Students</h3>
+    <p class="small muted">"Changed" is how many letters the student changed after the photo was read. Check the photo if it is high.</p>
+    <div style="overflow-x:auto"><table><tr><th>Name</th><th class="num">/80</th>${unitHead}<th class="num">Changed</th><th></th></tr>${rows||'<tr><td colspan="12">No answer sheets yet.</td></tr>'}</table></div>
+    <h3 style="margin:22px 0 6px">Questions, hardest first</h3>
+    <p class="small muted">The last column is the most common wrong answer and the mistake it comes from.</p>
+    <div style="overflow-x:auto"><table><tr><th class="num">Q</th><th>Topic</th><th class="num">Right</th><th>Ans</th><th>Most common wrong answer</th></tr>${qrows}</table></div>
+    <div class="btns"><button class="btn" id="tCopy">Copy results for Claude</button><button class="btn ghost" id="tCsv">Download CSV</button><button class="btn ghost" id="tRefresh">Refresh</button><span class="small muted" id="tMsg"></span></div>`;
+  $('#tBody').onclick=async e=>{
+    const p=e.target.closest('[data-photo]'),rs=e.target.closest('[data-reset]');
+    if(p){p.disabled=true;try{const d=await tcall('/catmcq/photo',{username:p.dataset.photo});openImg(d.photo);}catch(x){alert(x.message);}p.disabled=false;}
+    if(rs&&confirm('Delete '+(names[rs.dataset.reset]||rs.dataset.reset)+'\'s result so they can hand in again?')){try{await tcall('/catmcq/reset',{username:rs.dataset.reset});tLoad();}catch(x){alert(x.message);}}
+  };
+  const lines=()=>['name,score,'+C.units.map(u=>u.split(' ')[0]).join(',')+',answers,changed'].concat(res.map(r=>[JSON.stringify(names[r.username]||r.username),r.score,...r.units.map(u=>u.got),r.answers,JSON.stringify(r.edited||'')].join(',')));
+  $('#tCopy').onclick=async()=>{
+    const txt=C.title+'\nAnswer key: '+C.key.map(k=>k.ans).join('')+'\n'+lines().join('\n');
+    try{await navigator.clipboard.writeText(txt);$('#tMsg').textContent='Copied. Paste it into the chat with Claude.';}catch(x){prompt('Copy this:',txt);}
+  };
+  $('#tCsv').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lines().join('\n')],{type:'text/csv'}));a.download='cat-mcq-results.csv';a.click();};
+  $('#tRefresh').onclick=tLoad;
+}
+})();
+</script>
+</body>
+</html>
