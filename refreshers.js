@@ -307,10 +307,8 @@ function find(text){const t=String(text||'');return Object.keys(DECKS).filter(k=
 function names(ids){const n=ids.map(k=>DECKS[k].short);return n.length>1?n.slice(0,-1).join(', ')+' and '+n[n.length-1]:n[0]||'';}
 function link(ids,back){return 'refresher.html?d='+ids.join(',')+(back?'&back='+encodeURIComponent(back):'');}
 
-/* pop-up offering refreshers. o = {heading, text, decks:[ids], back, no:'button text', onNo, onAny} */
-function ask(o){
-  const ids=(o.decks||[]).filter(k=>DECKS[k]).slice(0,4);if(!ids.length)return false;
-  if(!document.getElementById('rf-style')){const st=document.createElement('style');st.id='rf-style';st.textContent=`.rf-ov{position:fixed;inset:0;z-index:9998;background:rgba(10,15,25,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+function css(){
+if(!document.getElementById('rf-style')){const st=document.createElement('style');st.id='rf-style';st.textContent=`.rf-ov{position:fixed;inset:0;z-index:9998;background:rgba(10,15,25,.55);display:flex;align-items:center;justify-content:center;padding:16px}
 .rf-modal{background:#fff;color:#1a1a1a;max-width:520px;width:100%;max-height:88vh;overflow:auto;border-radius:14px;padding:24px 26px;font:15px/1.55 "IBM Plex Sans",system-ui,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .rf-modal h2{font:400 1.5rem "DM Serif Display",Georgia,serif;margin:0 0 10px;color:#0E2A47}.rf-modal p{margin:0 0 12px}
 .rf-modal .rf-l{display:block;text-decoration:none;border:1px solid #E5DFD2;border-radius:10px;padding:10px 14px;margin-bottom:8px;color:inherit}
@@ -320,6 +318,12 @@ function ask(o){
 .rf-modal .rf-b a,.rf-modal .rf-b button{padding:10px 18px;border-radius:9px;font:600 15px "IBM Plex Sans",system-ui,sans-serif;cursor:pointer;text-decoration:none}
 .rf-modal .rf-all{background:#0E2A47;color:#fff;border:0}.rf-modal .rf-no{background:transparent;color:inherit;border:1px solid #E5DFD2}
 @media (prefers-color-scheme:dark){.rf-modal{background:#172133;color:#e9ecf2}.rf-modal h2{color:#cfe0f5}.rf-modal .rf-l,.rf-modal .rf-no{border-color:rgba(255,255,255,.15)}.rf-modal .rf-l span{color:#9aa4b6}.rf-modal .rf-all{background:#cfe0f5;color:#0e1420}}`;document.head.appendChild(st);}
+}
+
+/* pop-up offering refreshers. o = {heading, text, decks:[ids], back, no:'button text', onNo, onAny} */
+function ask(o){
+  const ids=(o.decks||[]).filter(k=>DECKS[k]).slice(0,4);if(!ids.length)return false;
+  css();
   const ov=document.createElement('div');ov.className='rf-ov';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
   const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   ov.innerHTML=`<div class="rf-modal"><h2>${e(o.heading||'Do you need a refresher?')}</h2><p>${e(o.text||'')}</p>
@@ -332,5 +336,65 @@ function ask(o){
   return true;
 }
 
-window.REFRESH={DECKS,find,link,ask,names};
+const DEFAULT=['breakeven','ratios','margins'];   /* used only when the work and the student's gaps match no refresher */
+/* ---------- compulsory refresher before set work ----------
+   Work a teacher sets (and the weekly question sets) stays locked until the
+   student has done a refresher on the top three areas it covers. Which areas:
+   ones the questions are about, the student's own weak areas first; if the
+   questions match nothing, the student's weak areas; if there are none, the
+   course's core calculations. Done refreshers are saved to the student's
+   account (key "rfgate") so they follow them between devices. */
+const GKEY='rfgate';
+const Acc=()=>window.Acct;
+function gateDone(id){
+  if(!id)return true;
+  try{const A=Acc(),m=(A&&A.get&&A.get(GKEY))||{};if(m[id])return true;}catch(e){}
+  try{return !!localStorage.getItem('rfgate:'+id);}catch(e){return false;}
+}
+function markDone(id,ids){
+  if(!id)return;
+  try{localStorage.setItem('rfgate:'+id,'1');}catch(e){}
+  try{const A=Acc();if(A&&A.set&&A.get){const m=Object.assign({},A.get(GKEY)||{});m[id]={t:new Date().toISOString(),d:ids||[]};
+    const ks=Object.keys(m).sort((a,b)=>String(m[a].t).localeCompare(String(m[b].t)));while(ks.length>200)delete m[ks.shift()];A.set(GKEY,m);}}catch(e){}
+}
+try{const A=Acc();if(A&&A.merge)A.merge(GKEY,(a,b)=>Object.assign({},b||{},a||{}));}catch(e){}
+
+function pick(items,gapText){
+  const n={};
+  (items||[]).forEach(it=>{
+    const q=typeof it==='string'?it:[it&&it.q,it&&it.label,it&&it.case].filter(Boolean).join(' ');
+    find(q).forEach(k=>{n[k]=(n[k]||0)+1;});
+    const tp=it&&it.topic;if(tp)Object.keys(DECKS).forEach(k=>{if((DECKS[k].topics||[]).includes(tp))n[k]=(n[k]||0)+.5;});
+  });
+  const weak=find(gapText||'');
+  let ids=Object.keys(n).sort((a,b)=>(weak.includes(b)?1:0)-(weak.includes(a)?1:0)||n[b]-n[a]);
+  if(!ids.length)ids=weak.slice();
+  if(!ids.length)ids=DEFAULT.filter(k=>DECKS[k]);
+  return ids.slice(0,3);
+}
+
+/* o = {id, items, gapText, back, onLeave}. Returns {done:true} if the refresher for this
+   work is done; otherwise shows the pop-up and returns {done:false, ids, href, text}. */
+function gate(o){
+  if(gateDone(o.id))return {done:true};
+  const ids=pick(o.items,o.gapText);
+  if(!ids.length)return {done:true};
+  const href=link(ids,o.back)+'&gate='+encodeURIComponent(o.id);
+  const list=ids.map(k=>DECKS[k].title),mins=ids.reduce((s,k)=>s+(DECKS[k].mins||3),0);
+  const text=`Your refresher topics are: ${list.length>1?list.slice(0,-1).join(', ')+' and '+list[list.length-1]:list[0]}.`;
+  css();
+  const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const old=document.querySelector('.rf-ov');if(old)old.remove();
+  const ov=document.createElement('div');ov.className='rf-ov';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
+  ov.innerHTML=`<div class="rf-modal"><h2>Refresher first</h2><p>Before you start this work, you need to do a short refresher. It takes about ${mins} minutes. When you finish, you come straight back to the questions.</p>
+    <p><b>${e(text)}</b></p>
+    ${ids.map(k=>`<div class="rf-l"><b>${e(DECKS[k].title)}</b><span>About ${DECKS[k].mins} minutes</span></div>`).join('')}
+    <div class="rf-b"><a class="rf-all" href="${e(href)}">Start the refresher</a>${o.onLeave?'<button type="button" class="rf-no">Go back</button>':''}</div></div>`;
+  document.body.appendChild(ov);
+  const no=ov.querySelector('.rf-no');if(no)no.onclick=()=>{ov.remove();o.onLeave();};
+  try{ov.querySelector('.rf-all').focus({preventScroll:true});}catch(x){}
+  return {done:false,ids,href,text};
+}
+
+window.REFRESH={DECKS,find,link,ask,names,gate,gateDone,markDone,pick};
 })();
