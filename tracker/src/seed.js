@@ -2738,5 +2738,1387 @@ export default [
    ]
   }
  }
+},
+ /* HR calculations pack (labour turnover, productivity, employee costs), marked 20 Nov 2026, with follow-up sets */
+{
+ "id": "seed-2026-11-20-hr-tandrika",
+ "match": "tandrika",
+ "work": {
+  "id": "w-tandrika-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "These questions go back over the HR calculations you lost marks on. Write the formula down first every time, then put the numbers in. Check which way up the fraction goes: leavers or employee costs go on top. Use the clue on any question you are stuck on.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Lindon Hotels had 180 staff on 1 January and 220 staff on 31 December. During the year, 30 staff left. Calculate labour turnover for the year. Give your answer to one decimal place.",
+     "answer": 15.0,
+     "unit": "%",
+     "working": "Average staff = (180 + 220) ÷ 2 = 200. 30 ÷ 200 × 100 = 15.0%.",
+     "hint": "Work out the average number of staff first."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A packing firm employs 40 full-time staff and 20 part-time staff who each work half the hours of a full-timer. Last month they packed 30 000 boxes. Calculate labour productivity per full-time equivalent (FTE) employee.",
+     "answer": 600.0,
+     "unit": "boxes per FTE",
+     "working": "FTE = 40 + (20 × 0.5) = 50. 30 000 ÷ 50 = 600 boxes per FTE.",
+     "hint": "Count each part-timer as half a full-timer."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "On each shift, 15 workers work for 7.5 hours and are paid £12.80 per hour. The shift produces 3600 units. Calculate the labour cost per unit in pence.",
+     "answer": 40.0,
+     "unit": "p",
+     "working": "Labour cost per shift = 15 × 7.5 × £12.80 = £1440. £1440 ÷ 3600 = £0.40 = 40p.",
+     "hint": "Include the hours. Then turn pounds into pence (× 100)."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Data for a recruitment agency (£000): revenue 5200, salaries 1300, employer National Insurance 156, employer pension contributions 104, rent 400. Calculate employee costs as a percentage of turnover.",
+     "answer": 30.0,
+     "unit": "%",
+     "working": "Employee costs = 1300 + 156 + 104 = 1560. 1560 ÷ 5200 × 100 = 30%.",
+     "hint": "Employee costs include NI and pensions, not rent."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A brewery's employee costs were £1 260 000, which was 35% of its turnover. Calculate its turnover.",
+     "answer": 3600000.0,
+     "unit": "£",
+     "working": "1 260 000 = 0.35 × turnover, so turnover = 1 260 000 ÷ 0.35 = £3 600 000.",
+     "hint": "Divide by 0.35. Turnover must be bigger than employee costs."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A brewery's turnover was £3 600 000 and it sells one product at £45. How many units did it sell?",
+     "answer": 80000.0,
+     "unit": "units",
+     "working": "£3 600 000 ÷ £45 = 80 000 units.",
+     "hint": "Turnover = price × quantity."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "60 production staff currently make 7200 units a week. A new order means the business must make 10 000 units a week. Training will raise labour productivity by 10%. How many extra staff are needed?",
+     "answer": 16,
+     "unit": "staff",
+     "working": "Productivity = 7200 ÷ 60 = 120. New = 120 × 1.1 = 132. 10 000 ÷ 132 = 75.8, so 76 staff. Extra = 76 − 60 = 16.",
+     "hint": "Round the staff needed up, then take away the current staff."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A school employed 250 staff a year ago. 215 of them are still employed today. Calculate the labour retention rate.",
+     "answer": 86.0,
+     "unit": "%",
+     "working": "215 ÷ 250 × 100 = 86%.",
+     "hint": "Retention = staff still there ÷ staff a year ago × 100."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A firm has 300 staff now and wants a labour retention rate of 92% over the next year. How many of the 300 must still be employed in a year's time?",
+     "answer": 276.0,
+     "unit": "staff",
+     "working": "0.92 × 300 = 276.",
+     "hint": "Retention target × current staff."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "An 80-room hotel had an average occupancy of 65% in July (31 nights) at £110 per room per night. It has 28 employees costing £2300 each a month. Calculate employee costs as a percentage of turnover for July, to two decimal places.",
+     "answer": 36.3185,
+     "unit": "%",
+     "working": "Room nights = 80 × 0.65 × 31 = 1612. Turnover = 1612 × £110 = £177 320. Employee costs = 28 × £2300 = £64 400. 64 400 ÷ 177 320 × 100 = 36.32%.",
+     "hint": "Occupancy and the number of nights both matter."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "In 2025, 18 staff left from an average of 150. In 2026, 24 left from an average of 160. Calculate the percentage change in labour turnover.",
+     "answer": 25.0,
+     "unit": "%",
+     "working": "2025: 18 ÷ 150 = 12%. 2026: 24 ÷ 160 = 15%. (15 − 12) ÷ 12 × 100 = +25%.",
+     "hint": "Percentage change, not the change in percentage points."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A warehouse has 600 staff and labour turnover of 18%. Each leaver costs £2900 to replace and £1100 to train. A £110 000 retention scheme would cut turnover to 12%. Calculate the net benefit of the scheme.",
+     "answer": 34000.0,
+     "unit": "£",
+     "working": "Cost per leaver = £4000. Leavers 108 → 72, so 36 fewer. Saving = 36 × £4000 = £144 000. Net benefit = £144 000 − £110 000 = £34 000.",
+     "hint": "Take the cost of the scheme off the saving."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Employee costs are 25% of turnover. Next year prices rise by 8%, the same volume is sold and employee costs rise by 4%. Calculate employee costs as a percentage of turnover next year, to two decimal places.",
+     "answer": 24.0741,
+     "unit": "%",
+     "working": "Turnover £100 → £108. Employee costs £25 → £26. 26 ÷ 108 × 100 = 24.07%.",
+     "hint": "Pick £100 of turnover to start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A leisure chain had 300 staff on 1 January. During the year 50 staff left, of whom 20 had joined during that same year. Calculate the labour retention rate for the year.",
+     "answer": 90.0,
+     "unit": "%",
+     "working": "Leavers from the original 300 = 50 − 20 = 30. Still employed = 300 − 30 = 270. 270 ÷ 300 × 100 = 90%.",
+     "hint": "Only count leavers who were there at the start."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-tandrika",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "33/73",
+   "level": "",
+   "well": "Right: labour turnover, FTE productivity, leavers from a turnover rate, units sold, % change in productivity, working back to employees, turnover with joiners and leavers, calls per agent per hour, the multiple-choice question.",
+   "improve": "Q2: used 210 (start figure) not the average of 230: 21.9%. Q3a: gave the FTE answer (700) for (a); (a) wanted all 42 staff: 600. Q4: £2499.20 right, then divided by 200 instead of by 4400. Q5: salaries only (26.4%): left out NI and pension. Q7: 18 000 × 2.40 written as 4320 (should be 43 200); answer 1000 not supported. Q8a: multiplied 840 000 by 0.28 instead of dividing. Q9: no method: answer 6. Q10a: fraction upside down (160 ÷ 136). Q10b: used 9% (0.09) instead of 90%: 164. Q11: left out occupancy and the 30 nights, and put revenue over employee costs (upside down). Q12b: gave 2.5% (the change in percentage points), not the % change (14.29%). Q13: no method. Q14b: divided 30.9 by 5. Q16b: not attempted. Q17b: found the target (5040) but did not take away 4620. Q18a: Leeds only. Q18b: Leeds only. Q20a: not attempted. Q20b: not attempted."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-avleen-kaur",
+ "match": "avleen kaur",
+ "work": {
+  "id": "w-avleen-kaur-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "This set covers the HR questions you lost marks on in your own work: averaging staff numbers, pence, employee costs including NI and pensions, retention, the hotel question and finishing multi-step answers with a final figure.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Lindon Hotels had 180 staff on 1 January and 220 staff on 31 December. During the year, 30 staff left. Calculate labour turnover for the year. Give your answer to one decimal place.",
+     "answer": 15.0,
+     "unit": "%",
+     "working": "Average staff = (180 + 220) ÷ 2 = 200. 30 ÷ 200 × 100 = 15.0%.",
+     "hint": "Work out the average number of staff first."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "9 operatives each work an 8-hour shift at £13.50 per hour and produce 2400 parts. Calculate the labour cost per part in pence, to one decimal place.",
+     "answer": 40.5,
+     "unit": "p",
+     "working": "9 × 8 × £13.50 = £972. £972 ÷ 2400 = £0.405 = 40.5p.",
+     "hint": "Total labour cost ÷ units, then × 100 for pence."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Data for a recruitment agency (£000): revenue 5200, salaries 1300, employer National Insurance 156, employer pension contributions 104, rent 400. Calculate employee costs as a percentage of turnover.",
+     "answer": 30.0,
+     "unit": "%",
+     "working": "Employee costs = 1300 + 156 + 104 = 1560. 1560 ÷ 5200 × 100 = 30%.",
+     "hint": "Employee costs include NI and pensions, not rent."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A school employed 250 staff a year ago. 215 of them are still employed today. Calculate the labour retention rate.",
+     "answer": 86.0,
+     "unit": "%",
+     "working": "215 ÷ 250 × 100 = 86%.",
+     "hint": "Retention = staff still there ÷ staff a year ago × 100."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "An 80-room hotel had an average occupancy of 65% in July (31 nights) at £110 per room per night. It has 28 employees costing £2300 each a month. Calculate employee costs as a percentage of turnover for July, to two decimal places.",
+     "answer": 36.3185,
+     "unit": "%",
+     "working": "Room nights = 80 × 0.65 × 31 = 1612. Turnover = 1612 × £110 = £177 320. Employee costs = 28 × £2300 = £64 400. 64 400 ÷ 177 320 × 100 = 36.32%.",
+     "hint": "Occupancy and the number of nights both matter."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A warehouse has 600 staff and labour turnover of 18%. Each leaver costs £2900 to replace and £1100 to train. A £110 000 retention scheme would cut turnover to 12%. Calculate the net benefit of the scheme.",
+     "answer": 34000.0,
+     "unit": "£",
+     "working": "Cost per leaver = £4000. Leavers 108 → 72, so 36 fewer. Saving = 36 × £4000 = £144 000. Net benefit = £144 000 − £110 000 = £34 000.",
+     "hint": "Take the cost of the scheme off the saving."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Employee costs are 25% of turnover. Next year prices rise by 8%, the same volume is sold and employee costs rise by 4%. Calculate employee costs as a percentage of turnover next year, to two decimal places.",
+     "answer": 24.0741,
+     "unit": "%",
+     "working": "Turnover £100 → £108. Employee costs £25 → £26. 26 ÷ 108 × 100 = 24.07%.",
+     "hint": "Pick £100 of turnover to start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A leisure chain had 300 staff on 1 January. During the year 50 staff left, of whom 20 had joined during that same year. Calculate the labour retention rate for the year.",
+     "answer": 90.0,
+     "unit": "%",
+     "working": "Leavers from the original 300 = 50 − 20 = 30. Still employed = 300 − 30 = 270. 270 ÷ 300 × 100 = 90%.",
+     "hint": "Only count leavers who were there at the start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Before automation 50 staff made 140 000 units; after, 40 staff make 155 000 units. Calculate the percentage change in labour productivity, to two decimal places.",
+     "answer": 38.3929,
+     "unit": "%",
+     "working": "Before: 2800. After: 3875. (3875 − 2800) ÷ 2800 × 100 = +38.39%.",
+     "hint": "Productivity for each, then percentage change."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-avleen-kaur",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "56/73",
+   "level": "",
+   "well": "Right: labour turnover, labour productivity, FTE productivity, leavers from a turnover rate, employees from labour cost per unit, turnover from employee costs %, units sold, the staffing plan, the retention target and more.",
+   "improve": "Q2: added the two staff figures (460) but did not divide by 2: 10%. Q4: £0.568 not converted to pence. Q5: salaries only (26.38%): left out NI and pension. Q10a: only done afterwards in purple pen. Q11: occupancy and revenue (£259 200) right; employee costs and the % only added afterwards in purple. Q13: all the steps, but no final answer (£46 750). Q14a: only done afterwards in purple pen. Q16b: only done afterwards (purple/green). Q20a: only done afterwards in purple pen."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-jeeval",
+ "match": "jeeval",
+ "work": {
+  "id": "w-jeeval-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "This set goes over the HR questions where your method went wrong: FTE staff, pence, working back from a percentage, the staffing plan, retention, percentage change and working back to employees. Write the formula first, then rearrange it.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A packing firm employs 40 full-time staff and 20 part-time staff who each work half the hours of a full-timer. Last month they packed 30 000 boxes. Calculate labour productivity per full-time equivalent (FTE) employee.",
+     "answer": 600.0,
+     "unit": "boxes per FTE",
+     "working": "FTE = 40 + (20 × 0.5) = 50. 30 000 ÷ 50 = 600 boxes per FTE.",
+     "hint": "Count each part-timer as half a full-timer."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "On each shift, 15 workers work for 7.5 hours and are paid £12.80 per hour. The shift produces 3600 units. Calculate the labour cost per unit in pence.",
+     "answer": 40.0,
+     "unit": "p",
+     "working": "Labour cost per shift = 15 × 7.5 × £12.80 = £1440. £1440 ÷ 3600 = £0.40 = 40p.",
+     "hint": "Include the hours. Then turn pounds into pence (× 100)."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Data for a recruitment agency (£000): revenue 5200, salaries 1300, employer National Insurance 156, employer pension contributions 104, rent 400. Calculate employee costs as a percentage of turnover.",
+     "answer": 30.0,
+     "unit": "%",
+     "working": "Employee costs = 1300 + 156 + 104 = 1560. 1560 ÷ 5200 × 100 = 30%.",
+     "hint": "Employee costs include NI and pensions, not rent."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A brewery's employee costs were £1 260 000, which was 35% of its turnover. Calculate its turnover.",
+     "answer": 3600000.0,
+     "unit": "£",
+     "working": "1 260 000 = 0.35 × turnover, so turnover = 1 260 000 ÷ 0.35 = £3 600 000.",
+     "hint": "Divide by 0.35. Turnover must be bigger than employee costs."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "60 production staff currently make 7200 units a week. A new order means the business must make 10 000 units a week. Training will raise labour productivity by 10%. How many extra staff are needed?",
+     "answer": 16,
+     "unit": "staff",
+     "working": "Productivity = 7200 ÷ 60 = 120. New = 120 × 1.1 = 132. 10 000 ÷ 132 = 75.8, so 76 staff. Extra = 76 − 60 = 16.",
+     "hint": "Round the staff needed up, then take away the current staff."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A school employed 250 staff a year ago. 215 of them are still employed today. Calculate the labour retention rate.",
+     "answer": 86.0,
+     "unit": "%",
+     "working": "215 ÷ 250 × 100 = 86%.",
+     "hint": "Retention = staff still there ÷ staff a year ago × 100."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "In 2025, 18 staff left from an average of 150. In 2026, 24 left from an average of 160. Calculate the percentage change in labour turnover.",
+     "answer": 25.0,
+     "unit": "%",
+     "working": "2025: 18 ÷ 150 = 12%. 2026: 24 ÷ 160 = 15%. (15 − 12) ÷ 12 × 100 = +25%.",
+     "hint": "Percentage change, not the change in percentage points."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Employee costs are 25% of turnover. Next year prices rise by 8%, the same volume is sold and employee costs rise by 4%. Calculate employee costs as a percentage of turnover next year, to two decimal places.",
+     "answer": 24.0741,
+     "unit": "%",
+     "working": "Turnover £100 → £108. Employee costs £25 → £26. 26 ÷ 108 × 100 = 24.07%.",
+     "hint": "Pick £100 of turnover to start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Weekly data for a manufacturer: total costs £210 000, profit £30 000, labour costs are 30% of turnover, labour cost per unit £2.40, labour productivity 150 units per employee. Calculate the number of employees.",
+     "answer": 200.0,
+     "unit": "employees",
+     "working": "Turnover = £210 000 + £30 000 = £240 000. Labour costs = 0.3 × £240 000 = £72 000. Output = £72 000 ÷ £2.40 = 30 000. Employees = 30 000 ÷ 150 = 200.",
+     "hint": "Work back one step at a time."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Lindon Hotels had 180 staff on 1 January and 220 staff on 31 December. During the year, 30 staff left. Calculate labour turnover for the year. Give your answer to one decimal place.",
+     "answer": 15.0,
+     "unit": "%",
+     "working": "Average staff = (180 + 220) ÷ 2 = 200. 30 ÷ 200 × 100 = 15.0%.",
+     "hint": "Work out the average number of staff first."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A leisure chain had 300 staff on 1 January. During the year 50 staff left, of whom 20 had joined during that same year. Calculate the labour retention rate for the year.",
+     "answer": 90.0,
+     "unit": "%",
+     "working": "Leavers from the original 300 = 50 − 20 = 30. Still employed = 300 − 30 = 270. 270 ÷ 300 × 100 = 90%.",
+     "hint": "Only count leavers who were there at the start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "After automation, 40 staff each cost £31 000 a year and output is 155 000 units. Calculate labour cost per unit, to the nearest penny.",
+     "answer": 8.0,
+     "unit": "£",
+     "working": "40 × £31 000 = £1 240 000. £1 240 000 ÷ 155 000 = £8.00.",
+     "hint": "Total labour cost ÷ output. The answer is in pounds."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-jeeval",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "48/73",
+   "level": "",
+   "well": "Right: labour turnover, turnover with start and end staff, labour productivity, leavers from a turnover rate, employees from labour cost per unit, the retention target, the hotel occupancy question, % change in productivity, net benefit of the retention scheme and more.",
+   "improve": "Q3b: no FTE method in your own work (700 added afterwards). Q4: right method, but gave 56.8% instead of 56.8p. Q5: found employee costs of 1125 but no % in your own work. Q8a: wrote 840 000 = 28% but did not divide by 0.28. Q8b: only done afterwards in purple. Q9: 200, 220 and 55 staff all right, but did not take away the 48 already employed. Q10a: added staff figures instead of 136 ÷ 160: 71.4%. Q12b: gave 2.5% (percentage points) not the % change (14.29%). Q14a: set up algebra but no answer. Q15: took profit away from costs (£110 000) instead of adding it; then right on your own figure but stopped at output, not employees. Q16a: added leavers and joiners over the start figure: 50%. Q16b: 40 ÷ 60: not the retention formula. Q20b: divided cost per employee by the number of employees; labour cost per unit = total labour cost ÷ output."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-dilshhan",
+ "match": "dilshhan",
+ "work": {
+  "id": "w-dilshhan-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "Your booklet had answers but no working at all. In the exam most calculation marks are for the working, so for every question here write each step on paper before you type the answer. If you are not sure where to start, use the clue.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A packing firm employs 40 full-time staff and 20 part-time staff who each work half the hours of a full-timer. Last month they packed 30 000 boxes. Calculate labour productivity per full-time equivalent (FTE) employee.",
+     "answer": 600.0,
+     "unit": "boxes per FTE",
+     "working": "FTE = 40 + (20 × 0.5) = 50. 30 000 ÷ 50 = 600 boxes per FTE.",
+     "hint": "Count each part-timer as half a full-timer."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "On each shift, 15 workers work for 7.5 hours and are paid £12.80 per hour. The shift produces 3600 units. Calculate the labour cost per unit in pence.",
+     "answer": 40.0,
+     "unit": "p",
+     "working": "Labour cost per shift = 15 × 7.5 × £12.80 = £1440. £1440 ÷ 3600 = £0.40 = 40p.",
+     "hint": "Include the hours. Then turn pounds into pence (× 100)."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Data for a recruitment agency (£000): revenue 5200, salaries 1300, employer National Insurance 156, employer pension contributions 104, rent 400. Calculate employee costs as a percentage of turnover.",
+     "answer": 30.0,
+     "unit": "%",
+     "working": "Employee costs = 1300 + 156 + 104 = 1560. 1560 ÷ 5200 × 100 = 30%.",
+     "hint": "Employee costs include NI and pensions, not rent."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A brewery's employee costs were £1 260 000, which was 35% of its turnover. Calculate its turnover.",
+     "answer": 3600000.0,
+     "unit": "£",
+     "working": "1 260 000 = 0.35 × turnover, so turnover = 1 260 000 ÷ 0.35 = £3 600 000.",
+     "hint": "Divide by 0.35. Turnover must be bigger than employee costs."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "An 80-room hotel had an average occupancy of 65% in July (31 nights) at £110 per room per night. It has 28 employees costing £2300 each a month. Calculate employee costs as a percentage of turnover for July, to two decimal places.",
+     "answer": 36.3185,
+     "unit": "%",
+     "working": "Room nights = 80 × 0.65 × 31 = 1612. Turnover = 1612 × £110 = £177 320. Employee costs = 28 × £2300 = £64 400. 64 400 ÷ 177 320 × 100 = 36.32%.",
+     "hint": "Occupancy and the number of nights both matter."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "24 agents on a 7-hour shift handled 3360 calls. The target is 22 calls per agent per hour. How many more calls per shift are needed to hit the target?",
+     "answer": 336,
+     "unit": "calls",
+     "working": "Target = 24 × 7 × 22 = 3696. 3696 − 3360 = 336 more.",
+     "hint": "Work out the target total, then take away actual calls."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "After automation, 40 staff each cost £31 000 a year and output is 155 000 units. Calculate labour cost per unit, to the nearest penny.",
+     "answer": 8.0,
+     "unit": "£",
+     "working": "40 × £31 000 = £1 240 000. £1 240 000 ÷ 155 000 = £8.00.",
+     "hint": "Total labour cost ÷ output. The answer is in pounds."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Lindon Hotels had 180 staff on 1 January and 220 staff on 31 December. During the year, 30 staff left. Calculate labour turnover for the year. Give your answer to one decimal place.",
+     "answer": 15.0,
+     "unit": "%",
+     "working": "Average staff = (180 + 220) ÷ 2 = 200. 30 ÷ 200 × 100 = 15.0%.",
+     "hint": "Work out the average number of staff first."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A warehouse has 600 staff and labour turnover of 18%. Each leaver costs £2900 to replace and £1100 to train. A £110 000 retention scheme would cut turnover to 12%. Calculate the net benefit of the scheme.",
+     "answer": 34000.0,
+     "unit": "£",
+     "working": "Cost per leaver = £4000. Leavers 108 → 72, so 36 fewer. Saving = 36 × £4000 = £144 000. Net benefit = £144 000 − £110 000 = £34 000.",
+     "hint": "Take the cost of the scheme off the saving."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-dilshhan",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "50/73",
+   "level": "",
+   "well": "Right: labour turnover, turnover with start and end staff, labour productivity, leavers from a turnover rate, employees from labour cost per unit, units sold, the staffing plan, retention, the retention target and more.",
+   "improve": "Answers only, with no working anywhere in the booklet; most match the solutions exactly. Q3b: 600 again: the FTE figure is 700. Q4: 57p with no working (56.8p). Q5: 27.9%: wrong, no working. Q8a: £300 000: place value (£3 000 000). Q11: 35.85%: wrong, no working (34.84%). Q17a: not attempted. Q17b: not attempted. Q18a: not attempted. Q18b: not attempted. Q20b: not attempted."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-sukhchain",
+ "match": "sukhchain",
+ "work": {
+  "id": "w-sukhchain-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "Nearly full marks. This short set checks rounding to two decimal places (Q14) and then stretches you with longer HR questions.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Employee costs are 25% of turnover. Next year prices rise by 8%, the same volume is sold and employee costs rise by 4%. Calculate employee costs as a percentage of turnover next year, to two decimal places.",
+     "answer": 24.0741,
+     "unit": "%",
+     "working": "Turnover £100 → £108. Employee costs £25 → £26. 26 ÷ 108 × 100 = 24.07%.",
+     "hint": "Pick £100 of turnover to start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "An 80-room hotel had an average occupancy of 65% in July (31 nights) at £110 per room per night. It has 28 employees costing £2300 each a month. Calculate employee costs as a percentage of turnover for July, to two decimal places.",
+     "answer": 36.3185,
+     "unit": "%",
+     "working": "Room nights = 80 × 0.65 × 31 = 1612. Turnover = 1612 × £110 = £177 320. Employee costs = 28 × £2300 = £64 400. 64 400 ÷ 177 320 × 100 = 36.32%.",
+     "hint": "Occupancy and the number of nights both matter."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A warehouse has 600 staff and labour turnover of 18%. Each leaver costs £2900 to replace and £1100 to train. A £110 000 retention scheme would cut turnover to 12%. Calculate the net benefit of the scheme.",
+     "answer": 34000.0,
+     "unit": "£",
+     "working": "Cost per leaver = £4000. Leavers 108 → 72, so 36 fewer. Saving = 36 × £4000 = £144 000. Net benefit = £144 000 − £110 000 = £34 000.",
+     "hint": "Take the cost of the scheme off the saving."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Weekly data for a manufacturer: total costs £210 000, profit £30 000, labour costs are 30% of turnover, labour cost per unit £2.40, labour productivity 150 units per employee. Calculate the number of employees.",
+     "answer": 200.0,
+     "unit": "employees",
+     "working": "Turnover = £210 000 + £30 000 = £240 000. Labour costs = 0.3 × £240 000 = £72 000. Output = £72 000 ÷ £2.40 = 30 000. Employees = 30 000 ÷ 150 = 200.",
+     "hint": "Work back one step at a time."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A bakery employs 18 full-time staff and 12 part-time staff who each work 60% of full-time hours. Weekly output is 9720 loaves. Calculate labour productivity per FTE employee. Give your answer to two decimal places.",
+     "answer": 385.7143,
+     "unit": "loaves per FTE",
+     "working": "FTE = 18 + (12 × 0.6) = 25.2. 9720 ÷ 25.2 = 385.71 loaves per FTE.",
+     "hint": "Each part-timer counts as 0.6 of a full-timer."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-sukhchain",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "72/73",
+   "level": "",
+   "well": "Everything except Q14a was right.",
+   "improve": "Q14a: 29.4%: the question asked for two decimal places (29.43%)."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-rashmeet",
+ "match": "rashmeet",
+ "work": {
+  "id": "w-rashmeet-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "Strong booklet. This set goes over the three places you slipped (FTE staff, labour cost per unit the right way up, and leavers from a turnover rate) and then two longer questions.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A bakery employs 18 full-time staff and 12 part-time staff who each work 60% of full-time hours. Weekly output is 9720 loaves. Calculate labour productivity per FTE employee. Give your answer to two decimal places.",
+     "answer": 385.7143,
+     "unit": "loaves per FTE",
+     "working": "FTE = 18 + (12 × 0.6) = 25.2. 9720 ÷ 25.2 = 385.71 loaves per FTE.",
+     "hint": "Each part-timer counts as 0.6 of a full-timer."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "On each shift, 15 workers work for 7.5 hours and are paid £12.80 per hour. The shift produces 3600 units. Calculate the labour cost per unit in pence.",
+     "answer": 40.0,
+     "unit": "p",
+     "working": "Labour cost per shift = 15 × 7.5 × £12.80 = £1440. £1440 ÷ 3600 = £0.40 = 40p.",
+     "hint": "Include the hours. Then turn pounds into pence (× 100)."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A call centre has an average of 280 staff. Its labour turnover last year was 12.5%. How many staff left during the year?",
+     "answer": 35.0,
+     "unit": "staff",
+     "working": "12.5 = leavers ÷ 280 × 100, so leavers = 0.125 × 280 = 35.",
+     "hint": "Rearrange: leavers = turnover rate × average staff."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Employee costs are 25% of turnover. Next year prices rise by 8%, the same volume is sold and employee costs rise by 4%. Calculate employee costs as a percentage of turnover next year, to two decimal places.",
+     "answer": 24.0741,
+     "unit": "%",
+     "working": "Turnover £100 → £108. Employee costs £25 → £26. 26 ÷ 108 × 100 = 24.07%.",
+     "hint": "Pick £100 of turnover to start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "An 80-room hotel had an average occupancy of 65% in July (31 nights) at £110 per room per night. It has 28 employees costing £2300 each a month. Calculate employee costs as a percentage of turnover for July, to two decimal places.",
+     "answer": 36.3185,
+     "unit": "%",
+     "working": "Room nights = 80 × 0.65 × 31 = 1612. Turnover = 1612 × £110 = £177 320. Employee costs = 28 × £2300 = £64 400. 64 400 ÷ 177 320 × 100 = 36.32%.",
+     "hint": "Occupancy and the number of nights both matter."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A warehouse has 600 staff and labour turnover of 18%. Each leaver costs £2900 to replace and £1100 to train. A £110 000 retention scheme would cut turnover to 12%. Calculate the net benefit of the scheme.",
+     "answer": 34000.0,
+     "unit": "£",
+     "working": "Cost per leaver = £4000. Leavers 108 → 72, so 36 fewer. Saving = 36 × £4000 = £144 000. Net benefit = £144 000 − £110 000 = £34 000.",
+     "hint": "Take the cost of the scheme off the saving."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-rashmeet",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "66/73",
+   "level": "",
+   "well": "Everything except Q3b, Q4, Q6, Q14a was right.",
+   "improve": "Q3b: divided only part of the output by the 30 full-timers (560); FTE = 30 + 6 = 36, so 700. Q4: £2499.20 right, then 4400 ÷ 2499.20 (upside down): 176p instead of 56.8p. Q6: 1400 staff in your own work; 0.15 × 340 = 51 only added afterwards. Q14a: 29.4%: the question asked for two decimal places (29.43%)."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-sanchipreet",
+ "match": "sanchipreet",
+ "work": {
+  "id": "w-sanchipreet-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "Very strong. The one gap was labour cost per unit after automation, where you need total labour cost (staff × cost each) before dividing by output. The rest is stretch.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "After automation, 40 staff each cost £31 000 a year and output is 155 000 units. Calculate labour cost per unit, to the nearest penny.",
+     "answer": 8.0,
+     "unit": "£",
+     "working": "40 × £31 000 = £1 240 000. £1 240 000 ÷ 155 000 = £8.00.",
+     "hint": "Total labour cost ÷ output. The answer is in pounds."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Before automation 50 staff made 140 000 units; after, 40 staff make 155 000 units. Calculate the percentage change in labour productivity, to two decimal places.",
+     "answer": 38.3929,
+     "unit": "%",
+     "working": "Before: 2800. After: 3875. (3875 − 2800) ÷ 2800 × 100 = +38.39%.",
+     "hint": "Productivity for each, then percentage change."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A bakery employs 18 full-time staff and 12 part-time staff who each work 60% of full-time hours. Weekly output is 9720 loaves. Calculate labour productivity per FTE employee. Give your answer to two decimal places.",
+     "answer": 385.7143,
+     "unit": "loaves per FTE",
+     "working": "FTE = 18 + (12 × 0.6) = 25.2. 9720 ÷ 25.2 = 385.71 loaves per FTE.",
+     "hint": "Each part-timer counts as 0.6 of a full-timer."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Employee costs are 25% of turnover. Next year prices rise by 8%, the same volume is sold and employee costs rise by 4%. Calculate employee costs as a percentage of turnover next year, to two decimal places.",
+     "answer": 24.0741,
+     "unit": "%",
+     "working": "Turnover £100 → £108. Employee costs £25 → £26. 26 ÷ 108 × 100 = 24.07%.",
+     "hint": "Pick £100 of turnover to start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A warehouse has 600 staff and labour turnover of 18%. Each leaver costs £2900 to replace and £1100 to train. A £110 000 retention scheme would cut turnover to 12%. Calculate the net benefit of the scheme.",
+     "answer": 34000.0,
+     "unit": "£",
+     "working": "Cost per leaver = £4000. Leavers 108 → 72, so 36 fewer. Saving = 36 × £4000 = £144 000. Net benefit = £144 000 − £110 000 = £34 000.",
+     "hint": "Take the cost of the scheme off the saving."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-sanchipreet",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "71/73",
+   "level": "",
+   "well": "Everything except Q20b was right.",
+   "improve": "Q20b: before: £2 325 000 total right, but did not finish (£12.92); after: divided one employee's cost by output instead of 60 × £33 500 (£10.15)."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-pravneet",
+ "match": "pravneet",
+ "work": {
+  "id": "w-pravneet-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "You lost marks only on Q14, which you left until the class went through it. This set starts with two questions like Q14 (prices and costs changing together), then some stretch.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Employee costs are 25% of turnover. Next year prices rise by 8%, the same volume is sold and employee costs rise by 4%. Calculate employee costs as a percentage of turnover next year, to two decimal places.",
+     "answer": 24.0741,
+     "unit": "%",
+     "working": "Turnover £100 → £108. Employee costs £25 → £26. 26 ÷ 108 × 100 = 24.07%.",
+     "hint": "Pick £100 of turnover to start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Labour costs rise by 4% and output rises by 2%. Calculate the percentage change in labour cost per unit, to two decimal places.",
+     "answer": 1.9608,
+     "unit": "%",
+     "working": "1.04 ÷ 1.02 = 1.0196, so labour cost per unit rises by 1.96%.",
+     "hint": "Labour cost per unit = labour costs ÷ output, so divide the two multipliers."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "An 80-room hotel had an average occupancy of 65% in July (31 nights) at £110 per room per night. It has 28 employees costing £2300 each a month. Calculate employee costs as a percentage of turnover for July, to two decimal places.",
+     "answer": 36.3185,
+     "unit": "%",
+     "working": "Room nights = 80 × 0.65 × 31 = 1612. Turnover = 1612 × £110 = £177 320. Employee costs = 28 × £2300 = £64 400. 64 400 ÷ 177 320 × 100 = 36.32%.",
+     "hint": "Occupancy and the number of nights both matter."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A warehouse has 600 staff and labour turnover of 18%. Each leaver costs £2900 to replace and £1100 to train. A £110 000 retention scheme would cut turnover to 12%. Calculate the net benefit of the scheme.",
+     "answer": 34000.0,
+     "unit": "£",
+     "working": "Cost per leaver = £4000. Leavers 108 → 72, so 36 fewer. Saving = 36 × £4000 = £144 000. Net benefit = £144 000 − £110 000 = £34 000.",
+     "hint": "Take the cost of the scheme off the saving."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Weekly data for a manufacturer: total costs £210 000, profit £30 000, labour costs are 30% of turnover, labour cost per unit £2.40, labour productivity 150 units per employee. Calculate the number of employees.",
+     "answer": 200.0,
+     "unit": "employees",
+     "working": "Turnover = £210 000 + £30 000 = £240 000. Labour costs = 0.3 × £240 000 = £72 000. Output = £72 000 ÷ £2.40 = 30 000. Employees = 30 000 ÷ 150 = 200.",
+     "hint": "Work back one step at a time."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-pravneet",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "69/73",
+   "level": "",
+   "well": "Everything except Q14a, Q14b was right.",
+   "improve": "Q14a: not done in your own work (only added afterwards in pink). Q14b: not done in your own work (only added afterwards in pink)."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-sanam",
+ "match": "sanam",
+ "work": {
+  "id": "w-sanam-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "This set covers the HR questions you lost marks on: FTE staff, pence, working back from employee costs as a percentage, the hotel question, the retention scheme, prices and costs changing together, retention with joiners and labour cost per unit.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A packing firm employs 40 full-time staff and 20 part-time staff who each work half the hours of a full-timer. Last month they packed 30 000 boxes. Calculate labour productivity per full-time equivalent (FTE) employee.",
+     "answer": 600.0,
+     "unit": "boxes per FTE",
+     "working": "FTE = 40 + (20 × 0.5) = 50. 30 000 ÷ 50 = 600 boxes per FTE.",
+     "hint": "Count each part-timer as half a full-timer."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "On each shift, 15 workers work for 7.5 hours and are paid £12.80 per hour. The shift produces 3600 units. Calculate the labour cost per unit in pence.",
+     "answer": 40.0,
+     "unit": "p",
+     "working": "Labour cost per shift = 15 × 7.5 × £12.80 = £1440. £1440 ÷ 3600 = £0.40 = 40p.",
+     "hint": "Include the hours. Then turn pounds into pence (× 100)."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A brewery's employee costs were £1 260 000, which was 35% of its turnover. Calculate its turnover.",
+     "answer": 3600000.0,
+     "unit": "£",
+     "working": "1 260 000 = 0.35 × turnover, so turnover = 1 260 000 ÷ 0.35 = £3 600 000.",
+     "hint": "Divide by 0.35. Turnover must be bigger than employee costs."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A brewery's turnover was £3 600 000 and it sells one product at £45. How many units did it sell?",
+     "answer": 80000.0,
+     "unit": "units",
+     "working": "£3 600 000 ÷ £45 = 80 000 units.",
+     "hint": "Turnover = price × quantity."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "An 80-room hotel had an average occupancy of 65% in July (31 nights) at £110 per room per night. It has 28 employees costing £2300 each a month. Calculate employee costs as a percentage of turnover for July, to two decimal places.",
+     "answer": 36.3185,
+     "unit": "%",
+     "working": "Room nights = 80 × 0.65 × 31 = 1612. Turnover = 1612 × £110 = £177 320. Employee costs = 28 × £2300 = £64 400. 64 400 ÷ 177 320 × 100 = 36.32%.",
+     "hint": "Occupancy and the number of nights both matter."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A warehouse has 600 staff and labour turnover of 18%. Each leaver costs £2900 to replace and £1100 to train. A £110 000 retention scheme would cut turnover to 12%. Calculate the net benefit of the scheme.",
+     "answer": 34000.0,
+     "unit": "£",
+     "working": "Cost per leaver = £4000. Leavers 108 → 72, so 36 fewer. Saving = 36 × £4000 = £144 000. Net benefit = £144 000 − £110 000 = £34 000.",
+     "hint": "Take the cost of the scheme off the saving."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Employee costs are 25% of turnover. Next year prices rise by 8%, the same volume is sold and employee costs rise by 4%. Calculate employee costs as a percentage of turnover next year, to two decimal places.",
+     "answer": 24.0741,
+     "unit": "%",
+     "working": "Turnover £100 → £108. Employee costs £25 → £26. 26 ÷ 108 × 100 = 24.07%.",
+     "hint": "Pick £100 of turnover to start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Lindon Hotels had 180 staff on 1 January and 220 staff on 31 December. During the year, 30 staff left. Calculate labour turnover for the year. Give your answer to one decimal place.",
+     "answer": 15.0,
+     "unit": "%",
+     "working": "Average staff = (180 + 220) ÷ 2 = 200. 30 ÷ 200 × 100 = 15.0%.",
+     "hint": "Work out the average number of staff first."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A leisure chain had 300 staff on 1 January. During the year 50 staff left, of whom 20 had joined during that same year. Calculate the labour retention rate for the year.",
+     "answer": 90.0,
+     "unit": "%",
+     "working": "Leavers from the original 300 = 50 − 20 = 30. Still employed = 300 − 30 = 270. 270 ÷ 300 × 100 = 90%.",
+     "hint": "Only count leavers who were there at the start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "After automation, 40 staff each cost £31 000 a year and output is 155 000 units. Calculate labour cost per unit, to the nearest penny.",
+     "answer": 8.0,
+     "unit": "£",
+     "working": "40 × £31 000 = £1 240 000. £1 240 000 ÷ 155 000 = £8.00.",
+     "hint": "Total labour cost ÷ output. The answer is in pounds."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-sanam",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "49/73",
+   "level": "",
+   "well": "Right: labour turnover, turnover with start and end staff, labour productivity, employee costs %, leavers from a turnover rate, employees from labour cost per unit, the staffing plan, the retention target, % change in productivity and more.",
+   "improve": "Q3b: not attempted (FTE = 30 + 6 = 36; 25 200 ÷ 36 = 700). Q4: £2499.20 ÷ 4400 right, but wrote 0.56 pence: it is £0.568, so 56.8p. Q8a: multiplied by 0.72 instead of dividing 840 000 by 0.28. Q8b: not attempted. Q10a: right formula (136 ÷ 160) but wrote 80% (85%). Q11: occupancy applied, but left out the 30 nights and used one employee's pay instead of 42 × £2150. Q13: found £5250 and 72 leavers, but not the 99 current leavers, the saving or the net benefit. Q14a: used 1.3 instead of 1.03 for the 3% rise. Q14b: percentage change worked out with the wrong figures. Q16a: averaged start staff and joiners (130); average = (200 + 220) ÷ 2 = 210. Q16b: not the retention formula. Q20b: divided one employee's cost by total output; need total labour cost (75 × £31 000) ÷ output."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-prabhleen",
+ "match": "prabhleen",
+ "work": {
+  "id": "w-prabhleen-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "This set goes back over the HR questions you lost marks on, especially working backwards: finding leavers from a rate, turnover from a percentage, staff needed for a target and employees from labour costs. Check each step: multiply or divide?\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A call centre has an average of 280 staff. Its labour turnover last year was 12.5%. How many staff left during the year?",
+     "answer": 35.0,
+     "unit": "staff",
+     "working": "12.5 = leavers ÷ 280 × 100, so leavers = 0.125 × 280 = 35.",
+     "hint": "Rearrange: leavers = turnover rate × average staff."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A brewery's employee costs were £1 260 000, which was 35% of its turnover. Calculate its turnover.",
+     "answer": 3600000.0,
+     "unit": "£",
+     "working": "1 260 000 = 0.35 × turnover, so turnover = 1 260 000 ÷ 0.35 = £3 600 000.",
+     "hint": "Divide by 0.35. Turnover must be bigger than employee costs."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A brewery's turnover was £3 600 000 and it sells one product at £45. How many units did it sell?",
+     "answer": 80000.0,
+     "unit": "units",
+     "working": "£3 600 000 ÷ £45 = 80 000 units.",
+     "hint": "Turnover = price × quantity."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "60 production staff currently make 7200 units a week. A new order means the business must make 10 000 units a week. Training will raise labour productivity by 10%. How many extra staff are needed?",
+     "answer": 16,
+     "unit": "staff",
+     "working": "Productivity = 7200 ÷ 60 = 120. New = 120 × 1.1 = 132. 10 000 ÷ 132 = 75.8, so 76 staff. Extra = 76 − 60 = 16.",
+     "hint": "Round the staff needed up, then take away the current staff."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "An 80-room hotel had an average occupancy of 65% in July (31 nights) at £110 per room per night. It has 28 employees costing £2300 each a month. Calculate employee costs as a percentage of turnover for July, to two decimal places.",
+     "answer": 36.3185,
+     "unit": "%",
+     "working": "Room nights = 80 × 0.65 × 31 = 1612. Turnover = 1612 × £110 = £177 320. Employee costs = 28 × £2300 = £64 400. 64 400 ÷ 177 320 × 100 = 36.32%.",
+     "hint": "Occupancy and the number of nights both matter."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A warehouse has 600 staff and labour turnover of 18%. Each leaver costs £2900 to replace and £1100 to train. A £110 000 retention scheme would cut turnover to 12%. Calculate the net benefit of the scheme.",
+     "answer": 34000.0,
+     "unit": "£",
+     "working": "Cost per leaver = £4000. Leavers 108 → 72, so 36 fewer. Saving = 36 × £4000 = £144 000. Net benefit = £144 000 − £110 000 = £34 000.",
+     "hint": "Take the cost of the scheme off the saving."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Employee costs are 25% of turnover. Next year prices rise by 8%, the same volume is sold and employee costs rise by 4%. Calculate employee costs as a percentage of turnover next year, to two decimal places.",
+     "answer": 24.0741,
+     "unit": "%",
+     "working": "Turnover £100 → £108. Employee costs £25 → £26. 26 ÷ 108 × 100 = 24.07%.",
+     "hint": "Pick £100 of turnover to start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Weekly data for a manufacturer: total costs £210 000, profit £30 000, labour costs are 30% of turnover, labour cost per unit £2.40, labour productivity 150 units per employee. Calculate the number of employees.",
+     "answer": 200.0,
+     "unit": "employees",
+     "working": "Turnover = £210 000 + £30 000 = £240 000. Labour costs = 0.3 × £240 000 = £72 000. Output = £72 000 ÷ £2.40 = 30 000. Employees = 30 000 ÷ 150 = 200.",
+     "hint": "Work back one step at a time."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A leisure chain had 300 staff on 1 January. During the year 50 staff left, of whom 20 had joined during that same year. Calculate the labour retention rate for the year.",
+     "answer": 90.0,
+     "unit": "%",
+     "working": "Leavers from the original 300 = 50 − 20 = 30. Still employed = 300 − 30 = 270. 270 ÷ 300 × 100 = 90%.",
+     "hint": "Only count leavers who were there at the start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "24 agents on a 7-hour shift handled 3360 calls. The target is 22 calls per agent per hour. How many more calls per shift are needed to hit the target?",
+     "answer": 336,
+     "unit": "calls",
+     "working": "Target = 24 × 7 × 22 = 3696. 3696 − 3360 = 336 more.",
+     "hint": "Work out the target total, then take away actual calls."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Before automation 50 staff made 140 000 units; after, 40 staff make 155 000 units. Calculate the percentage change in labour productivity, to two decimal places.",
+     "answer": 38.3929,
+     "unit": "%",
+     "working": "Before: 2800. After: 3875. (3875 − 2800) ÷ 2800 × 100 = +38.39%.",
+     "hint": "Productivity for each, then percentage change."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-prabhleen",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "55/73",
+   "level": "",
+   "well": "Right: labour turnover, turnover with start and end staff, labour productivity, FTE productivity, labour cost per unit in pence, employee costs %, employees from labour cost per unit, turnover from employee costs %, units sold and more.",
+   "improve": "Q6: multiplied 15 × 340 (5100): the rate is 15%, so 0.15 × 340 = 51. Q9: 200 and 220 right, then divided 220 by 12 000 instead of 12 000 ÷ 220 = 54.5, so 55 staff, 7 extra. Q11: 2700 nights and £259 200 right; employee costs should be 42 × £2150 = £90 300, not 2150 × 30. Q13: £5250 right; leavers are 0.22 × 450 = 99 and 0.16 × 450 = 72, not 450 ÷ 0.22. Q14a: set up £100 and £30 but did not go on: new turnover £105, new costs £30.90. Q14b: not answered (3%). Q15: right until 30 000 units, then multiplied by 120 instead of dividing (250 employees). Q16b: 185 ÷ 200 right but left as 0.925: multiply by 100 for 92.5%. Q17b: added 4620 to 5040 instead of taking it away (420). Q20a: 2400 and 3300 right, but % change wrong: (3300 − 2400) ÷ 2400 × 100 = 37.5%."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-jeevan",
+ "match": "jeevan",
+ "work": {
+  "id": "w-jeevan-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "This set covers the HR questions you did not finish in your own work: averaging staff numbers (divide by 2), FTE staff, employee costs %, prices and costs changing together, retention and the call centre target.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Lindon Hotels had 180 staff on 1 January and 220 staff on 31 December. During the year, 30 staff left. Calculate labour turnover for the year. Give your answer to one decimal place.",
+     "answer": 15.0,
+     "unit": "%",
+     "working": "Average staff = (180 + 220) ÷ 2 = 200. 30 ÷ 200 × 100 = 15.0%.",
+     "hint": "Work out the average number of staff first."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A garden centre had 150 staff at the start of the year and 170 at the end. 36 staff left during the year. Calculate labour turnover. Give your answer to one decimal place.",
+     "answer": 22.5,
+     "unit": "%",
+     "working": "Average staff = (150 + 170) ÷ 2 = 160. 36 ÷ 160 × 100 = 22.5%.",
+     "hint": "Leavers ÷ average staff × 100. Do not add the two staff figures without halving."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A packing firm employs 40 full-time staff and 20 part-time staff who each work half the hours of a full-timer. Last month they packed 30 000 boxes. Calculate labour productivity per full-time equivalent (FTE) employee.",
+     "answer": 600.0,
+     "unit": "boxes per FTE",
+     "working": "FTE = 40 + (20 × 0.5) = 50. 30 000 ÷ 50 = 600 boxes per FTE.",
+     "hint": "Count each part-timer as half a full-timer."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Data for a recruitment agency (£000): revenue 5200, salaries 1300, employer National Insurance 156, employer pension contributions 104, rent 400. Calculate employee costs as a percentage of turnover.",
+     "answer": 30.0,
+     "unit": "%",
+     "working": "Employee costs = 1300 + 156 + 104 = 1560. 1560 ÷ 5200 × 100 = 30%.",
+     "hint": "Employee costs include NI and pensions, not rent."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Employee costs are 25% of turnover. Next year prices rise by 8%, the same volume is sold and employee costs rise by 4%. Calculate employee costs as a percentage of turnover next year, to two decimal places.",
+     "answer": 24.0741,
+     "unit": "%",
+     "working": "Turnover £100 → £108. Employee costs £25 → £26. 26 ÷ 108 × 100 = 24.07%.",
+     "hint": "Pick £100 of turnover to start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A leisure chain had 300 staff on 1 January. During the year 50 staff left, of whom 20 had joined during that same year. Calculate the labour retention rate for the year.",
+     "answer": 90.0,
+     "unit": "%",
+     "working": "Leavers from the original 300 = 50 − 20 = 30. Still employed = 300 − 30 = 270. 270 ÷ 300 × 100 = 90%.",
+     "hint": "Only count leavers who were there at the start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "24 agents on a 7-hour shift handled 3360 calls. The target is 22 calls per agent per hour. How many more calls per shift are needed to hit the target?",
+     "answer": 336,
+     "unit": "calls",
+     "working": "Target = 24 × 7 × 22 = 3696. 3696 − 3360 = 336 more.",
+     "hint": "Work out the target total, then take away actual calls."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "After automation, 40 staff each cost £31 000 a year and output is 155 000 units. Calculate labour cost per unit, to the nearest penny.",
+     "answer": 8.0,
+     "unit": "£",
+     "working": "40 × £31 000 = £1 240 000. £1 240 000 ÷ 155 000 = £8.00.",
+     "hint": "Total labour cost ÷ output. The answer is in pounds."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-jeevan",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "58/73",
+   "level": "",
+   "well": "Right: labour turnover, labour productivity, labour cost per unit in pence, leavers from a turnover rate, employees from labour cost per unit, turnover from employee costs %, units sold, the staffing plan, retention and more.",
+   "improve": "Q2: added 210 + 250 but did not divide by 2 (average 230): 10%. Q3b: not done in your own work (only added afterwards in teal). Q5: employee costs £1 125 000 right; the % only added afterwards. Q14a: not done in your own work. Q14b: not done in your own work. Q16a: divided by 260 (start + joiners) instead of the average 210; the 19% does not follow from your working. Q16b: found 15 leavers from the start group but gave 7.5% (the loss): retention = 185 ÷ 200 = 92.5%. Q17b: not done in your own work."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-anhadvir",
+ "match": "anhadvir",
+ "work": {
+  "id": "w-anhadvir-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "Strong booklet. This set checks the two places you lost marks: finishing the net benefit by taking off the scheme cost, and giving money answers to the nearest penny.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A warehouse has 600 staff and labour turnover of 18%. Each leaver costs £2900 to replace and £1100 to train. A £110 000 retention scheme would cut turnover to 12%. Calculate the net benefit of the scheme.",
+     "answer": 34000.0,
+     "unit": "£",
+     "working": "Cost per leaver = £4000. Leavers 108 → 72, so 36 fewer. Saving = 36 × £4000 = £144 000. Net benefit = £144 000 − £110 000 = £34 000.",
+     "hint": "Take the cost of the scheme off the saving."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "After automation, 40 staff each cost £31 000 a year and output is 155 000 units. Calculate labour cost per unit, to the nearest penny.",
+     "answer": 8.0,
+     "unit": "£",
+     "working": "40 × £31 000 = £1 240 000. £1 240 000 ÷ 155 000 = £8.00.",
+     "hint": "Total labour cost ÷ output. The answer is in pounds."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Employee costs are 25% of turnover. Next year prices rise by 8%, the same volume is sold and employee costs rise by 4%. Calculate employee costs as a percentage of turnover next year, to two decimal places.",
+     "answer": 24.0741,
+     "unit": "%",
+     "working": "Turnover £100 → £108. Employee costs £25 → £26. 26 ÷ 108 × 100 = 24.07%.",
+     "hint": "Pick £100 of turnover to start."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "An 80-room hotel had an average occupancy of 65% in July (31 nights) at £110 per room per night. It has 28 employees costing £2300 each a month. Calculate employee costs as a percentage of turnover for July, to two decimal places.",
+     "answer": 36.3185,
+     "unit": "%",
+     "working": "Room nights = 80 × 0.65 × 31 = 1612. Turnover = 1612 × £110 = £177 320. Employee costs = 28 × £2300 = £64 400. 64 400 ÷ 177 320 × 100 = 36.32%.",
+     "hint": "Occupancy and the number of nights both matter."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-anhadvir",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "70/73",
+   "level": "",
+   "well": "Everything except Q13, Q20b was right.",
+   "improve": "Q13: stopped at the saving (£141 750): the net benefit takes off the £95 000 scheme cost (£46 750). Q20b: right method, but the question asked for the nearest penny: £12.92 and £10.15 (not £12.9 and £10.2)."
+  }
+ ]
+},
+{
+ "id": "seed-2026-11-20-hr-karam",
+ "match": "karam",
+ "work": {
+  "id": "w-karam-hr-2011",
+  "title": "Follow-up: HR calculations",
+  "due": "2026-11-27",
+  "spec": {
+   "title": "Follow-up: HR calculations",
+   "intro": "Full marks. These are longer stretch questions on the same topics.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A bakery employs 18 full-time staff and 12 part-time staff who each work 60% of full-time hours. Weekly output is 9720 loaves. Calculate labour productivity per FTE employee. Give your answer to two decimal places.",
+     "answer": 385.7143,
+     "unit": "loaves per FTE",
+     "working": "FTE = 18 + (12 × 0.6) = 25.2. 9720 ÷ 25.2 = 385.71 loaves per FTE.",
+     "hint": "Each part-timer counts as 0.6 of a full-timer."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "60 production staff currently make 7200 units a week. A new order means the business must make 10 000 units a week. Training will raise labour productivity by 10%. How many extra staff are needed?",
+     "answer": 16,
+     "unit": "staff",
+     "working": "Productivity = 7200 ÷ 60 = 120. New = 120 × 1.1 = 132. 10 000 ÷ 132 = 75.8, so 76 staff. Extra = 76 − 60 = 16.",
+     "hint": "Round the staff needed up, then take away the current staff."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A warehouse has 600 staff and labour turnover of 18%. Each leaver costs £2900 to replace and £1100 to train. A £110 000 retention scheme would cut turnover to 12%. Calculate the net benefit of the scheme.",
+     "answer": 34000.0,
+     "unit": "£",
+     "working": "Cost per leaver = £4000. Leavers 108 → 72, so 36 fewer. Saving = 36 × £4000 = £144 000. Net benefit = £144 000 − £110 000 = £34 000.",
+     "hint": "Take the cost of the scheme off the saving."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "Labour costs rise by 4% and output rises by 2%. Calculate the percentage change in labour cost per unit, to two decimal places.",
+     "answer": 1.9608,
+     "unit": "%",
+     "working": "1.04 ÷ 1.02 = 1.0196, so labour cost per unit rises by 1.96%.",
+     "hint": "Labour cost per unit = labour costs ÷ output, so divide the two multipliers."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "An 80-room hotel had an average occupancy of 65% in July (31 nights) at £110 per room per night. It has 28 employees costing £2300 each a month. Calculate employee costs as a percentage of turnover for July, to two decimal places.",
+     "answer": 36.3185,
+     "unit": "%",
+     "working": "Room nights = 80 × 0.65 × 31 = 1612. Turnover = 1612 × £110 = £177 320. Employee costs = 28 × £2300 = £64 400. 64 400 ÷ 177 320 × 100 = 36.32%.",
+     "hint": "Occupancy and the number of nights both matter."
+    }
+   ]
+  }
+ },
+ "marks": [
+  {
+   "qid": "seed-hr-karam",
+   "t": "2026-11-20T09:00:00.000Z",
+   "tool": "calcpractice",
+   "question": "HR data: labour turnover, labour retention, labour productivity and employee costs as a percentage of turnover (20 questions, 73 marks)",
+   "mark": "73/73",
+   "level": "",
+   "well": "Full marks (73/73). Every step was set out clearly.",
+   "improve": "Nothing lost."
+  }
+ ]
 }
 ];
