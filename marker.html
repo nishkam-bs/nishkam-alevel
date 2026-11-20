@@ -1051,7 +1051,7 @@ Respond with ONLY valid JSON (no markdown, no backticks):
   }
 
   try{
-    const fb=await NMark.markJSON({model:"claude-sonnet-4-6",max_tokens:3000,system:sysPrompt,messages});
+    const fb=await NMark.markJSON({model:"claude-sonnet-4-6",max_tokens:3000,temperature:0,system:sysPrompt,messages});
     if(typeof fb.mark!=='number'&&isNaN(parseInt(fb.mark)))throw new Error('The marker\'s reply came back incomplete. Press the button again.');
     fb.mark=Math.max(0,Math.min(25,parseInt(fb.mark)));
     ['www','ebi'].forEach(k=>{if(!Array.isArray(fb[k]))fb[k]=fb[k]?[String(fb[k])]:[];});

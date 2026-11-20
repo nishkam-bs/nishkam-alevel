@@ -254,7 +254,15 @@ ${isFullEssay ? `FULL ESSAY DETECTED (${words} words):
 - This looks like a complete redrafted essay.
 - Mark it against the AQA mark scheme for the question shown in the PDF.
 - Award a mark and level. Be fair — do not inflate just because it is a redraft.
-- Then assess whether the student acted on the original feedback.` :
+- Then assess whether the student acted on the original feedback.
+
+HOW TO SET THE NEW MARK:
+- Start from the original mark in the PDF. That mark stands as the baseline for everything the redraft keeps from the original.
+- Move the mark UP if the student has acted on the "needs to improve" points or used the rewritten section from the PDF and it adds something creditworthy.
+- Keep the mark the SAME if the changes are only rewording and add nothing new.
+- Only move the mark DOWN if the redraft has lost or weakened something specific that earned credit in the original (for example, removed data, cut a chain of reasoning, or the conclusion no longer makes a judgement). You must name exactly what was lost in "mark_change_reason".
+- Never lower the mark for following the PDF's own advice or for using its rewritten section.
+- Do not re-mark from scratch with a stricter or different reading of the mark scheme than the original.` :
 
 `PARTIAL REDRAFT DETECTED (${words} words):
 - The student has redrafted a section, not the whole essay.
@@ -281,6 +289,7 @@ ${isFullEssay ? `{
   "original_level": "the level from the PDF",
   "new_mark": "your mark for the redraft, e.g. 18 / 25",
   "new_level": "your level for the redraft",
+  "mark_change_reason": "one sentence on exactly why the mark went up, stayed the same or went down",
   "improvements": [
     {
       "area": "short label, e.g. Application, Analytical chains, Evaluation",
@@ -309,6 +318,7 @@ ${isFullEssay ? `{
     const result = await NMark.markJSON({
         model:'claude-sonnet-4-6',
         max_tokens:2500,
+        temperature:0,
         system: systemPrompt,
         messages:[{
           role:'user',
@@ -360,6 +370,12 @@ function showFeedback(r){
         <div class="mark">${r.new_mark}</div>
         <div class="label">${r.new_level||''}</div>
       </div>`;
+    if(r.mark_change_reason){
+      const p=document.createElement('p');
+      p.style.cssText='margin-top:.75rem;font-size:.9rem';
+      p.textContent=r.mark_change_reason;
+      document.getElementById('markComparison').after(p);
+    }
   }
 
   // Improvement cards

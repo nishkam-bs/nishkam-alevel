@@ -506,7 +506,7 @@ async function runMark(){
   }
 
   try{
-    const fb=await NMark.markJSON({model:MODEL,max_tokens:4000,system:sysPrompt,messages});
+    const fb=await NMark.markJSON({model:MODEL,max_tokens:4000,temperature:0,system:sysPrompt,messages});
     if(isNaN(parseInt(fb.mark)))throw new Error('The marker\'s reply came back incomplete. Press the button again.');
     fb.mark=Math.max(0,Math.min(marks,parseInt(fb.mark)));
     lastFb=fb;
