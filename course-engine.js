@@ -5,6 +5,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fine = matchMedia('(pointer: fine)').matches;
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const toNum=s=>{s=String(s==null?'':s).trim().replace(/[−–—]/g,'-').replace(/:\s*1\s*$/,'');const neg=/^\(.*\)$/.test(s.replace(/[^0-9.()\-]/g,''))||/^-|^£\s*-/.test(s);s=s.replace(/[^0-9.]/g,'');if(s==='')return NaN;const n=parseFloat(s);return neg?-n:n;};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 
@@ -298,9 +299,9 @@ function itemCalc(it,wrap){
   const pre=it.pre===true?'£':(it.pre||''),suf=it.pre===true?'m':(it.unit||'');
   const ansText=()=>pre+Number(it.ans).toLocaleString('en-GB',{maximumFractionDigits:2})+(suf==='m'||suf==='%'?suf:suf?' '+suf:'');
   wrap.innerHTML=`<span class="src">${esc(it.src)}</span>${it.table||''}${it.given?`<div class="card" style="margin-bottom:16px">${it.given}</div>`:''}<div class="qbox">${esc(it.prompt)}</div>
-   <div class="calcrow">${pre?`<span class="u">${esc(pre)}</span>`:''}<input class="txt num" inputmode="decimal" autocomplete="off" aria-label="Your answer"><span class="u">${esc(suf)}</span><button class="btn small">Check</button></div><div class="fbz"></div>`;
+   <div class="calcrow">${pre?`<span class="u">${esc(pre)}</span>`:''}<input class="txt num" autocomplete="off" aria-label="Your answer"><span class="u">${esc(suf)}</span><button class="btn small">Check</button></div><div class="fbz"></div>`;
   const inp=$('.num',wrap),btn=$('.btn',wrap);inp.focus({preventScroll:true});
-  const go=()=>{const v=parseFloat(inp.value.replace(/[−–]/g,'-').replace(/:\s*1\s*$/,'').replace(/[^0-9.\-]/g,''));if(isNaN(v)){inp.focus();return;}
+  const go=()=>{const v=toNum(inp.value);if(isNaN(v)){inp.focus();return;}
     inp.disabled=true;btn.disabled=true;const ok=Math.abs(v-it.ans)<=(it.tol||0)+1e-9;
     const trap=!ok&&(it.traps||[]).filter(t=>Math.abs(t.v-it.ans)>(it.tol||0)+0.06).find(t=>Math.abs(t.v-v)<=Math.max(0.06,Math.abs(t.v)*0.001));
     record(ok);fb($('.fbz',wrap),ok,ok?'Correct':`Not quite. The answer is ${esc(ansText())}`,(trap?esc(trap.m)+'<br><br>':'')+'<b>Working:</b> '+esc(it.work),it.use?esc(it.use):'');nextBtn(wrap);};

@@ -68,7 +68,7 @@ function clean(spec,topicIds){
       const order=[0,1,2,3];for(let k=3;k>0;k--){const j=Math.floor(Math.random()*(k+1));[order[k],order[j]]=[order[j],order[k]];}
       o.options=order.map(i=>String(it.options[i]));o.answer=order.indexOf(a);o.explain=String(it.explain||'');
     }else if(it.type==='calc'){
-      const n=parseFloat(String(it.answer).replace(/[^0-9.\-]/g,''));if(!isFinite(n))return null;
+      const n=toNum(it.answer);if(!isFinite(n))return null;
       o.answer=n;o.unit=String(it.unit||'');o.working=String(it.working||'');o.skill='quant';
     }else if(it.type==='short'){
       o.marks=Math.max(1,Math.min(8,+it.marks||(it.points||[]).length||2));o.points=(it.points||[]).map(String);
@@ -108,7 +108,7 @@ async function mark(spec,answers){
     const a=answers[i];
     if(it.type==='mcq')res[i]={ok:+a===it.answer?1:0,marks:+a===it.answer?1:0,max:1};
     else if(it.type==='calc'){
-      const n=parseFloat(String(a==null?'':a).replace(/[^0-9.\-]/g,''));
+      const n=toNum(a);
       const tol=Math.max(Math.abs(it.answer)*0.01,0.051);
       const ok=isFinite(n)&&Math.abs(n-it.answer)<=tol?1:0;
       res[i]={ok,marks:ok*2,max:2};
@@ -127,6 +127,7 @@ async function mark(spec,answers){
   return {items:res,score,total};
 }
 
+const toNum=s=>{s=String(s==null?'':s).trim().replace(/[−–—]/g,'-').replace(/:\s*1\s*$/,'');const neg=/^\(.*\)$/.test(s.replace(/[^0-9.()\-]/g,''))||/^-|^£\s*-/.test(s);s=s.replace(/[^0-9.]/g,'');if(s==='')return NaN;const n=parseFloat(s);return neg?-n:n;};
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const typeName={mcq:'Multiple choice',calc:'Calculation',short:'Short answer',extended:'Extended answer'};
 const label=it=>{const t=TOP[it.topic];return (t?`${t.ref} ${t.title}`:'')+(it.marks?` · ${it.marks} marks`:'');};

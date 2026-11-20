@@ -134,7 +134,7 @@ function numOK(x,c){const v=c.value,dp=c.dp||0;const tol=Math.max(0.5*Math.pow(1
 const fmt=(c,x)=>`${c.unit_before||''}${Number(x).toLocaleString('en-GB',{minimumFractionDigits:c.dp||0,maximumFractionDigits:c.dp||0})}${c.unit?(/^([%:]|m$|bn$)/.test(c.unit)?'':' ')+c.unit:''}`;
 function numBox(key,c,ans,onAns){
   const done=ans!=null&&ans!=='';const ok=done&&numOK(parseNum(ans),c);
-  return `<div class="num">${c.unit_before?`<span class="u">${esc(c.unit_before)}</span>`:''}<input inputmode="decimal" autocomplete="off" data-n="${key}" ${done?'disabled':''} value="${done?esc(ans):''}" placeholder="Your answer"><button class="pm" data-pm="${key}" ${done?'disabled':''} title="Make negative">±</button>${c.unit?`<span class="u">${esc(c.unit)}</span>`:''}
+  return `<div class="num">${c.unit_before?`<span class="u">${esc(c.unit_before)}</span>`:''}<input autocomplete="off" data-n="${key}" ${done?'disabled':''} value="${done?esc(ans):''}" placeholder="Your answer"><button class="pm" data-pm="${key}" ${done?'disabled':''} title="Make negative">±</button>${c.unit?`<span class="u">${esc(c.unit)}</span>`:''}
     ${done?'':`<button class="btn" data-check="${key}" style="margin:0">Check</button>`}</div>
     ${done?`<div class="fbx ${ok?'r':'w'}"><b>${ok?'Right.':'Not quite. The answer is '+esc(fmt(c,c.value))+'.'}</b> ${esc(c.steps)}</div>`:`<p class="small muted" style="margin:6px 0 0">Give your answer to ${c.dp||0} decimal place${c.dp===1?'':'s'}. Type the number only.</p>`}`;
 }
