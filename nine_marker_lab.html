@@ -520,7 +520,7 @@ async function runMark(){
 
 /* ─── RENDER FEEDBACK ─── */
 function showFeedback(fb,qText,maxMark){
-  if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'9-mark lab',question:qText,mark:fb.mark+'/'+maxMark,level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:fb.overall_feedback||'',improve:fb.improvement_note||'',answer:(window._photoMode?'[Handwritten answer uploaded as photos]':document.getElementById('essay').value.trim())});
+  if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'9-mark lab',question:qText,mark:fb.mark+'/'+maxMark,level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:fb.overall_feedback||'',improve:fb.improvement_note||'',target:{skill:maxMark===9?'analysis':'',excerpt:fb.rewrite_original||'',problem:fb.improvement_note||'',better:fb.rewrite_improved||''},answer:(window._photoMode?'[Handwritten answer uploaded as photos]':document.getElementById('essay').value.trim())});
   document.getElementById('ldPanel').classList.remove('show');
   document.getElementById('fbPanel').style.display='block';
   const col={3:'var(--green)',2:'var(--gold)',1:'var(--red)'}[fb.level]||'var(--muted)';
