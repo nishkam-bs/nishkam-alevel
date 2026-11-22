@@ -121,6 +121,18 @@ const RD_SKILL={endpoint:'analysis',analysis:'analysis',application:'application
   models:'models',conceptual_accuracy:'knowledge',question_focus:'technique',introduction:'technique'};
 /* a gap only counts as confirmed when it shows up in at least two different kinds of work */
 function confirmed(a){return (a.gaps||[]).filter(g=>Object.keys(g.kinds||{}).filter(k=>KIND_NAME[k]).length>=2&&g.n>=2);}
+/* every topic that needs work for this student, judged on its own evidence:
+   it shows up in two different kinds of work, or there is a fair amount
+   of evidence from one kind and most of it is wrong */
+function needsWork(a){
+  return (a.gaps||[]).filter(g=>{const k=Object.keys(g.kinds||{}).filter(x=>KIND_NAME[x]).length;
+    return (k>=2&&g.n>=2)||(g.n>=3&&g.score<.5);}).map(g=>Object.assign({},g,{confirmed:Object.keys(g.kinds||{}).filter(x=>KIND_NAME[x]).length>=2}));
+}
+/* can this topic be followed up now? not while one is open on it, and not within a week of the last */
+function canFollow(topic,follows,work,ev){
+  const W=Object.fromEntries((work||[]).map(w=>[w.id,w])),now=Date.now();
+  return !(follows||[]).some(f=>f.topic===topic&&((W[f.work_id]&&W[f.work_id].status!=='done')||now-Date.parse(f.created)<7*86400000));
+}
 function kindsText(g){return Object.keys(g.kinds||{}).filter(k=>KIND_NAME[k]).map(k=>KIND_NAME[k]).join(', ');}
 /* where a follow-up has got to: set, missed, closed or open */
 function followState(f,work,ev,now){
@@ -165,5 +177,5 @@ function summary(a,maxGaps){
   if(a.essays.length)lines.push('Extended answers (oldest first): '+a.essays.slice(-10).map(e=>`${e.tool} ${Math.round(e.p)}%`).join(', '));
   return lines.join('\n');
 }
-window.Analysis={analyse,status,nextSteps,summary,topicsIn,skillsIn,pct,TOP,SKILL,confirmed,kindsText,followState,KIND_NAME};
+window.Analysis={analyse,status,nextSteps,summary,topicsIn,skillsIn,pct,TOP,SKILL,confirmed,needsWork,canFollow,kindsText,followState,KIND_NAME};
 })();
