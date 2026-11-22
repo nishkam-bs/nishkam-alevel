@@ -47,6 +47,14 @@ const css=`
 .chk input{width:auto}
 .lnk{border:0;background:none;color:var(--fg);font:inherit;font-weight:600;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px}
 .pill{font-size:.78rem;padding:2px 8px;border-radius:999px;background:var(--bg2);color:var(--muted)}
+.rd-box{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;font-size:.88rem}
+.rd-box .ex{font-style:italic;border-left:3px solid var(--line);padding-left:10px;margin:6px 0;white-space:pre-wrap}
+.rd-box .ans{white-space:pre-wrap;background:var(--bg2);border-radius:8px;padding:8px 10px;margin:6px 0}
+.vd{font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.vd.fixed,.vd.closed{background:var(--ok-soft);color:var(--ok)}.vd.partly,.vd.set,.vd.open{background:var(--amber-soft);color:var(--amber)}.vd.notyet,.vd.flag,.vd.missed{background:var(--end-soft);color:var(--end)}.vd.none{background:var(--bg2);color:var(--muted)}
+.gp{display:grid;gap:4px}
+.gp div{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.gp .src{color:var(--muted);font-size:.8rem}
 @media print{body *{visibility:hidden}#detPrint,#detPrint *{visibility:visible}#detPrint{position:absolute;left:0;top:0;width:100%}}`;
 
 /* ---------- data ---------- */
@@ -59,11 +67,24 @@ function data(){
     const ctx=S.ctxFrom((d.marks||[]).filter(m=>m.exam===u),(d.rows||[]).filter(r=>r.exam===u),(d.store||{})[u]||{},ex);
     const mine=items.filter(it=>it.who==='all'||(Array.isArray(it.who)&&it.who.includes(u)));
     const st={};mine.forEach(it=>{st[it.id]=S.status(it,ctx);});
-    return {u,name:a.name,first:a.name.split(' ')[0],items:mine,st};
+    const rd=(d.redrafts||[]).filter(r=>r.exam===u);
+    const exs=new Set(ex);
+    const rdSt={};rd.forEach(r=>{if(r.due)rdSt[r.id]=rdStatus(r,exs);});
+    return {u,name:a.name,first:a.name.split(' ')[0],items:mine,st,rd,rdSt};
   });
   const cnt={};students.forEach(s=>{cnt[s.first]=(cnt[s.first]||0)+1;});students.forEach(s=>{if(cnt[s.first]>1)s.first=s.name;});
   cacheFor=d;cache={items,students};return cache;
 }
+/* a redraft counts for its deadline once it has been handed in, whatever the verdict */
+function rdStatus(r,excused){
+  if(excused&&excused.has('rd:'+r.id))return {s:'excused'};
+  const dl=S.deadline(r.due),t=r.submitted?Date.parse(r.submitted):null;
+  if(t)return {s:t>dl?'late':'done',t};
+  return {s:Date.now()>dl?'missing':'todo'};
+}
+const RDV={fixed:'Fixed',partly:'Partly fixed',notyet:'Not fixed yet',flag:'Not fixed after two tries',set:'Not done yet'};
+const rdSkill=r=>(S.RD_SKILL&&S.RD_SKILL[r.skill])||'where marks were lost';
+const WORST=['missing','todo','late','done','excused'];
 const isKat=m=>m.ref==='catmcq'||/KAT MCQ/i.test(m.tool||'');
 const katOf=u=>{const m=(TR.data.marks||[]).filter(x=>x.exam===u&&isKat(x)).sort((a,b)=>String(b.t).localeCompare(String(a.t)))[0];return m?m.mark:'';};
 const shortLabel=it=>{if(it.kind==='exam'){const e=S.EX[it.ref];return e?`P${e.paper} ${e.year==='2020N'?'N20':e.year.slice(2)} Q${e.num} (${e.marks})`:it.ref;}
@@ -117,6 +138,8 @@ function events(){
       ev.push({u,t:T(t),what:(v.done?`finished the ${nmd}: ${v.score}/${v.total} in ${Math.max(1,Math.round((v.secs||0)/60))} min`:`started the ${nmd}`),k:'drill'});}}));
   (d.work||[]).forEach(w=>{if(w.done_at)ev.push({u:w.exam,t:T(w.done_at),what:`finished set work: ${w.title||'work'}`,k:'work'});});
   (d.visits||[]).forEach(v=>ev.push({u:v.exam,t:T(v.t),what:`opened ${v.title||v.page}`,k:'visit'}));
+  (d.redrafts||[]).forEach(r=>{if(r.done_at)ev.push({u:r.exam,t:T(r.done_at),what:`redrafted ${rdSkill(r)} (${r.tool||'essay'}): ${(RDV[r.status]||RDV[r.verdict]||'').toLowerCase()}`,detail:r.feedback,k:'redraft'});});
+  (d.follows||[]).forEach(f=>ev.push({u:f.exam,t:T(f.created),what:`was sent a follow-up on ${((window.Analysis&&Analysis.TOP[f.topic])||{}).title||f.topic}`,detail:f.why,k:'follow'}));
   return ev.filter(e=>e.t&&!isNaN(e.t)).sort((a,b)=>b.t-a.t);
 }
 let actFilter={u:'',visits:true,n:40};
@@ -167,37 +190,43 @@ function renderWeek(){
   const last=S.lastDue(items);
   const now=Date.now(),passed=S.deadline(due)<now;
   /* detentions for the most recent deadline */
-  const det=last?students.map(s=>({s,miss:s.items.filter(i=>i.due===last&&s.st[i.id].s==='missing')})).filter(x=>x.miss.length):[];
+  const det=last?students.map(s=>({s,miss:s.items.filter(i=>i.due===last&&s.st[i.id].s==='missing').map(shortLabel)
+    .concat(s.rd.filter(r=>r.due===last&&s.rdSt[r.id]&&s.rdSt[r.id].s==='missing').map(r=>'Redraft: '+rdSkill(r)))})).filter(x=>x.miss.length):[];
+  const rdWeek=s=>s.rd.filter(r=>r.due===due);
   /* season totals up to now */
   const tot=students.map(s=>{const past=s.items.filter(i=>S.deadline(i.due)<now);const c={done:0,late:0,missing:0,excused:0};past.forEach(i=>{c[s.st[i.id].s]=(c[s.st[i.id].s]||0)+1;});
-    const weeksMissed=new Set(past.filter(i=>s.st[i.id].s==='missing').map(i=>i.due)).size;return {s,c,past:past.length,weeksMissed};});
+    const pr=s.rd.filter(r=>r.due&&S.deadline(r.due)<now);pr.forEach(r=>{const k=s.rdSt[r.id].s;c[k]=(c[k]||0)+1;});
+    const weeksMissed=new Set(past.filter(i=>s.st[i.id].s==='missing').map(i=>i.due).concat(pr.filter(r=>s.rdSt[r.id].s==='missing').map(r=>r.due))).size;return {s,c,past:past.length+pr.length,weeksMissed};});
   root.innerHTML=`
   <div class="sc-top"><button class="btn ghost" id="scPrev" ${idx<=0?'disabled':''}>Previous week</button><button class="btn ghost" id="scNext" ${idx>=dues.length-1?'disabled':''}>Next week</button>
     <button class="btn ghost" id="scNow">This week</button><span class="sp"></span><button class="btn" id="scEdit">Edit the schedule</button></div>
   <div class="stats">
     <div class="card stat"><b>${esc(S.fmtDay(due))}</b><span>deadline, 11:59pm · week ${idx+1} of ${dues.length}</span></div>
     <div class="card stat"><b>${wk.length}</b><span>pieces of work this week</span></div>
-    <div class="card stat"><b>${students.filter(s=>wk.every(i=>!s.st[i.id]||['done','late','excused'].includes(s.st[i.id].s))).length} / ${students.length}</b><span>students with everything done</span></div>
+    <div class="card stat"><b>${students.filter(s=>wk.every(i=>!s.st[i.id]||['done','late','excused'].includes(s.st[i.id].s))&&rdWeek(s).every(r=>['done','late','excused'].includes(s.rdSt[r.id].s))).length} / ${students.length}</b><span>students with everything done</span></div>
     <div class="card stat"><b>${det.length}</b><span>detentions from the last deadline${last?` (${esc(S.fmtDay(last))})`:''}</span></div>
   </div>
   ${planMsg?`<div class="sc-card" style="padding:12px 16px"><p style="margin:0">${esc(planMsg)} <button class="lnk" id="pmX" style="font-weight:400">Hide</button></p></div>`:''}
   ${info.note?`<p class="muted" style="margin:-6px 0 14px">${esc(info.note)}</p>`:''}
   <div class="sc-card" id="detPrint"><h2>Friday detentions${last?`: deadline ${esc(S.fmtDay(last))}`:''}</h2>
-    ${!last?'<p class="muted">No deadline has passed yet.</p>':det.length?`<ul class="det">${det.map(x=>`<li><b>${esc(x.s.name)}</b> <span class="why">${x.miss.length} missing</span><div class="why">${x.miss.map(i=>esc(shortLabel(i))).join(' · ')}</div></li>`).join('')}</ul>`:'<p class="muted">Everyone met the deadline.</p>'}
+    ${!last?'<p class="muted">No deadline has passed yet.</p>':det.length?`<ul class="det">${det.map(x=>`<li><b>${esc(x.s.name)}</b> <span class="why">${x.miss.length} missing</span><div class="why">${x.miss.map(esc).join(' · ')}</div></li>`).join('')}</ul>`:'<p class="muted">Everyone met the deadline.</p>'}
     ${det.length?`<div style="margin-top:12px;display:flex;gap:10px"><button class="btn ghost" id="detCopy">Copy the list</button><button class="btn ghost" id="detPrintBtn">Print</button></div>`:''}</div>
   <div class="sc-card"><h2>Week ${idx+1}: due ${esc(S.fmtDay(due))}</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Click a cell to excuse a student (for example if they were absent), or click again to undo. Clicking a finished MCQ, calculation or drill set lets you reset it so the student has to do it again.${passed?'':' The deadline has not passed yet.'}</p>
-    <div class="tablewrap"><table class="sc-grid"><thead><tr><th class="l">Student</th><th>Done</th>${wk.map(i=>`<th class="q" title="${esc(S.describe(i).sub||'')}">${esc(shortLabel(i))}</th>`).join('')}</tr></thead><tbody>
-    ${students.map(s=>{const mine=wk.filter(i=>s.st[i.id]);const dn=mine.filter(i=>['done','late','excused'].includes(s.st[i.id].s)).length;
-      return `<tr><td class="l">${esc(s.name)}</td><td>${dn}/${mine.length}</td>${wk.map(i=>{const x=s.st[i.id];if(!x)return '<td class="muted">–</td>';
+    <div class="tablewrap"><table class="sc-grid"><thead><tr><th class="l">Student</th><th>Done</th>${wk.map(i=>`<th class="q" title="${esc(S.describe(i).sub||'')}">${esc(shortLabel(i))}</th>`).join('')}<th class="q" title="The part of a marked answer where the student lost the most marks. Up to two count each week.">Redrafts</th></tr></thead><tbody>
+    ${students.map(s=>{const mine=wk.filter(i=>s.st[i.id]);const rw=rdWeek(s);
+      const dn=mine.filter(i=>['done','late','excused'].includes(s.st[i.id].s)).length+rw.filter(r=>['done','late','excused'].includes(s.rdSt[r.id].s)).length;
+      return `<tr><td class="l">${esc(s.name)}</td><td>${dn}/${mine.length+rw.length}</td>${wk.map(i=>{const x=s.st[i.id];if(!x)return '<td class="muted">–</td>';
         const qz=(i.kind==='quiz'||i.kind==='drill')?qFix(i.kind+':'+i.ref,((TR.data.store||{})[s.u]||{})[i.kind+':'+i.ref]):null,sc=qz&&qz.total?` · ${qz.score}/${qz.total} right${qz.secs?` in ${Math.round(qz.secs/60)} min`:' first time'}`:'';
         const hw=(x.s==='done'||x.s==='late')?howOf(s.u,i):null;
-        return `<td><span class="c ${x.s}${hw&&hw.k?' '+hw.k:''}" data-u="${esc(s.u)}" data-i="${esc(i.id)}" title="${TITLE[x.s]}${x.t?' · '+new Date(x.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}${sc}${hw?' · '+esc(hw.t):''}">${qz&&qz.done&&qz.total?qz.score:LETTER[x.s]}</span></td>`;}).join('')}</tr>`;}).join('')}
+        return `<td><span class="c ${x.s}${hw&&hw.k?' '+hw.k:''}" data-u="${esc(s.u)}" data-i="${esc(i.id)}" title="${TITLE[x.s]}${x.t?' · '+new Date(x.t).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}${sc}${hw?' · '+esc(hw.t):''}">${qz&&qz.done&&qz.total?qz.score:LETTER[x.s]}</span></td>`;}).join('')}${rdCell(s,rw)}</tr>`;}).join('')}
     </tbody></table></div>
+    <div id="rdDetail"></div>
     <div class="legend"><span><span class="c done">✓</span> on time</span><span><span class="c late">L</span> late</span><span><span class="c missing">✗</span> missed</span><span><span class="c todo">·</span> not yet</span><span><span class="c excused">E</span> excused</span></div>
     ${(()=>{const dr=wk.filter(i=>i.kind==='drill');const all=items.filter(i=>i.kind==='drill');if(!all.length)return '';
       return `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0 4px;font-size:.88rem"><b>Try the drills yourself:</b>${dr.map(i=>`<button class="btn ghost" data-pv="${esc(i.ref)}" style="padding:5px 12px">${esc(shortLabel(i))} this week</button>`).join('')}
       <select id="pvAll" style="width:auto"><option value="">Any drill...</option>${all.map(i=>`<option value="${esc(i.ref)}">${esc(S.fmtDay(i.due))}: ${esc(i.title)}</option>`).join('')}</select><span class="muted">Opens in a new tab. Nothing is saved.</span></div>`;})()}
     <div class="legend"><span><span class="ring hw"></span>handwritten (photos)</span><span><span class="ring ty"></span>typed</span><span><span class="ring pz"></span>typed, mostly pasted</span><span class="muted">Hover over a cell for the details.</span></div></div>
+  ${followCard(students)}
   ${activityCard(students)}
   ${howCard(students)}
   <div class="sc-card"><h2>The season so far</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Every deadline that has passed.</p>
@@ -206,6 +235,9 @@ function renderWeek(){
     </tbody></table></div></div>
   ${coursesCard(items,students)}`;
   wireActivity();
+  $$('[data-rd]',root).forEach(el=>el.onclick=()=>{rdOpen={u:el.dataset.rd,due};showRd(students);});
+  wireFollow(students);
+  if(rdOpen&&rdOpen.due===due)showRd(students);
   const pv=ref=>{if(!ref)return;try{localStorage.setItem('nk_teacher_preview',JSON.stringify({token:TR.token,at:Date.now()}));}catch(e){}window.open('drill.html?d='+encodeURIComponent(ref)+'&preview=1','_blank');};
   document.querySelectorAll('[data-pv]').forEach(b=>b.onclick=()=>pv(b.dataset.pv));
   const pa=$('#pvAll');if(pa)pa.onchange=()=>{pv(pa.value);pa.value='';};
@@ -214,7 +246,7 @@ function renderWeek(){
   $('#scNext').onclick=()=>{view.due=dues[idx+1];render();};
   $('#scNow').onclick=()=>{view.due=null;render();};
   $('#scEdit').onclick=()=>{view={page:'edit',due};render();scrollTo({top:0});};
-  const txt=()=>`Detentions - deadline ${S.fmtDay(last)}\n`+det.map(x=>`${x.s.name}: ${x.miss.map(shortLabel).join(', ')}`).join('\n');
+  const txt=()=>`Detentions - deadline ${S.fmtDay(last)}\n`+det.map(x=>`${x.s.name}: ${x.miss.join(', ')}`).join('\n');
   const c=$('#detCopy');if(c)c.onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(txt());c.textContent='Copied';};
   const p=$('#detPrintBtn');if(p)p.onclick=()=>window.print();
   $$('.c[data-i]',root).forEach(el=>el.onclick=async()=>{
@@ -229,6 +261,90 @@ function renderWeek(){
     try{await TR.api('/sched/excuse',{token:TR.token,id,username:u,on,note});await TR.reload();}catch(e){alert(e.message);}
   });
 }
+/* ---------- redrafts in the week grid ---------- */
+let rdOpen=null,fuOpen=null;
+function rdCell(s,rw){
+  if(!rw.length)return '<td class="muted">–</td>';
+  const sts=rw.map(r=>s.rdSt[r.id].s),worst=WORST.find(k=>sts.includes(k))||'todo';
+  const dn=sts.filter(k=>k==='done'||k==='late'||k==='excused').length;
+  const vs=rw.filter(r=>r.verdict).map(r=>RDV[r.status]||RDV[r.verdict]).join(', ');
+  return `<td><span class="c ${worst}" data-rd="${esc(s.u)}" title="${dn} of ${rw.length} handed in${vs?' · '+esc(vs):''}">${dn}/${rw.length}</span></td>`;
+}
+function rdBox(r,st){
+  return `<div class="rd-box"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:baseline"><b>${esc(rdSkill(r).replace(/^./,c=>c.toUpperCase()))}</b><span class="muted">${esc(r.tool||'')} ${esc(r.mark||'')} · marked ${esc(new Date(r.created).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}${r.due?' · due '+esc(S.fmtDay(r.due)):' · optional'}</span>
+    <span style="flex:1"></span>${st?`<span class="c ${st.s}">${LETTER[st.s]}</span>`:''}${r.verdict?`<span class="vd ${esc(r.status)}">${esc(RDV[r.status]||RDV[r.verdict])}</span>`:''}</div>
+    <div class="muted" style="margin-top:4px">${esc(String(r.question||'').slice(0,200))}</div>
+    ${r.excerpt?`<div class="ex">${esc(r.excerpt)}</div>`:''}<div><b>Lost marks because:</b> ${esc(r.problem||'')}</div>
+    ${r.answer?`<div style="margin-top:6px"><b>Redraft</b> (try ${r.tries}${r.how&&/photo/.test(r.how)?', handwritten photo':''})</div><div class="ans">${esc(r.answer)}</div>`:''}
+    ${r.feedback?`<div><b>Check:</b> ${esc(r.feedback)}</div>`:''}
+    ${r.due?`<div style="margin-top:8px"><button class="btn ghost" data-rdx="${esc(r.id)}" data-on="${st&&st.s==='excused'?'0':'1'}" style="padding:4px 12px">${st&&st.s==='excused'?'Undo excuse':'Excuse'}</button></div>`:''}</div>`;
+}
+function showRd(students){
+  const box=$('#rdDetail');if(!box||!rdOpen)return;
+  const s=students.find(x=>x.u===rdOpen.u);if(!s){box.innerHTML='';return;}
+  const rw=s.rd.filter(r=>r.due===rdOpen.due),extra=s.rd.filter(r=>!r.due&&r.created>=(rw[0]?rw[0].created.slice(0,10):'')).slice(0,3);
+  box.innerHTML=`<div style="margin-top:16px;display:flex;gap:10px;align-items:baseline"><h3 style="margin:0;font-size:1.05rem">${esc(s.name)}: redrafts due ${esc(S.fmtDay(rdOpen.due))}</h3><span style="flex:1"></span><button class="lnk" id="rdClose">Close</button></div>
+    ${rw.map(r=>rdBox(r,s.rdSt[r.id])).join('')}${extra.length?`<p class="muted" style="margin:12px 0 0;font-size:.85rem">Optional ones from the same week (not counted for the deadline):</p>${extra.map(r=>rdBox(r,null)).join('')}`:''}`;
+  $('#rdClose').onclick=()=>{rdOpen=null;box.innerHTML='';};
+  $$('[data-rdx]',box).forEach(b=>b.onclick=async()=>{const on=b.dataset.on==='1';let note='';
+    if(on){note=prompt('Excuse this redraft? Add a note if you like (e.g. absent).','Absent');if(note===null)return;}
+    try{await TR.api('/sched/excuse',{token:TR.token,id:'rd:'+b.dataset.rdx,username:s.u,on,note});await TR.reload();}catch(e){alert(e.message);}});
+  box.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+
+/* ---------- gaps and follow-up ---------- */
+let fuCacheFor=null,fuCache=null;
+function followData(students){
+  const d=TR.data;if(fuCacheFor===d&&fuCache)return fuCache;
+  const A=window.Analysis,workById=Object.fromEntries((d.work||[]).map(w=>[w.id,w]));
+  fuCache=students.map(s=>{
+    const u=s.u;
+    const dd={store:(d.store||{})[u]||{},marks:(d.marks||[]).filter(m=>m.exam===u),attempts:(d.rows||[]).filter(r=>r.exam===u),
+      work:(d.work||[]).filter(w=>w.exam===u),blurts:(d.blurts||[]).filter(b=>b.exam===u),redrafts:s.rd};
+    const a=A?A.analyse(dd):{gaps:[],ev:[]};
+    const fus=(d.follows||[]).filter(f=>f.exam===u).map(f=>Object.assign({},f,{work:workById[f.work_id],state:A?A.followState(f,workById[f.work_id],a.ev):{s:'set',label:'Set'}}));
+    const conf=A?A.confirmed(a):[];
+    const done=s.rd.filter(r=>r.verdict),c={fixed:0,partly:0,notyet:0};done.forEach(r=>{const k=r.status==='flag'?'notyet':r.verdict;c[k]=(c[k]||0)+1;});
+    const flags=s.rd.filter(r=>r.status==='flag');
+    const rf=Object.values(dd.store.rfgate||{}).filter(x=>x&&x.t);
+    return {s,a,conf,fus,c,flags,done:done.length,rf};
+  });
+  fuCacheFor=d;return fuCache;
+}
+function followCard(students){
+  if(!window.Analysis)return '';
+  const A=window.Analysis,rows=followData(students);
+  const latest=(x,topic)=>x.fus.find(f=>f.topic===topic);
+  const att=x=>(x.flags.length?3:0)+x.conf.filter(g=>{const f=latest(x,g.id);return !f||f.state.s==='open'||f.state.s==='missed';}).length;
+  const list=rows.slice().sort((a,b)=>att(b)-att(a)||a.s.name.localeCompare(b.s.name));
+  return `<div class="sc-card" id="fuCard"><h2>Gaps and follow-up</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">A gap is only listed when it shows up in at least two different kinds of work (for example a course and a marked answer). Each one gets an automatic follow-up: a refresher or short recap, then three or four questions that have been checked by a second marker pass. Closed means the follow-up was at least 75% right and nothing since has gone wrong on that topic. Click a name for the history.</p>
+  <div class="tablewrap"><table><thead><tr><th class="l">Student</th><th class="l">Redrafts so far</th><th class="l">Confirmed gaps and what has happened</th></tr></thead><tbody>
+  ${list.map(x=>{const open=fuOpen===x.s.u;
+    return `<tr><td class="l" style="vertical-align:top"><button class="lnk" data-fu="${esc(x.s.u)}">${esc(x.s.name)}</button></td>
+    <td class="l" style="vertical-align:top;white-space:nowrap">${x.done?`${x.c.fixed} fixed · ${x.c.partly} partly · ${x.c.notyet?`<span class="cell a">${x.c.notyet} not fixed</span>`:'0 not fixed'}`:'<span class="muted">none yet</span>'}</td>
+    <td class="l" style="vertical-align:top;white-space:normal">${x.conf.length?`<div class="gp">${x.conf.slice(0,3).map(g=>{const f=latest(x,g.id);
+      return `<div><span>${esc(g.ref+' '+g.title)}</span><span class="src">${Math.round(g.score*100)}% · ${esc(A.kindsText(g))}</span><span class="vd ${f?esc(f.state.s):'none'}">${f?esc('Follow-up: '+f.state.label.toLowerCase()+(f.state.score!=null?` (${Math.round(f.state.score*100)}%)`:'')):'Follow-up not sent yet'}</span></div>`;}).join('')}
+      ${x.conf.length>3?`<div class="src">and ${x.conf.length-3} more</div>`:''}</div>`:'<span class="muted">No confirmed gaps</span>'}
+      ${open?followHistory(x):''}</td></tr>`;}).join('')}
+  </tbody></table></div>
+  <p class="muted" style="font-size:.82rem;margin:10px 0 0">Follow-ups are sent when the student next opens the home page or their schedule, one at a time. They are not counted for detentions.</p></div>`;
+}
+function followHistory(x){
+  const A=window.Analysis;
+  const fus=x.fus.map(f=>`<li>${esc(new Date(f.created).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}: ${esc(((A.TOP[f.topic]||{}).ref||f.topic)+' '+((A.TOP[f.topic]||{}).title||''))} <span class="vd ${esc(f.state.s)}">${esc(f.state.label)}</span>
+    <span class="muted">${f.work&&f.work.status==='done'?`${f.work.score}/${f.work.total} right`:''}${f.state.later!=null?` · later work on this topic ${Math.round(f.state.later*100)}%`:''}${f.why?' · '+esc(f.why):''}</span></li>`).join('');
+  const rf=x.rf.sort((a,b)=>String(b.t).localeCompare(String(a.t))).slice(0,6).map(r=>`<li>${esc(new Date(r.t).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}: refresher on ${esc((r.d||[]).map(k=>window.REFRESH&&REFRESH.DECKS[k]?REFRESH.DECKS[k].title:k).join(', ')||'calculations')}</li>`).join('');
+  const fl=x.flags.map(r=>rdBox(r,null)).join('');
+  return `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:.86rem">
+    <b>Follow-ups</b>${fus?`<ul style="margin:4px 0 8px;padding-left:18px">${fus}</ul>`:'<p class="muted" style="margin:4px 0 8px">None yet.</p>'}
+    <b>Refreshers finished</b>${rf?`<ul style="margin:4px 0 8px;padding-left:18px">${rf}</ul>`:'<p class="muted" style="margin:4px 0 8px">None recorded.</p>'}
+    ${fl?`<b>Redrafts not fixed after two tries</b>${fl}`:''}</div>`;
+}
+function wireFollow(students){
+  $$('#fuCard [data-fu]').forEach(el=>el.onclick=()=>{fuOpen=fuOpen===el.dataset.fu?null:el.dataset.fu;const c=$('#fuCard');if(c){c.outerHTML=followCard(students);wireFollow(students);}});
+  $$('#fuCard [data-rdx]').forEach(b=>b.remove());
+}
+
 function coursesCard(items,students){
   const cs=items.filter(i=>i.kind==='course');if(!cs.length)return '';
   return `<div class="sc-card"><h2>Courses</h2><div class="tablewrap"><table class="sc-grid"><thead><tr><th class="l">Student</th>${cs.map(i=>`<th class="q" style="height:150px" title="Due ${esc(S.fmtDay(i.due))}">${esc(shortLabel(i))} (${esc(S.fmtDay(i.due).replace(/^\w+ /,''))})</th>`).join('')}</tr></thead><tbody>

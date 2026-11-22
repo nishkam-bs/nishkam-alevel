@@ -168,10 +168,13 @@ async function loadSched(force){
     if(!due){schedInfo=null;}else{
       const mk=new Set((d.marks||[]).map(m=>m.ref)),ps=new Set((d.passes||[]).map(p=>+p.stage)),ex=new Set((d.excused||[]).map(x=>x.sched_id));
       const items=d.items.filter(i=>i.due===due);
-      const isDone=i=>{if(ex.has(i.id))return true;if(i.kind==='exam')return mk.has(i.ref);if(i.kind==='choice')return String(i.ref).split(',').some(r=>mk.has(r));if(i.kind==='question')return mk.has(i.id);if(i.kind==='quiz'||i.kind==='drill'){const q=get(i.kind+':'+i.ref);return !!(q&&q.done);}
+      /* redrafts and follow-ups due at this deadline count as homework too */
+      (d.redrafts||[]).filter(r=>r.due===due).forEach(r=>items.push({id:'rd:'+r.id,kind:'redraft',done:!!r.submitted}));
+      (d.follows||[]).filter(f=>f.due===due).forEach(f=>items.push({id:'fu:'+f.id,kind:'follow',done:f.status==='done'}));
+      const isDone=i=>{if(ex.has(i.id))return true;if(i.kind==='exam')return mk.has(i.ref);if(i.kind==='choice')return String(i.ref).split(',').some(r=>mk.has(r));if(i.kind==='question')return mk.has(i.id);if(i.kind==='redraft'||i.kind==='follow')return i.done;if(i.kind==='quiz'||i.kind==='drill'){const q=get(i.kind+':'+i.ref);return !!(q&&q.done);}
         if(i.kind==='course'&&i.ref in CO){const st=get('course:'+i.ref)||{};for(let k=1;k<=10;k++){if(!ps.has(CO[i.ref]+k)&&!(st.passed&&st.passed[k]))return false;}return true;}return false;};
-      const grp=i=>i.kind==='drill'?(/^p3/.test(i.ref)?'Paper 3 drill':'Paper 2 drill'):i.kind==='quiz'?(/^mcq/.test(i.ref)?'20 multiple-choice questions':'10 calculations'):i.kind==='course'?'Course':'Written answers';
-      const order=['Written answers','Paper 2 drill','Paper 3 drill','20 multiple-choice questions','10 calculations','Course'];const g={};
+      const grp=i=>i.kind==='drill'?(/^p3/.test(i.ref)?'Paper 3 drill':'Paper 2 drill'):i.kind==='quiz'?(/^mcq/.test(i.ref)?'20 multiple-choice questions':'10 calculations'):i.kind==='course'?'Course':i.kind==='redraft'?'Redrafts':i.kind==='follow'?'Follow-up':'Written answers';
+      const order=['Written answers','Redrafts','Follow-up','Paper 2 drill','Paper 3 drill','20 multiple-choice questions','10 calculations','Course'];const g={};
       items.forEach(i=>{const k=grp(i);g[k]=g[k]||{label:k,done:0,total:0};g[k].total++;if(isDone(i))g[k].done++;});
       schedInfo={due,total:items.length,done:items.filter(isDone).length,groups:order.filter(k=>g[k]).map(k=>g[k])};
     }
@@ -247,19 +250,21 @@ const COURSES=[['endpoint_course_v1','Start Point/End Point',10,'start-end-point
   ['application_course_v1','Application',10,'application-course.html'],['models_course_v1','Models',10,'models-course.html'],['paper3_course_v1','Paper 3',10,'paper3-course.html']];
 
 /* ---------- one-off notice on the home page (shown once per student, on any device) ---------- */
-const NOTICE={key:'notice:homework-2026-v2',html:`<h2>How homework works from December</h2>
+const NOTICE={key:'notice:homework-2026-v3',html:`<h2>How homework works from December</h2>
 <p>From Tuesday 1 December you will have a set of homework every week. It is all on this site, under <b>My schedule</b>.</p>
 <h3>Each week</h3>
 <ul><li><b>Written answers:</b> four past paper questions. Where it says "Choose one", answer one of them.</li>
 <li><b>Paper 2 drill (about 15 minutes):</b> choose the right calculations for a case study, work them out, then say what the numbers mean.</li>
 <li><b>Paper 3 drill (about 25 minutes):</b> match the insert to all six questions, choose the calculations and work them out. All clicking apart from the numbers.</li>
 <li><b>20 multiple-choice questions and 10 calculations:</b> done on the site. Your first answer is the one that counts.</li>
-<li><b>A course</b> is due every few weeks.</li></ul>
+<li><b>A course</b> is due every few weeks.</li>
+<li><b>Redrafts:</b> when an answer is marked, you are given the part where you lost the most marks. You rewrite just that part, not the whole answer. Up to two count each week. They are on the <b>Redraft</b> page.</li>
+<li><b>Follow-ups:</b> if the same topic keeps going wrong in different pieces of work, you get a short set on it: a refresher or short recap first, then a few questions.</li></ul>
 <p>There is no homework in the KAT weeks or over Easter.</p>
 <h3>How it gets ticked off</h3>
 <p>Click Start next to each piece. A written answer is ticked off once it has been marked: type it, or upload photos of your handwritten answer. If you type, the site records whether the answer was typed or pasted in. Drills, multiple-choice questions and calculations are ticked off when you finish them.</p>
 <h3>Deadline</h3>
-<p>Everything is due by <b>Wednesday at 11:59pm</b>. Anything not done means a detention on Friday after school. The first deadline is Wednesday 9 December. If you were absent, speak to me.</p>
+<p>Everything is due by <b>Wednesday at 11:59pm</b>, including redrafts. Anything not done means a detention on Friday after school. The first deadline is Wednesday 9 December. If you were absent, speak to me.</p>
 <p>Anything you have already handed in from earlier still counts.</p>`};
 let noticeShown=false;
 function showNotice(){

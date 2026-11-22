@@ -88,6 +88,30 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 .try-again button{padding:.6rem 1.5rem;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.9rem;cursor:pointer;font-family:inherit}
 
 .hidden{display:none!important}
+/* ── Targeted redrafts ── */
+.rd{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem 1.6rem;margin-bottom:1.25rem}
+.rd .meta{font-size:.8rem;color:var(--muted);margin-bottom:.35rem;display:flex;gap:.6rem;flex-wrap:wrap}
+.rd .due{font-weight:600;color:var(--text)}
+.rd .due.late{color:var(--red)}
+.rd h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:1.1rem;margin:.1rem 0 .6rem}
+.rd .q{font-size:.86rem;color:var(--muted);margin-bottom:.9rem}
+.rd .lbl{font-size:.78rem;font-weight:600;color:var(--muted);margin:.9rem 0 .25rem}
+.rd .wrote{font-size:.9rem;padding:.6rem .9rem;border-left:3px solid var(--border);background:var(--bg);border-radius:0 6px 6px 0;font-style:italic;white-space:pre-wrap}
+.rd .prob{font-size:.92rem}
+.rd textarea{width:100%;min-height:150px;padding:.8rem;border:1.5px solid var(--border);border-radius:8px;font:inherit;font-size:.92rem;line-height:1.65;resize:vertical;margin-top:.25rem}
+.rd textarea:focus{outline:none;border-color:var(--accent)}
+.rd .row{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem}
+.rd .ph{font-size:.85rem}
+.rd .ph input{font-size:.82rem}
+.rd .previews{display:flex;gap:6px;flex-wrap:wrap;margin-top:.4rem}
+.rd .previews img{width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--border)}
+.rd .msg{font-size:.85rem;color:var(--muted)}
+.rd .res{margin-top:1rem}
+.empty{color:var(--muted);font-size:.92rem}
+details.done-list summary{cursor:pointer;font-weight:600;margin-bottom:.75rem}
+.tag{font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:999px}
+.tag.fixed{background:var(--green-bg);color:var(--green)}.tag.partly,.tag.partial{background:var(--amber-bg);color:var(--amber)}.tag.notyet,.tag.flag{background:var(--red-bg);color:var(--red)}
+
 
 @media(max-width:768px){
   .sidebar{display:none}
@@ -118,326 +142,123 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 <!-- Main -->
 <div class="main" id="mainContent">
   <h1>Redraft</h1>
-  <p class="subtitle">Upload your feedback, paste your improved work, and see how you've developed.</p>
-
-  <!-- Step 1: Upload + paste -->
-  <div id="step1">
-    <div class="card">
-      <h3>Upload your feedback PDF</h3>
-      <p style="font-size:.88rem;color:var(--muted);margin-bottom:1rem">This is the PDF you saved from the Essay Lab, Open Essay Lab or 9-Marker Lab after your essay was marked.</p>
-      <div class="upload-zone" id="uploadZone">
-        <div class="icon">&#x1F4C4;</div>
-        <p><strong>Tap to choose a file</strong> or drag it here</p>
-        <p>PDF only</p>
-        <input type="file" id="pdfInput" accept=".pdf">
-      </div>
-      <div class="file-name hidden" id="fileName"></div>
-    </div>
-
-    <div class="card">
-      <h3>Paste your redraft</h3>
-      <p style="font-size:.88rem;color:var(--muted);margin-bottom:1rem">This can be the whole essay or just the section you've been working on. If you paste the full essay, you'll get a new mark. If you paste part of it, you'll get feedback on how that section has improved.</p>
-      <textarea class="essay-area" id="redraftText" placeholder="Paste your improved writing here..."></textarea>
-      <div class="word-count" id="wordCount">0 words</div>
-      <button class="submit-btn" id="submitBtn" onclick="submitRedraft()" disabled>Submit for feedback</button>
-    </div>
-  </div>
-
-  <!-- Loading -->
-  <div class="hidden" id="loadingState">
-    <div class="loading">
-      <div class="spinner"></div>
-      <p id="loadingMsg">Reading your feedback PDF...</p>
-    </div>
-  </div>
-
-  <!-- Step 2: Results -->
-  <div class="hidden" id="step2">
-    <!-- Mark comparison (only shown for full essays) -->
-    <div class="card hidden" id="markCard">
-      <h3>Your marks</h3>
-      <div class="mark-comparison" id="markComparison"></div>
-    </div>
-
-    <!-- Improvement assessment -->
-    <div class="card">
-      <h3>What's changed?</h3>
-      <div id="improvementCards"></div>
-    </div>
-
-    <!-- Remaining feedback -->
-    <div class="card" id="newFeedbackCard">
-      <h3>What to do next</h3>
-      <div id="newFeedback"></div>
-    </div>
-
-    <div class="try-again">
-      <button onclick="resetPage()">Redraft another piece of work</button>
-    </div>
-  </div>
+  <p class="subtitle">When an answer is marked, you get one part to fix: the place where you lost the most marks. You only rewrite that part, not the whole answer.</p>
+  <div id="bar"></div>
+  <div id="todo"></div>
+  <div id="finished"></div>
+  <p style="font-size:.85rem;color:var(--muted);margin-top:2rem">Want to redraft something else? Use <a href="redraft-pdf.html">Redraft from a saved PDF</a>.</p>
 </div>
 
 <script src="marking-uploads.js"></script>
-<script src="feedback-ui.js"></script>
-<script>
-const WORKER_URL = 'https://nishkam-marker.alevelnishkam.workers.dev';
-
-let pdfBase64 = null;
-let pdfFileName = '';
-
-/* ── File upload ── */
-const uploadZone = document.getElementById('uploadZone');
-const pdfInput = document.getElementById('pdfInput');
-
-uploadZone.addEventListener('click',()=>pdfInput.click());
-uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('dragover')});
-uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('dragover'));
-uploadZone.addEventListener('drop',e=>{
-  e.preventDefault();
-  uploadZone.classList.remove('dragover');
-  if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0]);
-});
-pdfInput.addEventListener('change',e=>{if(e.target.files.length)handleFile(e.target.files[0])});
-
-function handleFile(file){
-  if(file.type!=='application/pdf'){alert('Please upload a PDF file.');return}
-  if(file.size>6*1024*1024){alert('That PDF is too big. Use the feedback PDF saved from the marker page (it is usually small).');return}
-  pdfFileName = file.name;
-  const reader = new FileReader();
-  reader.onload = function(e){
-    pdfBase64 = e.target.result.split(',')[1];
-    document.getElementById('fileName').textContent = file.name;
-    document.getElementById('fileName').classList.remove('hidden');
-    uploadZone.style.borderColor = 'var(--green)';
-    uploadZone.style.background = 'var(--green-bg)';
-    checkReady();
-  };
-  reader.readAsDataURL(file);
-}
-
-/* ── Word count + readiness ── */
-const redraftText = document.getElementById('redraftText');
-redraftText.addEventListener('input',function(){
-  const words = this.value.trim().split(/\s+/).filter(w=>w.length>0).length;
-  document.getElementById('wordCount').textContent = words+' word'+(words!==1?'s':'');
-  checkReady();
-});
-
-function checkReady(){
-  const words = redraftText.value.trim().split(/\s+/).filter(w=>w.length>0).length;
-  document.getElementById('submitBtn').disabled = !(pdfBase64 && words>=30);
-}
-
-/* ── Submit ── */
-async function submitRedraft(){
-  const essay = redraftText.value.trim();
-  const words = essay.split(/\s+/).filter(w=>w.length>0).length;
-  if(!pdfBase64||words<30)return;
-
-  document.getElementById('step1').classList.add('hidden');
-  document.getElementById('loadingState').classList.remove('hidden');
-
-  const isFullEssay = words >= 200;
-
-  const msgs = ['Reading your feedback PDF...','Comparing with your original work...','Writing your feedback...'];
-  let mi=0;
-  const interval = setInterval(()=>{mi=Math.min(mi+1,msgs.length-1);document.getElementById('loadingMsg').textContent=msgs[mi]},3500);
-
-  const systemPrompt = `You are an experienced AQA A-Level Business Studies teacher. A student has uploaded their original essay feedback (as a PDF) and pasted a redrafted version of their work.
-
-YOUR TASK:
-1. Read the PDF carefully. It contains the student's original essay, the mark and level they received, what they did well, what they needed to improve, and a rewritten section showing how part of their essay could have been better.
-2. Read the student's redraft.
-3. Compare the two and give clear, specific feedback.
-
-${isFullEssay ? `FULL ESSAY DETECTED (${words} words):
-- This looks like a complete redrafted essay.
-- Mark it against the AQA mark scheme for the question shown in the PDF.
-- Award a mark and level. Be fair — do not inflate just because it is a redraft.
-- Then assess whether the student acted on the original feedback.
-
-HOW TO SET THE NEW MARK:
-- Start from the original mark in the PDF. That mark stands as the baseline for everything the redraft keeps from the original.
-- Move the mark UP if the student has acted on the "needs to improve" points or used the rewritten section from the PDF and it adds something creditworthy.
-- Keep the mark the SAME if the changes are only rewording and add nothing new.
-- Only move the mark DOWN if the redraft has lost or weakened something specific that earned credit in the original (for example, removed data, cut a chain of reasoning, or the conclusion no longer makes a judgement). You must name exactly what was lost in "mark_change_reason".
-- Never lower the mark for following the PDF's own advice or for using its rewritten section.
-- Do not re-mark from scratch with a stricter or different reading of the mark scheme than the original.` :
-
-`PARTIAL REDRAFT DETECTED (${words} words):
-- The student has redrafted a section, not the whole essay.
-- Do NOT award an overall mark or level.
-- Instead, focus entirely on whether this section has improved compared to the original.
-- Compare it directly to the rewritten version from the PDF if one was provided.
-- Be specific about what is better and what still needs work.`}
-
-LANGUAGE RULES:
-- Write as a teacher would speak to a Year 13 student.
-- Keep sentences short and clear.
-- Use AQA Business terminology where appropriate (e.g. analytical chains, application, evaluation, Porter's Five Forces, Ansoff's Matrix, Boston Matrix).
-- Do NOT use the word "mechanism" anywhere.
-- Do NOT use phrases like "causal chain", "endpoint discipline" or "contextual integration".
-- Instead say things like: "Your argument needs another step to reach the endpoint", "Link this back to the question", "Use the case study here", "This is where you need to explain why".
-- When quoting the student's work, keep it brief and natural.
-- Do not over-praise. Be honest and constructive.
-
-Respond ONLY with valid JSON:
-
-${isFullEssay ? `{
-  "type": "full",
-  "original_mark": "the mark from the PDF, e.g. 14 / 25",
-  "original_level": "the level from the PDF",
-  "new_mark": "your mark for the redraft, e.g. 18 / 25",
-  "new_level": "your level for the redraft",
-  "mark_change_reason": "one sentence on exactly why the mark went up, stayed the same or went down",
-  "improvements": [
-    {
-      "area": "short label, e.g. Application, Analytical chains, Evaluation",
-      "status": "improved | partially | not_addressed",
-      "comment": "1-2 sentences explaining what changed or didn't"
-    }
-  ],
-  "what_is_better": "1-2 sentences on the strongest improvement in this redraft",
-  "still_to_work_on": "1-2 sentences on the most important remaining weakness",
-  "overall": "2-3 sentences summarising progress and what to focus on next"
-}` : `{
-  "type": "partial",
-  "improvements": [
-    {
-      "area": "short label, e.g. Application, Analytical chains, Evaluation",
-      "status": "improved | partially | not_addressed",
-      "comment": "1-2 sentences explaining what changed or didn't"
-    }
-  ],
-  "what_is_better": "1-2 sentences on the strongest improvement in this section",
-  "still_to_work_on": "1-2 sentences on what still needs work in this section",
-  "overall": "2-3 sentences summarising how this section has developed"
-}`}`;
-
-  try {
-    const result = await NMark.markJSON({
-        model:'claude-sonnet-4-6',
-        max_tokens:2500,
-        temperature:0,
-        system: systemPrompt,
-        messages:[{
-          role:'user',
-          content:[
-            {type:'document',source:{type:'base64',media_type:'application/pdf',data:pdfBase64}},
-            {type:'text',text:'Here is my redrafted work:\n\n'+essay}
-          ]
-        }]
-    });
-    clearInterval(interval);
-
-    showFeedback(result);
-
-  } catch(e){
-    clearInterval(interval);
-    console.error('Error:',e);
-    document.getElementById('loadingState').classList.add('hidden');
-    document.getElementById('step1').classList.remove('hidden');
-    alert((e&&e.message?e.message+'\n\n':'')+'Your work is still here, so press the button to try again.');
-  }
-}
-
-function extractJSON(txt){
-  const t=String(txt||'').replace(/```json|```/g,'').trim();
-  const a=t.indexOf('{'),b=t.lastIndexOf('}');
-  if(a===-1||b<=a)throw new Error('The marker did not send back any feedback');
-  return JSON.parse(t.slice(a,b+1));
-}
-
-/* ── Display feedback ── */
-function showFeedback(r){
-  if(window.NTrack)NTrack.mark({panel:'#step2',tool:'Redraft',question:'Redraft of earlier feedback',mark:(r.type==='full'&&r.new_mark)?String(r.new_mark):'Section only',level:(r.type==='full'&&r.new_level)?String(r.new_level):'',well:(Array.isArray(r.what_is_better)?r.what_is_better.join(' / '):(r.what_is_better||'')),improve:(Array.isArray(r.still_to_work_on)?r.still_to_work_on.join(' / '):(r.still_to_work_on||'')),answer:document.getElementById('redraftText').value.trim()});
-  document.getElementById('loadingState').classList.add('hidden');
-  document.getElementById('step2').classList.remove('hidden');
-
-  // Mark comparison — only for full essays
-  if(r.type==='full' && r.new_mark){
-    const mc = document.getElementById('markCard');
-    mc.classList.remove('hidden');
-    document.getElementById('markComparison').innerHTML = `
-      <div class="mark-box">
-        <div class="label">Original</div>
-        <div class="mark">${r.original_mark||'—'}</div>
-        <div class="label">${r.original_level||''}</div>
-      </div>
-      <div class="mark-arrow">&rarr;</div>
-      <div class="mark-box new">
-        <div class="label">Redraft</div>
-        <div class="mark">${r.new_mark}</div>
-        <div class="label">${r.new_level||''}</div>
-      </div>`;
-    if(r.mark_change_reason){
-      const p=document.createElement('p');
-      p.style.cssText='margin-top:.75rem;font-size:.9rem';
-      p.textContent=r.mark_change_reason;
-      document.getElementById('markComparison').after(p);
-    }
-  }
-
-  // Improvement cards
-  const ic = document.getElementById('improvementCards');
-  const statusMap = {
-    'improved':{css:'improved',label:'Improved'},
-    'partially':{css:'partial',label:'Getting there'},
-    'not_addressed':{css:'not-yet',label:'Not yet addressed'}
-  };
-
-  let html = '';
-  if(r.improvements && r.improvements.length){
-    r.improvements.forEach(imp=>{
-      const s = statusMap[imp.status]||statusMap['partially'];
-      html += `<div class="feedback-card ${s.css}">
-        <div class="status-label">${imp.area} — ${s.label}</div>
-        <p>${imp.comment}</p>
-      </div>`;
-    });
-  }
-  ic.innerHTML = html;
-
-  // Strengths + next steps
-  let nf = '';
-  if(r.what_is_better){
-    nf += `<div class="strength-card"><h4>What's stronger</h4><p>${r.what_is_better}</p></div>`;
-  }
-  if(r.still_to_work_on){
-    nf += `<div class="feedback-card partial"><div class="status-label">Still to work on</div><p>${r.still_to_work_on}</p></div>`;
-  }
-  if(r.overall){
-    nf += `<div class="overall-box"><p>${r.overall}</p></div>`;
-  }
-  document.getElementById('newFeedback').innerHTML = nf;
-
-  // shared results layout (same as the other markers)
-  const step2=document.getElementById('step2');
-  let host=document.getElementById('nfbRedraft');
-  if(!host){host=document.createElement('div');host.id='nfbRedraft';host.style.marginBottom='18px';step2.prepend(host);}
-  host.innerHTML=NFb.redraft(r);
-  ['markCard','newFeedbackCard'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
-  const icCard=document.getElementById('improvementCards');if(icCard&&icCard.closest('.card'))icCard.closest('.card').style.display='none';
-}
-
-/* ── Reset ── */
-function resetPage(){
-  pdfBase64=null; pdfFileName='';
-  document.getElementById('step1').classList.remove('hidden');
-  document.getElementById('step2').classList.add('hidden');
-  document.getElementById('markCard').classList.add('hidden');
-  document.getElementById('redraftText').value='';
-  document.getElementById('wordCount').textContent='0 words';
-  document.getElementById('submitBtn').disabled=true;
-  document.getElementById('fileName').classList.add('hidden');
-  const uz=document.getElementById('uploadZone');
-  uz.style.borderColor='';uz.style.background='';
-  document.getElementById('pdfInput').value='';
-}
-</script>
 <script src="account.js"></script>
-<script src="mark-tracker.js"></script>
-<script>NTrack.init('#redraftText');</script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s),Ac=window.Acct,MODEL='claude-sonnet-4-6';
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SKILL={endpoint:'Reaching the end point',analysis:'Analysis',application:'Using the case',evaluation:'Evaluation',judgement:'Judgement',models:'Using models',
+  conceptual_accuracy:'Getting the concept right',question_focus:'Answering the question',introduction:'Introduction',conclusion:'Conclusion'};
+const VERDICT={fixed:'Fixed',partly:'Partly fixed',notyet:'Not fixed yet',flag:'Not fixed: your teacher will look at this'};
+const CARD={fixed:'improved',partly:'partial',notyet:'not-yet',flag:'not-yet'};
+let data={redrafts:[],excused:[],tries:2},photos={};
+
+/* Wednesday 11:59pm UK time */
+function deadline(due){const [y,m,d]=due.split('-').map(Number);const t=Date.UTC(y,m-1,d,12);
+  const ls=(mm)=>{const x=new Date(Date.UTC(y,mm+1,0));x.setUTCDate(x.getUTCDate()-x.getUTCDay());return x.getTime()+3600000;};
+  const bst=t>=ls(2)&&t<ls(9)?1:0;return Date.UTC(y,m-1,d,23,59,59)-bst*3600000;}
+const fmtDay=due=>new Date(due+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'});
+const open=r=>r.status!=='fixed'&&r.status!=='flag'&&r.tries<data.tries;
+
+Ac.bar('#bar',{inside:true,text:'Sign in on the home page to see your redrafts.'});
+
+async function load(){
+  if(!Ac.user){$('#todo').innerHTML='';$('#finished').innerHTML='';return;}
+  try{data=await Ac.call('/redraft/mine');}catch(e){$('#todo').innerHTML='<p class="empty">Could not load your redrafts. Check your connection and refresh.</p>';return;}
+  draw();
+}
+function title(r){return SKILL[r.skill]||'Where you lost marks';}
+function dueText(r){
+  if(data.excused.includes(r.id))return '<span class="due">Excused</span>';
+  if(!r.due)return '<span>Optional</span>';
+  const late=!r.submitted&&Date.now()>deadline(r.due);
+  return `<span class="due${late?' late':''}">${late?'Missed: was due':'Due'} ${esc(fmtDay(r.due))}, 11:59pm</span>`;
+}
+function card(r){
+  const can=open(r)&&!data.excused.includes(r.id);
+  return `<div class="rd" data-id="${esc(r.id)}">
+    <div class="meta"><span>${esc(r.tool)} · ${esc(r.mark)}</span>${dueText(r)}${r.tries?`<span>Tries: ${r.tries} of ${data.tries}</span>`:''}</div>
+    <h3>${esc(title(r))}</h3>
+    <div class="q">${esc(String(r.question||'').length>220?String(r.question).slice(0,220)+'…':r.question)}</div>
+    ${r.excerpt?`<div class="lbl">What you wrote</div><div class="wrote">${esc(r.excerpt)}</div>`:''}
+    <div class="lbl">Why it lost marks</div><div class="prob">${esc(r.problem)}</div>
+    ${r.verdict?`<div class="res"><div class="feedback-card ${CARD[r.status]||CARD[r.verdict]}"><div class="status-label">${esc(VERDICT[r.status]||VERDICT[r.verdict])}</div><p>${esc(r.feedback||'')}</p></div></div>`:''}
+    ${can?`<div class="lbl">${r.tries?'Have another go':'Rewrite this part'}</div>
+    <textarea placeholder="Rewrite just this part. You don't need to write the whole answer again.">${esc(r.tries&&r.answer&&!/^\[photo/.test(r.answer)?r.answer:'')}</textarea>
+    <div class="ph">Or upload a photo of your handwritten redraft: <input type="file" accept="image/*" multiple><div class="previews"></div></div>
+    <div class="row"><button class="submit-btn" type="button">Check my redraft</button><span class="msg"></span></div>`:''}
+  </div>`;
+}
+function draw(){
+  const all=data.redrafts||[];
+  const todo=all.filter(r=>open(r)&&!data.excused.includes(r.id)).sort((a,b)=>(a.due?0:1)-(b.due?0:1)||String(a.due||'').localeCompare(String(b.due||''))||String(a.created).localeCompare(String(b.created)));
+  const done=all.filter(r=>!todo.includes(r));
+  $('#todo').innerHTML=todo.length?todo.map(card).join(''):'<p class="empty">Nothing to redraft at the moment. When an answer is marked on the site, the part to fix appears here.</p>';
+  $('#finished').innerHTML=done.length?`<details class="done-list"><summary>Finished (${done.length})</summary>${done.map(card).join('')}</details>`:'';
+  document.querySelectorAll('.rd').forEach(el=>{
+    const id=el.dataset.id,btn=el.querySelector('.submit-btn');if(!btn)return;
+    photos[id]=photos[id]||[];
+    const f=el.querySelector('input[type=file]');
+    if(f)f.onchange=()=>{NMark.addFiles(f.files,photos[id],el.querySelector('.previews'),3);};
+    btn.onclick=()=>check(el,id);
+  });
+}
+async function check(el,id){
+  const r=(data.redrafts||[]).find(x=>x.id===id);if(!r)return;
+  const btn=el.querySelector('.submit-btn'),msg=el.querySelector('.msg'),ta=el.querySelector('textarea');
+  await NMark.ready();
+  const pics=photos[id]||[],typed=ta.value.trim();
+  if(!typed&&!pics.length){msg.textContent='Write your redraft or add a photo first.';return;}
+  if(typed&&!pics.length&&typed.split(/\s+/).length<12){msg.textContent='Write a bit more. Rewrite the whole part, not just a few words.';return;}
+  btn.disabled=true;msg.textContent='Checking...';
+  const sys=`You check a Year 13 student's redraft of one part of an AQA A-level Business (7132) answer. The answer was marked earlier and the marker said where it lost marks. The student has rewritten only that part.
+
+Decide one thing: does the rewrite fix the problem the marker described?
+- "fixed": the specific problem is put right, accurately, in the context of the question.
+- "partly": it is better but the problem is not fully put right, or it is mostly copied from the suggested version rather than written in the student's own words.
+- "notyet": the problem is still there, the rewrite is off the point, wrong, or too short to judge.
+Judge only this problem. Do not mark the rest of the answer and do not raise new issues unless the rewrite has introduced a mistake in the Business content. Be accurate and fair: do not call it fixed unless it is.
+
+Write to the student as "you", in plain British English, like a teacher.
+"feedback": one or two sentences: what is now right and, if it is not fixed, the one thing still missing. Do not write the improved version for them.
+Return JSON only: {"verdict":"fixed|partly|notyet","feedback":"..."}`+NMark.UNREADABLE_NOTE;
+  const text=`QUESTION (${r.mark}): ${r.question}
+
+WHAT THE STUDENT WROTE FIRST:
+${r.excerpt||'(not quoted)'}
+
+WHERE IT LOST MARKS:
+${r.problem}
+
+SUGGESTED VERSION THE STUDENT WAS SHOWN (for reference only; copying it is not the same as fixing it):
+${r.better||'(none)'}
+
+THE STUDENT'S REDRAFT:
+${pics.length?'(in the photos)':typed}`;
+  const content=pics.length?[...NMark.blocks(pics),{type:'text',text}]:text;
+  let o;
+  try{o=await NMark.markJSON({model:MODEL,max_tokens:700,system:sys,messages:[{role:'user',content}]});}
+  catch(e){btn.disabled=false;msg.textContent=e.message||'Could not check it. Try again.';return;}
+  const verdict=['fixed','partly','notyet'].includes(o.verdict)?o.verdict:'partly';
+  const how=pics.length?JSON.stringify({m:'photo',pg:pics.length}):JSON.stringify({m:'typed',w:typed.split(/\s+/).length});
+  try{const res=await Ac.call('/redraft/submit',{id,verdict,feedback:String(o.feedback||''),answer:pics.length?'[photo of handwritten redraft]':typed,how});
+    Object.assign(r,{verdict,feedback:String(o.feedback||''),tries:res.tries,status:res.status,answer:pics.length?'[photo of handwritten redraft]':typed,submitted:r.submitted||new Date().toISOString()});
+    photos[id]=[];draw();try{sessionStorage.removeItem('nk_sched');}catch(x){}if(Ac.refreshSchedule)Ac.refreshSchedule().catch(()=>{});
+    const el2=document.querySelector(`.rd[data-id="${CSS.escape(id)}"]`);if(el2)el2.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }catch(e){btn.disabled=false;msg.textContent=e.message||'Could not save it. Try again.';}
+}
+Ac.ready.then(load);Ac.onChange(()=>{});
+})();
+</script>
 <script src="visit.js" defer></script>
 </body>
 </html>

@@ -1067,7 +1067,7 @@ let lastFb=null,lastQ='';
 
 function showFeedback(fb,qText){
   lastFb=fb;lastQ=qText;
-  if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'25-mark lab',question:qText,mark:fb.mark+'/25',level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:(Array.isArray(fb.www)?fb.www.join(' / '):(fb.www||'')),improve:fb.priority||'',answer:(window._photoMode?'[Handwritten answer uploaded as photos]':document.getElementById('essay').value.trim())});
+  if(window.NTrack)NTrack.mark({panel:'#fbPanel',tool:'25-mark lab',question:qText,mark:fb.mark+'/25',level:'Level '+fb.level+(fb.level_label?' ('+fb.level_label+')':''),well:(Array.isArray(fb.www)?fb.www.join(' / '):(fb.www||'')),improve:fb.priority||'',target:{skill:fb.priority_skill||'',excerpt:fb.student_extract||'',problem:fb.priority||'',better:fb.improved_extract||''},answer:(window._photoMode?'[Handwritten answer uploaded as photos]':document.getElementById('essay').value.trim())});
   document.getElementById('ldPanel').classList.remove('show');
   const panel=document.getElementById('fbPanel');panel.style.display='block';
   const LV={5:'Level 5 means a well organised answer with a logical chain of reasoning and a well-supported, focused judgement.',

@@ -70,7 +70,7 @@ function analyse(d){
     const p=pct(m.mark),calc=isCalc(m.tool),essay=isEssay(m.tool);
     const qt=topicsIn(m.question,calc?1:2);
     if(p!=null){
-      qt.forEach(t=>ev.push({topic:t,skill:calc?'quant':null,w:calc?1:1.5,ok:p/100,src:'mark',label:m.tool}));
+      qt.forEach(t=>ev.push({topic:t,skill:calc?'quant':null,w:calc?1:1.5,ok:p/100,src:'mark',label:m.tool,t:m.t}));
       if(essay)essays.push({t:m.t,tool:m.tool,p,q:m.question,mark:m.mark});
       if(calc&&!qt.length)ev.push({topic:null,skill:'quant',w:1,ok:p/100,src:'mark',label:m.tool});
       const kat=m.ref==='catmcq'||/KAT MCQ/i.test(m.tool||'');
@@ -85,7 +85,7 @@ function analyse(d){
     }
     [[m.well,1],[m.improve,0]].forEach(([txt,ok])=>segs(txt).forEach(sg=>{
       const tp=topicsIn(sg,1)[0];
-      if(tp&&!essay)ev.push({topic:tp,skill:null,w:.6,ok,src:'feedback',label:m.tool});
+      if(tp&&!essay)ev.push({topic:tp,skill:null,w:.6,ok,src:'feedback',label:m.tool,t:m.t});
       if(essay||calc)skillsIn(sg).forEach(k=>ev.push({topic:null,skill:k,w:.5,ok,src:'feedback',label:m.tool}));
     }));
   });
@@ -93,11 +93,15 @@ function analyse(d){
   (d.work||[]).forEach(w=>{
     if(w.status!=='done'||!w.result||!Array.isArray(w.result.items))return;
     const items=(w.spec&&w.spec.items)||[];
-    w.result.items.forEach((r,i)=>{const it=items[i]||{};if(r&&typeof r.ok==='number')ev.push({topic:TOP[it.topic]?it.topic:null,skill:SKILL[it.skill]?it.skill:null,w:it.type==='extended'?2:1,ok:r.ok,src:'work',label:w.title});});
+    w.result.items.forEach((r,i)=>{const it=items[i]||{};if(r&&typeof r.ok==='number')ev.push({topic:TOP[it.topic]?it.topic:null,skill:SKILL[it.skill]?it.skill:null,w:it.type==='extended'?2:1,ok:r.ok,src:'work',label:w.title,t:w.done_at,work:w.id});});
   });
+  /* redrafts: did the student fix the skill the marker picked out? */
+  (d.redrafts||[]).forEach(r=>{if(!r.verdict||!r.submitted)return;const k=RD_SKILL[r.skill]||skillsIn(r.problem||'')[0];if(!k)return;
+    ev.push({topic:null,skill:k,w:.7,ok:r.verdict==='fixed'?1:r.verdict==='partly'?.5:0,src:'redraft',label:'Redrafts',t:r.submitted});});
 
   /* totals */
-  const agg=(key)=>{const o={};ev.forEach(e=>{const k=e[key];if(!k)return;const x=o[k]=o[k]||{n:0,s:0,src:{}};x.n+=e.w;x.s+=e.w*e.ok;x.src[e.label]=(x.src[e.label]||0)+e.w;});
+  const agg=(key)=>{const o={};ev.forEach(e=>{const k=e[key];if(!k)return;const x=o[k]=o[k]||{n:0,s:0,src:{},kinds:{}};x.n+=e.w;x.s+=e.w*e.ok;x.src[e.label]=(x.src[e.label]||0)+e.w;
+      const kd=KIND[e.src]||e.src;x.kinds[kd]=(x.kinds[kd]||0)+e.w;});
     Object.values(o).forEach(x=>{x.score=x.n?x.s/x.n:null;});return o;};
   const topics=agg('topic'),skills=agg('skill');
   const units={};
@@ -108,7 +112,29 @@ function analyse(d){
   const strengths=Object.entries(topics).filter(([,x])=>x.n>=3&&x.score>=.8).sort((a,b)=>b[1].score-a[1].score||b[1].n-a[1].n).map(([id,x])=>Object.assign({id},TOP[id],x));
   const weakSkills=Object.entries(skills).filter(([,x])=>x.n>=2).sort((a,b)=>a[1].score-b[1].score).map(([k,x])=>Object.assign({key:k,name:SKILL[k]},x));
   essays.sort((a,b)=>String(a.t).localeCompare(String(b.t)));
-  return {topics,skills,units,gaps,strengths,weakSkills,essays,evidence:ev.length};
+  return {topics,skills,units,gaps,strengths,weakSkills,essays,evidence:ev.length,ev};
+}
+/* a mark and the feedback on that mark are one source, not two */
+const KIND={course:'course',blurt:'blurt',mark:'marked',feedback:'marked',work:'work',redraft:'redraft'};
+const KIND_NAME={course:'courses',blurt:'blurting',marked:'marked work',work:'set work'};
+const RD_SKILL={endpoint:'analysis',analysis:'analysis',application:'application',evaluation:'evaluation',judgement:'evaluation',conclusion:'evaluation',
+  models:'models',conceptual_accuracy:'knowledge',question_focus:'technique',introduction:'technique'};
+/* a gap only counts as confirmed when it shows up in at least two different kinds of work */
+function confirmed(a){return (a.gaps||[]).filter(g=>Object.keys(g.kinds||{}).filter(k=>KIND_NAME[k]).length>=2&&g.n>=2);}
+function kindsText(g){return Object.keys(g.kinds||{}).filter(k=>KIND_NAME[k]).map(k=>KIND_NAME[k]).join(', ');}
+/* where a follow-up has got to: set, missed, closed or open */
+function followState(f,work,ev,now){
+  now=now||Date.now();
+  if(!work)return {s:'gone',label:'Removed'};
+  if(work.status!=='done'){
+    const late=work.due&&window.Sched&&Sched.deadline(String(work.due).slice(0,10))<now;
+    return {s:late?'missed':'set',label:late?'Not done':'Set'};
+  }
+  const sc=work.total?work.score/work.total:0,done=Date.parse(work.done_at)||0;
+  const later=(ev||[]).filter(e=>e.topic===f.topic&&e.src!=='work'&&e.t&&Date.parse(e.t)>done);
+  const lw=later.reduce((x,e)=>x+e.w,0),ls=lw?later.reduce((x,e)=>x+e.w*e.ok,0)/lw:null;
+  if(sc>=.75&&(ls===null||ls>=.6))return {s:'closed',label:'Closed',score:sc,later:ls};
+  return {s:'open',label:'Still open',score:sc,later:ls};
 }
 function status(x){if(!x||!x.n)return 'none';if(x.score>=.75)return 'secure';if(x.score>=.5)return 'patchy';return 'gap';}
 function nextSteps(a){
@@ -139,5 +165,5 @@ function summary(a,maxGaps){
   if(a.essays.length)lines.push('Extended answers (oldest first): '+a.essays.slice(-10).map(e=>`${e.tool} ${Math.round(e.p)}%`).join(', '));
   return lines.join('\n');
 }
-window.Analysis={analyse,status,nextSteps,summary,topicsIn,skillsIn,pct,TOP,SKILL};
+window.Analysis={analyse,status,nextSteps,summary,topicsIn,skillsIn,pct,TOP,SKILL,confirmed,kindsText,followState,KIND_NAME};
 })();
