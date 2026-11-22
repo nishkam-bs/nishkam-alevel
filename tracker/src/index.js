@@ -67,7 +67,7 @@ async function ensureSchema(db) {
   if (schemaReady) { if (!seedDone) { try { await runSeed(db); } catch (e) {} } return; }
   await db.batch(SCHEMA.map(s => db.prepare(s)));
   /* columns added after the first version */
-  for (const sql of ['ALTER TABLE marks ADD COLUMN ref TEXT', 'ALTER TABLE marks ADD COLUMN how TEXT']) { try { await db.prepare(sql).run(); } catch (e) {} }
+  for (const sql of ['ALTER TABLE marks ADD COLUMN ref TEXT', 'ALTER TABLE marks ADD COLUMN how TEXT', 'ALTER TABLE follow ADD COLUMN sent_by TEXT']) { try { await db.prepare(sql).run(); } catch (e) {} }
   try { await db.batch([db.prepare("UPDATE marks SET t='2026-11-19T14:00:00.000Z' WHERE tool='KAT MCQ' AND how LIKE 'Paper answer sheet%' AND t='2026-11-19T13:00:00.000Z'"), db.prepare("UPDATE catmcq SET t='2026-11-19T14:00:00.000Z' WHERE photo IS NULL AND t='2026-11-19T13:00:00.000Z'")]); } catch (e) {}
   schemaReady = true;
   try { await runSeed(db); } catch (e) { console.error('seed', e && e.stack || e); }
@@ -242,6 +242,21 @@ async function createRedraft(db, username, b, markQid) {
     str(b.mark, 20), lost, str(t.skill, 40), str(t.excerpt, 1500), problem, str(t.better, 1500)).run();
 }
 
+async function addFollow(db, username, b, by) {
+  const topic = str(b.topic, 20);
+  if (!/^3\.\d{1,2}\.\d{1,2}[a-z]?$/.test(topic)) throw new HttpError(400, 'Unknown topic.');
+  if (!b.spec || !Array.isArray(b.spec.items) || b.spec.items.length < 3) throw new HttpError(400, 'Not enough questions.');
+  const spec = JSON.stringify(b.spec);
+  if (spec.length > MAX_KEY_BYTES) throw new HttpError(413, 'Too large.');
+  const id = 'f-' + b64u(rand(9)), wid = 'w-' + b64u(rand(9)), t = nowIso(), due = await nextDue(db);
+  await db.batch([
+    db.prepare("INSERT INTO work(id,username,source,title,spec,status,created,due) VALUES(?,?,'auto',?,?,'set',?,?)").bind(wid, username, str(b.spec.title, 160), spec, t, due),
+    db.prepare('INSERT INTO follow(id,username,topic,created,kinds,before,work_id,deck,why,sent_by) VALUES(?,?,?,?,?,?,?,?,?,?)')
+      .bind(id, username, topic, t, str(Array.isArray(b.kinds) ? b.kinds.join(',') : b.kinds, 120), Number(b.before) || 0, wid, str(b.deck, 40) || null, str(b.why, 600), by)
+  ]);
+  return { id, workId: wid, due };
+}
+
 /* =====================================================================
    Routes
    ===================================================================== */
@@ -385,23 +400,19 @@ const routes = {
 
   async '/follow/create'(db, b) {
     const u = await student(db, b);
-    const topic = str(b.topic, 20);
-    if (!/^3\.\d{1,2}\.\d{1,2}[a-z]?$/.test(topic)) throw new HttpError(400, 'Unknown topic.');
-    const spec = JSON.stringify(b.spec || {});
-    if (spec.length > MAX_KEY_BYTES) throw new HttpError(413, 'Too large.');
-    if (!b.spec || !Array.isArray(b.spec.items) || b.spec.items.length < 3) throw new HttpError(400, 'Not enough questions.');
-    /* one follow-up at a time, and not the same topic again within a week */
-    const open = await db.prepare("SELECT f.id FROM follow f JOIN work w ON w.id=f.work_id WHERE f.username=? AND w.status!='done' LIMIT 1").bind(u.username).first();
-    if (open) throw new HttpError(409, 'You already have a follow-up to do.');
-    const recent = await db.prepare('SELECT id FROM follow WHERE username=? AND topic=? AND created>? LIMIT 1').bind(u.username, topic, new Date(Date.now() - 7 * 86400000).toISOString()).first();
-    if (recent) throw new HttpError(409, 'Already followed up recently.');
-    const id = 'f-' + b64u(rand(9)), wid = 'w-' + b64u(rand(9)), t = nowIso(), due = await nextDue(db);
-    await db.batch([
-      db.prepare("INSERT INTO work(id,username,source,title,spec,status,created,due) VALUES(?,?,'auto',?,?,'set',?,?)").bind(wid, u.username, str(b.spec.title, 160), spec, t, due),
-      db.prepare('INSERT INTO follow(id,username,topic,created,kinds,before,work_id,deck,why) VALUES(?,?,?,?,?,?,?,?,?)')
-        .bind(id, u.username, topic, t, str(Array.isArray(b.kinds) ? b.kinds.join(',') : b.kinds, 120), Number(b.before) || 0, wid, str(b.deck, 40) || null, str(b.why, 600))
-    ]);
-    return { id, workId: wid, due };
+    /* each gap gets its own follow-up; the same topic is not followed up while one is open on it or within a week */
+    const open = await db.prepare("SELECT f.id FROM follow f LEFT JOIN work w ON w.id=f.work_id WHERE f.username=? AND f.topic=? AND (w.status!='done' OR f.created>?) LIMIT 1")
+      .bind(u.username, str(b.topic, 20), new Date(Date.now() - 7 * 86400000).toISOString()).first();
+    if (open) throw new HttpError(409, 'Already followed up recently.');
+    return addFollow(db, u.username, b, 'auto');
+  },
+
+  /* the teacher sends a follow-up straight away (no waiting rules) */
+  async '/follow/send'(db, b) {
+    await session(db, b.token, 'teacher');
+    const username = str(b.username, 40);
+    if (!(await db.prepare('SELECT 1 FROM users WHERE username=?').bind(username).first())) throw new HttpError(404, 'No account with that username.');
+    return addFollow(db, username, b, 'teacher');
   },
 
   async '/blurt'(db, b) {
@@ -441,7 +452,7 @@ const routes = {
       db.prepare('SELECT sched_id,username,note,t FROM excuse'),
       db.prepare('SELECT username,t,page,title FROM visits WHERE t>? ORDER BY id DESC LIMIT 4000').bind(new Date(Date.now() - 31 * 86400000).toISOString()),
       db.prepare('SELECT id,username,created,due,tool,question,mark,lost,skill,excerpt,problem,answer,how,verdict,feedback,tries,submitted,done_at,status FROM redrafts ORDER BY created DESC LIMIT 2000'),
-      db.prepare('SELECT id,username,topic,created,kinds,before,work_id,deck,why FROM follow ORDER BY created DESC LIMIT 1000')
+      db.prepare('SELECT id,username,topic,created,kinds,before,work_id,deck,why,sent_by FROM follow ORDER BY created DESC LIMIT 1000')
     ]);
     const store = {}, storeT = {};
     st.results.forEach(r => { try { (store[r.username] = store[r.username] || {})[r.k] = JSON.parse(r.data); (storeT[r.username] = storeT[r.username] || {})[r.k] = r.t; } catch (e) {} });

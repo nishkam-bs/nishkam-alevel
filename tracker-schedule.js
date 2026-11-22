@@ -54,7 +54,14 @@ const css=`
 .vd.fixed,.vd.closed{background:var(--ok-soft);color:var(--ok)}.vd.partly,.vd.set,.vd.open{background:var(--amber-soft);color:var(--amber)}.vd.notyet,.vd.flag,.vd.missed{background:var(--end-soft);color:var(--end)}.vd.none{background:var(--bg2);color:var(--muted)}
 .gp{display:grid;gap:4px}
 .gp div{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
-.gp .src{color:var(--muted);font-size:.8rem}
+.gp .src,.src{color:var(--muted);font-size:.8rem}
+.fu-list{display:grid;gap:0}
+.fu-st{border-top:1px solid var(--line);padding:12px 0}
+.fu-h{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.fu-gap{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;padding:6px 0 6px 12px;border-left:3px solid var(--line);margin:4px 0}
+.fu-t{font-size:.92rem;min-width:220px;flex:1 1 260px}
+.fu-m{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fu-send{padding:4px 12px;font-size:.82rem}
 @media print{body *{visibility:hidden}#detPrint,#detPrint *{visibility:visible}#detPrint{position:absolute;left:0;top:0;width:100%}}`;
 
 /* ---------- data ---------- */
@@ -303,11 +310,11 @@ function followData(students){
       work:(d.work||[]).filter(w=>w.exam===u),blurts:(d.blurts||[]).filter(b=>b.exam===u),redrafts:s.rd};
     const a=A?A.analyse(dd):{gaps:[],ev:[]};
     const fus=(d.follows||[]).filter(f=>f.exam===u).map(f=>Object.assign({},f,{work:workById[f.work_id],state:A?A.followState(f,workById[f.work_id],a.ev):{s:'set',label:'Set'}}));
-    const conf=A?A.confirmed(a):[];
+    const need=A?A.needsWork(a):[];
     const done=s.rd.filter(r=>r.verdict),c={fixed:0,partly:0,notyet:0};done.forEach(r=>{const k=r.status==='flag'?'notyet':r.verdict;c[k]=(c[k]||0)+1;});
     const flags=s.rd.filter(r=>r.status==='flag');
     const rf=Object.values(dd.store.rfgate||{}).filter(x=>x&&x.t);
-    return {s,a,conf,fus,c,flags,done:done.length,rf};
+    return {s,a,need,fus,c,flags,done:done.length,rf,dd};
   });
   fuCacheFor=d;return fuCache;
 }
@@ -315,19 +322,20 @@ function followCard(students){
   if(!window.Analysis)return '';
   const A=window.Analysis,rows=followData(students);
   const latest=(x,topic)=>x.fus.find(f=>f.topic===topic);
-  const att=x=>(x.flags.length?3:0)+x.conf.filter(g=>{const f=latest(x,g.id);return !f||f.state.s==='open'||f.state.s==='missed';}).length;
+  const att=x=>(x.flags.length?3:0)+x.need.filter(g=>{const f=latest(x,g.id);return !f||f.state.s==='open'||f.state.s==='missed';}).length;
   const list=rows.slice().sort((a,b)=>att(b)-att(a)||a.s.name.localeCompare(b.s.name));
-  return `<div class="sc-card" id="fuCard"><h2>Gaps and follow-up</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">A gap is only listed when it shows up in at least two different kinds of work (for example a course and a marked answer). Each one gets an automatic follow-up: a refresher or short recap, then three or four questions that have been checked by a second marker pass. Closed means the follow-up was at least 75% right and nothing since has gone wrong on that topic. Click a name for the history.</p>
-  <div class="tablewrap"><table><thead><tr><th class="l">Student</th><th class="l">Redrafts so far</th><th class="l">Confirmed gaps and what has happened</th></tr></thead><tbody>
-  ${list.map(x=>{const open=fuOpen===x.s.u;
-    return `<tr><td class="l" style="vertical-align:top"><button class="lnk" data-fu="${esc(x.s.u)}">${esc(x.s.name)}</button></td>
-    <td class="l" style="vertical-align:top;white-space:nowrap">${x.done?`${x.c.fixed} fixed · ${x.c.partly} partly · ${x.c.notyet?`<span class="cell a">${x.c.notyet} not fixed</span>`:'0 not fixed'}`:'<span class="muted">none yet</span>'}</td>
-    <td class="l" style="vertical-align:top;white-space:normal">${x.conf.length?`<div class="gp">${x.conf.slice(0,3).map(g=>{const f=latest(x,g.id);
-      return `<div><span>${esc(g.ref+' '+g.title)}</span><span class="src">${Math.round(g.score*100)}% · ${esc(A.kindsText(g))}</span><span class="vd ${f?esc(f.state.s):'none'}">${f?esc('Follow-up: '+f.state.label.toLowerCase()+(f.state.score!=null?` (${Math.round(f.state.score*100)}%)`:'')):'Follow-up not sent yet'}</span></div>`;}).join('')}
-      ${x.conf.length>3?`<div class="src">and ${x.conf.length-3} more</div>`:''}</div>`:'<span class="muted">No confirmed gaps</span>'}
-      ${open?followHistory(x):''}</td></tr>`;}).join('')}
-  </tbody></table></div>
-  <p class="muted" style="font-size:.82rem;margin:10px 0 0">Follow-ups are sent when the student next opens the home page or their schedule, one at a time. They are not counted for detentions.</p></div>`;
+  const gapRow=(x,g)=>{const f=latest(x,g.id),openNow=f&&f.state.s==='set';
+    const chip=f?`<span class="vd ${esc(f.state.s)}">${esc('Follow-up '+f.state.label.toLowerCase()+(f.state.score!=null?` (${Math.round(f.state.score*100)}%)`:''))}</span>`:'<span class="vd none">No follow-up yet</span>';
+    return `<div class="fu-gap"><div class="fu-t">${esc(g.ref+' '+g.title)}</div><div class="fu-m"><span class="src">${Math.round(g.score*100)}% right · ${esc(A.kindsText(g))}</span>${chip}
+      ${openNow?'':`<button class="btn ghost fu-send" data-send="${esc(x.s.u)}|${esc(g.id)}">${f?'Send again':'Send now'}</button>`}</div></div>`;};
+  return `<div class="sc-card" id="fuCard"><h2>Gaps and follow-up</h2><p class="muted" style="margin:0 0 12px;font-size:.85rem">Each student is judged on their own work. A topic is listed when the evidence shows a real gap: it shows up in two different kinds of work, or there is enough from one kind and most of it is wrong. Every gap gets a follow-up automatically (a refresher or recap, then 3 or 4 checked questions), so students with more gaps get more. Use <b>Send now</b> to send one straight away. Closed means the follow-up was at least 75% right and nothing since has gone wrong on that topic.</p>
+  <div class="fu-list">${list.map(x=>{const open=fuOpen===x.s.u,unsent=x.need.filter(g=>{const f=latest(x,g.id);return !f||f.state.s!=='set';});
+    return `<div class="fu-st"><div class="fu-h"><button class="lnk" data-fu="${esc(x.s.u)}">${esc(x.s.name)}</button>
+      <span class="src">Redrafts: ${x.done?`${x.c.fixed} fixed, ${x.c.partly} partly, ${x.c.notyet?`<span class="cell a">${x.c.notyet} not fixed</span>`:'0 not fixed'}`:'none yet'}</span><span style="flex:1"></span>
+      ${unsent.length>1?`<button class="btn ghost fu-send" data-sendall="${esc(x.s.u)}">Send all ${unsent.length}</button>`:''}</div>
+      ${x.need.length?x.need.map(g=>gapRow(x,g)).join(''):'<p class="muted" style="margin:6px 0 0;font-size:.88rem">No gaps that need a follow-up at the moment.</p>'}
+      ${open?followHistory(x):''}</div>`;}).join('')}</div>
+  <p class="muted" style="font-size:.82rem;margin:10px 0 0">Automatic follow-ups go out when the student next opens the home page or their schedule. They are not counted for detentions.</p></div>`;
 }
 function followHistory(x){
   const A=window.Analysis;
@@ -341,8 +349,25 @@ function followHistory(x){
     ${fl?`<b>Redrafts not fixed after two tries</b>${fl}`:''}</div>`;
 }
 function wireFollow(students){
-  $$('#fuCard [data-fu]').forEach(el=>el.onclick=()=>{fuOpen=fuOpen===el.dataset.fu?null:el.dataset.fu;const c=$('#fuCard');if(c){c.outerHTML=followCard(students);wireFollow(students);}});
+  const redraw=()=>{const c=$('#fuCard');if(c){c.outerHTML=followCard(students);wireFollow(students);}};
+  $$('#fuCard [data-fu]').forEach(el=>el.onclick=()=>{fuOpen=fuOpen===el.dataset.fu?null:el.dataset.fu;redraw();});
   $$('#fuCard [data-rdx]').forEach(b=>b.remove());
+  const send=async(u,ids,btn)=>{
+    if(!window.FollowGen){alert('The follow-up tools have not loaded. Refresh the page and try again.');return;}
+    const x=followData(students).find(r=>r.s.u===u);if(!x)return;
+    const all=$$('#fuCard .fu-send');all.forEach(b=>b.disabled=true);
+    let ok=0;const errs=[];
+    for(const id of ids){const g=x.need.find(n=>n.id===id);if(!g)continue;
+      btn.textContent=`Writing and checking${ids.length>1?` (${ok+errs.length+1} of ${ids.length})`:''}...`;
+      try{const f=await FollowGen.build(g,x.dd.marks);await TR.api('/follow/send',Object.assign({token:TR.token,username:u},f));ok++;}
+      catch(e){errs.push(g.title+': '+e.message);}}
+    if(errs.length)alert(`${ok} sent. These could not be sent:\n${errs.join('\n')}`);
+    await TR.reload();
+  };
+  $$('#fuCard [data-send]').forEach(b=>b.onclick=()=>{const [u,id]=b.dataset.send.split('|');send(u,[id],b);});
+  $$('#fuCard [data-sendall]').forEach(b=>b.onclick=()=>{const u=b.dataset.sendall,x=followData(students).find(r=>r.s.u===u);if(!x)return;
+    const ids=x.need.filter(g=>{const f=x.fus.find(ff=>ff.topic===g.id);return !f||f.state.s!=='set';}).map(g=>g.id);
+    if(confirm(`Send ${ids.length} follow-ups to ${x.s.name} now? Each one takes about half a minute to write and check.`))send(u,ids,b);});
 }
 
 function coursesCard(items,students){
