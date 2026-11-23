@@ -4120,5 +4120,450 @@ export default [
    "improve": "Nothing lost."
   }
  ]
+},
+ /* KAT MCQ paper sheets for Tandrika and Dilshhan, marked 23 Nov 2026, with follow-up sets */
+{
+ "id": "seed-2026-11-23-kat-dilshhan",
+ "match": "dilshhan",
+ "catmcq": {
+  "answers": "BCCDABAADDABCDBCDACCBDADCBBCACCCABDDACBACCACDBBDACCBCBD-----BCDACBDBACBDBDABACCC",
+  "t": "2026-11-23T14:30:00.000Z",
+  "how": "Paper answer sheet, handed in and marked by the teacher"
+ },
+ "work": {
+  "id": "w-dilshhan-kat-2311",
+  "title": "KAT quiz: follow-up",
+  "due": "2026-11-30",
+  "spec": {
+   "title": "KAT quiz: follow-up",
+   "intro": "This set follows up your KAT quiz. You wrote that you need to work on HR and Unit 8, and the quiz agrees: Unit 3.6 was 3 out of 10 (five questions left blank) and Unit 3.8 was 5 out of 10. It covers motivation theories, organisation structure, Porter and Ansoff, stakeholder mapping and leadership, plus the five calculations you got wrong. Answer every question: a blank always scores 0. For the calculations, write each step on paper first.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "mcq",
+     "topic": "3.6.4b",
+     "skill": "knowledge",
+     "q": "According to Herzberg, which of these is most likely to motivate an employee?",
+     "options": [
+      "A pay rise",
+      "Better canteen food",
+      "More responsibility for planning their own work",
+      "A newer office"
+     ],
+     "answer": 2,
+     "explain": "Responsibility is a motivator. Pay, conditions and the working environment are hygiene factors: improving them removes dissatisfaction but does not motivate."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.6.4b",
+     "skill": "knowledge",
+     "q": "Which level of Maslow's hierarchy sits directly below esteem needs?",
+     "options": [
+      "Self-actualisation",
+      "Social (belonging) needs",
+      "Safety needs",
+      "Physiological needs"
+     ],
+     "answer": 1,
+     "explain": "From the bottom: physiological, safety, social, esteem, self-actualisation. Social needs come just below esteem."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.6.4a",
+     "skill": "knowledge",
+     "q": "Which method of motivation is most closely linked to Taylor's scientific management?",
+     "options": [
+      "Piece-rate pay",
+      "Job enrichment",
+      "Team working",
+      "Delegation"
+     ],
+     "answer": 0,
+     "explain": "Taylor believed workers are motivated mainly by money, so he paid them for each unit produced. The others come from Herzberg and later writers."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.3b",
+     "skill": "quant",
+     "q": "A business has a managing director at the top and 3 levels of hierarchy in total. Every manager, including the MD, has a span of control of 5. How many people work in the business?",
+     "answer": 31,
+     "unit": "people",
+     "working": "1 + 5 + 25 = 31.",
+     "hint": "Count every level, including the MD."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.6.3b",
+     "skill": "knowledge",
+     "q": "A business removes one layer of middle management but keeps the same number of staff. What is the most likely effect?",
+     "options": [
+      "Spans of control get narrower",
+      "Spans of control get wider",
+      "There are more levels of hierarchy",
+      "Decisions are more centralised"
+     ],
+     "answer": 1,
+     "explain": "With fewer managers for the same number of staff, each remaining manager has more people reporting to them, so spans widen."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.6.3a",
+     "skill": "knowledge",
+     "q": "A business groups its staff into marketing, finance, HR and operations departments, each with its own manager. Which structure is this?",
+     "options": [
+      "Functional",
+      "Matrix",
+      "Product-based",
+      "Geographical"
+     ],
+     "answer": 0,
+     "explain": "Grouping by department (function) is a functional structure. A matrix structure has staff reporting to both a functional manager and a project manager."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.8.2a",
+     "skill": "knowledge",
+     "q": "A business sells specialist, high-end products to a small group of wealthy customers. Which of Porter's generic strategies is it following?",
+     "options": [
+      "Differentiation focus",
+      "Cost leadership",
+      "Differentiation across the whole market",
+      "Cost focus"
+     ],
+     "answer": 0,
+     "explain": "A small target market makes it a focus strategy, and high-end specialist products make it differentiation."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.8.2a",
+     "skill": "knowledge",
+     "q": "A business follows a cost leadership strategy. Which statement is correct?",
+     "options": [
+      "It aims to have the lowest costs in the industry, and may charge prices close to its rivals' to earn higher margins",
+      "It must charge the lowest prices in the market",
+      "It aims to make its product clearly different from rivals' products",
+      "It only sells to a small niche of customers"
+     ],
+     "answer": 0,
+     "explain": "Cost leadership is about having the lowest costs, not the lowest price. A cost leader can price close to rivals and make a bigger margin."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.8.1b",
+     "skill": "knowledge",
+     "q": "A coffee chain introduces a loyalty app so that its existing customers buy its existing drinks more often. According to Ansoff, this is:",
+     "options": [
+      "market development.",
+      "product development.",
+      "market penetration.",
+      "diversification."
+     ],
+     "answer": 2,
+     "explain": "Existing products, existing customers: market penetration."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.8.1b",
+     "skill": "knowledge",
+     "q": "A UK bakery chain opens its existing shops, selling its existing products, in Ireland. According to Ansoff's matrix, which strategy is this?",
+     "options": [
+      "Market penetration",
+      "Product development",
+      "Market development",
+      "Diversification"
+     ],
+     "answer": 2,
+     "explain": "Existing products in a new market is market development. Market penetration is existing products in an existing market."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.2.3b",
+     "skill": "knowledge",
+     "q": "On a stakeholder map, a group that has low power but high interest should be:",
+     "options": [
+      "managed closely.",
+      "kept satisfied.",
+      "kept informed.",
+      "monitored with minimum effort."
+     ],
+     "answer": 2,
+     "explain": "Low power, high interest = keep informed. High power, low interest = keep satisfied. High power, high interest = manage closely."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.2.1b",
+     "skill": "knowledge",
+     "q": "A manager asks her team for their views, discusses the options with them and then lets the group decide together. This is:",
+     "options": [
+      "autocratic leadership.",
+      "paternalistic leadership.",
+      "democratic leadership.",
+      "laissez-faire leadership."
+     ],
+     "answer": 2,
+     "explain": "The team takes part in the decision, so it is democratic. Paternalistic leaders still make the decision themselves; laissez-faire leaders leave staff to get on with it."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.2.1a",
+     "skill": "knowledge",
+     "q": "Which of these is mainly a leadership role rather than a management role?",
+     "options": [
+      "Setting a vision and inspiring staff to work towards it",
+      "Drawing up the weekly staff rota",
+      "Monitoring spending against the budget",
+      "Organising stock deliveries"
+     ],
+     "answer": 0,
+     "explain": "Leaders set direction and inspire people. Planning, organising and controlling resources (rotas, budgets, deliveries) are management tasks."
+    },
+    {
+     "type": "calc",
+     "topic": "3.3.4d",
+     "skill": "quant",
+     "q": "A product sells for £36. The price was set by adding a 20% mark-up to cost. Calculate the cost.",
+     "answer": 30,
+     "unit": "£",
+     "working": "Price = cost × 1.2, so cost = £36 ÷ 1.2 = £30.",
+     "hint": "Divide by 1.2. Taking 20% off £36 gives the wrong answer."
+    },
+    {
+     "type": "calc",
+     "topic": "3.3.2c",
+     "skill": "quant",
+     "q": "A market worth £80 million grows by 10%. A business in it had sales of £12 million, which grow by 20%. Calculate its new market share to two decimal places.",
+     "answer": 16.364,
+     "unit": "%",
+     "working": "New sales = £14.4m. New market = £88m. 14.4 ÷ 88 × 100 = 16.36%.",
+     "hint": "Update both the business's sales and the market size before dividing."
+    },
+    {
+     "type": "calc",
+     "topic": "3.5.2d",
+     "skill": "quant",
+     "q": "A product sells for £40 and has variable costs of £25 per unit. Fixed costs are £90 000. At its current output it makes a profit of £30 000. Calculate its margin of safety in units.",
+     "answer": 2000.0,
+     "unit": "units",
+     "working": "Contribution = £15. Break-even = 90 000 ÷ 15 = 6000 units. Current output = (90 000 + 30 000) ÷ 15 = 8000. Margin of safety = 2000 units (or profit ÷ contribution = 30 000 ÷ 15).",
+     "hint": "Margin of safety is in units, not pounds."
+    },
+    {
+     "type": "calc",
+     "topic": "3.5.1c",
+     "skill": "quant",
+     "q": "Revenue is £500 000 and gross profit is £200 000. The operating profit margin is 12%. Calculate operating expenses.",
+     "answer": 140000,
+     "unit": "£",
+     "working": "Operating profit = 12% × £500 000 = £60 000. Operating expenses = £200 000 − £60 000 = £140 000.",
+     "hint": "Find operating profit first, then work back from gross profit."
+    },
+    {
+     "type": "calc",
+     "topic": "3.6.2",
+     "skill": "quant",
+     "q": "A call centre has an average of 280 staff. Its labour turnover last year was 12.5%. How many staff left during the year?",
+     "answer": 35.0,
+     "unit": "staff",
+     "working": "12.5 = leavers ÷ 280 × 100, so leavers = 0.125 × 280 = 35.",
+     "hint": "Rearrange: leavers = turnover rate × average staff."
+    }
+   ]
+  }
+ }
+},
+{
+ "id": "seed-2026-11-23-kat-tandrika",
+ "match": "tandrika",
+ "catmcq": {
+  "answers": "BCABABABDDAACBCDBAACDABDCBACCDCCACAAACBA-DBCABBDADBACBABDBAAAADACCABACBDDAACACDA",
+  "t": "2026-11-23T14:30:00.000Z",
+  "how": "Paper answer sheet, handed in and marked by the teacher"
+ },
+ "work": {
+  "id": "w-tandrika-kat-2311",
+  "title": "KAT quiz: follow-up",
+  "due": "2026-11-30",
+  "spec": {
+   "title": "KAT quiz: follow-up",
+   "intro": "This set follows up your KAT quiz (51 out of 80). Your knowledge questions were mostly right (34 out of 45), but you got 17 out of 35 calculation questions. Most of the calculation errors were working backwards from a percentage or using the formula the wrong way round, so these questions are mostly calculations. Write the formula down first, then put the numbers in, and use the clue if you are stuck.\n\nType numbers only: no £ signs or commas. Round to 2 decimal places unless the question says otherwise.",
+   "items": [
+    {
+     "type": "calc",
+     "topic": "3.1.2c",
+     "skill": "quant",
+     "q": "A plc has 25 million shares and pays total dividends of £3 million. Calculate the dividend per share in pence.",
+     "answer": 12.0,
+     "unit": "p",
+     "working": "£3 000 000 ÷ 25 000 000 = £0.12 = 12p.",
+     "hint": "Check your units: £0.12 is 12p."
+    },
+    {
+     "type": "calc",
+     "topic": "3.1.1c",
+     "skill": "quant",
+     "q": "A business's total costs were 80% of its revenue, and it made a profit of £36 000. Calculate its revenue.",
+     "answer": 180000.0,
+     "unit": "£",
+     "working": "Profit is 20% of revenue, so revenue = 36 000 ÷ 0.2 = £180 000.",
+     "hint": "What percentage of revenue is the profit?"
+    },
+    {
+     "type": "calc",
+     "topic": "3.3.2c",
+     "skill": "quant",
+     "q": "A business's revenue rose by 8% this year to £648 000. Calculate last year's revenue.",
+     "answer": 600000.0,
+     "unit": "£",
+     "working": "648 000 ÷ 1.08 = £600 000. Check: 600 000 × 1.08 = 648 000.",
+     "hint": "Divide by 1.08. Do not take 8% off this year's figure."
+    },
+    {
+     "type": "calc",
+     "topic": "3.2.2c",
+     "skill": "quant",
+     "q": "Launching a new service costs £40 000. There is a 0.7 chance of a pay-off of £100 000 and a 0.3 chance of a pay-off of £10 000. Calculate the net gain.",
+     "answer": 33000.0,
+     "unit": "£",
+     "working": "Expected value = 70 000 + 3000 = £73 000. Net gain = 73 000 – 40 000 = £33 000.",
+     "hint": "Net gain = expected value – cost."
+    },
+    {
+     "type": "calc",
+     "topic": "3.3.2e",
+     "skill": "quant",
+     "q": "A product earns revenue of £200 000. The business cuts its price by 10%. The price elasticity of demand is –1.8. Calculate the new revenue.",
+     "answer": 212400.0,
+     "unit": "£",
+     "working": "Quantity rises by 1.8 × 10% = 18%. New revenue = 200 000 × 0.9 × 1.18 = £212 400.",
+     "hint": "Apply both changes: price × 0.9 and quantity × 1.18."
+    },
+    {
+     "type": "calc",
+     "topic": "3.3.2f",
+     "skill": "quant",
+     "q": "A business sells 12 000 units a year. The income elasticity of demand is –0.8. Real incomes rise by 4%. Calculate the new sales in units.",
+     "answer": 11616.0,
+     "unit": "units",
+     "working": "Change in demand = –0.8 × 4% = –3.2%. 12 000 × 0.968 = 11 616 units.",
+     "hint": "Negative YED: incomes up, demand down."
+    },
+    {
+     "type": "calc",
+     "topic": "3.3.4d",
+     "skill": "quant",
+     "q": "A product sells for £36. The price was set by adding a 20% mark-up to cost. Calculate the cost.",
+     "answer": 30,
+     "unit": "£",
+     "working": "Price = cost × 1.2, so cost = £36 ÷ 1.2 = £30.",
+     "hint": "Divide by 1.2. Taking 20% off £36 gives the wrong answer."
+    },
+    {
+     "type": "calc",
+     "topic": "3.4.5b",
+     "skill": "quant",
+     "q": "A shop sells 150 units a day. Deliveries take 4 days to arrive and it keeps a buffer stock of 300 units. Calculate the reorder level.",
+     "answer": 900,
+     "unit": "units",
+     "working": "Reorder level = (150 × 4) + 300 = 900 units.",
+     "hint": "Usage during the lead time, plus the buffer stock."
+    },
+    {
+     "type": "calc",
+     "topic": "3.5.2d",
+     "skill": "quant",
+     "q": "A product sells for £40 and has variable costs of £25 per unit. Fixed costs are £90 000. At its current output it makes a profit of £30 000. Calculate its margin of safety in units.",
+     "answer": 2000.0,
+     "unit": "units",
+     "working": "Contribution = £15. Break-even = 90 000 ÷ 15 = 6000 units. Current output = (90 000 + 30 000) ÷ 15 = 8000. Margin of safety = 2000 units (or profit ÷ contribution = 30 000 ÷ 15).",
+     "hint": "Margin of safety is in units, not pounds."
+    },
+    {
+     "type": "calc",
+     "topic": "3.7.8a",
+     "skill": "quant",
+     "q": "A project costs £80 000. Its net returns are £25 000, £30 000, £35 000 and £30 000 over four years. Calculate its average rate of return (ARR).",
+     "answer": 12.5,
+     "unit": "%",
+     "working": "Total returns £120 000 – cost £80 000 = £40 000 profit. Average per year = £10 000. ARR = 10 000 ÷ 80 000 × 100 = 12.5%.",
+     "hint": "Take off the initial cost before you average."
+    },
+    {
+     "type": "calc",
+     "topic": "3.7.8a",
+     "skill": "quant",
+     "q": "A project costs £50 000. Net cash flows are £20 000 in Year 1, £18 000 in Year 2 and £24 000 in Year 3, spread evenly through each year. Calculate the payback period in months.",
+     "answer": 30.0,
+     "unit": "months",
+     "working": "After 2 years: £38 000. Still needed: £12 000. 12 000 ÷ 24 000 × 12 = 6 months. Payback = 2 years 6 months = 30 months.",
+     "hint": "Find what is still needed after Year 2, then divide by the Year 3 cash flow (not Year 2's)."
+    },
+    {
+     "type": "calc",
+     "topic": "3.7.2b",
+     "skill": "quant",
+     "q": "A business has current assets of £300 000 and current liabilities of £200 000. It uses £40 000 of cash to pay some of its suppliers (payables). Calculate its new current ratio to two decimal places.",
+     "answer": 1.625,
+     "unit": ":1",
+     "working": "Current assets fall to £260 000 and current liabilities fall to £160 000. 260 ÷ 160 = 1.625, so 1.63 : 1.",
+     "hint": "Paying suppliers with cash changes both figures."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.2.3b",
+     "skill": "knowledge",
+     "q": "On a stakeholder map, a group that has low power but high interest should be:",
+     "options": [
+      "managed closely.",
+      "kept satisfied.",
+      "kept informed.",
+      "monitored with minimum effort."
+     ],
+     "answer": 2,
+     "explain": "Low power, high interest = keep informed. High power, low interest = keep satisfied. High power, high interest = manage closely."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.2.2b",
+     "skill": "knowledge",
+     "q": "A student can either take a Saturday job paying £60, help at a family shop for £45, or revise. She chooses to revise. What is the opportunity cost?",
+     "options": [
+      "£105",
+      "£60",
+      "£45",
+      "£15"
+     ],
+     "answer": 1,
+     "explain": "Opportunity cost is the next best alternative given up, which is the £60 job. You do not add the alternatives together, because she could only have done one."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.4.5a",
+     "skill": "knowledge",
+     "q": "Which is an advantage of just-in-case stock control compared with just-in-time?",
+     "options": [
+      "Lower storage costs",
+      "Less money tied up in stock",
+      "It can meet a sudden rise in demand",
+      "Less waste from stock going out of date"
+     ],
+     "answer": 2,
+     "explain": "Holding buffer stock means a business can cope with a sudden rise in demand or a late delivery. The other three are advantages of just-in-time."
+    },
+    {
+     "type": "mcq",
+     "topic": "3.8.2a",
+     "skill": "knowledge",
+     "q": "A business follows a cost leadership strategy. Which statement is correct?",
+     "options": [
+      "It aims to have the lowest costs in the industry, and may charge prices close to its rivals' to earn higher margins",
+      "It must charge the lowest prices in the market",
+      "It aims to make its product clearly different from rivals' products",
+      "It only sells to a small niche of customers"
+     ],
+     "answer": 0,
+     "explain": "Cost leadership is about having the lowest costs, not the lowest price. A cost leader can price close to rivals and make a bigger margin."
+    }
+   ]
+  }
+ }
 }
 ];
