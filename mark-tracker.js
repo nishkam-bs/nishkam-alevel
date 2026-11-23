@@ -7,23 +7,7 @@
 (function(){
 "use strict";
 const A=window.Acct;
-if(!A){/* tell the student which part they will redraft (only when marks were lost) */
-function redraftNote(r,tg){
-  const m=String(r.mark||'').match(/(\d+(?:\.\d+)?)\s*\/\s*(\d+)/);if(!m)return;
-  const got=+m[1],max=+m[2];if(max<9||max-got<2||got/max>=0.85)return;
-  const panel=r.panel&&document.querySelector(r.panel);if(!panel)return;
-  const old=panel.querySelector('.nk-rd');if(old)old.remove();
-  const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const box=document.createElement('div');box.className='nk-rd';
-  box.style.cssText='margin:18px 0 0;padding:14px 16px;border:1px solid rgba(127,127,127,.35);border-radius:10px;font-size:.92rem;line-height:1.55';
-  box.innerHTML=`<b>Your redraft</b><p style="margin:6px 0">You don't need to rewrite the whole answer. Just fix the part where you lost the most marks:</p>
-    ${tg.excerpt?`<p style="margin:6px 0;padding-left:10px;border-left:3px solid rgba(127,127,127,.4);font-style:italic">${e(tg.excerpt)}</p>`:''}
-    <p style="margin:6px 0">${e(tg.problem)}</p>
-    <p style="margin:8px 0 0">It has been added to your <a href="redraft.html">redrafts</a>. Do it without looking at the improved version above.</p>`;
-  panel.appendChild(box);
-}
-
-window.NTrack={init(){},mark(){}};return;}
+if(!A){window.NTrack={init(){},mark(){}};return;}
 const PAGE=location.pathname.split('/').pop().replace(/\.html$/,'')||'index';
 const DKEY='draft:'+PAGE;
 let bar=null,ta=null,timer=null,linked=null;
@@ -126,6 +110,22 @@ function restore(){
   note.innerHTML='Your unfinished answer has been brought back. <button type="button" style="font:inherit;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:inherit">Start a new one</button>';
   note.querySelector('button').onclick=()=>{st=blank();ta.value='';ta.dispatchEvent(new Event('input',{bubbles:true}));A.set(DKEY,{text:''});note.remove();};
   ta.insertAdjacentElement('afterend',note);
+}
+
+/* tell the student which part they will redraft (only when marks were lost) */
+function redraftNote(r,tg){
+  const m=String(r.mark||'').match(/(\d+(?:\.\d+)?)\s*\/\s*(\d+)/);if(!m)return;
+  const got=+m[1],max=+m[2];if(max<9||max-got<2||got/max>=0.85)return;
+  const panel=r.panel&&document.querySelector(r.panel);if(!panel)return;
+  const old=panel.querySelector('.nk-rd');if(old)old.remove();
+  const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const box=document.createElement('div');box.className='nk-rd';
+  box.style.cssText='margin:18px 0 0;padding:14px 16px;border:1px solid rgba(127,127,127,.35);border-radius:10px;font-size:.92rem;line-height:1.55';
+  box.innerHTML=`<b>Your redraft</b><p style="margin:6px 0">You don't need to rewrite the whole answer. Just fix the part where you lost the most marks:</p>
+    ${tg.excerpt?`<p style="margin:6px 0;padding-left:10px;border-left:3px solid rgba(127,127,127,.4);font-style:italic">${e(tg.excerpt)}</p>`:''}
+    <p style="margin:6px 0">${e(tg.problem)}</p>
+    <p style="margin:8px 0 0">It has been added to your <a href="redraft.html">redrafts</a>. Do it without looking at the improved version above.</p>`;
+  panel.appendChild(box);
 }
 
 window.NTrack={
