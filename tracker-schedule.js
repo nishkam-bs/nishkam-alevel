@@ -233,8 +233,8 @@ function renderWeek(){
       return `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0 4px;font-size:.88rem"><b>Try the drills yourself:</b>${dr.map(i=>`<button class="btn ghost" data-pv="${esc(i.ref)}" style="padding:5px 12px">${esc(shortLabel(i))} this week</button>`).join('')}
       <select id="pvAll" style="width:auto"><option value="">Any drill...</option>${all.map(i=>`<option value="${esc(i.ref)}">${esc(S.fmtDay(i.due))}: ${esc(i.title)}</option>`).join('')}</select><span class="muted">Opens in a new tab. Nothing is saved.</span></div>`;})()}
     <div class="legend"><span><span class="ring hw"></span>handwritten (photos)</span><span><span class="ring ty"></span>typed</span><span><span class="ring pz"></span>typed, mostly pasted</span><span class="muted">Hover over a cell for the details.</span></div></div>
-  ${followCard(students)}
   ${activityCard(students)}
+  ${followCard(students)}
   ${howCard(students)}
   <div class="sc-card"><h2>The season so far</h2><p class="muted" style="margin:0 0 10px;font-size:.85rem">Every deadline that has passed.</p>
     <div class="tablewrap"><table><thead><tr><th class="l">Student</th><th>On time</th><th>Late</th><th>Missed</th><th>Excused</th><th>Weeks with a detention</th></tr></thead><tbody>
