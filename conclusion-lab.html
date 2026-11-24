@@ -296,9 +296,9 @@ function descriptors(max){
   const good=`A clear judgement built on the paragraphs that shows balance and addresses the question, but the weighing or the deciding factor is less well developed: asserted rather than explained, or the figures or contexts are used thinly.`;
   const reas=`Makes a clear decision on the question and refers to both sides, but does not really weigh them. Typically it gives a point from each paragraph and then picks one without explaining why that side wins, or the "it depends" is generic (for example "it depends on the business" or "it depends on the economy" without saying what about it), or it quotes figures without saying why they matter. This is the right level for a conclusion that summarises both sides and then makes a decision.`;
   const lim=`Limited links to the analysis. It is one-sided (uses only one paragraph), sits on the fence without a decision, answers a slightly different question, copies the paragraphs' wording rather than drawing a judgement from them, or relies on a new argument instead of the ones already made.`;
-  const weak=`Assertion only: an opinion with no real reason, or not relevant to the question.`;
+  const weak=`Assertion only: an opinion with no real reason and no use of the paragraphs, or not relevant to the question.`;
   if(max===5)return `Level 5 (Excellent): ${top}\nLevel 4 (Good): ${good}\nLevel 3 (Reasonable): ${reas}\nLevel 2 (Limited): ${lim}\nLevel 1 (Weak): ${weak}`;
-  return `Level 4 (Excellent): ${top}\nLevel 3 (Good): ${good}\nLevel 2 (Reasonable): ${reas}\nLevel 1 (Limited): ${lim} Also use Level 1 for assertion only.`;
+  return `Level 4 (Excellent): ${top}\nLevel 3 (Good): ${good}\nLevel 2 (Reasonable): ${reas}\nLevel 1 (Limited): ${lim} Also use Level 1 for assertion only: an opinion with no reason and no use of the paragraphs.`;
 }
 function systemPrompt(q){
   const t=B.TYPES[q.type],max=t.levels;
@@ -332,6 +332,7 @@ HOW TO JUDGE
 - The student does not have to reach the same answer as the example. Any answer is fine if it is justified by the paragraphs.
 - A condition the answer depends on that follows from the paragraphs is evaluation, not a new argument. A new line of analysis that was not in the paragraphs earns nothing and should be flagged.
 - A conclusion that will not decide (for example "both are equally important" with nothing more) cannot go above Level ${max===5?2:1}. Explaining clearly when each side applies is a judgement, not fence-sitting.
+- Floor: a conclusion that makes a clear decision on the question AND refers to a point from each paragraph is at least Level ${max===5?3:2}, even if it does not explain why one side wins (that missing weighing is what keeps it at Level ${max===5?3:2}). This floor does not apply if it answers a different question, contains a business error, or relies on a new argument.
 - If the conclusion answers a different question from the one set, it cannot go above Level ${max===5?2:1}.
 - A business error (for example treating cash and profit as the same thing, saying pay is a motivator under Herzberg, misreading the data) lowers the level.
 - For data questions, quoting numbers without saying why they matter is weaker than using the key figures to show why one side outweighs the other.
