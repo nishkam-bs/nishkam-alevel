@@ -39,7 +39,7 @@ function skillsIn(text){
   return out;
 }
 const pct=m=>{const x=String(m||'').match(/(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)/);return x&&+x[2]?Math.min(100,+x[1]/+x[2]*100):null;};
-const isEssay=tool=>/essay|25-mark|9-mark|redraft|marker/i.test(tool||'');
+const isEssay=tool=>/essay|25-mark|9-mark|redraft|marker|conclusion/i.test(tool||'');
 const isCalc=tool=>/calc/i.test(tool||'');
 const segs=s=>String(s||'').split(/\s\/\s|\s\|\s|;|\n|(?<=\.)\s+(?=[A-Z])/).map(x=>x.trim()).filter(x=>x.length>12);
 
@@ -83,6 +83,9 @@ function analyse(d){
         if(um){const a1=+um[1],b1=+(um[2]||um[1]);for(let u=a1;u<=Math.min(b1,10);u++)ev.push({unit:'3.'+u,topic:null,skill:null,w:1/(b1-a1+1),ok:p/100,src:'mark',label:m.tool});}
       }
     }
+    /* Conclusion lab: a level only (no mark), which is evidence about evaluation */
+    if(p==null&&/conclusion lab/i.test(m.tool||'')){const lv=String(m.level||'').match(/Level\s*(\d)\s*of\s*(\d)/i);
+      if(lv&&+lv[2]>1)ev.push({topic:null,skill:'evaluation',w:1.2,ok:Math.max(0,Math.min(1,(+lv[1]-1)/(+lv[2]-1))),src:'mark',label:m.tool,t:m.t});}
     [[m.well,1],[m.improve,0]].forEach(([txt,ok])=>segs(txt).forEach(sg=>{
       const tp=topicsIn(sg,1)[0];
       if(tp&&!essay)ev.push({topic:tp,skill:null,w:.6,ok,src:'feedback',label:m.tool,t:m.t});
