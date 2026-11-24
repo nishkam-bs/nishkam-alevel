@@ -97,6 +97,7 @@ const katOf=u=>{const m=(TR.data.marks||[]).filter(x=>x.exam===u&&isKat(x)).sort
 const shortLabel=it=>{if(it.kind==='exam'){const e=S.EX[it.ref];return e?`P${e.paper} ${e.year==='2020N'?'N20':e.year.slice(2)} Q${e.num} (${e.marks})`:it.ref;}
   if(it.kind==='choice'){const os=String(it.ref).split(',').map(id=>S.EX[id]).filter(Boolean);if(!os.length)return it.ref;const e=os[0];return `P${e.paper} ${e.year==='2020N'?'N20':e.year.slice(2)} Q${os.map(o=>o.num).join('/')} (${e.marks})`;}
   if(it.kind==='course')return (S.COURSES[it.ref]||[0,it.title])[1].replace(' course','');
+  if(it.kind==='conclusion')return 'Conclusion';
   if(it.kind==='quiz')return /^mcq/.test(it.ref)?'20 MCQs':'10 calcs';
   if(it.kind==='drill')return /^p3/.test(it.ref)?'P3 drill':'P2 drill';return `Set Q (${it.marks})`;};
 const LETTER={done:'✓',late:'L',missing:'✗',todo:'·',excused:'E'};
@@ -377,8 +378,8 @@ function coursesCard(items,students){
 }
 
 /* ---------- moving to a new version of the plan ---------- */
-const fromPlan=id=>/^e-P\d-\d{4}N?-[\d.]+$/.test(id)||/^ch-/.test(id)||/^c-[a-z0-9_]+_v1$/.test(id)||/^qz-/.test(id)||/^dr-/.test(id);
-function refsOf(it){return it.kind==='choice'?String(it.ref).split(','):it.kind==='exam'?[it.ref]:[];}
+const fromPlan=id=>/^e-P\d-\d{4}N?-[\d.]+$/.test(id)||/^ch-/.test(id)||/^c-[a-z0-9_]+_v1$/.test(id)||/^qz-/.test(id)||/^dr-/.test(id)||/^cl-/.test(id);
+function refsOf(it){return it.kind==='choice'?String(it.ref).split(','):it.kind==='exam'?[it.ref]:it.kind==='conclusion'?['CL:'+it.ref]:[];}
 function planChanges(items){
   const planIds=new Set(SCHED_PLAN.items.map(i=>i.id)),have=new Set(items.map(i=>i.id));
   const byId=Object.fromEntries(items.map(i=>[i.id,i]));
@@ -398,10 +399,10 @@ async function applyPlan(items){
 let autoTried=false;
 async function autoUpdate(items){
   if(autoTried||!items.length)return false;autoTried=true;
-  const m=planChanges(items);if(!m.old.length&&!m.changed.length&&!m.missing.some(i=>/^dr-/.test(i.id)))return false;
+  const m=planChanges(items);if(!m.old.length&&!m.changed.length&&!m.missing.some(i=>/^(dr|cl)-/.test(i.id)))return false;
   root.innerHTML='<div class="sc-card"><h2>Updating the schedule</h2><p class="muted">Moving to the new weekly plan...</p></div>';
   try{const r=await applyPlan(items);
-    try{sessionStorage.setItem('nk_plan_msg',`The schedule has been updated to the latest weekly plan: Paper 2 and Paper 3 drills every week, and no homework in the KAT weeks. ${r.kept.length?`${r.kept.length} question${r.kept.length>1?'s':''} already handed in ${r.kept.length>1?'have':'has'} been kept for the students who did ${r.kept.length>1?'them':'it'}, marked as done.`:'Nobody had handed in any of the old questions yet.'}`);}catch(e){}
+    try{sessionStorage.setItem('nk_plan_msg',`The schedule has been updated to the latest weekly plan, including one Conclusion Lab question a week. ${r.kept.length?`${r.kept.length} question${r.kept.length>1?'s':''} already handed in ${r.kept.length>1?'have':'has'} been kept for the students who did ${r.kept.length>1?'them':'it'}, marked as done.`:'Nobody had handed in any of the old questions yet.'}`);}catch(e){}
     await TR.reload();}catch(e){root.innerHTML=`<div class="sc-card"><h2>Could not update the schedule</h2><p class="muted">${esc(e.message)}</p></div>`;}
   return true;
 }

@@ -171,10 +171,10 @@ async function loadSched(force){
       /* redrafts and follow-ups due at this deadline count as homework too */
       (d.redrafts||[]).filter(r=>r.due===due).forEach(r=>items.push({id:'rd:'+r.id,kind:'redraft',done:!!r.submitted}));
       (d.follows||[]).filter(f=>f.due===due).forEach(f=>items.push({id:'fu:'+f.id,kind:'follow',done:f.status==='done'}));
-      const isDone=i=>{if(ex.has(i.id))return true;if(i.kind==='exam')return mk.has(i.ref);if(i.kind==='choice')return String(i.ref).split(',').some(r=>mk.has(r));if(i.kind==='question')return mk.has(i.id);if(i.kind==='redraft'||i.kind==='follow')return i.done;if(i.kind==='quiz'||i.kind==='drill'){const q=get(i.kind+':'+i.ref);return !!(q&&q.done);}
+      const isDone=i=>{if(ex.has(i.id))return true;if(i.kind==='exam')return mk.has(i.ref);if(i.kind==='choice')return String(i.ref).split(',').some(r=>mk.has(r));if(i.kind==='question')return mk.has(i.id);if(i.kind==='conclusion')return mk.has('CL:'+i.ref);if(i.kind==='redraft'||i.kind==='follow')return i.done;if(i.kind==='quiz'||i.kind==='drill'){const q=get(i.kind+':'+i.ref);return !!(q&&q.done);}
         if(i.kind==='course'&&i.ref in CO){const st=get('course:'+i.ref)||{};for(let k=1;k<=10;k++){if(!ps.has(CO[i.ref]+k)&&!(st.passed&&st.passed[k]))return false;}return true;}return false;};
-      const grp=i=>i.kind==='drill'?(/^p3/.test(i.ref)?'Paper 3 drill':'Paper 2 drill'):i.kind==='quiz'?(/^mcq/.test(i.ref)?'20 multiple-choice questions':'10 calculations'):i.kind==='course'?'Course':i.kind==='redraft'?'Redrafts':i.kind==='follow'?'Follow-up':'Written answers';
-      const order=['Written answers','Redrafts','Follow-up','Paper 2 drill','Paper 3 drill','20 multiple-choice questions','10 calculations','Course'];const g={};
+      const grp=i=>i.kind==='drill'?(/^p3/.test(i.ref)?'Paper 3 drill':'Paper 2 drill'):i.kind==='quiz'?(/^mcq/.test(i.ref)?'20 multiple-choice questions':'10 calculations'):i.kind==='course'?'Course':i.kind==='conclusion'?'Conclusion Lab':i.kind==='redraft'?'Redrafts':i.kind==='follow'?'Follow-up':'Written answers';
+      const order=['Written answers','Conclusion Lab','Redrafts','Follow-up','Paper 2 drill','Paper 3 drill','20 multiple-choice questions','10 calculations','Course'];const g={};
       items.forEach(i=>{const k=grp(i);g[k]=g[k]||{label:k,done:0,total:0};g[k].total++;if(isDone(i))g[k].done++;});
       schedInfo={due,total:items.length,done:items.filter(isDone).length,groups:order.filter(k=>g[k]).map(k=>g[k])};
     }
