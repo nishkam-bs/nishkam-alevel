@@ -17,14 +17,17 @@ function deadline(due){const [y,m,d]=due.split('-').map(Number);return Date.UTC(
 function releaseOf(due){const w=(window.SCHED_PLAN&&SCHED_PLAN.weeks||[]).find(x=>x.due===due);return w?w.release:null;}
 const fmtDay=due=>new Date(due+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'});
 
+/* where a case study starts, when the paper has pages students might think are missing */
+const PAGE={'P2-2019-02.1':'The WeRide case study starts on page 10. Question 1 has no data in the published paper, so ignore it.','P2-2019-02.2':'The WeRide case study starts on page 10. Question 1 has no data in the published paper, so ignore it.',
+  'P2-2019-03.1':'Question 1 has no data in the published paper, so ignore it.','P2-2019-03.2':'Question 1 has no data in the published paper, so ignore it.','P2-2019-03.3':'Question 1 has no data in the published paper, so ignore it.'};
 function labFor(marks){return marks===25?'marker.html':marks===9||marks===12?'nine_marker_lab.html':'open_essay_lab.html';}
 function describe(it){
   if(it.kind==='exam'){const e=EX[it.ref];if(!e)return{title:it.ref,sub:'',link:'#'};
-    return {title:`Paper ${e.paper} ${e.label}, Q${e.num} (${e.marks} marks)`,sub:e.q,needs:e.paper>1?`You need the ${e.label} Paper ${e.paper} ${e.paper===3?'case study insert':'paper (case study and appendices)'}.`:(/figure|table|diagram|appendix|chart/i.test(e.needs||'')?`Look at ${e.needs.replace(/^the /i,'')} in the ${e.label} Paper 1.`:''),
+    return {title:`Paper ${e.paper} ${e.label}, Q${e.num} (${e.marks} marks)`,sub:e.q,needs:e.paper>1?`You need the ${e.label} Paper ${e.paper} ${e.paper===3?'case study insert':'paper (case study and appendices)'}.`+(PAGE[e.id]?' '+PAGE[e.id]:''):(/figure|table|diagram|appendix|chart/i.test(e.needs||'')?`Look at ${e.needs.replace(/^the /i,'')} in the ${e.label} Paper 1.`:''),
       link:`${e.lab}?q=${encodeURIComponent(e.id)}`,marks:e.marks,paper:e.paper};}
   if(it.kind==='choice'){const opts=String(it.ref).split(',').map(id=>EX[id]).filter(Boolean);if(!opts.length)return{title:it.ref,sub:'',link:'#'};const e=opts[0];
     return {title:`Choose one: Paper ${e.paper} ${e.label} (${e.marks} marks)`,sub:'Answer one of these. You can do more if you want.',choice:opts.map(o=>({title:`Q${o.num}`,sub:o.q,link:`${o.lab}?q=${encodeURIComponent(o.id)}`})),
-      needs:e.paper>1?`You need the ${e.label} Paper ${e.paper} paper (case study and appendices).`:'',marks:e.marks,paper:e.paper};}
+      needs:e.paper>1?`You need the ${e.label} Paper ${e.paper} paper (case study and appendices).`+(PAGE[e.id]?' '+PAGE[e.id]:''):'',marks:e.marks,paper:e.paper};}
   if(it.kind==='quiz'){const mcq=/^mcq/.test(it.ref);return {title:it.title||(mcq?'20 multiple-choice questions':'10 calculations'),
     sub:mcq?'Half from past papers, half new. Click an answer and you see straight away whether it is right, with the explanation.':'Half from past papers, half new. Click an answer and the worked solution appears underneath.',link:`weekly.html?set=${encodeURIComponent(it.ref)}`};}
   if(it.kind==='drill'){const p3=/^p3/.test(it.ref);return {title:it.title||(p3?'Paper 3 case drill':'Paper 2 data drill'),
