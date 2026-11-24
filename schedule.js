@@ -32,6 +32,7 @@ function describe(it){
     sub:mcq?'Half from past papers, half new. Click an answer and you see straight away whether it is right, with the explanation.':'Half from past papers, half new. Click an answer and the worked solution appears underneath.',link:`weekly.html?set=${encodeURIComponent(it.ref)}`};}
   if(it.kind==='drill'){const p3=/^p3/.test(it.ref);return {title:it.title||(p3?'Paper 3 case drill':'Paper 2 data drill'),
     sub:p3?'About 25 minutes: match the insert to all six questions, choose the calculations, pick the data and work them out. All clicking, no writing.':'About 15 minutes: choose the calculations, work them out, then say what the numbers mean. All clicking apart from typing your answers.',link:`drill.html?d=${encodeURIComponent(it.ref)}`};}
+  if(it.kind==='conclusion'){const q=window.CBANK&&CBANK.byId[it.ref];return {title:'Conclusion Lab'+(q?': '+q.src:''),sub:(q?q.q+' ':'')+'The two paragraphs are written for you. Write the conclusion, then have a second go after the feedback.',link:'conclusion-lab.html?q='+encodeURIComponent('CL:'+it.ref)};}
   if(it.kind==='course'){const c=COURSES[it.ref]||[0,it.title||it.ref,'courses.html'];return {title:it.title||c[1],sub:'Pass every stage.',link:c[2]};}
   if(it.kind==='redraft')return {title:'Redraft: '+(it.title||'the part where you lost marks'),sub:it.detail||'',link:'redraft.html'};
   if(it.kind==='follow')return {title:'Follow-up: '+(it.title||'practice'),sub:'A short set on a topic that has come up more than once in your work.',link:'practice.html#w='+encodeURIComponent(it.ref)};
@@ -43,7 +44,7 @@ function status(it,ctx,now){
   now=now||Date.now();const dl=deadline(it.due);
   if(ctx.excused&&ctx.excused.has(it.id))return {s:'excused'};
   let t=null,done=false;
-  if(it.kind==='exam'||it.kind==='question'){const ref=it.kind==='exam'?it.ref:it.id;const x=ctx.marks&&ctx.marks[ref];if(x){done=true;t=Date.parse(x);}}
+  if(it.kind==='exam'||it.kind==='question'||it.kind==='conclusion'){const ref=it.kind==='exam'?it.ref:it.kind==='conclusion'?'CL:'+it.ref:it.id;const x=ctx.marks&&ctx.marks[ref];if(x){done=true;t=Date.parse(x);}}
   else if(it.kind==='choice'){String(it.ref).split(',').forEach(r=>{const x=ctx.marks&&ctx.marks[r];if(x){const tt=Date.parse(x);if(!done||tt<t)t=tt;done=true;}});}
   else if(it.kind==='redraft'||it.kind==='follow'){if(it.doneAt){done=true;t=Date.parse(it.doneAt)||null;}}
   else if(it.kind==='quiz'||it.kind==='drill'){const q=(ctx.store||{})[it.kind+':'+it.ref];if(q&&q.done){done=true;t=Date.parse(q.done)||null;}}
