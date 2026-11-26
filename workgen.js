@@ -11,7 +11,7 @@ const T=window.TAXO,TOP=window.Analysis?window.Analysis.TOP:{};
 const SKILLS=T.skills.map(s=>s[0]);
 
 const RULES=`Rules for every question:
-- Stay strictly within the AQA A-level Business specification (7132). Do not use models that are not on it: Bowman's strategic clock, Blake Mouton grid, Hackman and Oldham, Kaplan and Norton, Greiner, Bartlett and Ghoshal, Hofstede. Call Mendelow's grid "stakeholder mapping". Price and income elasticity are for interpreting, not calculating.
+- Stay strictly within the AQA A-level Business specification (7132). Do not use models that are not on it: Bowman's strategic clock, Blake Mouton grid, Hackman and Oldham, Kaplan and Norton, Greiner, Bartlett and Ghoshal, Hofstede. Call Mendelow's grid "stakeholder mapping". The only financial ratios on the specification are ROCE, the current ratio, gearing, payables days, receivables days, inventory turnover and the profit margins: never use the acid test ratio, interest cover or debt to equity. Price and income elasticity are for interpreting, not calculating.
 - Write in British English and plain, clear teacher language. No hype, no emoji, never mention grades or A*.
 - Use short fictional UK businesses with realistic numbers when context is needed. Do not use real people.
 - Multiple choice: exactly 4 options, one clearly correct, three plausible wrong answers based on real misconceptions. All four options must be about the same length and written in the same style, and the correct one must not be the longest or the most detailed; students should not be able to spot it from its length. No "all of the above" or "none of the above". The explanation says why the answer is right in one or two sentences, without referring to option letters or positions.
@@ -101,7 +101,7 @@ function shownAnswer(it){const f=finalOf(it.working);return f!=null&&!near(f,it.
 function clean(spec,topicIds){
   const ok=new Set(topicIds&&topicIds.length?topicIds:Object.keys(TOP));
   const items=(spec.items||[]).map(it=>{
-    if(!it||!it.q)return null;
+    if(!it||!it.q||offSpec(it))return null;
     const o={type:it.type,topic:ok.has(it.topic)?it.topic:(TOP[it.topic]?it.topic:(topicIds||[])[0]||null),skill:SKILLS.includes(it.skill)?it.skill:'knowledge',q:String(it.q)};
     if(it.type==='mcq'){
       if(!Array.isArray(it.options)||it.options.length!==4)return null;
@@ -166,10 +166,14 @@ async function checked(items){
 }
 /* re-mark the calculations in a finished set with the current rules (answers written in full,
    answers that match the working). Returns null if nothing changes. */
+/* questions on ratios that are not on the 7132 specification (sets made before this was blocked) do not count */
+const OFFSPEC=/acid[\s-]*test|quick ratio|interest cover|debt[\s-]*to[\s-]*equity/i;
+const NOT_COUNTED={marks:0,max:0,feedback:'This question is not on your AQA specification, so it does not count. You only need the current ratio for liquidity.'};
+function offSpec(it){return !!it&&OFFSPEC.test([it.q,it.case,...(it.options||[]),it.explain].filter(Boolean).join(' '));}
 function recheck(spec,answers,result){
   if(!result||!Array.isArray(result.items))return null;
   const items=spec.items||[];let changed=false;
-  const out=result.items.map((r,i)=>{const it=items[i];if(!it||it.type!=='calc'||!r)return r;
+  const out=result.items.map((r,i)=>{const it=items[i];if(offSpec(it)){if(r&&r.max===0)return r;changed=true;return Object.assign({},NOT_COUNTED);}if(!it||it.type!=='calc'||!r)return r;
     const ok=calcOk(it,(answers||{})[i])?1:0;if(ok===r.ok)return r;changed=true;return Object.assign({},r,{ok,marks:ok*2,max:2});});
   if(!changed)return null;
   return {items:out,score:out.reduce((a,r)=>a+(r?r.marks:0),0),total:out.reduce((a,r)=>a+(r?r.max:0),0)};
@@ -214,7 +218,8 @@ async function mark(spec,answers){
   const items=spec.items||[],res=items.map(()=>null),open=[];
   items.forEach((it,i)=>{
     const a=answers[i];
-    if(it.type==='mcq')res[i]={ok:+a===it.answer?1:0,marks:+a===it.answer?1:0,max:1};
+    if(offSpec(it))res[i]=Object.assign({},NOT_COUNTED);
+    else if(it.type==='mcq')res[i]={ok:+a===it.answer?1:0,marks:+a===it.answer?1:0,max:1};
     else if(it.type==='calc'){
       const ok=calcOk(it,a)?1:0;
       res[i]={ok,marks:ok*2,max:2};
@@ -265,5 +270,5 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 const typeName={mcq:'Multiple choice',calc:'Calculation',short:'Short answer',extended:'Extended answer'};
 const label=it=>{const t=TOP[it.topic];return (t?`${t.ref} ${t.title}`:'')+(it.marks?` · ${it.marks} marks`:'');};
 
-window.WorkGen={generate,mark,remarkFailed,clean,verify,recap,recheck,shownAnswer,calcOk,esc,typeName,label};
+window.WorkGen={generate,mark,remarkFailed,offSpec,clean,verify,recap,recheck,shownAnswer,calcOk,esc,typeName,label};
 })();
