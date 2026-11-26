@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script src="spec.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Concept Confusions Course</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -279,14 +280,14 @@ const STAGES=[
      o:['15%','85%','30','17.6%'], a:1,
      why:'Retention = staff who stayed ÷ staff at the start × 100 = 170 ÷ 200 = 85%. 15% is the share who left. In 2019 students understood productivity better than retention.'},
     {src:'Based on AQA June 2026 · Paper 2 report (Q3.3)', prompt:'A sales team gets a bonus at the end of the year if it hits its sales target. What is this?',
-     o:['Piece rate','Performance-related pay','Profit sharing','A higher basic salary for the team'], a:1,
+     o:['Piece rate','Performance-related pay','Commission','A higher basic salary for the team'], a:1,
      why:'PRP rewards meeting targets. Piece rate pays an amount for each unit produced.'},
     {src:'Based on AQA June 2026 · Paper 2 report (Q3.3)', prompt:'A machinist is paid £1.20 for every garment she finishes. What is this?',
-     o:['Piece rate','Performance-related pay','Profit sharing','A salary'], a:0,
+     o:['Piece rate','Performance-related pay','Commission','A salary'], a:0,
      why:'Pay per unit produced is piece rate. It only works where each worker\'s output is easy to count.'},
-    {src:'Based on AQA June 2026 · Paper 2 report (Q3.3)', prompt:'Every employee receives a bonus worth 5% of the company\'s annual profit, shared out in proportion to salary. What is this?',
-     o:['Piece rate','Performance-related pay','Profit sharing','Commission'], a:2,
-     why:'It depends on the whole company\'s profit, not on an individual\'s targets or output.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q3.3)', prompt:'A sales assistant is paid 3% of the value of everything she sells. What is this?',
+     o:['Piece rate','Performance-related pay','Salary','Commission'], a:3,
+     why:'Pay linked to the value of sales is commission. Piece rate is pay per unit produced, and PRP is a bonus for meeting agreed targets.'},
     {src:'Based on AQA June 2025 · Paper 1 report (Q20)', prompt:'"Analyse how an innovation strategy might affect the role of the HR function." Which sentence answers the question?',
      o:['Staff will feel more motivated because they can see that the business values their ideas and wants to hear them.','HR will need to recruit staff with design skills and train others, so the right people are in place.','Employees may resist the change because they fear for their jobs.','Sales will rise because the products are new.'], a:1,
      why:'The question is about what the HR department does: recruitment, training and workforce planning. The 2025 examiner noted answers that "linked their logic to the impact on employees rather than the role of the HR function".'},
@@ -318,8 +319,8 @@ const STAGES=[
  o:["Giving teams the freedom to decide for themselves how to organise their work","Breaking a job into simple tasks, timing them and paying by output","Rotating staff between jobs so they do not get bored","Consulting employees before decisions are made"], a:1,
  why:"Taylor believed there was one best way to do each task, found by measurement, and that workers were motivated by pay, for example piece rate."},
 {src:"Exam-style · job design", prompt:"A supermarket worker who only stacked shelves is now also responsible for ordering stock and training new staff. What is this?",
- o:["Job enlargement","Job enrichment","Job rotation","Delayering"], a:1,
- why:"Enrichment adds responsibility and more challenging tasks. Enlargement adds more tasks at the same level."},
+ o:["Team working","Job enrichment","Job rotation","Delayering"], a:1,
+ why:"Enrichment adds responsibility and more challenging tasks. Job rotation moves a worker between tasks at the same level, and delayering removes layers of management."},
 {src:"Exam-style · decision making", prompt:"A manager asks her team for their views, then makes the final decision herself. What is this?",
  o:["Delegation","Consultation with the team","Empowerment","A democratic vote"], a:1,
  why:"Consultation means asking for views. Delegation would mean passing the decision itself to the team."},
@@ -342,7 +343,7 @@ const STAGES=[
  o:["More spending on recruiting and training replacement staff","Lower wages for the staff who stay","Higher productivity from the remaining staff","Less absence among the remaining staff"], a:0,
  why:"Every leaver has to be replaced, which costs money in advertising, interviews and training. New staff also take time to become fully productive."},
 {src:"Exam-style · non-financial motivation", prompt:"Which of these is a non-financial method of motivation?",
- o:["Profit sharing","Commission","Team working","Piece rate"], a:2,
+ o:["Performance-related pay","Commission","Team working","Piece rate"], a:2,
  why:"The other three pay workers more money."}
   ]},
 
