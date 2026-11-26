@@ -11,7 +11,9 @@ const T=window.TAXO,TOP=window.Analysis?window.Analysis.TOP:{};
 const SKILLS=T.skills.map(s=>s[0]);
 
 const RULES=`Rules for every question:
-- Stay strictly within the AQA A-level Business specification (7132). Do not use models that are not on it: Bowman's strategic clock, Blake Mouton grid, Hackman and Oldham, Kaplan and Norton, Greiner, Bartlett and Ghoshal, Hofstede. Call Mendelow's grid "stakeholder mapping". The only financial ratios on the specification are ROCE, the current ratio, gearing, payables days, receivables days, inventory turnover and the profit margins: never use the acid test ratio, interest cover or debt to equity. Price and income elasticity are for interpreting, not calculating.
+- Stay strictly within the AQA A-level Business specification (7132). Do not use models that are not on it: Bowman's strategic clock, Blake Mouton grid, Hackman and Oldham, Kaplan and Norton, Greiner, Bartlett and Ghoshal, Hofstede. Call Mendelow's grid "stakeholder mapping". The only financial ratios on the specification are ROCE, the current ratio, gearing, payables days, receivables days, inventory turnover and the profit margins: never use the acid test ratio, interest cover or debt to equity. Price and income elasticity questions can give a PED or YED value and ask for the effect on quantity or revenue, as AQA papers do.
+- Every question must test content that is on the 7132 specification. When a topic's specification content is given, keep the question within it and use the specification's own terms. ${window.SPEC7132?`Never use any of these, which are not on the specification: ${SPEC7132.NOT_ON_SPEC.join('; ')}.`:''}
+- Questions should look and read like real AQA 7132 questions: the same command words (Explain, Analyse, Assess, Evaluate, To what extent, Calculate) and the same style as the past paper questions given.
 - Write in British English and plain, clear teacher language. No hype, no emoji, never mention grades or A*.
 - Use short fictional UK businesses with realistic numbers when context is needed. Do not use real people.
 - Multiple choice: exactly 4 options, one clearly correct, three plausible wrong answers based on real misconceptions. All four options must be about the same length and written in the same style, and the correct one must not be the longest or the most detailed; students should not be able to spot it from its length. No "all of the above" or "none of the above". The explanation says why the answer is right in one or two sentences, without referring to option letters or positions.
@@ -73,7 +75,8 @@ function firstObject(raw){
   }
   return null;
 }
-const topicLine=id=>{const t=TOP[id];return t?`${id} = ${t.ref} ${t.title}`:'';};
+const SP=window.SPEC7132;
+const topicLine=id=>{const t=TOP[id];if(!t)return '';const s=SP&&SP.scope(id);return `${id} = ${t.ref} ${t.title}`+(s?` (specification content: ${s})`:'');};
 
 /* the number the working ends on (after the last "="), or null */
 function finalOf(working){
@@ -124,6 +127,14 @@ function clean(spec,topicIds){
   return {title:String(spec.title||'Practice'),items};
 }
 
+/* real AQA questions on the same topics, so new questions follow the exam's style */
+function pastExamples(topics){
+  const ex=window.EXAMS,A=window.Analysis;if(!ex||!A||!topics.length)return '';
+  const want=new Set(topics);const hits=[];
+  for(const e of ex){const tt=A.topicsIn(e.q,2);if(tt.some(t=>want.has(t)))hits.push(e);if(hits.length>=5)break;}
+  if(!hits.length)return '';
+  return 'Real AQA past paper questions on these topics. Match their style, command words and level of demand (do not copy them):\n'+hits.map(e=>`- ${e.label} Paper ${e.paper} Q${e.num} (${e.marks} marks): ${e.q}`).join('\n');
+}
 /* req: {topics:[ids], counts:{mcq,calc,short,extended}, extendedMarks, about:'text summary of the student', title, note} */
 async function generate(req){
   const c=Object.assign({mcq:0,calc:0,short:0,extended:0},req.counts||{});
@@ -132,6 +143,7 @@ async function generate(req){
   const sys=`You write practice questions for a Year 13 student on AQA A-level Business (7132).\n\n${RULES}\n\n${FORMAT}`;
   const user=[
     topics.length?`Topics to cover (spread the questions across them, weakest first):\n${topics.map(topicLine).join('\n')}`:'Topics: choose from across the course.',
+    pastExamples(topics),
     req.about?`What we know about this student:\n${req.about}\nAim the questions at their gaps. Pitch them so they are challenging but fair.`:'',
     `Write exactly: ${c.mcq} multiple choice, ${c.calc} calculation, ${c.short} short answer, ${c.extended} extended (${req.extendedMarks||9} marks).`,
     req.note?`Teacher's note: ${req.note}`:'',
@@ -167,7 +179,7 @@ async function checked(items){
 /* re-mark the calculations in a finished set with the current rules (answers written in full,
    answers that match the working). Returns null if nothing changes. */
 /* questions on ratios that are not on the 7132 specification (sets made before this was blocked) do not count */
-const OFFSPEC=/acid[\s-]*test|quick ratio|interest cover|debt[\s-]*to[\s-]*equity/i;
+const OFFSPEC=window.SPEC7132?SPEC7132.NOT_RE:/acid[\s-]*test|quick ratio|interest cover|debt[\s-]*to[\s-]*equity/i;
 const NOT_COUNTED={marks:0,max:0,feedback:'This question is not on your AQA specification, so it does not count. You only need the current ratio for liquidity.'};
 function offSpec(it){return !!it&&OFFSPEC.test([it.q,it.case,...(it.options||[]),it.explain].filter(Boolean).join(' '));}
 function recheck(spec,answers,result){
@@ -243,6 +255,7 @@ async function verify(spec){
 - Multiple choice: give the index (0-3) of the one correct option, or -1 if no option is correct, more than one could be defended, or the question is unclear.
 - Calculation: work it out and give the number only.
 - Short answer: "ok" is true only if the question is clear, on the 7132 specification, and every mark point is accurate.
+- Any item that tests something not on the AQA 7132 specification${window.SPEC7132?` (for example: ${SPEC7132.NOT_ON_SPEC.slice(0,12).join('; ')})`:''}: give -1 for multiple choice, null for a calculation, false for a short answer.
 If a recap is given, "recap_ok" is true only if every statement in it is accurate and on the 7132 specification.
 Return JSON only: {"items":[{"i":0,"answer":0,"ok":true,"issue":""}],"recap_ok":true,"recap_issue":""}`;
   const body=items.map((it,i)=>it.type==='mcq'?`Item ${i} (multiple choice): ${it.q}\n${it.options.map((o,k)=>k+') '+o).join('\n')}`
@@ -261,7 +274,7 @@ Return JSON only: {"items":[{"i":0,"answer":0,"ok":true,"issue":""}],"recap_ok":
 async function recap(topicId,about){
   const t=TOP[topicId];if(!t)return '';
   const sys=`You write a short recap of one topic for a Year 13 student on AQA A-level Business (7132), as their teacher would. 80 to 130 words, plain British English, no headings, no lists, no hype. Explain the idea accurately, then the point students most often get wrong about it. Stay strictly within the 7132 specification. Return JSON only: {"recap":"..."}`;
-  const d=await ask(sys,`Topic: ${t.ref} ${t.title}${about?`\n\nWhat this student has been getting wrong:\n${about}`:''}`,800);
+  const d=await ask(sys,`Topic: ${t.ref} ${t.title}${SP&&SP.scope(topicId)?` (specification content: ${SP.scope(topicId)})`:''}${SP?`\nDo not mention anything that is not on the specification, such as: ${SP.NOT_ON_SPEC.join('; ')}.`:''}${about?`\n\nWhat this student has been getting wrong:\n${about}`:''}`,800);
   return String(d.recap||'').trim();
 }
 
