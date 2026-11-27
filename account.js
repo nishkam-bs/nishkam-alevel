@@ -156,7 +156,7 @@ async function signOut(){
 
 /* ---------- this week's schedule (for the notice on every page) ---------- */
 let schedInfo=null;
-const CO={endpoint_course_v1:0,judgement_course_v1:100,calc_course_v1:200,concepts_course_v1:300,application_course_v1:400,models_course_v1:500,paper3_course_v1:600,rt31_course_v1:700,rt33_course_v1:900,rt32_course_v1:800};
+const CO={endpoint_course_v1:0,judgement_course_v1:100,calc_course_v1:200,concepts_course_v1:300,application_course_v1:400,models_course_v1:500,paper3_course_v1:600,rt31_course_v1:700,rt34_course_v1:1000,rt33_course_v1:900,rt32_course_v1:800};
 function ukDeadline(due){const [y,m,d]=due.split('-').map(Number);const ls=mm=>{const x=new Date(Date.UTC(y,mm+1,0));x.setUTCDate(x.getUTCDate()-x.getUTCDay());return x.getTime()+3600000;};
   const t=Date.UTC(y,m-1,d,12),bst=t>=ls(2)&&t<ls(9);return Date.UTC(y,m-1,d,23,59,59)-(bst?3600000:0);}
 async function loadSched(force){

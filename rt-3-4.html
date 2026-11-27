@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rules and Traps: Unit 3.4 Operational management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+<link rel="stylesheet" href="rt.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   RULES AND TRAPS: UNIT 3.4 OPERATIONAL MANAGEMENT
+   Specification topics 3.4.1 to 3.4.5c (spec.js). Every rule and trap is
+   checked against the AQA papers, mark schemes and examiner reports
+   2017 to 2026. Items marked "AQA June 20xx" are the real questions with
+   AQA's answer; "Based on" means our wording of a reported mistake.
+   Stage numbers are stored in the tracker as 1000 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+const rint=(a,b,s=1)=>Math.round((a+Math.random()*(b-a))/s)*s;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
+const isN=c=>/^[−\-+]?[£€]?[\d.,]+(%|m|bn|k)?$/.test(String(c).trim());
+const tbl=(head,rows)=>{const num=head.map((h,i)=>i>0&&rows.every(r=>isN(r[i])||r[i]===''));return `<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${num[i]?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${num[i]?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;};
+
+/* inventory control chart: max 1,000, buffer 200, usage 100 a day, lead time 3 days, re-order level 500 */
+const X=d=>60+d*26, Y=v=>200-v*0.17;
+const INV=`<div class="chart"><svg viewBox="0 0 520 240" role="img" aria-label="Inventory control chart. Stock starts at 1,000 units and falls by 100 units a day to the buffer stock of 200 units after 8 days, when a delivery of 800 units arrives. Orders are placed when stock reaches the re-order level of 500 units, 3 days before delivery. The pattern repeats.">
+  <line x1="60" y1="20" x2="60" y2="200" style="stroke:var(--fg)"/><line x1="60" y1="200" x2="500" y2="200" style="stroke:var(--fg)"/>
+  ${[0,200,500,1000].map(v=>`<text x="54" y="${Y(v)+4}" text-anchor="end">${v.toLocaleString('en-GB')}</text>`).join('')}
+  ${[0,4,8,12,16].map(d=>`<text x="${X(d)}" y="216" text-anchor="middle">${d}</text>`).join('')}<text x="280" y="234" text-anchor="middle">Days</text>
+  <line x1="60" x2="500" y1="${Y(500)}" y2="${Y(500)}" class="l3" stroke-dasharray="5 4" style="stroke-width:1.5"/><text x="66" y="${Y(500)-5}" style="fill:var(--gold)">Re-order level</text>
+  <line x1="60" x2="500" y1="${Y(200)}" y2="${Y(200)}" class="l2" stroke-dasharray="5 4" style="stroke-width:1.5"/><text x="66" y="${Y(200)+14}" style="fill:var(--end)">Buffer stock</text>
+  <polyline class="l1" points="${X(0)},${Y(1000)} ${X(8)},${Y(200)} ${X(8)},${Y(1000)} ${X(16)},${Y(200)} ${X(16)},${Y(1000)}"/>
+  <line x1="${X(5)}" x2="${X(5)}" y1="${Y(500)}" y2="200" style="stroke:var(--muted)" stroke-dasharray="2 3"/><line x1="${X(13)}" x2="${X(13)}" y1="${Y(500)}" y2="200" style="stroke:var(--muted)" stroke-dasharray="2 3"/>
+  <text x="${X(6.5)}" y="196" text-anchor="middle" style="font-size:11px">lead time</text>
+</svg><div class="cap">Stock falls by 100 units a day. An order is placed at the re-order level (500 units, day 5) and arrives 3 days later (day 8), just as stock reaches the buffer of 200 units. The delivery takes stock back up to 1,000.</div></div>`;
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'drift', title:'Operational objectives', blurb:'Costs, quality, speed of response, flexibility, the environment and added value.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Operational objective','What it means','Example target'],[['Costs','Keeping unit costs down','Cut unit cost by 5% this year'],['Quality','Products and service that meet customer expectations','Reject rate below 1%'],['Speed of response','How quickly customers are served or orders delivered','Deliver within 24 hours'],['Flexibility','Being able to change volume, product mix or delivery times','Switch between products within a day'],['Environmental objectives','Reducing the impact on the environment','Cut waste sent to landfill by 30%'],['Added value','The difference between the selling price and the cost of bought-in materials','Raise added value per unit by £2']])}
+  <h3>Influences on operational objectives</h3>
+  <ul><li><b>Internal</b>: corporate objectives, finance, the skills of the workforce, existing equipment and capacity, the nature of the product.</li>
+  <li><b>External</b>: competitors, customer expectations, the law (e.g. environmental rules), technology, suppliers.</li></ul>
+  <h3>Rules</h3>
+  <ul><li>Objectives can conflict: very high quality or fast delivery usually raises costs.</li>
+  <li>Value added can be increased by raising price (through branding or barriers to entry) or by lowering costs. On June 2023 Paper 1 Q2 both statements were true, and it was the hardest question on the paper because students did not link unit costs to added value.</li>
+  <li>Operational objectives are about how the business produces; corporate objectives are about what the whole business wants to achieve.</li></ul>
+  <div class="trap"><b>The trap</b>Treating "always cut costs" as the only operational objective. A business with a differentiation strategy may prioritise quality or flexibility.</div>`,
+  items:[
+    {src:'AQA June 2023 · Paper 1 Q2', q:'Statement 1 from the 2023 question.', text:'Value added can be increased by creating barriers to entry.', ok:true, why:'Barriers reduce competition, so the business can charge more. This was the hardest question on the 2023 paper.'},
+    {src:'AQA June 2023 · Paper 1 Q2', q:'Statement 2 from the 2023 question.', text:'Value added can be increased by lowering unit costs.', ok:true, why:'Value added is the gap between price and the cost of bought-in inputs; lower costs widen it. Both statements were true.'},
+    {src:'Core rule · objectives', q:'A courier aims to deliver every parcel within 24 hours.', text:'This is a speed of response objective.', ok:true, why:'It is about how quickly customers are served.'},
+    {src:'Core rule · objectives', q:'A factory wants to switch between making three products in the same day.', text:'This is a flexibility objective.', ok:true, why:'Flexibility covers changing the product mix, volume or delivery times.'},
+    {src:'Core rule · conflict', q:'About operational objectives.', text:'Improving quality and cutting unit costs never conflict.', ok:false, why:'Better materials, checks and training usually cost more, at least at first.'},
+    {src:'Core rule · influences', q:'New laws require manufacturers to recycle 70% of their waste.', text:'This is an external influence on operational objectives.', ok:true, why:'The law is outside the business\'s control.'},
+    {src:'Core rule · influences', q:'A business\'s workforce has few skills in using new machinery.', text:'This is an external influence on operational objectives.', ok:false, why:'The skills of its own workforce are an internal influence.'},
+    {src:'Core rule · added value', q:'A bakery buys ingredients for 40p and sells each loaf for £1.80.', text:'The added value per loaf is £1.40.', ok:true, why:'Added value = selling price − cost of bought-in materials.'},
+    {src:'Core rule · environmental', q:'About environmental objectives.', text:'Environmental objectives always raise a business\'s costs.', ok:false, why:'Cutting energy use or waste can lower costs; some changes cost more at first.'},
+    {src:'Core rule · objectives and strategy', q:'A luxury furniture maker competes on craftsmanship.', text:'Quality is likely to be a higher priority than lowest cost.', ok:true, why:'Its customers pay for quality, so that is what operations must deliver.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'calc', title:'Operations calculations', blurb:'Capacity utilisation, labour productivity and unit costs, with new numbers each time.', serve:7, pass:5,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Measure','Formula','Unit'],[['Capacity utilisation','Actual output ÷ maximum possible output × 100','%'],['Labour productivity','Output ÷ number of employees (in a period)','units per worker'],['Unit cost (average cost)','Total costs ÷ units of output','£ per unit'],['Capacity','The maximum output possible with the current resources','units']])}
+  <h3>How it has been examined</h3>
+  <ul><li>June 2025 Paper 1 Q10: which factory hit 80% capacity utilisation and 2 units per employee? Factory C (80 out of 100; 80 ÷ 40 = 2). This was the easiest question on that paper.</li>
+  <li>June 2026 Paper 1 Q7 and June 2023 Q12: output stayed at 200,000 while employees rose from 20 to 22, so productivity fell from 10,000 to about 9,091.</li>
+  <li>June 2024 Paper 1 Q10: capacity rose from 80 to 125 while output rose from 80 to 100, so utilisation fell from 100% to 80%.</li></ul>
+  <div class="trap"><b>The traps</b>Dividing capacity by output (upside down). Forgetting that adding workers without adding output lowers productivity. Giving productivity as a percentage: it is units per worker.</div>`,
+  items:[
+    {src:'Core skill · capacity utilisation', gen(){const c=rint(400,2000,50),u=pick([55,60,65,70,75,80,85,90,95]);const o=c*u/100;
+      return {given:`Maximum capacity <b>${f(c)}</b> units a week. Actual output <b>${f(o)}</b> units.`,prompt:'Calculate capacity utilisation.',unit:'%',ans:u,tol:0.05,traps:[{v:r1(c/o*100),m:'Upside down. Divide output by capacity.'}],work:`${f(o)} ÷ ${f(c)} × 100 = ${u}%.`};}},
+    {src:'Core skill · labour productivity', gen(){const e=rint(20,80),p=rint(30,120);const o=e*p;
+      return {given:`Output <b>${f(o)}</b> units a month. Employees <b>${e}</b>.`,prompt:'Calculate labour productivity (units per worker per month).',unit:'units',ans:p,tol:0,work:`${f(o)} ÷ ${e} = ${p} units per worker.`};}},
+    {src:'Core skill · unit cost', gen(){const q=rint(5,40)*1000,uc=pick([2.5,3,4.2,5,6.8,7.5,12]);const tc=q*uc;
+      return {given:`Total costs <b>£${f(tc)}</b>. Output <b>${f(q)}</b> units.`,prompt:'Calculate the unit cost (in £).',pre:'£',ans:uc,tol:0.005,work:`£${f(tc)} ÷ ${f(q)} = £${f(uc)}.`};}},
+    {src:'Based on AQA June 2026 · Paper 1 Q7', gen(){const o=pick([200000,150000,120000,240000]),a=pick([20,24,25,30]),b=a+pick([2,4,5]);const ans=r1((o/b-o/a)/(o/a)*100);
+      return {given:`Output stayed at <b>${f(o)}</b> units. Employees rose from <b>${a}</b> to <b>${b}</b>.`,prompt:'Calculate the percentage change in labour productivity (1 decimal place, minus sign for a fall).',unit:'%',ans,tol:0.06,
+        work:`Before: ${f(o)} ÷ ${a} = ${f(r1(o/a))}. After: ${f(o)} ÷ ${b} = ${f(r1(o/b))}. Change = ${ans}%.`};}},
+    {src:'Core skill · capacity needed', gen(){const o=rint(300,900,10),u=pick([60,75,80,90]);const c=r1(o/(u/100));
+      return {given:`A factory produces <b>${f(o)}</b> units a week at <b>${u}%</b> capacity utilisation.`,prompt:'What is its maximum capacity (units a week)?',unit:'units',ans:c,tol:0.6,traps:[{v:r1(o*u/100),m:'You multiplied. Capacity = output ÷ utilisation.'}],work:`${f(o)} ÷ ${u/100} = ${f(c)} units.`};}},
+    {src:'Core skill · fixed cost per unit', gen(){const F=rint(20,80)*1000,c=rint(10,40)*1000,u1=pick([50,60]),u2=pick([80,90,100]);const a=r2(F/(c*u1/100)),b=r2(F/(c*u2/100));
+      return {given:`Fixed costs are <b>£${f(F)}</b> a month. Capacity is <b>${f(c)}</b> units. Utilisation rises from <b>${u1}%</b> to <b>${u2}%</b>.`,prompt:'What is fixed cost per unit at the new level (in £, 2 d.p.)?',pre:'£',ans:b,tol:0.006,
+        work:`New output = ${f(c)} × ${u2}% = ${f(c*u2/100)}. £${f(F)} ÷ ${f(c*u2/100)} = £${f(b)} (down from £${f(a)}). This is why higher utilisation lowers unit costs.`};}},
+    {src:'AQA June 2025 · Paper 1 Q10', given:tbl(['Factory','Capacity','Output','Employees'],[['A','100','90','50'],['B','100','85','45'],['C','100','80','40'],['D','100','75','30']])+'Objectives: at least <b>80%</b> capacity utilisation and at least <b>2 units per employee</b>.',prompt:'Calculate Factory C\'s labour productivity (units per employee).',unit:'units',ans:2,tol:0,work:'80 ÷ 40 = 2. Factory C is the only one meeting both targets (A: 1.8, B: 1.9, D: 75%). AQA\'s answer was Factory C.'},
+    {src:'Based on AQA June 2024 · Paper 1 Q10', given:'Capacity rose from <b>80</b> to <b>125</b> units. Output rose from <b>80</b> to <b>100</b> units.',prompt:'What is the new capacity utilisation?',unit:'%',ans:80,tol:0,work:'100 ÷ 125 × 100 = 80% (down from 100%). So lower unit costs could not have come from higher utilisation; economies of scale might explain them.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'mcq', title:'Using capacity', blurb:'Under-utilisation, over-utilisation and what to do about each.', serve:9, pass:7,
+  teach:`<h3>Why utilisation matters</h3>
+  <p>Fixed costs are spread over output. The more of its capacity a business uses, the lower its fixed cost per unit and so its unit cost.</p>
+  ${tbl(['','Under-utilisation (low)','Over-utilisation (near or at 100%)'],[['Problems','High unit costs; idle staff and machines; may signal falling demand','No time for maintenance; breakdowns; stressed staff; quality may slip; cannot take extra orders'],['Solutions','Raise demand (marketing, new markets); reduce capacity (close a site, sell machinery, cut shifts); take on work for other firms','Outsource or subcontract; add capacity; overtime or temporary staff; raise prices; turn some orders away']])}
+  <h3>Rules</h3>
+  <ul><li>Many businesses aim for high utilisation but not 100%, to leave room for maintenance and unexpected orders.</li>
+  <li>Adding capacity lowers utilisation at first (June 2023 Paper 3 Q3: capacity 2,500 → 7,500 meant utilisation fell from 100% to 40%).</li>
+  <li>A sustained rise in utilisation comes from demand rising for good (June 2026 Paper 1 Q13: competitors leaving the market).</li></ul>
+  <div class="trap"><b>The traps</b>On June 2024 Paper 3 Q1 (benefits of high capacity utilisation) many wrote about high capacity or high demand instead. The mark scheme said not to credit arguments about the causes of high utilisation, or about the benefits of high capacity. Capacity and capacity utilisation are different things.</div>`,
+  items:[
+    {src:'AQA June 2017 · Paper 1 Q3', prompt:'A business with a lower level of capacity utilisation than usual may benefit because it:', o:['provides more time for maintenance and repair of machinery.','reduces the average costs of production.','can increase employee morale, because employees feel more secure in their jobs.','represents a more efficient use of capital equipment.'], a:0, why:'This is AQA\'s answer. Low utilisation usually raises average costs, but it does free up time for maintenance.'},
+    {src:'AQA November 2020 · Paper 1 Q3', prompt:'Statement 1: "An increase in capacity utilisation can help a business because it allows more time for maintenance and repair." Statement 2: "An increase in capacity utilisation can help a business because it allows it to meet unexpected increases in demand."', o:['Statement 1 is false. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.'], a:0, why:'This is AQA\'s answer. Higher utilisation means less time for maintenance and less room for extra orders.'},
+    {src:'AQA June 2024 · Paper 1 Q10', table:tbl(['','2020','2021'],[['Capacity','80','125'],['Actual output','80','100']]), prompt:'Unit costs fell between 2020 and 2021. Statement 1: "Economies of scale might have led to lower unit costs." Statement 2: "Higher capacity utilisation might have led to lower unit costs."', o:['Statement 1 is true. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer. Utilisation fell from 100% to 80%, so it cannot explain lower costs; the bigger scale might.'},
+    {src:'AQA June 2026 · Paper 1 Q13', prompt:'Which situation is most likely to lead to a sustained increase in a business\'s average capacity utilisation?', o:['Competitors are leaving the market.','Demand is very seasonal.','It has just constructed an extra factory.','Sales are falling.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'Based on AQA June 2024 · Paper 3 mark scheme (Q1)', prompt:'Which is a genuine benefit of operating at a high level of capacity utilisation?', o:['Fixed costs are spread over more units, so unit costs are lower','The business can easily meet a sudden rise in demand','It has a large factory','The waffle machine is very fast'], a:0, why:'The mark scheme warned against answers about high capacity, high demand or speed of the machine.'},
+    {src:'Core rule · over-utilisation', prompt:'A factory has run at 100% capacity for six months. Which problem is most likely?', o:['Machines break down because there is no time for maintenance','Unit costs are very high','Staff have too little to do','Fixed costs per unit are rising'], a:0, why:'Running flat out leaves no slack.'},
+    {src:'Core rule · under-utilisation', prompt:'Which is a way to deal with long-term under-utilisation?', o:['Close one of the factories','Hire more staff','Build a new factory','Buy more machinery'], a:0, why:'Reducing capacity raises the utilisation of what is left.'},
+    {src:'Core rule · over-utilisation', prompt:'Demand temporarily exceeds what a factory can make. Which is the most flexible response?', o:['Subcontract some production to another firm','Build a new factory','Make all staff redundant','Cut prices'], a:0, why:'Subcontracting adds capacity quickly without long-term cost.'},
+    {src:'Based on AQA June 2023 · Paper 3 mark scheme (Q3)', prompt:'A business triples its capacity from 2,500 to 7,500 units but sales stay the same. What happens?', o:['Utilisation falls from 100% to about 33%, so unit costs are likely to rise until sales grow','Utilisation rises','Unit costs fall straight away','Nothing changes'], a:0, why:'The mark scheme said efficiency depends on whether future sales can raise utilisation.'},
+    {src:'Core rule · rationalisation', prompt:'What is the main drawback of cutting capacity to deal with low demand?', o:['The business may not be able to meet demand if it recovers','Unit costs rise','Fixed costs rise','Utilisation falls'], a:0, why:'Capacity is hard to add back quickly.'}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'mcq', title:'Efficiency, labour and capital, and technology', blurb:'Raising productivity, the mix of labour and capital, and automation.', serve:9, pass:7,
+  teach:`<h3>Increasing efficiency and labour productivity</h3>
+  <ul><li>Training, better motivation, better equipment and technology, better methods (lean, kaizen), better layout.</li>
+  <li>Higher labour productivity lowers labour cost per unit, which can lower prices or raise margins.</li>
+  <li>Difficulties: cost of training and equipment, staff resistance, quality may suffer if staff are pushed too hard.</li></ul>
+  <h3>Labour intensive or capital intensive?</h3>
+  ${tbl(['','Labour intensive','Capital intensive'],[['Meaning','Relatively more people than machinery','Relatively more machinery than people'],['Suits','Hand-made or tailored products, services, low-wage countries, small scale','Mass production of standard products, high-wage countries'],['Advantages','Flexible; lower start-up cost; can tailor products','Low unit costs at high volume; consistent quality'],['Drawbacks','Higher unit costs at volume; less consistent','High initial cost; inflexible; risky if demand is uncertain']])}
+  <h3>Technology</h3>
+  <p>Automation and robotics (added in 2023, not yet examined), computer-aided design and manufacturing, and stock control systems can raise productivity and consistency. They cost a lot, may need new skills, can cause redundancies and resistance, and can reduce flexibility.</p>
+  <div class="trap"><b>The traps</b>On June 2019 Paper 1 Q3, machinery replaced workers and unit costs rose 5%: that is more capital intensive production with diseconomies of scale. On June 2022 Paper 1 Q21 (why choose labour intensive) some argued the opposite case and lost time. On June 2026 Paper 1 Q23 students had strong examples of capital intensive firms but few for labour intensive ones. Do not confuse lean production with capital intensive production (2024 report).</div>`,
+  items:[
+    {src:'AQA June 2019 · Paper 1 Q3', prompt:'A business replaces some of its workforce with machinery. This leads to a 10% increase in capacity and output and a 5% increase in unit costs. This is an example of:', o:['more capital intensive production and diseconomies of scale.','more capital intensive production and economies of scale.','more labour intensive production and economies of scale.','more labour intensive production and diseconomies of scale.'], a:0, why:'This is AQA\'s answer. More machinery means more capital intensive; unit costs rising as output grows is a diseconomy of scale.'},
+    {src:'Core rule · capital intensive', prompt:'Which business is most likely to be capital intensive?', o:['A car maker using robotic assembly lines','A hairdresser','A tailor making suits by hand','A small architecture firm'], a:0, why:'Mass production of a standard product suits heavy use of machinery.'},
+    {src:'AQA June 2026 · Paper 1 mark scheme (Q23)', prompt:'Which is a valid reason a labour-intensive process might be more profitable than a capital-intensive one?', o:['Craft or made-to-order products can charge higher prices and need little expensive equipment','Labour is always cheaper than machinery','Labour-intensive processes always give consistent quality','Machines cannot make anything'], a:0, why:'The mark scheme credited higher prices for purpose-made products, skilled labour adding value and lower risk without big capital costs.'},
+    {src:'Based on AQA June 2022 · Paper 1 Q21', prompt:'A question asks: "Analyse why a business might choose labour intensive processes rather than capital intensive processes." What should the answer do?', o:['Develop reasons for choosing labour intensive processes','Explain why capital intensive is better','Give equal space to both','Define both terms and stop'], a:0, why:'The report said some students lost time arguing the case for capital intensive processes.'},
+    {src:'Core rule · productivity', prompt:'Labour productivity rises while wages stay the same. What happens to labour cost per unit?', o:['It falls','It rises','It stays the same','It doubles'], a:0, why:'The same wage bill is spread over more output.'},
+    {src:'Based on AQA June 2024 · Paper 2 Q1.3', prompt:'A business\'s labour productivity is falling while the industry average is rising. What is the most likely effect on its market share?', o:['It falls, because its unit costs rise relative to rivals and it becomes less price competitive','It rises','No effect','It rises because it employs more people'], a:0, why:'The mark scheme linked falling productivity to higher unit costs, higher prices and lost market share.'},
+    {src:'Core rule · technology', prompt:'Which is a likely drawback of automating a production line?', o:['High initial cost and possible resistance from staff','Unit costs rise at high output','Quality becomes less consistent','The business becomes more flexible'], a:0, why:'Automation needs heavy investment and can threaten jobs.'},
+    {src:'Core rule · optimal mix', prompt:'Which factor would push a business towards a more labour intensive process?', o:['Low wages and products that need to be tailored to each customer','High wages and a standard product','Very high volumes','A need for identical quality on every unit'], a:0, why:'Cheap labour and the need for flexibility favour people over machines.'},
+    {src:'Core rule · efficiency', prompt:'Which is the most likely way training staff improves efficiency?', o:['Staff work faster and make fewer mistakes, so output per worker rises and waste falls','Training always reduces costs immediately','It reduces the number of staff needed straight away','It replaces machinery'], a:0, why:'Training raises productivity and quality, though it costs money first.'},
+    {src:'Core rule · capital intensive', prompt:'Why is capital intensive production risky when demand is uncertain?', o:['High fixed costs must be covered even if sales are low','Variable costs are high','Workers can leave','It is always illegal'], a:0, why:'Machinery is a fixed cost whether or not it is used.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'drift', title:'Lean production, just in time and just in case', blurb:'Cutting waste, kaizen, and the choice between JIT and buffer stock.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Refresher</h3>
+  <p><b>Lean production</b> means cutting waste of every kind: materials, time, inventory, faulty products, unnecessary movement. It uses methods such as just in time, kaizen and getting quality right first time.</p>
+  ${tbl(['','Just in time (JIT)','Just in case (JIC)'],[['Idea','Inventory arrives only when it is needed; little or no buffer stock','Hold buffer stock in case of a rise in demand or a supply problem'],['Benefits','Less cash tied up; lower storage costs; less waste and damage','Can meet sudden demand; protected from late deliveries'],['Drawbacks','Needs very reliable suppliers; production stops if supplies are late; no bulk-buying discounts; more frequent orders','Storage costs; cash tied up; stock can go out of date or be damaged']])}
+  <p><b>Kaizen</b> means continuous improvement through small changes suggested by staff. It is internal, incremental change (June 2023 Paper 1 Q7).</p>
+  <h3>Rules</h3>
+  <ul><li>Lean reduces unit costs mainly by cutting waste, not by bulk buying (June 2020 Q5 and June 2026 Q3).</li>
+  <li>Lean does not always lower unit costs: bulk discounts are lost, kaizen takes time, a culture change is needed, and the aim may be quality rather than cost (June 2024 Paper 1 Q24 mark scheme).</li></ul>
+  <div class="trap"><b>The traps</b>Thinking lean means bulk buying. Confusing lean with capital intensive production (2024 report). Just in case was added in 2023 and has not been examined yet, so expect a question comparing it with JIT.</div>`,
+  items:[
+    {src:'AQA June 2026 · Paper 1 Q3', q:'Statement 1 from the 2026 question.', text:'Lean production should reduce unit costs because it reduces wastage.', ok:true, why:'Statement 1 was true.'},
+    {src:'AQA June 2026 · Paper 1 Q3', q:'Statement 2 from the 2026 question.', text:'Lean production should reduce unit costs because it increases opportunities for bulk-buying of raw materials.', ok:false, why:'JIT means small, frequent orders, so bulk-buying opportunities fall. AQA\'s answer: statement 1 true, statement 2 false.'},
+    {src:'AQA June 2023 · Paper 1 Q7', q:'A business starts to use kaizen.', text:'This should lead to internal, incremental change.', ok:true, why:'This was AQA\'s answer, and the easiest question on the 2023 paper.'},
+    {src:'Core rule · JIT', q:'About just in time.', text:'JIT depends on reliable suppliers.', ok:true, why:'With little buffer stock, one late delivery can stop production.'},
+    {src:'AQA June 2024 · Paper 1 mark scheme (Q24)', q:'About lean production.', text:'Lean production always leads to lower unit costs.', ok:false, why:'Lost bulk discounts, time spent on kaizen, cultural change and a focus on quality can all raise unit costs, especially in the short term.'},
+    {src:'Core rule · JIC', q:'A business holds three weeks of buffer stock in case a supplier is late.', text:'This is a just in case approach.', ok:true, why:'Stock is held as protection against problems.'},
+    {src:'Core rule · JIC', q:'About just in case.', text:'Holding extra stock ties up cash and costs money to store.', ok:true, why:'These are the main costs of JIC.'},
+    {src:'Based on AQA June 2025 · Paper 2 Q2.2', q:'A food retailer that sells fresh products and wants high gross margins uses JIT.', text:'JIT can help it keep food fresh and cut wastage.', ok:true, why:'The mark scheme credited freshness, lower waste and lower costs for a retailer. Some students wrote about manufacturing instead.'},
+    {src:'Core rule · lean and quality', q:'About lean production.', text:'Getting quality right first time is part of lean production.', ok:true, why:'Faulty products are a form of waste.'},
+    {src:'Core rule · lean and capital', q:'About lean production.', text:'Lean production means the same as capital intensive production.', ok:false, why:'Lean is about cutting waste; capital intensive is about using more machinery. The 2024 report noted some students confused them.'},
+    {src:'Core rule · JIT and disruption', q:'Global shipping is badly disrupted.', text:'Businesses using JIT are more exposed than those holding buffer stock.', ok:true, why:'They have little stock to fall back on.'}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'mcq', title:'Quality', blurb:'Quality control and quality assurance, ways to improve quality, and the cost of getting it wrong.', serve:9, pass:7,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['','Quality control (QC)','Quality assurance (QA)'],[['Idea','Inspect products, usually at the end, and reject faulty ones','Build quality into every stage; every worker is responsible; aim to get it right first time'],['Benefits','Faulty products are stopped before they reach customers; less training needed','Less waste; fewer inspectors; workers motivated by responsibility; consistent quality'],['Drawbacks','Faults are found after the cost of making them; workers may see quality as someone else\'s job','Needs training and the right culture; relies on every worker']])}
+  <h3>Improving quality</h3>
+  <ul><li>Methods: training, quality circles, kaizen, benchmarking against the best, better materials and suppliers, quality standards.</li>
+  <li>Benefits: fewer returns and complaints, less waste, a better reputation, a higher price and more inelastic demand.</li>
+  <li>Difficulties: cost, time, the need for staff commitment.</li></ul>
+  <h3>The consequences of poor quality</h3>
+  <p>Waste and reworking, returns and refunds, compensation, lost customers and reputation, having to cut prices.</p>
+  <div class="trap"><b>The trap</b>On June 2025 Paper 1 Q24 (will QA always give more profit than QC?) a significant minority confused the two throughout; the mark scheme treated this as a major error. Remember: control checks at the end; assurance prevents faults in the first place.</div>`,
+  items:[
+    {src:'Core rule · QA and QC', prompt:'A factory employs inspectors to check every tenth product at the end of the line. This is:', o:['quality control','quality assurance','kaizen','benchmarking'], a:0, why:'Checking finished products is quality control.'},
+    {src:'Core rule · QA and QC', prompt:'Every worker checks their own work at each stage and is responsible for getting it right first time. This is:', o:['quality assurance','quality control','just in case','outsourcing'], a:0, why:'Quality is built in at every stage.'},
+    {src:'AQA June 2025 · Paper 1 mark scheme (Q24)', prompt:'Which is a valid reason quality assurance might lead to higher profits than quality control?', o:['Getting it right first time cuts waste and removes the need for a team of inspectors','QA needs no training at all','QA guarantees no faulty product ever reaches a customer','QC has no costs'], a:0, why:'The mark scheme listed lower waste, fewer inspectors and more motivated workers.'},
+    {src:'AQA June 2025 · Paper 1 mark scheme (Q24)', prompt:'Which is a valid reason quality control might be better than quality assurance for some businesses?', o:['It needs less training, so it may cost less if QA would only improve quality slightly','It always gives higher quality','It motivates every worker','It removes all waste'], a:0, why:'The mark scheme also noted QA relies on every worker avoiding mistakes.'},
+    {src:'Core rule · benefits', prompt:'How can higher quality raise profit?', o:['Customers will pay more and demand becomes more price inelastic','Higher quality always lowers costs immediately','It removes the need for marketing','It reduces the price customers will pay'], a:0, why:'Quality supports a higher price and loyalty.'},
+    {src:'Core rule · consequences', prompt:'Which is a consequence of poor quality?', o:['More returns, refunds and damage to reputation','Lower waste','Higher prices','Fewer complaints'], a:0, why:'Poor quality costs money and customers.'},
+    {src:'Core rule · methods', prompt:'A group of workers meets weekly to find ways to reduce faults. This is:', o:['a quality circle','quality control','just in time','outsourcing'], a:0, why:'Staff work together to solve quality problems.'},
+    {src:'Core rule · benchmarking', prompt:'A hotel compares its check-in times and complaint rates with the best hotels in its market. This is:', o:['benchmarking','quality control','kaizen','penetration pricing'], a:0, why:'Benchmarking compares performance with the best.'},
+    {src:'Core rule · QC drawback', prompt:'What is a weakness of relying on quality control?', o:['Workers may think quality is the inspectors\' job, so more faults are made','It finds no faulty products','It costs nothing','It needs every worker to be trained'], a:0, why:'The 2025 mark scheme made this point.'},
+    {src:'AQA June 2025 · Paper 1 mark scheme (Q24)', prompt:'When might neither QA nor QC be worth the cost?', o:['When customers are not prepared to pay a higher price for better quality','When quality matters a lot to customers','In any premium market','When competitors have better quality'], a:0, why:'The mark scheme suggested both may be unnecessary if customers will not pay for quality.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'mcq', title:'Matching supply to demand', blurb:'Outsourcing, temporary and part-time staff, and producing to order.', serve:8, pass:6,
+  teach:`<h3>Refresher</h3>
+  <p>Demand rises and falls, often by season. Businesses use these ways to match what they supply to what customers want:</p>
+  ${tbl(['Method','Benefits','Drawbacks'],[['Outsourcing (subcontracting)','Extra capacity quickly; no long-term cost; specialists','Less control over quality and deadlines; supplier takes some of the profit'],['Temporary and part-time staff','Labour matched to busy periods; lower costs in quiet times','Less training and commitment; quality and service may suffer'],['Producing to order','No unsold stock; products tailored to customers','Customers wait; less chance of economies of scale']])}
+  <h3>Rules</h3>
+  <ul><li>When a business cannot supply enough to meet demand, outsourcing production is the most suitable quick response (June 2026 Paper 1 Q1, answered correctly by 96%).</li>
+  <li>Outsourcing more production improves a manufacturer\'s ability to respond to changes in demand (June 2023 Paper 1 Q14).</li>
+  <li>Keeping capacity utilisation very high, specialising workers in one task, or holding very little inventory all make it harder to respond.</li></ul>`,
+  items:[
+    {src:'AQA June 2026 · Paper 1 Q1', prompt:'A business is unable to supply enough goods to meet demand. Which would be the most suitable response?', o:['Outsource production','Decrease its prices','Increase its marketing expenditure','Reduce number of staff'], a:0, why:'This is AQA\'s answer. The others would raise demand further or cut capacity.'},
+    {src:'AQA June 2023 · Paper 1 Q14', prompt:'Which action would improve the ability of a manufacturer to respond to changes in consumer demand?', o:['Outsourcing more production to other manufacturers','Ensuring workers are highly trained in one specialised role','Maintaining high capacity utilisation levels','Reducing warehouse size in order to minimise levels of inventory'], a:0, why:'This is AQA\'s answer. Outsourcing can be scaled up or down; the other options reduce flexibility.'},
+    {src:'Core rule · temporary staff', prompt:'A toy shop takes on extra staff for November and December only. This is an example of:', o:['using temporary staff to match supply to demand','outsourcing','producing to order','quality assurance'], a:0, why:'Labour is added for the busy period.'},
+    {src:'Core rule · produce to order', prompt:'What is the main benefit of producing to order?', o:['No unsold stock is left over','Customers never wait','Economies of scale are maximised','It needs no staff'], a:0, why:'Products are only made once a customer has ordered.'},
+    {src:'Core rule · outsourcing risk', prompt:'What is the main risk of outsourcing production?', o:['Less control over quality and delivery times','It always costs more','The business loses its brand name','It reduces flexibility'], a:0, why:'Another business is now doing the work.'},
+    {src:'Core rule · temporary staff', prompt:'Which is a drawback of relying on temporary staff?', o:['They may be less trained and committed, so service can suffer','They raise costs in quiet periods','They make the business less flexible','They cannot be used in services'], a:0, why:'Short-term staff have less time to learn the job.'},
+    {src:'Core rule · flexibility', prompt:'Which makes a factory less able to respond to a sudden rise in demand?', o:['Running at 100% capacity utilisation','Having multi-skilled staff','Using subcontractors','Holding some buffer stock'], a:0, why:'There is no spare capacity to use.'},
+    {src:'Core rule · seasonality', prompt:'An ice cream maker has very seasonal demand. Which combination helps match supply to demand?', o:['Part-time staff in summer and outsourcing at peak times','Permanent staff all year at full capacity','Building a factory big enough for the summer peak','Producing only in winter'], a:0, why:'Flexible labour and outsourcing cover the peaks without paying for unused capacity all year.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'calc', title:'Inventory control charts', blurb:'Buffer stock, re-order level, re-order quantity, lead time and usage.', serve:7, pass:5,
+  teach:`<h3>Refresher</h3>
+  ${INV}
+  ${tbl(['Term','Meaning','On the chart above'],[['Buffer stock','The minimum stock kept for emergencies','200 units'],['Maximum stock','The highest level stock reaches','1,000 units'],['Re-order level','The stock level at which a new order is placed','500 units'],['Lead time','Days between placing an order and receiving it','3 days'],['Re-order quantity','The amount ordered each time','800 units'],['Usage','How fast stock is used: the slope of the line','100 units a day']])}
+  <h3>Formulas</h3>
+  <ul><li><b>Re-order level</b> = buffer stock + (daily usage × lead time).</li>
+  <li><b>Re-order quantity</b> = maximum stock − buffer stock (when the delivery arrives as stock reaches the buffer).</li>
+  <li><b>Daily usage</b> = fall in stock ÷ number of days.</li></ul>
+  <h3>How it has been examined</h3>
+  <ul><li>June 2018 Paper 1 Q15: re-order level = 80 + (35 × 5) = 255 units.</li>
+  <li>June 2022 Paper 2 Q3.1 to 3.3: lead time 4 days; re-order quantity 6,000 − 750 = 5,250 units; usage 350 units a day. Many used the re-order level instead of the buffer stock, and left off the units (days, units).</li>
+  <li>June 2023 Paper 1 Q16: draw changes on an inventory chart. The slope after day 4 was often drawn wrongly.</li></ul>
+  <div class="trap"><b>The traps</b>Confusing lead time with the re-order level (one is days, one is units). Using the re-order level instead of the buffer stock for the re-order quantity. Leaving off the unit.</div>`,
+  items:[
+    {src:'AQA June 2018 · Paper 1 Q15', given:'A factory wants a buffer stock of <b>80 units</b>. It uses <b>35 units</b> a day and the lead time is <b>5 days</b>.',prompt:'What is its re-order level (units)?',unit:'units',ans:255,tol:0,
+     traps:[{v:175,m:'That is usage during the lead time. Add the buffer stock.'},{v:80,m:'That is the buffer stock alone.'}],work:'80 + (35 × 5) = 80 + 175 = 255 units. This was AQA\'s answer.'},
+    {src:'Core skill · re-order level', gen(){const b=rint(50,400,10),u=rint(20,150,5),l=rint(2,7);
+      return {given:`Buffer stock <b>${b}</b> units. Daily usage <b>${u}</b> units. Lead time <b>${l}</b> days.`,prompt:'Calculate the re-order level (units).',unit:'units',ans:b+u*l,tol:0,traps:[{v:u*l,m:'Add the buffer stock.'}],work:`${b} + (${u} × ${l}) = ${b+u*l} units.`};}},
+    {src:'Core skill · re-order quantity', gen(){const b=rint(100,1000,50),m=b+rint(1000,6000,250);
+      return {given:`Maximum stock <b>${f(m)}</b> units. Buffer stock <b>${f(b)}</b> units. Deliveries arrive as stock reaches the buffer.`,prompt:'What is the re-order quantity (units)?',unit:'units',ans:m-b,tol:0,traps:[{v:m,m:'The delivery tops stock up from the buffer, so take the buffer off.'}],work:`${f(m)} − ${f(b)} = ${f(m-b)} units.`};}},
+    {src:'Based on AQA June 2022 · Paper 2 Q3.2', given:'An inventory chart shows a maximum stock level of <b>6,000</b> units, a re-order level of <b>2,150</b> units and a buffer stock of <b>750</b> units.',prompt:'What is the re-order quantity (units)?',unit:'units',ans:5250,tol:0,
+     traps:[{v:3850,m:'You used the re-order level. Use the buffer stock: the delivery arrives as stock reaches the buffer.'}],work:'6,000 − 750 = 5,250 units. This was AQA\'s answer; many used the re-order level instead.'},
+    {src:'Core skill · daily usage', gen(){const u=rint(20,200,10),d=rint(4,12),m=rint(800,3000,100);
+      return {given:`Stock falls steadily from <b>${f(m)}</b> units to <b>${f(m-u*d)}</b> units over <b>${d}</b> days.`,prompt:'What is the daily usage (units a day)?',unit:'units',ans:u,tol:0,work:`(${f(m)} − ${f(m-u*d)}) ÷ ${d} = ${u} units a day.`};}},
+    {src:'Chart skill · lead time', given:'Use the chart in the refresher. The order is placed on day 5 and arrives on day 8.',prompt:'What is the lead time (days)?',unit:'days',ans:3,tol:0,traps:[{v:500,m:'That is the re-order level, in units. Lead time is in days.'}],work:'8 − 5 = 3 days.'},
+    {src:'Core skill · lead time from levels', gen(){const b=rint(100,300,50),u=rint(25,100,25),l=rint(2,6);const r=b+u*l;
+      return {given:`Re-order level <b>${r}</b> units. Buffer stock <b>${b}</b> units. Daily usage <b>${u}</b> units.`,prompt:'What is the lead time (days)?',unit:'days',ans:l,tol:0,work:`(${r} − ${b}) ÷ ${u} = ${l} days.`};}},
+    {src:'Core skill · demand rises', gen(){const b=200,l=rint(3,6),u1=rint(40,80,10),u2=u1+rint(20,50,10);
+      return {given:`Buffer stock <b>${b}</b>, lead time <b>${l}</b> days. Daily usage rises from <b>${u1}</b> to <b>${u2}</b> units.`,prompt:'What should the new re-order level be (units)?',unit:'units',ans:b+u2*l,tol:0,traps:[{v:b+u1*l,m:'That is the old re-order level. Use the new usage.'}],work:`${b} + (${u2} × ${l}) = ${b+u2*l} units. If the re-order level is not raised, stock will fall into the buffer before the delivery arrives.`};}}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'mcq', title:'Suppliers, supply chains and outsourcing', blurb:'Choosing suppliers, managing the supply chain, and the value of outsourcing.', serve:9, pass:7,
+  teach:`<h3>Choosing suppliers</h3>
+  <p>Price, quality, reliability, flexibility (can they change orders at short notice?), capacity, payment terms, location and distance, and ethics. Which matters most depends on the business:</p>
+  ${tbl(['Business','Likely priority','Why'],[['A car maker using JIT','Reliability','A late part stops the line'],['A discount retailer using cost leadership','Price','Its whole strategy depends on low costs'],['A luxury fashion house','Quality','Customers pay for the best'],['A business with an ethical brand','Ethics','Its reputation depends on it']])}
+  <h3>Managing the supply chain</h3>
+  <p>Good relationships, sharing information and forecasts, agreeing quality standards, having more than one supplier for important items, and monitoring performance.</p>
+  <h3>The value of outsourcing</h3>
+  <p>Benefits: lower costs, access to specialist skills, flexibility, freeing management time for core activities. Drawbacks: less control over quality and timing, dependence on another firm, possible damage to reputation if the supplier behaves badly, and the risk of sharing know-how.</p>
+  <h3>How it has been examined</h3>
+  <ul><li>June 2022 Paper 2 Q3.6: is reliability the most important factor for all businesses? The best answers named situations where reliability matters most (JIT manufacturers) and others where price or quality matters more.</li>
+  <li>June 2026 Paper 3 Q6: should all UK businesses use only UK suppliers? The mark scheme suggested judging by price elasticity and the size of the cost difference, and said answers using only the case business were capped at Level 4.</li></ul>`,
+  items:[
+    {src:'Core rule · choosing suppliers', prompt:'A car maker uses just in time. Which supplier quality matters most?', o:['Reliability','Lowest price','Location in another country','The supplier\'s brand'], a:0, why:'A late delivery stops production.'},
+    {src:'AQA June 2022 · Paper 2 report (Q3.6)', prompt:'For which business is price most likely to be the most important factor in choosing a supplier?', o:['A discount retailer following a cost leadership strategy','A luxury watch maker','A JIT car maker','An organic food brand'], a:0, why:'The report praised answers contrasting price for cost leaders, reliability for JIT and quality for luxury producers.'},
+    {src:'AQA June 2026 · Paper 3 mark scheme (Q6)', prompt:'Which is a valid reason for a UK business to use only UK suppliers?', o:['Shorter distances can improve reliability and flexibility, and avoid exchange rate risk','UK suppliers are always cheaper','UK suppliers make every product','It removes all risk'], a:0, why:'The mark scheme listed reliability, flexibility, exchange rates and marketing benefits.'},
+    {src:'AQA June 2026 · Paper 3 mark scheme (Q6)', prompt:'Which is a valid reason against using only UK suppliers?', o:['Some materials or products are not made in the UK, and overseas suppliers can be much cheaper','UK suppliers never deliver','Exchange rates never change','Overseas suppliers are always more reliable'], a:0, why:'The mark scheme listed availability, cost and quality.'},
+    {src:'AQA June 2026 · Paper 3 mark scheme (Q6)', prompt:'A business sells a price inelastic product. What does this suggest about using UK suppliers that cost a little more?', o:['It can pass on the extra cost without losing many sales, so reliability may outweigh the cost','It must always choose the cheapest supplier','Price elasticity is irrelevant','It should stop selling the product'], a:0, why:'This was a suggested line of evaluation in the mark scheme.'},
+    {src:'Core rule · supply chain', prompt:'Why might a business use two suppliers for a key component?', o:['To reduce the risk if one supplier fails','To raise costs deliberately','To make ordering harder','Because the law requires it'], a:0, why:'Dual sourcing reduces dependence on one firm.'},
+    {src:'Core rule · outsourcing', prompt:'Which is a benefit of outsourcing a company\'s IT support?', o:['Access to specialists and lets managers focus on the core business','Complete control over the service','No contract is needed','It always improves quality'], a:0, why:'Specialists may do it better and cheaper.'},
+    {src:'Core rule · outsourcing', prompt:'A clothing brand\'s overseas supplier is found to use child labour. Which drawback of outsourcing does this show?', o:['Damage to the brand\'s reputation from a supplier\'s behaviour','Higher storage costs','Lower prices','Better quality'], a:0, why:'Customers blame the brand, not just the supplier.'},
+    {src:'Based on AQA November 2020 · Paper 3 Q3', prompt:'A business is thinking of switching to cheaper suppliers. What is the main risk?', o:['Quality or reliability may fall, harming customers and reputation','Costs will rise','Profit margins will fall','There is no risk'], a:0, why:'Cheaper is not always better; the judgement weighs savings against these risks.'}
+  ]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Against the clock', blurb:'Fifteen mixed questions from the whole unit, 30 seconds each.', pass:12, poolFrom:[1,3,4,5,6,7,9], count:15, seconds:30,
+  teach:`<p>Fifteen questions drawn at random from the rest of this unit, with 30 seconds each. Capacity, lean, quality and suppliers should not need any thinking time.</p>
+  <p>You get different questions each time you try.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'rt34', key:'rt34_course_v1', offset:1000, short:'Rules and Traps 3.4',
+  name:'Rules and Traps: Unit 3.4',
+  hero:{kicker:'Rules and Traps · Unit 3.4',
+    title:'Operational <em>management</em>',
+    lede:'Operational objectives, capacity and productivity, labour and capital, lean production, quality, matching supply to demand, inventory and suppliers. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
+  doneText:'You have worked through every rule and trap in Unit 3.4. In an operations answer, check whether the question is about capacity or capacity utilisation, QA or QC, and costs or quality.',
+  stages:STAGES
+};
+</script>
+<script src="account.js"></script>
+<script src="course-engine.js"></script>
+<script src="visit.js" defer></script>
+</body>
+</html>
