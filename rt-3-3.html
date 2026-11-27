@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rules and Traps: Unit 3.3 Marketing management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+<link rel="stylesheet" href="rt.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   RULES AND TRAPS: UNIT 3.3 MARKETING MANAGEMENT
+   Specification topics 3.3.1 to 3.3.4g (spec.js). Every rule and trap is
+   checked against the AQA papers, mark schemes and examiner reports
+   2017 to 2026. Items marked "AQA June 20xx" are the real questions with
+   AQA's answer; "Based on" means our wording of a reported mistake.
+   Stage numbers are stored in the tracker as 900 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+const rint=(a,b,s=1)=>Math.round((a+Math.random()*(b-a))/s)*s;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
+const isN=c=>/^[−\-+]?[£€]?[\d.,]+(%|m|bn|k)?$/.test(String(c).trim());
+const tbl=(head,rows)=>{const num=head.map((h,i)=>i>0&&rows.every(r=>isN(r[i])||r[i]===''));return `<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${num[i]?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${num[i]?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;};
+
+const SCATTER=`<div class="chart"><svg viewBox="0 0 520 240" role="img" aria-label="Scatter graph of advertising spending against sales for twelve months, showing a positive correlation with a rising line of best fit">
+  <line class="ax" x1="50" y1="20" x2="50" y2="200" style="stroke:var(--fg)"/><line class="ax" x1="50" y1="200" x2="500" y2="200" style="stroke:var(--fg)"/>
+  ${[[80,170],[110,160],[140,150],[160,155],[200,130],[230,135],[260,115],[300,110],[330,95],[370,90],[410,70],[450,62]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" class="b1"/>`).join('')}
+  <line x1="70" y1="175" x2="470" y2="58" class="l2" stroke-dasharray="6 4"/>
+  <text x="275" y="228" text-anchor="middle">Advertising spending →</text><text x="18" y="110" transform="rotate(-90 18 110)" text-anchor="middle">Sales →</text>
+</svg><div class="cap">A positive correlation: months with more advertising had higher sales. The dashed line is the line of best fit. This does not prove the advertising caused the sales.</div></div>`;
+const FAN=`<div class="chart"><svg viewBox="0 0 520 240" role="img" aria-label="Line chart of actual sales from 2023 to 2026 and a forecast to 2029, with a shaded 95 per cent confidence interval that widens each year">
+  <line class="ax" x1="50" y1="20" x2="50" y2="200" style="stroke:var(--fg)"/><line class="ax" x1="50" y1="200" x2="500" y2="200" style="stroke:var(--fg)"/>
+  <polygon points="280,120 350,90 420,66 490,42 490,140 420,128 350,116 280,120" style="fill:var(--gold-soft);stroke:none"/>
+  <polyline class="l1" points="70,170 140,160 210,145 280,120"/>
+  <polyline class="l3" points="280,120 350,103 420,97 490,91" stroke-dasharray="6 4"/>
+  ${['2023','2024','2025','2026','2027','2028','2029'].map((y,i)=>`<text x="${70+i*70}" y="218" text-anchor="middle">${y}</text>`).join('')}
+  <text x="484" y="36" text-anchor="end">Upper limit</text><text x="484" y="158" text-anchor="end">Lower limit</text>
+</svg><div class="cap">Actual sales (solid) and a forecast (dashed) with its 95% confidence interval (shaded). The further ahead the forecast, the wider the interval.</div></div>`;
+const PLC=`<div class="chart"><svg viewBox="0 0 520 230" role="img" aria-label="Product life cycle curve rising slowly in introduction, quickly in growth, levelling in maturity and falling in decline, with an extension strategy lifting sales in maturity">
+  <line class="ax" x1="50" y1="20" x2="50" y2="190" style="stroke:var(--fg)"/><line class="ax" x1="50" y1="190" x2="500" y2="190" style="stroke:var(--fg)"/>
+  <path class="l1" d="M55,185 C110,183 130,170 170,130 C210,85 240,62 300,58 C350,56 380,70 420,100 C450,125 470,150 495,170"/>
+  <path class="l2" d="M330,58 C360,50 390,38 430,40" stroke-dasharray="6 4"/>
+  ${[['Introduction',100],['Growth',210],['Maturity',320],['Decline',450]].map(([t,x])=>`<text x="${x}" y="208" text-anchor="middle">${t}</text>`).join('')}
+  <text x="330" y="30">Extension strategy</text><text x="18" y="105" transform="rotate(-90 18 105)" text-anchor="middle">Sales →</text>
+</svg><div class="cap">The product life cycle. An extension strategy in maturity (dashed) can lift sales and delay decline.</div></div>`;
+const BOSTON=`<div class="chart"><svg viewBox="0 0 520 260" role="img" aria-label="Boston Matrix: market growth on the vertical axis, relative market share on the horizontal axis with high share on the left. Star: high growth, high share. Question mark: high growth, low share. Cash cow: low growth, high share. Dog: low growth, low share.">
+  <rect x="80" y="20" width="420" height="200" fill="none" style="stroke:var(--fg)"/><line class="ax" x1="290" y1="20" x2="290" y2="220" style="stroke:var(--fg)"/><line class="ax" x1="80" y1="120" x2="500" y2="120" style="stroke:var(--fg)"/>
+  <text x="185" y="75" text-anchor="middle" style="fill:var(--fg);font-weight:600">Star</text><text x="395" y="75" text-anchor="middle" style="fill:var(--fg);font-weight:600">Question mark</text>
+  <text x="185" y="175" text-anchor="middle" style="fill:var(--fg);font-weight:600">Cash cow</text><text x="395" y="175" text-anchor="middle" style="fill:var(--fg);font-weight:600">Dog</text>
+  <text x="290" y="248" text-anchor="middle">Relative market share (high on the left) →</text>
+  <text x="40" y="120" transform="rotate(-90 40 120)" text-anchor="middle">Market growth →</text>
+</svg><div class="cap">The Boston Matrix. The vertical axis is the growth of the market, not the product's own sales.</div></div>`;
+const MAP=`<div class="chart"><svg viewBox="0 0 520 260" role="img" aria-label="Market map of coffee shops by price and quality, with brands clustered at high price high quality and low price low quality, and a gap at low price high quality">
+  <line class="ax" x1="260" y1="15" x2="260" y2="235" style="stroke:var(--fg)"/><line class="ax" x1="40" y1="125" x2="480" y2="125" style="stroke:var(--fg)"/>
+  <text x="260" y="12" text-anchor="middle">High price</text><text x="260" y="252" text-anchor="middle">Low price</text><text x="44" y="120">Low quality</text><text x="476" y="120" text-anchor="end">High quality</text>
+  ${[[350,50,'A'],[400,70,'B'],[330,85,'C'],[150,180,'D'],[120,200,'E'],[190,160,'F']].map(([x,y,t])=>`<circle cx="${x}" cy="${y}" r="13" class="b1" opacity=".85"/><text x="${x}" y="${y+4}" text-anchor="middle" style="fill:#fff;font-weight:600">${t}</text>`).join('')}
+  <text x="380" y="190" text-anchor="middle" style="fill:var(--end);font-weight:600">Gap?</text>
+</svg><div class="cap">A market map. The empty space at low price and high quality is a possible gap, but it may be empty because no business can make a profit there.</div></div>`;
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'drift', title:'Marketing objectives', blurb:'Volume and value, market size, growth, share and brand loyalty, and what influences the objectives.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Marketing objective','What it measures'],[['Sales volume','Number of units sold'],['Sales value','Revenue from sales (price × quantity)'],['Market size','Total sales of all businesses in the market, by volume or value'],['Market growth','Percentage change in the size of the market'],['Sales growth','Percentage change in the business\'s own sales'],['Market share','The business\'s sales as a percentage of the market'],['Brand loyalty','How far customers keep buying the brand, e.g. repeat purchase rate']])}
+  <h3>Influences on marketing objectives</h3>
+  <ul><li><b>Internal</b>: corporate objectives, finance available, operations capacity, the skills and number of staff.</li>
+  <li><b>External</b>: competitors, the economy, consumer tastes, technology, the law.</li></ul>
+  <h3>Rules</h3>
+  <ul><li>Marketing objectives should support the corporate objectives.</li>
+  <li>Sales value can rise while sales volume falls (higher prices or a more expensive mix). June 2019 Paper 2 Q1.2 asked students to explain exactly this.</li>
+  <li>A business can lose market share and still sell more, if the market is growing.</li></ul>
+  <div class="trap"><b>The trap</b>On June 2024 Paper 3 Q2, the question asked about the factors behind a 15% market share objective within three years. Good answers combined several parts of the case (cities without dessert parlours, market growth, previous success). Do not confuse market growth with market share: many did on June 2018 Paper 1 Q17.</div>`,
+  items:[
+    {src:'Based on AQA June 2019 · Paper 2 Q1.2', q:'The volume of breakfast cereal sales is falling.', text:'The value of sales can still rise.', ok:true, why:'If prices rise, or customers switch to more expensive cereals, revenue can rise while units fall.'},
+    {src:'Core rule · market share', q:'A market grows by 30%.', text:'A business whose market share falls must be selling less than before.', ok:false, why:'A smaller share of a much bigger market can still mean higher sales.'},
+    {src:'Core rule · objectives', q:'A business sets a target to raise its repeat purchase rate from 40% to 55%.', text:'This is a brand loyalty objective.', ok:true, why:'Repeat purchase is a measure of loyalty.'},
+    {src:'Core rule · objectives', q:'About sales volume and sales value.', text:'Sales volume measures the revenue from sales.', ok:false, why:'Volume is units sold. Value is revenue.'},
+    {src:'Core rule · influences', q:'A business wants to double its market share, but its factory is already working at full capacity.', text:'Operations capacity is an internal influence that may limit the objective.', ok:true, why:'It cannot sell what it cannot make, unless it outsources or expands.'},
+    {src:'Core rule · influences', q:'A recession hits a luxury car maker.', text:'This is an external influence on its marketing objectives.', ok:true, why:'The economy is outside the business\'s control.'},
+    {src:'Core rule · objectives', q:'About market growth and sales growth.', text:'Market growth and sales growth always move together.', ok:false, why:'A business can grow faster or slower than its market, or shrink in a growing market.'},
+    {src:'Core rule · objectives', q:'About marketing objectives.', text:'Marketing objectives should support the business\'s corporate objectives.', ok:true, why:'A corporate objective of growth might lead to a marketing objective of higher market share.'},
+    {src:'Core rule · objectives', q:'A business targets 10% market share by 2028.', text:'This objective has a measurable target and a time limit.', ok:true, why:'It says how much and by when.'},
+    {src:'Based on AQA June 2024 · Paper 3 mark scheme (Q2)', q:'An entrepreneur sets a 15% market share objective. The market is growing fast and many cities have no competitor yet.', text:'These facts help explain why he set an ambitious target.', ok:true, why:'The mark scheme credited the growing market, gaps in the market and past success as influences.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'mcq', title:'Market research and sampling', blurb:'Primary and secondary, qualitative and quantitative, and the three sampling methods.', serve:9, pass:7,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['','Meaning','Strengths','Weaknesses'],[['Primary research','New data collected by the business for its own purpose (surveys, focus groups, test marketing)','Up to date, specific to the question, not available to rivals','Expensive, slow; quality depends on the sample and questions'],['Secondary research','Data that already exists (government statistics, market reports, company accounts)','Cheaper and quicker; good for market size and trends','May be out of date, not specific, available to everyone'],['Quantitative data','Numerical data that can be analysed statistically','Easy to compare and analyse','Does not explain why people behave as they do'],['Qualitative data','Opinions, feelings and reasons (focus groups, in-depth interviews)','Explains why; gives insight','Hard to analyse; small samples; may not be representative']])}
+  <h3>Sampling</h3>
+  ${tbl(['Method','How it works','Strength','Weakness'],[['Random','Every member of the population has an equal chance of being chosen','Avoids the researcher\'s bias','Needs a full list of the population; may miss small groups by chance'],['Stratified','The population is split into groups (e.g. by age) and a random sample is taken from each in proportion','Represents the important groups','Needs data on the make-up of the population'],['Quota','The researcher must find a set number of people with certain characteristics (e.g. 50 women aged 18–24)','Quick and cheap','Not random, so the interviewer\'s choices can bias it']])}
+  <h3>Rules</h3>
+  <ul><li>Sampling is used because asking everyone is too slow and expensive. The larger and more representative the sample, the more reliable the results.</li>
+  <li>Question any research: who was asked, how many, when, and by whom.</li></ul>
+  <div class="trap"><b>The traps</b>Sampling methods were added in 2023 and have not been examined by name yet. On June 2023 Paper 2 Q3.1, a pressure group surveyed its own members: the sample was biased. On June 2024 Paper 2 Q1.4 the research came from 27 families in 2021, so it may not be reliable or still relevant. Do not confuse market research with research and development (2019 and 2020 reports).</div>`,
+  items:[
+    {src:'Core rule · research', prompt:'A café owner looks up population figures for the local area on a government website. This is:', o:['secondary research','primary research','qualitative research','test marketing'], a:0, why:'The data already exists and was collected for another purpose.'},
+    {src:'Core rule · research', prompt:'A focus group of eight customers discusses why they prefer one brand. What type of data does this give?', o:['Qualitative','Quantitative','Secondary','Random'], a:0, why:'It gives opinions and reasons rather than numbers.'},
+    {src:'AQA June 2022 · Paper 1 Q7', prompt:'A hot drinks seller asks a focus group for views. They reveal customers prefer cakes with their drinks, so cakes are introduced. In terms of Ansoff\'s matrix, this is:', o:['product development, resulting from qualitative market research.','diversification, resulting from qualitative market research.','diversification, resulting from quantitative market research.','product development, resulting from quantitative market research.'], a:0, why:'This is AQA\'s answer. A focus group gives qualitative data; a new product for existing customers is product development.'},
+    {src:'Core rule · sampling', prompt:'A researcher must interview 40 men and 40 women aged over 65, choosing whoever she can find in a shopping centre. This is:', o:['quota sampling','random sampling','stratified sampling','secondary research'], a:0, why:'Set numbers with set characteristics, chosen by the interviewer.'},
+    {src:'Core rule · sampling', prompt:'A bank chooses 500 customers from its full customer list using a computer that gives every customer an equal chance. This is:', o:['random sampling','quota sampling','stratified sampling','a focus group'], a:0, why:'Every member has an equal chance of selection.'},
+    {src:'Core rule · sampling', prompt:'A gym\'s members are 60% under 30 and 40% over 30. It randomly picks 60 under-30s and 40 over-30s for a survey of 100. This is:', o:['stratified sampling','quota sampling','random sampling','secondary research'], a:0, why:'The sample is split into groups in proportion and chosen randomly within each.'},
+    {src:'Based on AQA June 2023 · Paper 2 Q3.1', prompt:'A campaign group surveys 100 of its own members and says the results show what UK consumers think. Why might the results not represent UK consumers?', o:['Its members already care about the issue, so the sample is biased','100 people is always enough','Surveys can never be used','The results are qualitative'], a:0, why:'The 2023 report said most students saw the sample was biased and not representative.'},
+    {src:'Based on AQA June 2024 · Paper 2 mark scheme (Q1.4)', prompt:'A business bases a big promotional decision on interviews with 27 families carried out in 2021. What is the strongest criticism?', o:['The sample is small and the research may be out of date','Interviews are secondary research','27 families is a census','The research is quantitative'], a:0, why:'The mark scheme made both points: small sample, and 2021 data may no longer be relevant.'},
+    {src:'Core rule · value', prompt:'Which is the main advantage of primary over secondary research?', o:['It is specific to the business\'s question and not available to rivals','It is always cheaper','It is always quicker','It never needs a sample'], a:0, why:'Primary research is collected for the business\'s own purpose.'},
+    {src:'Based on AQA June 2019 · Paper 2 report (Q3.1)', prompt:'A question asks how research and development helps a business achieve high profit margins. Which answer has the wrong concept?', o:['One about surveys and focus groups finding out what customers want','One about inventing new products protected by patents','One about creating products rivals cannot copy','One about premium prices for unique features'], a:0, why:'That describes market research. The report said many students confused R&D with market research.'},
+    {src:'Core rule · sampling', prompt:'Why do businesses use samples rather than asking everyone in the market?', o:['Asking everyone would be too slow and expensive','Samples are always more accurate than asking everyone','It is illegal to ask everyone','Samples remove all bias'], a:0, why:'A well-chosen sample gives a reasonable picture at much lower cost.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'calc', title:'Market calculations', blurb:'Market size, growth, share and reverse percentages, with new numbers each time.', serve:7, pass:5,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Measure','Formula'],[['Market share','Business sales ÷ total market sales × 100'],['Market size','Business sales ÷ market share (as a decimal)'],['Market or sales growth','(New − original) ÷ original × 100'],['Original value before a % rise','New value ÷ (1 + the rise as a decimal)']])}
+  <h3>How it has been examined</h3>
+  <ul><li>June 2018 Paper 1 Q17: market size in 2017 = £12.6m ÷ 0.06 = £210m. Growth from £125m = 68%. Many students calculated the change in market share instead, or divided by the new market size.</li>
+  <li>June 2026 Paper 2 Q1.1: supermarket sales had risen 10% to €12.05 billion. December 2024 market = €12.05bn ÷ 1.1 = €10.95bn, then × 13.4% = €1.47bn. Many subtracted 10% instead of dividing by 1.1, and lost marks for missing the € sign and "billion".</li>
+  <li>Market share questions on Paper 2 (2017, 2019, 2022): give the answer as a percentage.</li></ul>
+  <div class="trap"><b>The traps</b>Dividing by the new figure instead of the original. Taking a percentage off to reverse a rise. Mixing up percentage change with percentage points.</div>`,
+  items:[
+    {src:'Core skill · market share', gen(){const M=rint(200,800,10),S=rint(10,80);const ans=r1(S/M*100);
+      return {given:`A business\'s sales are <b>£${S}m</b>. Total market sales are <b>£${M}m</b>.`,prompt:'Calculate its market share (1 decimal place).',unit:'%',ans,tol:0.051,work:`£${S}m ÷ £${M}m × 100 = ${ans}%.`};}},
+    {src:'Core skill · market size', gen(){const s=pick([4,5,6,8,10,12.5,15,20,25]),S=rint(5,60);const ans=r2(S/(s/100));
+      return {given:`A business has sales of <b>£${S}m</b> and a market share of <b>${s}%</b>.`,prompt:'Calculate the size of the market (in £m).',pre:true,ans,tol:0.01,traps:[{v:r2(S*s/100),m:'You multiplied. Market size = sales ÷ market share.'}],work:`£${S}m ÷ ${s/100} = £${f(ans)}m.`};}},
+    {src:'AQA June 2018 · Paper 1 Q17', given:'In 2007, a business had sales of <b>£10 million</b> in a market with a size of <b>£125 million</b>. In 2017 the business\'s sales were <b>£12.6 million</b> and its market share was <b>6%</b>.',prompt:'Calculate the percentage growth in the size of the market between 2007 and 2017.',unit:'%',ans:68,tol:0.05,
+     traps:[{v:26,m:'That is the growth in the business\'s own sales.'},{v:40.48,m:'You divided by the 2017 market size. Divide by the original.'}],work:'2017 market = £12.6m ÷ 0.06 = £210m. (£210m − £125m) ÷ £125m × 100 = 68%.'},
+    {src:'Based on AQA June 2026 · Paper 2 Q1.1', gen(){const g=pick([5,8,10,12,15,20]),orig=rint(80,200)/10,share=pick([8.5,10.2,13.4,15.6,21.3]);const now=r2(orig*(1+g/100)),base=r2(now/(1+g/100)),ans=r2(base*share/100);
+      return {given:`Total market sales rose by <b>${g}%</b> to <b>€${f(now)} billion</b> this year. A business had a <b>${share}%</b> market share last year.`,prompt:'Calculate the business\'s sales last year (in € billion, 2 decimal places).',pre:'€',unit:'billion',ans,tol:0.011,
+        traps:[{v:r2(now*(1-g/100)*share/100),m:'You took the percentage off. To reverse a rise, divide by 1 + the rise.'},{v:r2(now*share/100),m:'That uses this year\'s market. Work back to last year first.'}],work:`Last year\'s market = €${f(now)}bn ÷ ${1+g/100} = €${f(base)}bn. × ${share}% = €${f(ans)}bn.`};}},
+    {src:'Core skill · sales growth', gen(){const a=rint(200,600,10),p=pick([5,10,15,20,25,-10,-5]);const b=r1(a*(1+p/100));
+      return {given:`Sales went from <b>${f(a)}</b> units to <b>${f(b)}</b> units.`,prompt:'Calculate the percentage change in sales (use a minus sign for a fall).',unit:'%',ans:p,tol:0.05,traps:[{v:r1((b-a)/b*100),m:'Divide by the original figure, not the new one.'}],work:`(${f(b)} − ${f(a)}) ÷ ${f(a)} × 100 = ${p}%.`};}},
+    {src:'Core skill · combined share', gen(){const sh=[rint(150,300)/10,rint(100,200)/10,rint(60,150)/10,rint(40,90)/10];const ans=r1(sh.reduce((a,b)=>a+b,0));
+      return {given:`The four largest brands have market shares of <b>${sh.join('%</b>, <b>')}%</b>.`,prompt:'Calculate their combined market share.',unit:'%',ans,tol:0.051,work:`${sh.join(' + ')} = ${ans}%.`};}},
+    {src:'Core skill · percentage points', gen(){const a=rint(8,25),b=a+rint(2,7);
+      return {given:`Market share rose from <b>${a}%</b> to <b>${b}%</b>.`,prompt:'By how many percentage points did it rise?',unit:'percentage points',ans:b-a,tol:0,traps:[{v:r1((b-a)/a*100),m:'That is the percentage change. Percentage points: just subtract.'}],work:`${b} − ${a} = ${b-a} percentage points.`};}},
+    {src:'Core skill · sales value', gen(){const p=pick([2.5,4,5,8,12]),q=rint(20,90)*1000;
+      return {given:`A business sold <b>${f(q)}</b> units at an average price of <b>£${p}</b>.`,prompt:'Calculate the value of sales (in £).',pre:'£',ans:p*q,tol:0,work:`${f(q)} × £${p} = £${f(p*q)}.`};}}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'mcq', title:'Interpreting marketing data', blurb:'Correlation, confidence intervals and extrapolation.', serve:8, pass:6,
+  teach:`<h3>Correlation</h3>
+  ${SCATTER}
+  <p>Correlation is a relationship between two variables. <b>Positive</b>: both rise together. <b>Negative</b>: one rises as the other falls. The closer the points to the line, the stronger the correlation. Correlation does not prove that one thing causes the other; something else may affect both.</p>
+  <h3>Confidence intervals</h3>
+  ${FAN}
+  <p>A 95% confidence interval is a range within which we can be 95% confident the true value lies. A wide interval means the forecast is less certain. Forecasts further into the future usually have wider intervals.</p>
+  <h3>Extrapolation</h3>
+  <p>Extrapolation means extending a past trend into the future to make a forecast. It assumes the conditions that created the trend will carry on, which may not happen, for example if a competitor enters or tastes change.</p>
+  <h3>How it has been examined</h3>
+  <ul><li>June 2019 Paper 2 Q1.1: the data showed advertising and sales both falling. Students had to explain why this did not prove the fall in advertising caused lower sales.</li>
+  <li>June 2017 Paper 2 Q1.2: the meaning of a 95% confidence interval in a forecast. Some thought 95% was the gap between best and worst case; many missed that the figures were in £000m.</li>
+  <li>June 2022 Paper 2 Q1.1: the meaning of extrapolation. A minority confused it with correlation.</li></ul>`,
+  items:[
+    {src:'Based on AQA June 2019 · Paper 2 Q1.1', prompt:'A cereal maker cut its advertising and its sales fell. Why does this not prove the advertising cut caused the fall?', o:['Other factors, such as changing tastes or competitors, could have reduced sales','Correlation always proves causation','Advertising never affects sales','Sales and advertising are not related'], a:0, why:'Correlation shows the two moved together, not that one caused the other.'},
+    {src:'Core rule · correlation', prompt:'As temperatures rise, sales of hot soup fall. This is:', o:['a negative correlation','a positive correlation','no correlation','extrapolation'], a:0, why:'One variable rises while the other falls.'},
+    {src:'AQA November 2020 · Paper 1 Q14', prompt:'Statement 1: "Usually there is a negative correlation between changes in consumers\' incomes and changes in the quantity demanded of a product." Statement 2: "Usually there is a positive correlation between changes in the price of a competitor\'s product and changes in the quantity demanded of a product."', o:['Statement 1 is false. Statement 2 is true.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer. Demand usually rises with income (positive), and rises when a rival\'s price rises (positive).'},
+    {src:'Based on AQA June 2017 · Paper 2 Q1.2', prompt:'A forecast says sales in 2030 will be £40m, with a 95% confidence interval of £34m to £46m. What does this mean?', o:['We can be 95% confident the true figure will be between £34m and £46m','Sales will be exactly £40m','There is a 95% gap between the best and worst case','Sales will be £46m in 95% of years'], a:0, why:'The interval is the range within which the true value is likely to lie.'},
+    {src:'Core rule · confidence intervals', prompt:'Forecast A has a 95% confidence interval of ±£2m; Forecast B has ±£9m. Which statement is right?', o:['Forecast A is more certain','Forecast B is more certain','They are equally certain','Neither can be used'], a:0, why:'A narrower interval means more certainty.'},
+    {src:'Core rule · confidence intervals', prompt:'Why does a confidence interval usually widen the further ahead the forecast goes?', o:['There is more time for things to change, so uncertainty increases','Data gets more accurate over time','The business sells more','It is a rule of accounting'], a:0, why:'The further ahead, the more unknowns.'},
+    {src:'Based on AQA June 2022 · Paper 2 Q1.1', prompt:'What is extrapolation?', o:['Using a past trend to predict future values','Finding a relationship between two variables','Asking customers about their plans','Choosing a sample at random'], a:0, why:'The report said a minority confused it with correlation.'},
+    {src:'Core rule · extrapolation', prompt:'When is extrapolation most likely to give a poor forecast?', o:['When market conditions are changing quickly','When the trend has been steady for years and nothing has changed','When forecasting one month ahead in a stable market','When the data is accurate'], a:0, why:'Extrapolation assumes the past trend continues.'},
+    {src:'Core rule · correlation', prompt:'Points on a scatter graph lie very close to a rising line. This shows:', o:['a strong positive correlation','a weak positive correlation','a strong negative correlation','that one variable causes the other'], a:0, why:'Close to the line means strong; rising means positive. It still does not prove cause.'},
+    {src:'Core rule · reading data', prompt:'A forecast table is headed "£000m". A figure of 205 means:', o:['£205 billion','£205,000','£205 million','£205'], a:0, why:'£000m means thousands of millions: 205 × £1,000m = £205bn. The 2017 report said many missed the units.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'mcq', title:'Price elasticity of demand', blurb:'What the number means, its effect on revenue, what influences it and why it matters.', serve:9, pass:7,
+  teach:`<h3>Refresher</h3>
+  <p>Price elasticity of demand (PED) measures how much quantity demanded responds to a change in price: % change in quantity demanded ÷ % change in price. It is usually negative because a price rise reduces demand. You need to interpret it, not calculate it.</p>
+  ${tbl(['PED (ignore the sign)','Name','Price rise','Price cut'],[['More than 1 (e.g. −2)','Price elastic','Revenue falls','Revenue rises'],['Less than 1 (e.g. −0.4)','Price inelastic','Revenue rises','Revenue falls'],['Exactly 0','Perfectly inelastic','Revenue rises by the same %','Revenue falls by the same %']])}
+  <h3>What makes demand more price elastic</h3>
+  <ul><li>More close substitutes; weak brand loyalty; the product is a luxury rather than a necessity; it takes a large share of income; customers have time to look for alternatives.</li></ul>
+  <h3>Why it matters</h3>
+  <ul><li>Pricing decisions: raise prices on inelastic products to raise revenue; cut prices on elastic ones.</li>
+  <li>Branding, quality and differentiation try to make demand more inelastic.</li>
+  <li>The PED figure is an estimate and can change over time.</li></ul>
+  <div class="trap"><b>The traps</b>Inelastic does not mean demand does not change: on June 2022 Paper 2 Q1.4 many said a price rise would not change demand at all. Mixing up elastic and inelastic was reported in 2017, 2022 and 2023. Penetration pricing suits elastic demand (June 2019 Paper 1 Q2). Improving quality should make demand more inelastic (June 2022 Q10, June 2024 Q11).</div>`,
+  items:[
+    {src:'Core rule · PED', prompt:'A product has a PED of −0.4. The business raises its price by 10%. What happens to sales revenue?', o:['It rises','It falls','It stays the same','It falls to zero'], a:0, why:'Demand is inelastic: quantity falls by about 4%, less than the 10% price rise, so revenue rises.'},
+    {src:'Core rule · PED', prompt:'A product has a PED of −2. To raise revenue, the business should:', o:['cut its price','raise its price','keep its price the same','stop selling it'], a:0, why:'Demand is elastic: a price cut raises quantity by proportionally more, so revenue rises.'},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q1.4)', prompt:'Demand for a tea is price inelastic. What happens to quantity demanded if the price rises?', o:['It falls, but by a smaller percentage than the price rise','It does not change at all','It rises','It falls by a larger percentage than the price rise'], a:0, why:'The report called "no change" a common misconception. Only perfectly inelastic demand would not change.'},
+    {src:'AQA June 2022 · Paper 1 Q10', prompt:'Statement 1: "A business might improve the quality of its product in order to make its demand more price elastic." Statement 2: "A business might improve the quality of its product in order to increase added value."', o:['Statement 1 is false. Statement 2 is true.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer. Better quality makes demand more inelastic and allows a higher price, raising added value.'},
+    {src:'AQA June 2024 · Paper 1 Q11', prompt:'Statement 1: "A business might improve the quality of its product in order to make its demand more price inelastic." Statement 2: "A business might improve the quality of its product in order to achieve a competitive advantage."', o:['Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'Core rule · influences', prompt:'Which product is likely to have the most price elastic demand?', o:['One brand of bottled water among many similar brands','Mains electricity','A prescription medicine with no alternative','Petrol for commuters with no public transport'], a:0, why:'Many close substitutes make customers switch when the price rises.'},
+    {src:'AQA June 2022 · Paper 1 Q8', prompt:'A product\'s price rises by 20% and its sales volume falls by 10%. All competitors keep their prices the same. The product\'s market share by volume stays the same. Which statement is false?', o:['The market size, measured by volume, remains unchanged.','The product\'s market share, measured by value, increases.','The product\'s price elasticity of demand is inelastic.','The product\'s sales value rises.'], a:0, why:'This is AQA\'s answer. If share by volume is unchanged while its volume fell 10%, the whole market fell 10%. The report said one distractor was more popular than the right answer because students did not understand inelastic demand.'},
+    {src:'AQA June 2024 · Paper 1 Q7', prompt:'Assuming no other changes, sales revenue for a product will stay the same if:', o:['incomes rise by 10% and the income elasticity of demand for the product is 0','incomes rise by 10% and the income elasticity of demand for the product is +0.1','the price rises by 10% and the price elasticity of demand for the product is 0','the price rises by 10% and the price elasticity of demand for the product is −10'], a:0, why:'This is AQA\'s answer. With YED of 0, a change in income does not change demand. With PED of 0, a price rise would raise revenue.'},
+    {src:'Core rule · value', prompt:'Why might a business\'s estimate of PED be unreliable?', o:['It is based on past data and conditions such as competitors\' prices change','PED never changes','It is set by the government','It only applies to services'], a:0, why:'PED is an estimate; new rivals or changing tastes can change it.'},
+    {src:'Core rule · PED and pricing', prompt:'A business with a strong brand finds demand for its product is price inelastic. Which is the most likely pricing decision?', o:['Raise the price to increase revenue','Cut the price to increase revenue','Give the product away','Match the cheapest rival'], a:0, why:'With inelastic demand a price rise raises revenue.'},
+    {src:'Based on AQA November 2020 · Paper 2 Q3.3', prompt:'Why might a business\'s products have a PED of −0.4?', o:['Strong brand loyalty and few close substitutes','Many identical competing products','The product is a luxury that takes a large share of income','Customers find it very easy to switch'], a:0, why:'These make customers less sensitive to price.'}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'mcq', title:'Income elasticity, and combining the two', blurb:'Normal, luxury and inferior goods, and questions that use PED and YED together.', serve:9, pass:7,
+  teach:`<h3>Refresher</h3>
+  <p>Income elasticity of demand (YED) measures how demand responds to a change in income: % change in quantity demanded ÷ % change in income. You need to interpret it, not calculate it.</p>
+  ${tbl(['YED','Type of good','Incomes rise','Incomes fall'],[['Above +1','Luxury (income elastic)','Demand rises by a larger %','Demand falls by a larger %'],['Between 0 and +1','Normal, necessity','Demand rises by a smaller %','Demand falls by a smaller %'],['0','Not affected by income','No change','No change'],['Negative','Inferior good','Demand falls','Demand rises']])}
+  <h3>Why it matters</h3>
+  <ul><li>Forecasting: a business can predict how a recession or boom will affect its sales.</li>
+  <li>Portfolio: a mix of luxury and inferior goods spreads the risk of economic change.</li></ul>
+  <h3>Combining PED and YED</h3>
+  <ol><li>Work out the price effect on revenue using PED.</li><li>Work out the income effect on demand using YED.</li><li>Check whether they push the same way. Only if both push the same way is the result certain.</li></ol>
+  <div class="trap"><b>The trap</b>Negative YED is the biggest single cause of wrong answers in this unit. It caused problems in 2017, 2019, 2023, 2025 and 2026. In 2026 (Paper 1 Q11) the hardest question combined PED −2 with YED −1. Students understood PED but could not apply the negative YED. When incomes fall, demand for an inferior good rises.</div>`,
+  items:[
+    {src:'AQA June 2026 · Paper 1 Q11', prompt:'A product has a price elasticity of demand of −2 and an income elasticity of demand of −1. Based solely on this information, in which situation is the product certain to experience an increase in sales revenue?', o:['Prices are falling and incomes are falling.','Prices are rising and incomes are rising.','Prices are rising and incomes are falling.','Prices are falling and incomes are rising.'], a:0, why:'This is AQA\'s answer. Elastic demand: a price cut raises revenue. Inferior good: falling incomes raise demand. Both push revenue up.'},
+    {src:'AQA November 2020 · Paper 1 Q15', table:tbl(['Product','PED','YED'],[['A','−1.5','−1'],['B','−1.5','+1'],['C','−0.5','−1'],['D','−0.5','+1']]), prompt:'All four had identical sales volumes a year ago. Each has had the same percentage cut in price, and consumer incomes have fallen. Which now has the highest sales volume?', o:['Product A','Product B','Product C','Product D'], a:0, why:'This is AQA\'s answer. A responds most to the price cut (elastic) and its demand rises when incomes fall (inferior).'},
+    {src:'AQA June 2019 · Paper 1 Q4', prompt:'A good has a negative income elasticity and a negative price elasticity of demand. Statement 1: "Other things being equal, a fall in consumer incomes must lead to a fall in sales volume." Statement 2: "Other things being equal, a fall in price must lead to a rise in sales value."', o:['Statement 1 is false. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.'], a:0, why:'This is AQA\'s answer. With negative YED, falling incomes raise volume. A price cut only raises value if demand is elastic, which is not given.'},
+    {src:'Based on AQA June 2023 · Paper 1 Q19', prompt:'A product has YED +0.5 and PED −2. Next year incomes fall and the price rises. What happens to sales revenue?', o:['It falls, because both changes push revenue down','It rises, because the price rises','It is impossible to say','It rises, because YED is positive'], a:0, why:'Falling incomes reduce demand for a normal good; a price rise with elastic demand reduces revenue. The report said PED was understood better than YED.'},
+    {src:'Based on AQA June 2017 · Paper 1 Q20', prompt:'A café sells coffee (YED +2.0) and tea (YED −0.5). It sells far more coffee than tea. Incomes fall. What happens to its overall sales volume of hot drinks?', o:['It is likely to fall, because the large fall in coffee sales outweighs the small rise in tea','It rises, because tea is an inferior good','It stays the same','Both coffee and tea sales fall'], a:0, why:'Coffee sales fall by about twice the fall in incomes; tea rises a little. Coffee dominates sales.'},
+    {src:'Core rule · YED', prompt:'Incomes rise by 5%. A product\'s YED is +3. Demand changes by about:', o:['+15%','+3%','−15%','+5%'], a:0, why:'%Δ demand = YED × %Δ income = 3 × 5% = 15%.'},
+    {src:'Core rule · YED', prompt:'Which is most likely to have a negative YED?', o:['Supermarket value-range baked beans','Foreign holidays','New sports cars','Restaurant meals'], a:0, why:'As incomes rise, people trade up from value ranges, so demand falls.'},
+    {src:'Core rule · value', prompt:'A business mainly sells luxury goods (YED +2.5). A recession is forecast. What should it expect?', o:['A large fall in demand','A rise in demand','No change','A small fall in demand'], a:0, why:'Income elastic demand falls by more than the fall in incomes.'},
+    {src:'Based on AQA June 2026 · Paper 3 Q4', prompt:'A builder\'s demand has YED +0.5. GDP growth is forecast to speed up. What is the best judgement?', o:['Demand should rise, but only by about half the rise in incomes, so the effect will be modest','Demand will rise sharply','Demand will fall','The forecast might be wrong, so it cannot be used'], a:0, why:'The 2026 report praised answers that saw YED below 1 makes the effect marginal. Questioning the forecast was not credited.'},
+    {src:'Core rule · YED and portfolio', prompt:'Why might a supermarket sell both a premium range and a value range?', o:['If incomes fall, sales of the value range may rise while premium sales fall, spreading the risk','Both ranges always rise and fall together','It removes all risk','Value ranges have positive YED'], a:0, why:'Products with different YEDs balance each other as the economy changes.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'drift', title:'Segmentation, targeting and positioning', blurb:'Ways to segment a market, niche and mass marketing, and market maps.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Segmentation</h3>
+  <p>Segmentation means dividing a market into groups of customers with similar needs. The specification names four bases:</p>
+  ${tbl(['Basis','Examples'],[['Demographic','Age, gender, family size, ethnicity, religion'],['Geographic','Region, country, urban or rural'],['Income','Higher-income and lower-income groups'],['Behaviour','How often they buy, loyalty, the benefits they want, when they buy']])}
+  <p>Segmentation helps a business meet needs more closely, target its promotion, spot gaps and charge different prices. It costs money to research and to run separate marketing for each segment.</p>
+  <h3>Targeting and positioning</h3>
+  <ul><li><b>Niche marketing</b>: targeting a small, specific segment. Less competition, higher prices possible, but a small market and vulnerable if tastes change or a large rival enters.</li>
+  <li><b>Mass marketing</b>: selling the same product to most of the market. Economies of scale, but more competition and often lower prices.</li>
+  <li><b>Positioning</b>: how the business wants customers to see its product compared with rivals.</li></ul>
+  ${MAP}
+  <h3>How it has been examined</h3>
+  <ul><li>June 2025 Paper 2 Q2.4: should all businesses segment by income? Good answers compared other bases and noted that many businesses combine bases (e.g. gender and income).</li>
+  <li>June 2023 Paper 1 Q18: why a <b>large</b> business might launch a product into a niche market. The size of the business had to be part of the argument.</li>
+  <li>June 2022 Paper 1 Q13: economies of scope were the least likely advantage of a niche market for a small business.</li></ul>
+  <div class="trap"><b>The trap</b>A gap on a market map is not automatically an opportunity. It may be empty because there is no demand, or because it is impossible to make a profit there.</div>`,
+  items:[
+    {src:'Core rule · segmentation', q:'A travel company offers different holidays for families with young children and for retired couples.', text:'This is demographic segmentation.', ok:true, why:'It segments by age and family stage.'},
+    {src:'Core rule · segmentation', q:'A supermarket sends offers to customers who shop at least twice a week.', text:'This is behavioural segmentation.', ok:true, why:'It is based on how often they buy.'},
+    {src:'Core rule · segmentation', q:'A bank runs different adverts in Scotland and in London.', text:'This is income segmentation.', ok:false, why:'It is geographic segmentation.'},
+    {src:'AQA June 2022 · Paper 1 Q13', q:'About operating in a niche market for a small business.', text:'Economies of scope are one of the main advantages.', ok:false, why:'AQA\'s answer: economies of scope (savings from producing a range of products) are the least likely advantage. Focused marketing, less competition and tailor-made products are the advantages.'},
+    {src:'Core rule · niche', q:'About niche markets.', text:'A niche business is vulnerable if a large competitor decides to enter its market.', ok:true, why:'A large rival may have lower costs and bigger marketing budgets.'},
+    {src:'Core rule · mass marketing', q:'About mass marketing.', text:'Mass marketing allows economies of scale.', ok:true, why:'Producing large volumes of a standard product spreads fixed costs.'},
+    {src:'Core rule · market maps', q:'A market map shows no brands at "low price, high quality".', text:'This proves there is a profitable opportunity in that position.', ok:false, why:'It may be empty because no one can make a profit there.'},
+    {src:'Based on AQA June 2025 · Paper 2 mark scheme (Q2.4)', q:'About segmenting by income.', text:'Income is the best basis for segmentation for every business.', ok:false, why:'For many products (necessities, products bought by all ages or locations) other bases fit better. The best answers argued when income works and when it does not.'},
+    {src:'Based on AQA June 2025 · Paper 2 report (Q2.4)', q:'A clothing retailer targets women aged 25 to 40 on higher incomes.', text:'A business can combine more than one basis of segmentation.', ok:true, why:'The report praised answers that recognised multi-segment approaches.'},
+    {src:'Core rule · positioning', q:'About positioning.', text:'Positioning is about how customers see the product compared with competitors.', ok:true, why:'A business chooses where it wants to sit in customers\' minds, e.g. premium or value.'},
+    {src:'Based on AQA June 2023 · Paper 1 report (Q18)', q:'A question asks why a large business might launch a product into a niche market.', text:'A good answer must use the fact that the business is large.', ok:true, why:'The report said failing to use the size of the business was a key discriminator.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'mcq', title:'The marketing mix and product decisions', blurb:'The 7 Ps, B2B and B2C, the product life cycle, new products and the Boston Matrix.', serve:10, pass:8,
+  teach:`<h3>The 7 Ps</h3>
+  <p>Product, price, promotion, place, <b>people</b> (staff who deal with customers), <b>process</b> (how the product is delivered, e.g. ordering and payment) and <b>physical environment</b> (what customers see and experience, e.g. the shop). An integrated mix means the Ps support each other: a premium product needs a premium price, matching promotion and suitable outlets.</p>
+  <p><b>Business-to-business (B2B)</b> buyers make larger, rational purchases based on cost, reliability, quality, service and relationships. Personal selling, trade shows and negotiated prices matter more than mass advertising.</p>
+  <h3>The product life cycle</h3>
+  ${PLC}
+  <ul><li>Introduction: low sales, high costs, often negative cash flow. Growth: sales rise quickly, competitors arrive. Maturity: sales level off. Decline: sales fall.</li>
+  <li>Extension strategies: new uses, new markets, new versions or packaging, fresh promotion, price changes.</li>
+  <li>New product development is risky and costly but needed to replace products as they decline.</li></ul>
+  <h3>The Boston Matrix</h3>
+  ${BOSTON}
+  <ul><li>Stars: build. Cash cows: hold and use their cash. Question marks: build or drop. Dogs: drop, or keep if they support other products.</li>
+  <li>Cash from cash cows funds question marks and stars. A balanced portfolio needs products in different positions.</li></ul>
+  <div class="trap"><b>The traps</b>On June 2022 Paper 1 Q22 some thought one Boston axis was the product\'s own sales growth: it is <b>market</b> growth. On June 2026 Paper 1 Q21 all 7 Ps were credited and only using 4 left marks behind. On June 2026 Paper 2 Q3.1 most students treated garden centres (B2B customers) like individual shoppers.</div>`,
+  items:[
+    {src:'AQA November 2020 · Paper 1 Q2', prompt:'Despite a significant increase in its sales revenue, a product\'s market share falls from 60% to 50%. This product is a:', o:['star.','cash cow.','dog.','problem child/question mark.'], a:0, why:'This is AQA\'s answer. Sales rising while share falls means the market is growing fast; 50% is still a high share. High share, high growth = star.'},
+    {src:'AQA June 2025 · Paper 1 Q4', prompt:'Product X was the market leader in a low growth market. New promotions by competitors lead to rapid growth in the market. Product X still retains its market leadership. In terms of the Boston Matrix, Product X has changed from:', o:['a cash cow to a star.','a cash cow to a question mark.','a question mark to a star.','a star to a cash cow.'], a:0, why:'This is AQA\'s answer. The market changed, not the product.'},
+    {src:'Based on AQA June 2022 · Paper 1 report (Q22)', prompt:'What does the vertical axis of the Boston Matrix measure?', o:['The growth of the market','The growth of the product\'s own sales','Profit','Price'], a:0, why:'Some students got this wrong in 2022.'},
+    {src:'Core rule · Boston', prompt:'How should a business usually use a cash cow?', o:['Use its cash to fund stars and question marks','Spend heavily to make it grow faster','Drop it immediately','Cut its price to zero'], a:0, why:'Cash cows generate cash in a low-growth market with little need for investment.'},
+    {src:'Core rule · PLC', prompt:'In which stage of the product life cycle is cash flow most likely to be negative?', o:['Introduction','Growth','Maturity','Decline'], a:0, why:'Development and launch costs are high and sales are still low.'},
+    {src:'Core rule · extension', prompt:'Which is an extension strategy?', o:['Launching a new flavour of a mature snack','Withdrawing the product','Doing nothing','Raising the price of a product in decline with no other change'], a:0, why:'A new version can lift sales in maturity.'},
+    {src:'Core rule · 7 Ps', prompt:'A bank redesigns its app so customers can open an account in five minutes. Which P is this?', o:['Process','Physical environment','Promotion','Price'], a:0, why:'Process is how the service is delivered.'},
+    {src:'AQA June 2026 · Paper 1 mark scheme (Q21)', prompt:'In the market for sports shoes, which is the best argument that product may not be the most important element of the mix?', o:['Branding and promotion strongly shape what people buy, especially for fashion trainers','Shoes do not need to be made','Price never matters','Place has no role in any market'], a:0, why:'The mark scheme credited promotion and branding, and noted product matters more for specialist items like football boots.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q3.1)', prompt:'A garden machinery maker sells to garden centres. What matters most to these customers?', o:['Reliability, service, price and the relationship with the sales rep','Impulse buying and emotional branding','The look of the packaging in the shop','Celebrity endorsements'], a:0, why:'Garden centres are businesses making high-value, rational purchases. Most students wrote as if they were individual shoppers.'},
+    {src:'Core rule · integrated mix', prompt:'Which is an example of an integrated marketing mix?', o:['A luxury watch sold at a high price in exclusive shops with glossy magazine adverts','A luxury watch sold at a discount in a pound shop','A budget product with a premium price','A premium product advertised as the cheapest'], a:0, why:'Each P supports the same positioning.'},
+    {src:'Core rule · NPD', prompt:'Why is new product development needed even though it is risky?', o:['Existing products eventually decline, so new ones are needed to replace them','It is always cheap','New products never fail','It guarantees market leadership'], a:0, why:'Without new products, a portfolio ages and sales fall.'},
+    {src:'Core rule · Boston', prompt:'A product has a low share of a fast-growing market. It is a:', o:['question mark','star','cash cow','dog'], a:0, why:'Low share, high growth.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'mcq', title:'Price, promotion, place and digital', blurb:'Pricing strategies, promotion and branding, social media, channels, and e-commerce.', serve:10, pass:8,
+  teach:`<h3>Pricing</h3>
+  ${tbl(['Strategy','How it works','When it fits'],[['Price skimming','Start with a high price, lower it later','New or unique products, inelastic demand, to recover development costs'],['Penetration pricing','Start with a low price to win share, raise it later','Elastic demand, mass markets, to build share quickly'],['Competitive pricing','Set prices close to rivals','Similar products, many competitors'],['Cost-plus','Add a percentage to unit cost','Simple; ignores what customers will pay']])}
+  <p>Influences on price: costs, competitors\' prices, PED, the positioning of the brand, the marketing objectives and the stage of the life cycle.</p>
+  <h3>Promotion and branding</h3>
+  <ul><li>Methods: advertising, sales promotions, public relations, sponsorship, personal selling, social media.</li>
+  <li><b>Viral marketing</b>: content that spreads quickly because people share it themselves. Cheap and fast-reaching, but hard to control.</li>
+  <li><b>Branding</b> builds loyalty, makes demand more price inelastic, and helps new products launch under a trusted name.</li></ul>
+  <h3>Place, people, process, physical environment</h3>
+  <ul><li>Channels: direct to the customer, through retailers, through wholesalers. <b>Multi-channel distribution</b> uses more than one (e.g. shops, website and app).</li>
+  <li>People, process and physical environment matter most where the product is a service or customers need advice.</li></ul>
+  <h3>Digital marketing and e-commerce</h3>
+  <p>Online advertising can be targeted at specific customers using their data and is often cheaper per customer reached. E-commerce opens up wider markets and 24-hour selling, but brings delivery and returns costs and very easy price comparison.</p>
+  <div class="trap"><b>The traps</b>Penetration pricing is used when demand is price elastic; skimming when it is inelastic. In June 2017 (Paper 1 Q13) both statements reversing this were false. On June 2024 Paper 2 Q1.4 (TV sponsorship), the best answers used the case data critically. Social media and viral marketing were added in 2023 and have not been examined yet.</div>`,
+  items:[
+    {src:'AQA June 2017 · Paper 1 Q13', prompt:'Statement 1: "Penetration pricing is more likely to be used if demand is price inelastic." Statement 2: "Price skimming is more likely to be used if demand is price elastic."', o:['Statement 1 is false. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.'], a:0, why:'This is AQA\'s answer. Penetration suits elastic demand; skimming suits inelastic demand.'},
+    {src:'AQA June 2019 · Paper 1 Q2', prompt:'Penetration pricing is setting a price that is:', o:['often used when demand is price elastic.','associated with products with high income elasticity of demand.','intended to maximise the profit margin on each product.','often used in markets with high seller power.'], a:0, why:'This is AQA\'s answer. Just over half of students got it right.'},
+    {src:'Core rule · skimming', prompt:'A technology company launches a new phone with features no rival has. Which pricing strategy is most suitable at launch?', o:['Price skimming','Penetration pricing','Cost-plus at a low margin','The cheapest price in the market'], a:0, why:'A unique product with keen early buyers suits a high launch price.'},
+    {src:'Core rule · influences on price', prompt:'Which is the most likely reason a business sets its price close to its rivals\'?', o:['Its product is very similar to competitors\' and demand is price elastic','Its product is unique','It has no competitors','It wants to lose customers'], a:0, why:'If products are similar, a higher price would lose many customers.'},
+    {src:'Core rule · viral marketing', prompt:'What is viral marketing?', o:['Content that spreads quickly because people share it themselves','Advertising on television','Sending leaflets to every house','Discounts for loyal customers'], a:0, why:'It relies on customers passing it on, often on social media.'},
+    {src:'Core rule · viral marketing', prompt:'What is the main risk of viral marketing?', o:['The business cannot control how the message spreads or is changed','It is always very expensive','It reaches too few people','It cannot be used online'], a:0, why:'Once shared, content can be mocked or attract criticism.'},
+    {src:'Core rule · branding', prompt:'How does a strong brand affect price elasticity of demand?', o:['It makes demand more price inelastic','It makes demand more price elastic','It has no effect','It makes PED positive'], a:0, why:'Loyal customers are less likely to switch when the price rises.'},
+    {src:'Core rule · place', prompt:'A clothing brand sells through its own shops, its website, an app and department stores. This is:', o:['multi-channel distribution','direct selling only','mass marketing','penetration pricing'], a:0, why:'More than one channel to reach customers.'},
+    {src:'Core rule · e-commerce', prompt:'Which is a disadvantage of e-commerce for a retailer?', o:['Delivery and returns costs, and easy price comparison by customers','It can sell 24 hours a day','It reaches customers across the country','It reduces the need for shop space'], a:0, why:'The others are advantages.'},
+    {src:'AQA June 2024 · Paper 2 mark scheme (Q1.4)', prompt:'A snack maker plans to sponsor a televised sports event popular with families. Which is the strongest point against?', o:['The heaviest buyers were not keen on the new products, and the extra marketing spend is large compared with recent profit','Sport is popular with families','Children liked the plan','Sponsorship can raise brand awareness'], a:0, why:'The mark scheme listed these, plus the small, old research sample, as reasons to doubt the plan.'},
+    {src:'Core rule · digital marketing', prompt:'Why can digital advertising be more efficient than a newspaper advert?', o:['It can be targeted at people most likely to buy, using their data','It always reaches more people','It is always free','It cannot be ignored'], a:0, why:'Targeting reduces spending on people who will never buy.'},
+    {src:'Core rule · physical environment', prompt:'A sports shop installs a running track so customers can test shoes. Which P is this?', o:['Physical environment','Price','Process','Product'], a:0, why:'It is about the place where customers experience the product. The 2026 mark scheme noted shoes are often tested before purchase.'}
+  ]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Against the clock', blurb:'Fifteen mixed questions from the whole unit, 30 seconds each.', pass:12, poolFrom:[1,2,4,5,6,7,8,9], count:15, seconds:30,
+  teach:`<p>Fifteen questions drawn at random from the rest of this unit, with 30 seconds each. Elasticity, the Boston Matrix and research methods should come to you straight away.</p>
+  <p>You get different questions each time you try.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'rt33', key:'rt33_course_v1', offset:900, short:'Rules and Traps 3.3',
+  name:'Rules and Traps: Unit 3.3',
+  hero:{kicker:'Rules and Traps · Unit 3.3',
+    title:'Marketing <em>management</em>',
+    lede:'Marketing objectives, research and sampling, market data, price and income elasticity, segmentation, the 7 Ps and the Boston Matrix. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
+  doneText:'You have worked through every rule and trap in Unit 3.3. Before you answer any marketing question, check whether it is about volume or value, price or income elasticity, and B2B or B2C.',
+  stages:STAGES
+};
+</script>
+<script src="account.js"></script>
+<script src="course-engine.js"></script>
+<script src="visit.js" defer></script>
+</body>
+</html>
