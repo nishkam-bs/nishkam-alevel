@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rules and Traps: Unit 3.10 Managing strategic change</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+<link rel="stylesheet" href="rt.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   RULES AND TRAPS: UNIT 3.10 MANAGING STRATEGIC CHANGE
+   Specification topics 3.10.1a to 3.10.4b (spec.js). Every rule and trap is
+   checked against the AQA papers, mark schemes and examiner reports
+   2017 to 2026. Items marked "AQA June 20xx" are the real questions with
+   AQA's answer; "Based on" means our wording of a reported mistake.
+   Stage numbers are stored in the tracker as 1600 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+const rint=(a,b,s=1)=>Math.round((a+Math.random()*(b-a))/s)*s;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
+const isN=c=>/^[−\-+]?[£€]?[\d.,]+(%|m|bn|k)?$/.test(String(c).trim());
+const tbl=(head,rows)=>{const num=head.map((h,i)=>i>0&&rows.every(r=>isN(r[i])||r[i]===''));return `<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${num[i]?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${num[i]?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;};
+
+const LEWIN=`<div class="chart"><svg viewBox="0 0 520 220" role="img" aria-label="Lewin's force field analysis: driving forces push for change from the left, restraining forces push back from the right, against a central line showing the proposed change">
+  <line x1="260" y1="20" x2="260" y2="200" style="stroke:var(--fg);stroke-width:2"/><text x="260" y="214" text-anchor="middle" style="fill:var(--fg)">Proposed change</text>
+  ${[[40,4],[90,2],[140,3]].map(([y,s])=>`<line x1="${250-s*40}" y1="${y}" x2="250" y2="${y}" class="l1"/><polygon points="250,${y} 240,${y-6} 240,${y+6}" style="fill:var(--start)"/><text x="${246-s*40}" y="${y+4}" text-anchor="end">${s}</text>`).join('')}
+  ${[[60,3],[115,2],[165,1]].map(([y,s])=>`<line x1="${270+s*40}" y1="${y}" x2="270" y2="${y}" class="l2"/><polygon points="270,${y} 280,${y-6} 280,${y+6}" style="fill:var(--end)"/><text x="${274+s*40}" y="${y+4}">${s}</text>`).join('')}
+  <text x="20" y="190" style="fill:var(--start)">Driving forces: 9</text><text x="500" y="190" text-anchor="end" style="fill:var(--end)">Restraining forces: 6</text>
+</svg><div class="cap">Change happens when the driving forces outweigh the restraining forces. Weights are judgements, not facts.</div></div>`;
+
+const NET1=tbl(['Activity','Preceded by','Duration (days)'],[['A','None','4'],['B','None','6'],['C','A','3'],['D','A','5'],['E','B and C','2'],['F','D and E','4']]);
+const NET2=tbl(['Activity','Preceded by','Duration (days)'],[['A','None','2'],['B','A','3'],['C','A','6'],['D','B','4'],['E','C and D','1'],['F','None','5'],['G','F','3']])+'<p style="margin-top:8px">The project ends when E and G are both finished.</p>';
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'mcq', title:'Causes and types of change', blurb:'Internal and external, incremental and disruptive change, and the value of change.', serve:9, pass:7,
+  teach:`<h3>Causes of change</h3>
+  <ul><li><b>Internal</b>: new owners or managers, a new strategy, growth, poor performance, new processes (e.g. kaizen).</li>
+  <li><b>External</b>: competitors, technology, the economy, the law, social trends (PESTLE-type factors and Porter\'s five forces).</li></ul>
+  <h3>Types of change</h3>
+  <ul><li><b>Incremental</b>: small, gradual steps, e.g. continuous improvement.</li>
+  <li><b>Disruptive</b>: large, sudden change that transforms a business or market, e.g. streaming replacing DVDs.</li></ul>
+  <p>Change can bring new opportunities, efficiency and competitiveness, but costs money, takes time and can meet resistance. Businesses that fail to change risk strategic drift.</p>
+  <div class="trap"><b>The trap</b>Classify both ways: who caused it (internal or external) and its size (incremental or disruptive). June 2023 Paper 1 Q7 tested both at once.</div>`,
+  items:[
+    {src:'AQA June 2023 · Paper 1 Q7', prompt:'A business starts to use kaizen. This should lead to:', o:['internal, incremental change.','external, disruptive change.','external, incremental change.','internal, disruptive change.'], a:0, why:'This is AQA\'s answer. Small continuous improvements from inside.'},
+    {src:'Core rule · disruptive', prompt:'Which is the best example of disruptive change?', o:['Smartphones wiping out the market for separate cameras and sat-navs','A shop changing its opening hours by one hour','A 2% price rise','A small change to packaging'], a:0, why:'It transformed whole markets.'},
+    {src:'Core rule · external', prompt:'Which is an external cause of change?', o:['A competitor launches a cheaper product','A new chief executive is appointed','The business decides to cut costs','Staff suggest a better process'], a:0, why:'It comes from outside the business.'},
+    {src:'Core rule · internal', prompt:'Which is an internal cause of change?', o:['A new owner with different objectives','A recession','A new law','A rise in interest rates'], a:0, why:'It comes from inside.'},
+    {src:'Core rule · incremental', prompt:'What is the main advantage of incremental change?', o:['It is easier to manage and meets less resistance','It transforms the business overnight','It needs no planning','It always costs nothing'], a:0, why:'Small steps are less threatening.'},
+    {src:'Core rule · value', prompt:'Which is a reason why change is valuable to a business?', o:['It helps the business stay competitive as its market changes','It always lowers costs','It removes all risk','It means staff are never worried'], a:0, why:'Failing to change can lead to strategic drift.'},
+    {src:'Core rule · cost', prompt:'Which is a cost of change?', o:['Training staff and dealing with resistance','More competitiveness','New opportunities','Better efficiency'], a:0, why:'The others are benefits.'},
+    {src:'Core rule · disruptive', prompt:'A business faces disruptive change in its market. What is the biggest risk?', o:['Its products or business model become out of date quickly','Too much incremental improvement','Higher customer loyalty','Lower competition'], a:0, why:'Disruptive change can make whole businesses obsolete.'},
+    {src:'Core rule · classifying', prompt:'A new law forces all car makers to stop selling petrol cars within a few years. This is:', o:['external and disruptive','internal and incremental','internal and disruptive','external and incremental'], a:0, why:'It comes from outside and transforms the market.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'drift', title:'Lewin\'s force field analysis', blurb:'Driving and restraining forces, and when change will happen.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`${LEWIN}
+  <p><b>Driving forces</b> push for the change (e.g. falling sales, new technology, competitor action). <b>Restraining forces</b> resist it (e.g. cost, staff fears, trade union opposition). Managers can strengthen the driving forces or weaken the restraining forces.</p>
+  <div class="trap"><b>The traps</b>On June 2025 Paper 3 Q1 some explained why the business needed to change without using Lewin at all, and some called a negative driving force (a shrinking market) a restraining force. The best answers noticed the word "now": forces change over time, and change happens once driving forces outweigh restraining forces. On June 2023 Paper 2 Q3.3 few showed the driving forces outweighed the restraining ones, and some named the wrong customers (the business sold to supermarkets).</div>`,
+  items:[
+    {src:'AQA June 2017 · Paper 1 Q12', q:'According to Lewin\'s force field analysis.', text:'Change will occur if driving forces are stronger than restraining forces.', ok:true, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2025 · Paper 3 report (Q1)', q:'A shrinking market for the business\'s main product.', text:'This is a restraining force against change.', ok:false, why:'It pushes the business to change, so it is a driving force. The report said some got this wrong.'},
+    {src:'AQA June 2025 · Paper 3 report (Q1)', q:'A question asks why a business is making major changes "now".', text:'A strong answer explains that the driving forces have grown until they now outweigh the restraining forces.', ok:true, why:'The best answers picked up on the word "now".'},
+    {src:'AQA June 2025 · Paper 3 report (Q1)', q:'A question asks you to use Lewin\'s model.', text:'Explaining why the business needs to change, without the terms driving and restraining forces, will be a limited response.', ok:true, why:'The report said these responses were limited.'},
+    {src:'AQA June 2023 · Paper 2 report (Q3.3)', q:'A question asks why a business made a change, using Lewin.', text:'The best answers showed that the driving forces outweighed the restraining forces.', ok:true, why:'Few did this; it was what lifted answers.'},
+    {src:'AQA June 2018 · Paper 2 report (Q3.2)', q:'Cabin crew threaten industrial action over a pay change.', text:'This is a restraining force.', ok:true, why:'The report said analysis of this force was generally good.'},
+    {src:'Core rule · weights', q:'About the weights in a force field diagram.', text:'They are judgements by managers, not exact measurements.', ok:true, why:'So the analysis is only as good as those judgements.'},
+    {src:'Core rule · managing', q:'About using Lewin to manage change.', text:'Managers can make change more likely by reducing the restraining forces, e.g. by consulting staff.', ok:true, why:'Weakening resistance tips the balance.'},
+    {src:'Core rule · driving', q:'A competitor launches a cheaper, better product.', text:'This is a driving force for change.', ok:true, why:'It pushes the business to respond.'},
+    {src:'Core rule · restraining', q:'The high cost of new equipment.', text:'This is a driving force for change.', ok:false, why:'Cost holds change back, so it is a restraining force.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'drift', title:'The flexible organisation', blurb:'Restructuring, delayering, flexible contracts, organic and mechanistic structures, and knowledge management.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Ways to become more flexible</h3>
+  <ul><li><b>Restructuring</b> and <b>delayering</b>: fewer levels, faster decisions.</li>
+  <li><b>Flexible employment contracts</b>: part-time, temporary, zero-hours, freelance. Staff numbers can follow demand, but loyalty and training may suffer, and some see zero-hours contracts as unethical.</li>
+  <li><b>Organic structures</b> (flat, flexible, decentralised, informal) suit fast-changing markets. <b>Mechanistic structures</b> (tall, rigid, rules and procedures, centralised) suit stable markets.</li>
+  <li><b>Knowledge and information management</b>: capturing and sharing what staff know (systems, databases, training) so the business can respond quickly and does not lose know-how when people leave.</li></ul>
+  <div class="trap"><b>The traps</b>On June 2019 Paper 2 Q2.2 (flexible contracts) the advantage and disadvantage had to be for the business, not the employees. On June 2022 Paper 1 Q25 answers that recognised flexible contracts other than zero-hours did better.</div>`,
+  items:[
+    {src:'AQA June 2019 · Paper 2 report (Q2.2)', q:'A question asks for one advantage and one disadvantage of flexible contracts for the business.', text:'Writing about the effects on employees answers the question.', ok:false, why:'The report said it had to be for the business.'},
+    {src:'AQA June 2022 · Paper 1 report (Q25)', q:'About flexible employment contracts.', text:'They include part-time, temporary and freelance contracts, not only zero-hours.', ok:true, why:'The report said students who recognised other forms did better.'},
+    {src:'Core rule · flexible contracts', q:'A business with very seasonal demand.', text:'Flexible contracts let it match staff numbers to demand, cutting costs.', ok:true, why:'It pays for labour only when needed.'},
+    {src:'Core rule · flexible contracts', q:'About flexible contracts.', text:'They always improve motivation.', ok:false, why:'Insecurity can lower motivation and loyalty.'},
+    {src:'Core rule · organic', q:'A tech start-up in a fast-changing market.', text:'An organic structure is likely to suit it better than a mechanistic one.', ok:true, why:'It needs speed and flexibility.'},
+    {src:'Core rule · mechanistic', q:'About mechanistic structures.', text:'They suit stable markets where consistency and control matter.', ok:true, why:'For example, a nuclear power station.'},
+    {src:'Core rule · knowledge management', q:'About knowledge management.', text:'It helps a business keep know-how when experienced staff leave.', ok:true, why:'Knowledge is recorded and shared.'},
+    {src:'Core rule · delayering', q:'About delayering.', text:'It makes a business more flexible by speeding up decisions.', ok:true, why:'Fewer levels for decisions to pass through.'},
+    {src:'Core rule · restructuring', q:'About restructuring.', text:'It always succeeds because it reduces costs.', ok:false, why:'It can damage morale and disrupt work.'},
+    {src:'Core rule · organic structure', q:'About organic structures.', text:'"Organic" here means the same as organic growth.', ok:false, why:'An organic structure is flat and flexible; organic growth is growing from within.'}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'mcq', title:'Resistance to change', blurb:'Barriers to change and Kotter and Schlesinger\'s reasons for resistance and ways of overcoming it.', serve:9, pass:7,
+  teach:`<h3>Kotter and Schlesinger: why people resist</h3>
+  ${tbl(['Reason','Meaning'],[['Self-interest','They expect to lose something: pay, status, their job'],['Misunderstanding and lack of trust','They do not understand the change or do not trust managers'],['Different assessments','They think the change is wrong for the business'],['Low tolerance of change','They fear uncertainty and new ways of working']])}
+  <h3>Ways of overcoming resistance</h3>
+  ${tbl(['Method','When it suits'],[['Education and communication','Resistance comes from misunderstanding'],['Participation and involvement','Managers need ideas and support from staff'],['Facilitation and support','Staff are anxious about the change'],['Negotiation and agreement','A powerful group will lose out'],['Manipulation and co-option','Other methods will not work or are too costly; risky if discovered'],['Explicit and implicit coercion','Speed is vital and managers have power; damages trust']])}
+  <div class="trap"><b>The traps</b>On June 2017 Paper 3 Q1 (two barriers to change) weaker answers drifted into how to overcome them. On June 2024 Paper 2 Q2.3 (does union consultation overcome resistance for all businesses?) judgement depended on how far the change threatens self-interest and how unionised the industry is.</div>`,
+  items:[
+    {src:'AQA June 2018 · Paper 1 Q12', prompt:'A business overcomes resistance to change by giving a highly rewarded role in the process to the trade union leader. According to Kotter and Schlesinger, this is:', o:['manipulation and co-option.','education and communication.','explicit coercion.','facilitation and support.'], a:0, why:'This is AQA\'s answer. Giving a resister a role to win them over is co-option.'},
+    {src:'AQA June 2017 · Paper 3 report (Q1)', prompt:'A question asks you to analyse two barriers to change. Which answer drifts off the question?', o:['One that explains how the barriers could be overcome','One that explains self-interest in context','One that explains misunderstanding in context','One that explains the consequences of the barriers'], a:0, why:'The report said weaker answers drifted to overcoming barriers.'},
+    {src:'Core rule · self-interest', prompt:'Managers are worried a restructure will remove their jobs. Which reason for resistance is this?', o:['Self-interest','Low tolerance of change','Different assessments','Misunderstanding'], a:0, why:'They expect to lose out.'},
+    {src:'Core rule · misunderstanding', prompt:'Staff resist a new IT system because rumours say it will be used to cut jobs. Which method fits best?', o:['Education and communication','Explicit coercion','Manipulation and co-option','Negotiation and agreement'], a:0, why:'The cause is misunderstanding.'},
+    {src:'Core rule · coercion', prompt:'When is coercion most likely to be used?', o:['When change must happen quickly and managers have power','When managers want staff ideas','When staff are anxious','When trust is high and time is plentiful'], a:0, why:'It is fast but damages trust.'},
+    {src:'Core rule · negotiation', prompt:'A union will lose overtime pay under new rotas. Which method fits best?', o:['Negotiation and agreement','Education and communication','Facilitation and support','Ignoring them'], a:0, why:'A powerful group losing out may need something in return.'},
+    {src:'AQA June 2024 · Paper 2 mark scheme (Q2.3)', prompt:'When is union consultation least likely to overcome resistance?', o:['When the change threatens workers\' jobs and the outcomes of consultation are ignored','When the change is small','When it is well explained','When workers\' views are acted on'], a:0, why:'The mark scheme: consultation may fail if it conflicts with self-interest or is ignored.'},
+    {src:'AQA June 2018 · Paper 1 report (Q21)', prompt:'How can stakeholder mapping help managers manage change? Which approach was credited?', o:['Showing when mapping helps (deciding who to consult closely) and when it is not enough','Evaluating change management without mentioning stakeholder mapping','Describing every stakeholder','Saying mapping always works'], a:0, why:'The report said some drifted into change management without first establishing the use of mapping.'},
+    {src:'Core rule · low tolerance', prompt:'Long-serving staff are anxious about learning a new system. Which method fits best?', o:['Facilitation and support, such as training and counselling','Explicit coercion','Manipulation','Negotiation over pay'], a:0, why:'Support reduces anxiety.'},
+    {src:'Core rule · participation', prompt:'Which is a drawback of participation and involvement?', o:['It takes time, and staff may design a change that suits them rather than the business','It always fails','It damages trust','It is illegal'], a:0, why:'It is slower but builds commitment.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'mcq', title:'Organisational culture and Handy', blurb:'What culture is, why it matters, and Handy\'s four cultures.', serve:9, pass:7,
+  teach:`<h3>Culture</h3><p>Organisational culture is "the way we do things around here": the shared values, attitudes and behaviour in a business. It affects motivation, decisions, innovation, customer service and how easily the business changes.</p>
+  ${tbl(['Handy\'s culture','Features','Suits'],[['Power','Power at the centre with one person or a few key people; fast decisions; depends on the leader','Small or founder-led businesses'],['Role','Rules, procedures and clear job roles; stable and predictable; slow to change','Large, stable organisations'],['Task','Teams formed around projects; expertise matters more than position; flexible','Project-based, creative or fast-changing work'],['Person','Exists for the individuals in it; little central control','Partnerships of professionals, e.g. some law firms']])}
+  <div class="trap"><b>The traps</b>On June 2024 Paper 1 Q19 (why move from a role to a power culture?) students understood power culture better than role culture; the best explained why role culture might cause underperformance. On June 2020 Paper 1 Q23 some had little understanding of organisational culture at all.</div>`,
+  items:[
+    {src:'AQA June 2019 · Paper 1 Q6', prompt:'Culture changes from decisions made by the original owner to stated rules and defined responsibilities for each worker. According to Handy, this is a change from:', o:['power to role.','person to role.','person to task.','power to task.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2025 · Paper 1 Q9', prompt:'As a small business grows, the founder starts to delegate. Every employee has clear procedures to follow. The change in culture is:', o:['Power culture to role culture.','Person culture to role culture','Person culture to task culture','Power culture to task culture'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2026 · Paper 1 Q15', prompt:'A business has a centralised culture which focuses on key decision makers. Which of Handy\'s cultures is this?', o:['Power','Person','Role','Task'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2024 · Paper 1 report (Q19)', prompt:'Why might an underperforming business with a role culture move to a power culture? Which point explains the role culture\'s weakness?', o:['Rules and procedures slow decisions, so the business reacts too slowly to problems; a power culture allows quick, decisive action','Power cultures are always better','Role cultures have no rules','Power cultures have no leader'], a:0, why:'The report said the best answers explained why role culture might cause underperformance.'},
+    {src:'AQA June 2020 · Paper 2 report (Q3.2)', prompt:'Why might shareholders want to move a company away from a power culture?', o:['Too much depends on one leader, raising the risk of poor decisions that hit profit and the share price','Power cultures are illegal','Shareholders want slower decisions','Power cultures have too many rules'], a:0, why:'The report said not all students used the shareholder context.'},
+    {src:'Core rule · task', prompt:'A design agency forms a new team of specialists for each client project. Which culture is this?', o:['Task','Power','Role','Person'], a:0, why:'Teams form around tasks; expertise matters.'},
+    {src:'Core rule · person', prompt:'A group of barristers share offices and a clerk but each works for themselves. Which culture is this?', o:['Person','Task','Role','Power'], a:0, why:'The organisation exists to serve the individuals.'},
+    {src:'Core rule · role', prompt:'Which is a weakness of a role culture?', o:['It is slow to adapt to change','It depends on one leader','It has no clear job descriptions','It is chaotic'], a:0, why:'Rules and procedures make change slow.'},
+    {src:'AQA June 2020 · Paper 1 report (Q23)', prompt:'Is R&D spending more important to innovation than culture? Which point shows understanding of culture?', o:['A culture that rewards new ideas and tolerates failure encourages staff to innovate, whatever the budget','Culture means the country\'s traditions','Culture is the same as R&D','Culture is the business\'s logo'], a:0, why:'The report said some had little understanding of organisational culture and confused R&D with market research.'},
+    {src:'Core rule · power', prompt:'Which is a strength of a power culture?', o:['Quick decisions','Many layers of approval','Little dependence on the leader','Detailed procedures'], a:0, why:'Decisions are made by one or a few people.'}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'drift', title:'Changing culture', blurb:'Influences on culture, reasons for changing it, and why it is hard.', serve:8, pass:6,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Influences on culture</h3><p>The founder and leaders, the history of the business, its size, the nature of the work and industry, recruitment, the reward system, ownership.</p>
+  <h3>Reasons for changing culture</h3><p>Poor performance, a new strategy, growth, a merger or takeover, a scandal, new owners or leaders.</p>
+  <h3>Problems</h3><p>Culture is deep-rooted and changes slowly. Staff may resist, and long-serving staff may leave. It needs consistent leadership, new recruitment and reward systems, training and communication.</p>
+  <div class="trap"><b>The trap</b>On June 2018 Paper 2 Q2.2 (actions to make staff share the culture) Level 3 needed more than one action, each linked to how it helps staff share the culture. Recruitment was a popular action.</div>`,
+  items:[
+    {src:'AQA June 2018 · Paper 2 report (Q2.2)', q:'A question asks for actions managers can take so employees share the culture.', text:'One action with no link to sharing the culture is enough for the top level.', ok:false, why:'More than one action was needed, each linked to sharing the culture.'},
+    {src:'AQA June 2018 · Paper 2 report (Q2.2)', q:'About sharing a culture.', text:'Recruiting people whose values fit the business can help staff share the culture.', ok:true, why:'Recruitment was a popular, credited action.'},
+    {src:'Core rule · change', q:'About changing culture.', text:'It usually happens quickly once managers announce it.', ok:false, why:'Culture is deep-rooted and changes slowly.'},
+    {src:'Core rule · influences', q:'The founder of a business.', text:'Can have a strong influence on its culture.', ok:true, why:'Founders\' values often shape how things are done.'},
+    {src:'Core rule · reasons', q:'Two businesses with very different cultures merge.', text:'This can cause conflict and may need a change in culture.', ok:true, why:'Culture clashes are a common reason mergers struggle.'},
+    {src:'Core rule · rewards', q:'About reward systems.', text:'Changing what staff are rewarded for can help change behaviour and culture.', ok:true, why:'People respond to what is rewarded.'},
+    {src:'Core rule · resistance', q:'About changing culture.', text:'Long-serving staff may resist because they are used to the old ways.', ok:true, why:'Low tolerance of change.'},
+    {src:'Based on AQA June 2022 · Paper 3 Q4', q:'A growing business is considering changing from a power culture to a role culture.', text:'This may help it cope with growth by giving clear roles and procedures, though it may slow decisions.', ok:true, why:'Growth often pushes a business from power to role.'},
+    {src:'Core rule · leadership', q:'About leading a change in culture.', text:'Leaders need to behave consistently with the new values themselves.', ok:true, why:'Staff follow what leaders do, not just what they say.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'drift', title:'Implementing strategy', blurb:'Leadership, communication, structure and the value of network analysis.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Effective implementation</h3>
+  <p>A good strategy can fail if it is badly implemented. Implementation needs <b>leadership</b> (direction and commitment), <b>communication</b> (so staff understand and support it), and the right <b>organisational structure</b> (so decisions can be made and work coordinated).</p>
+  <h3>Network analysis</h3>
+  <p>A network diagram shows the order and length of the activities in a project. The <b>critical path</b> is the longest route through the network: any delay to an activity on it delays the whole project. <b>Total float</b> = latest finish time − duration − earliest start time. Value: plan resources, know which activities to watch, cut the project time. Limits: estimates may be wrong; it does not guarantee activities finish on time.</p>
+  <div class="trap"><b>The traps</b>On June 2026 Paper 1 Q20 Level 3 answers saw that the critical (HR) activities had to be prioritised over the non-critical ones; generic answers without the network scored poorly. On June 2019 Paper 1 Q20 many leadership answers barely mentioned decentralisation.</div>`,
+  items:[
+    {src:'AQA June 2022 · Paper 1 Q9', q:'About network diagrams.', text:'The path with the lowest total float time is the critical path, and at least one activity must have a float.', ok:false, why:'AQA\'s answer: the first statement is true, but a network can have no float at all.'},
+    {src:'AQA June 2026 · Paper 1 report (Q20)', q:'A question asks why a business should focus on HR to shorten the critical path, and the critical activities are HR tasks.', text:'Speeding up non-critical activities will shorten the project.', ok:false, why:'Only critical activities affect the project length. The report wanted critical activities prioritised.'},
+    {src:'AQA June 2026 · Paper 1 report (Q20)', q:'About answering network questions.', text:'Generic answers about efficiency, without using the diagram, scored poorly.', ok:true, why:'The report said this.'},
+    {src:'AQA June 2026 · Paper 3 report (Q2)', q:'How can network analysis help a builder satisfy customers?', text:'Knowing the critical path lets the builder give customers a reliable finish date and watch the activities that could delay it.', ok:true, why:'The strongest answers explained this.'},
+    {src:'Core rule · critical path', q:'About the critical path.', text:'It is the longest path through the network.', ok:true, why:'It sets the minimum time to finish the project.'},
+    {src:'Core rule · float', q:'An activity has a total float of 3 days.', text:'It can be delayed by up to 3 days without delaying the project.', ok:true, why:'That is what float means.'},
+    {src:'Core rule · limits', q:'About network analysis.', text:'It guarantees the project will finish on time.', ok:false, why:'It relies on estimates; delays can still happen.'},
+    {src:'AQA June 2019 · Paper 1 report (Q20)', q:'A question asks how leadership styles affect a strategy to decentralise.', text:'An answer about leadership styles that hardly mentions decentralisation will do well.', ok:false, why:'The report said many made little reference to decentralisation.'},
+    {src:'Core rule · communication', q:'About implementing strategy.', text:'If staff do not understand the strategy, they are less likely to support it.', ok:true, why:'Communication builds understanding and commitment.'},
+    {src:'Core rule · structure', q:'About structure and strategy.', text:'A strategy of fast innovation may be held back by a tall, centralised structure.', ok:true, why:'Decisions take too long.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'calc', title:'Network analysis calculations', blurb:'Critical path length, total float and the effect of delays.', serve:7, pass:5,
+  teach:`<h3>Refresher</h3>
+  <ul><li><b>Earliest start time (EST)</b>: the earliest an activity can begin, once everything before it is finished. Work forwards, taking the <b>largest</b> figure where paths meet.</li>
+  <li><b>Latest finish time (LFT)</b>: the latest an activity can finish without delaying the project. Work backwards, taking the <b>smallest</b> figure where paths split.</li>
+  <li><b>Total float</b> = LFT − duration − EST.</li>
+  <li>If an activity is delayed by more than its float, the project is delayed by the difference.</li></ul>
+  <div class="trap"><b>The trap</b>Where two activities lead into one, the next activity starts when the <b>later</b> one finishes.</div>`,
+  items:[
+    {src:'Core skill · two paths', gen(){const a=rint(2,6),c=rint(3,8),b=rint(2,6),d=rint(2,8);if(a+c===b+d)return this.gen();const L=Math.max(a+c,b+d);
+      return {given:tbl(['Activity','Preceded by','Duration (days)'],[['A','None',a],['B','None',b],['C','A',c],['D','B',d]])+'<p style="margin-top:8px">The project ends when C and D are both finished.</p>',prompt:'What is the length of the critical path?',unit:'days',ans:L,tol:0,traps:[{v:Math.min(a+c,b+d),m:'That is the shorter path. The critical path is the longest.'},{v:a+b+c+d,m:'You added every activity. A and C run alongside B and D.'}],work:`A–C = ${a+c} days; B–D = ${b+d} days. The longest is ${L} days.`};}},
+    {src:'Core skill · float', gen(){const a=rint(2,6),c=rint(3,8),b=rint(2,6),d=rint(2,8);const p1=a+c,p2=b+d;if(p1<=p2)return this.gen();
+      return {given:tbl(['Activity','Preceded by','Duration (days)'],[['A','None',a],['B','None',b],['C','A',c],['D','B',d]])+'<p style="margin-top:8px">The project ends when C and D are both finished.</p>',prompt:'What is the total float of activity D?',unit:'days',ans:p1-p2,tol:0,work:`Project = ${p1} days (A–C). D: EST ${b}, LFT ${p1}, duration ${d}. Float = ${p1} − ${d} − ${b} = ${p1-p2} days.`};}},
+    {src:'Core skill · critical path', given:NET1,prompt:'What is the length of the critical path?',unit:'days',ans:13,tol:0,traps:[{v:12,m:'That is B–E–F. Check A–C–E–F and A–D–F.'}],work:'ESTs: A 0, B 0, C 4, D 4, E 7 (after C finishes at 7; B finishes at 6), F 9. F ends at 13. A–C–E–F and A–D–F are both 13 days.'},
+    {src:'Core skill · total float', given:NET1,prompt:'What is the total float of activity B?',unit:'days',ans:1,tol:0,work:'LFT of B = latest start of E = 13 − 4 − 2 = 7. Float = 7 − 6 − 0 = 1 day.'},
+    {src:'Core skill · delay', given:NET1,prompt:'Activity B is delayed by 3 days. What is the new length of the project?',unit:'days',ans:15,tol:0,traps:[{v:16,m:'B has 1 day of float, so the project is delayed by 2 days, not 3.'},{v:13,m:'B only has 1 day of float, so a 3-day delay does affect the project.'}],work:'B now finishes at 9, so E runs 9–11 and F 11–15. The project is 15 days: 3 days delay minus 1 day float = 2 days later.'},
+    {src:'Core skill · critical path', given:NET2,prompt:'What is the length of the critical path?',unit:'days',ans:10,tol:0,traps:[{v:9,m:'Check A–B–D–E: 2 + 3 + 4 + 1 = 10.'},{v:8,m:'That is F–G. The longest path is A–B–D–E.'}],work:'A 0–2, B 2–5, C 2–8, D 5–9, E starts at 9 (after D) and ends at 10. F 0–5, G 5–8. The critical path is A–B–D–E = 10 days.'},
+    {src:'Core skill · total float', given:NET2,prompt:'What is the total float of activity C?',unit:'days',ans:1,tol:0,work:'LFT of C = latest start of E = 10 − 1 = 9. Float = 9 − 6 − 2 = 1 day.'},
+    {src:'Core skill · total float', given:NET2,prompt:'What is the total float of activity G?',unit:'days',ans:2,tol:0,work:'G: EST 5, LFT 10, duration 3. Float = 10 − 3 − 5 = 2 days.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'mcq', title:'Why strategies fail and planning', blurb:'Planned and emergent strategy, strategic drift, evaluating performance, strategic and contingency planning, crisis management.', serve:10, pass:8,
+  teach:`${tbl(['Term','Meaning'],[['Planned strategy','Worked out in advance and carried out as intended'],['Emergent strategy','An unplanned strategy that develops in response to events (internal or external)'],['Strategic drift','Keeping a strategy that no longer fits a changing environment'],['Contingency planning','Preparing in advance for possible problems (a back-up supplier, a cyber attack plan)'],['Crisis management','Responding to a crisis as it happens to limit the damage']])}
+  <p><b>Evaluating strategic performance</b>: compare results with objectives, using financial and non-financial measures, over time and against competitors. Strategic planning gives direction and coordination, but plans can become out of date in a fast-changing environment.</p>
+  <div class="trap"><b>The traps</b>Strategic drift is not a deliberate change in strategy: many students got this wrong on June 2024 Paper 1 Q23. An emergent strategy can respond to internal as well as external change (June 2022). On June 2023 Paper 1 Q21 weaker answers wrote about planning in general rather than contingency planning.</div>`,
+  items:[
+    {src:'AQA June 2019 · Paper 1 Q7', prompt:'Strategic drift occurs when a business:', o:['maintains a strategy that is no longer suited to current circumstances.','implements a plan designed to cope with unexpected changes.','introduces an unplanned strategy in response to external changes.','introduces an unplanned strategy in response to internal changes.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2025 · Paper 1 Q12', prompt:'Which situation is most likely to cause strategic drift?', o:['High external change and low strategic change','High external change and high strategic change','Low external change and high strategic change','Low external change and low strategic change'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2020 · Paper 1 Q6', prompt:'In which scenario is strategic drift least likely?', o:['Managers very willing to change, and little likely external change','Managers very willing to change, and lots of external change','Managers unwilling to change, and lots of external change','Managers unwilling to change, and little external change'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2018 · Paper 1 Q14', prompt:'Statement 1: "An emergent strategy is an initially unplanned strategy which arises in response to change." Statement 2: "Strategic drift occurs when a planned strategy is continually modified in response to changes."', o:['Statement 1 is true. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2022 · Paper 1 Q14', prompt:'Statement 1: "An emergent strategy only occurs in response to external change." Statement 2: "Strategic drift occurs whenever a business changes a planned strategy."', o:['Statement 1 is false. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2024 · Paper 1 report (Q23)', prompt:'Which is the correct meaning of strategic drift?', o:['Failing to adapt a strategy as the environment changes','A deliberate, planned change of strategy','A strategy that emerges from events','Changing strategy every year'], a:0, why:'The report said many thought it was a deliberate change in strategy.'},
+    {src:'AQA June 2023 · Paper 1 report (Q21)', prompt:'Is the success of a contingency plan more dependent on internal or external factors? Which answer is off the question?', o:['One about the benefits of planning in general','One about leadership in carrying out the plan','One about how severe the external threat turns out to be','One about whether staff were trained in the plan'], a:0, why:'The report said weaker answers discussed planning in general.'},
+    {src:'AQA June 2022 · Paper 2 report (Q3.5)', prompt:'How might contingency planning have helped a business stay competitive? Which chain reaches the end point?', o:['A back-up supplier keeps production going when the main supplier fails, so customers are still served and the business keeps its market share','It has a plan','It is prepared','It has two suppliers'], a:0, why:'The report said the link to competitiveness was often underdeveloped.'},
+    {src:'AQA June 2018 · Paper 2 report (Q3.3)', prompt:'Is contingency planning essential for an airline? Which answer uses the context best?', o:['Real airline problems such as pilot strikes, volcanic ash and severe weather show how costly disruption can be without a plan','Contingency planning is useful for all businesses','Plans cost money','Airlines fly planes'], a:0, why:'The report praised real airline examples.'},
+    {src:'Core rule · crisis management', prompt:'What is the difference between contingency planning and crisis management?', o:['Contingency planning prepares before a problem; crisis management deals with it as it happens','They are the same','Crisis management is done in advance','Contingency planning only happens after a crisis'], a:0, why:'Crisis management was added alongside contingency planning in 2023.'},
+    {src:'Core rule · evaluating', prompt:'Which is the best way to evaluate strategic performance?', o:['Compare results with the objectives using financial and non-financial measures, over time and against competitors','Look only at this year\'s profit','Ask the chief executive','Count the number of products'], a:0, why:'A wide view gives a fair judgement.'}
+  ]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Against the clock', blurb:'Fifteen mixed questions from the whole unit, 30 seconds each.', pass:12, poolFrom:[1,2,3,4,5,6,7,9], count:15, seconds:30,
+  teach:`<p>Fifteen questions drawn at random from the rest of this unit, with 30 seconds each. Handy\'s cultures, Kotter and Schlesinger and strategic drift should be automatic.</p>
+  <p>You get different questions each time you try.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'rt310', key:'rt310_course_v1', offset:1600, short:'Rules and Traps 3.10',
+  name:'Rules and Traps: Unit 3.10',
+  hero:{kicker:'Rules and Traps · Unit 3.10',
+    title:'Managing strategic <em>change</em>',
+    lede:'Causes and types of change, Lewin, flexible organisations, resistance to change, culture and Handy, implementing strategy, network analysis, strategic drift and contingency planning. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
+  doneText:'You have worked through every rule and trap in Unit 3.10. Before any answer here, use the model\'s own terms, remember strategic drift is a failure to change, and use the diagram on any network question.',
+  stages:STAGES
+};
+</script>
+<script src="account.js"></script>
+<script src="course-engine.js"></script>
+<script src="visit.js" defer></script>
+</body>
+</html>
