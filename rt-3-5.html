@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rules and Traps: Unit 3.5 Financial management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+<link rel="stylesheet" href="rt.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   RULES AND TRAPS: UNIT 3.5 FINANCIAL MANAGEMENT
+   Specification topics 3.5.1a to 3.5.4b (spec.js). Every rule and trap is
+   checked against the AQA papers, mark schemes and examiner reports
+   2017 to 2026. Items marked "AQA June 20xx" are the real questions with
+   AQA's answer; "Based on" means our wording of a reported mistake.
+   Stage numbers are stored in the tracker as 1100 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+const rint=(a,b,s=1)=>Math.round((a+Math.random()*(b-a))/s)*s;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
+const isN=c=>/^[−\-+]?[£€]?[\d.,]+(%|m|bn|k)?$/.test(String(c).trim());
+const tbl=(head,rows)=>{const num=head.map((h,i)=>i>0&&rows.every(r=>isN(r[i])||r[i]===''));return `<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${num[i]?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${num[i]?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;};
+
+/* break-even chart: fixed costs £20,000, price £10, variable cost £6, so break-even = 5,000 units; actual output 8,000 */
+const bx=q=>60+q*0.042, by=v=>200-v*0.0017;
+const BE=`<div class="chart"><svg viewBox="0 0 520 240" role="img" aria-label="Break-even chart. Fixed costs are a flat line at 20,000 pounds. Total costs start at 20,000 and rise by 6 pounds a unit. Revenue starts at zero and rises by 10 pounds a unit. The lines cross at 5,000 units and 50,000 pounds. Actual output is 8,000 units, giving a margin of safety of 3,000 units.">
+  <line x1="60" y1="20" x2="60" y2="200" style="stroke:var(--fg)"/><line x1="60" y1="200" x2="500" y2="200" style="stroke:var(--fg)"/>
+  ${[0,20000,50000,100000].map(v=>`<text x="54" y="${by(v)+4}" text-anchor="end">£${(v/1000)}k</text>`).join('')}
+  ${[0,2000,4000,6000,8000,10000].map(q=>`<text x="${bx(q)}" y="216" text-anchor="middle">${q.toLocaleString('en-GB')}</text>`).join('')}<text x="280" y="234" text-anchor="middle">Units of output</text>
+  <line x1="${bx(0)}" y1="${by(20000)}" x2="${bx(10000)}" y2="${by(20000)}" class="l3"/>
+  <line x1="${bx(0)}" y1="${by(20000)}" x2="${bx(10000)}" y2="${by(80000)}" class="l2"/>
+  <line x1="${bx(0)}" y1="${by(0)}" x2="${bx(10000)}" y2="${by(100000)}" class="l1"/>
+  <circle cx="${bx(5000)}" cy="${by(50000)}" r="4" style="fill:var(--fg)"/>
+  <line x1="${bx(5000)}" y1="${by(50000)}" x2="${bx(5000)}" y2="200" style="stroke:var(--muted)" stroke-dasharray="2 3"/>
+  <line x1="${bx(8000)}" y1="${by(80000)}" x2="${bx(8000)}" y2="200" style="stroke:var(--muted)" stroke-dasharray="2 3"/>
+  <line x1="${bx(5000)}" y1="190" x2="${bx(8000)}" y2="190" style="stroke:var(--fg)"/><text x="${bx(6500)}" y="186" text-anchor="middle" style="font-size:11px">margin of safety</text>
+  <text x="420" y="40" text-anchor="end" style="fill:var(--start)">Revenue</text>
+  <text x="500" y="94" text-anchor="end" style="fill:var(--end)">Total costs</text>
+  <text x="${bx(10000)-4}" y="${by(20000)-6}" text-anchor="end" style="fill:var(--gold)">Fixed costs</text>
+</svg><div class="cap">Fixed costs £20,000; price £10; variable cost £6 a unit. Break-even is 5,000 units. At 8,000 units the margin of safety is 3,000 units.</div></div>`;
+const CFF=tbl(['£000','Jan','Feb','Mar'],[['Cash inflows (sales)','120','90','150'],['Cash outflows','110','130','100'],['Net cash flow','10','−40','50'],['Opening balance','25','35','−5'],['Closing balance','35','−5','45']]);
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'drift', title:'Financial objectives, cash flow and profit', blurb:'What financial objectives are for, and why cash and profit are different.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Financial objectives</h3>
+  <p>Targets for return on investment (e.g. ROCE of 15%), revenue, costs, profit and cash flow. They help managers plan, coordinate departments, set budgets and judge performance, and tell investors and lenders what to expect.</p>
+  <h3>Cash flow and profit</h3>
+  ${tbl(['','Profit','Cash flow'],[['What it is','Revenue minus costs for a period','Money actually coming in and going out, and when'],['A sale on credit','Counts as revenue now','Cash arrives later'],['Buying a machine','Only the depreciation is a cost each year','The full amount leaves the bank now'],['Why it matters','Long-term survival and reward for owners','Paying staff, suppliers and lenders on time']])}
+  <ul><li>A profitable business can run out of cash (customers pay late, stock builds up, a big asset is bought).</li>
+  <li>A business can have plenty of cash and still make a loss (e.g. after a loan or selling assets).</li>
+  <li>Cash is needed to survive in the short run; profit is needed in the long run.</li></ul>
+  <div class="trap"><b>The trap</b>On June 2026 Paper 3 Q5 (is cash flow more important than profit for Danni?) too many students used the two words as if they meant the same. The best answers used the appendices, noticed Danni\'s cash flow was lumpy but positive overall and that neither was an immediate crisis, and avoided exaggerating.</div>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 3 report (Q5)', q:'A builder finishes a £20,000 job and gives the customer 60 days to pay.', text:'The £20,000 adds to profit and to the bank balance on the day the job is finished.', ok:false, why:'It counts as revenue (profit) when the job is done, but the cash comes 60 days later.'},
+    {src:'Core rule · cash and profit', q:'A business has made a profit every month this year.', text:'It is impossible for it to run out of cash.', ok:false, why:'Late-paying customers, rising stock or buying assets can drain cash even when profitable.'},
+    {src:'Core rule · cash and profit', q:'A business takes out a £100,000 bank loan.', text:'Its cash balance rises but its profit does not.', ok:true, why:'A loan is not revenue. Interest on it will later reduce profit.'},
+    {src:'Core rule · cash and profit', q:'A business buys a £50,000 machine for cash, expected to last five years.', text:'The whole £50,000 is taken off this year\'s profit.', ok:false, why:'The cash leaves now, but only part of the cost (depreciation) is charged against profit each year.'},
+    {src:'Core rule · financial objectives', q:'A business sets a target ROCE of 15%.', text:'This is a return on investment objective.', ok:true, why:'ROCE measures the return on the capital invested.'},
+    {src:'Core rule · value of objectives', q:'About financial objectives.', text:'They help managers set budgets and judge performance.', ok:true, why:'A target gives something to plan towards and measure against.'},
+    {src:'Core rule · survival', q:'About cash and profit.', text:'In the short run, running out of cash is a more immediate threat to survival than making a loss.', ok:true, why:'A business that cannot pay its bills can be forced to close even if it is profitable on paper.'},
+    {src:'AQA June 2026 · Paper 3 mark scheme (Q5)', q:'A builder\'s gearing has been rising.', text:'This makes cash flow more important, because loan repayments must be met on time.', ok:true, why:'The mark scheme linked gearing to the cash needed for loan payments.'},
+    {src:'AQA June 2026 · Paper 3 mark scheme (Q5)', q:'About cash and profit in the long run.', text:'Unless revenue exceeds costs over time, cash flow will not recover either.', ok:true, why:'The mark scheme\'s judgement: cash keeps you alive, but without profit the cash eventually runs out.'},
+    {src:'Core rule · cash and profit', q:'A business sells off its old warehouse for cash.', text:'This improves cash flow straight away.', ok:true, why:'Cash comes in from the sale, though the business loses the use of the asset.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'mcq', title:'Budgets and variances', blurb:'Why businesses budget, and how to read adverse and favourable variances.', serve:8, pass:6,
+  teach:`<h3>Budgets</h3>
+  <p>A budget is a financial plan for a future period: income budgets, expenditure budgets and profit budgets. Budgets help planning, control, coordination between departments, and motivation when staff are responsible for a budget. They can be set from last year\'s figures or built from zero (each item justified).</p>
+  <p>Problems: they take time; they may be based on poor forecasts; they can be too rigid if things change; staff may overspend to protect next year\'s budget.</p>
+  <h3>Variances</h3>
+  ${tbl(['','Favourable (F)','Adverse (A)'],[['Income or revenue','Actual above budget','Actual below budget'],['Costs or expenditure','Actual below budget','Actual above budget'],['Profit','Actual above budget','Actual below budget']])}
+  <p>Variance = actual − budget, then label it F or A by asking: is this good or bad for profit?</p>
+  <div class="trap"><b>The traps</b>For costs the direction reverses: spending more than budgeted is adverse. On June 2018 Paper 1 Q8 the most popular wrong answer had both labels the wrong way round. June 2024 Q4 (expenditure 20% over budget) was the hardest data question on that paper. Always say adverse or favourable: the 2020 Paper 1 calculation asked for it.</div>`,
+  items:[
+    {src:'AQA June 2018 · Paper 1 Q8', table:tbl(['£m','Budgeted','Actual'],[['Income','125','114'],['Expenditure','98','85'],['Profit','27','29']]), prompt:'Based on these data, which statement is true?', o:['Income variance was adverse and profit variance was favourable.','Income variance was favourable and profit variance was adverse.','Expenditure variance was adverse and profit variance was adverse.','Expenditure variance was adverse and profit variance was favourable.'], a:0, why:'This is AQA\'s answer. Income was below budget (adverse); profit was above budget (favourable) because spending was £13m under.'},
+    {src:'AQA June 2024 · Paper 1 Q4', prompt:'Budgeted income £200m; budgeted expenditure £160m. Actual income was as budgeted but expenditure was 20% higher than budget. The actual profit showed:', o:['an adverse variance of £32 million.','a favourable variance of £8 million.','a favourable variance of £32 million.','an adverse variance of £8 million.'], a:0, why:'This is AQA\'s answer. Expenditure = £192m, so profit = £8m against a budget of £40m: £32m adverse.'},
+    {src:'Core rule · variances', prompt:'A marketing department spent £45,000 against a budget of £50,000. The variance is:', o:['£5,000 favourable','£5,000 adverse','£45,000 favourable','£50,000 adverse'], a:0, why:'Spending less than budget is good for profit.'},
+    {src:'Core rule · variances', prompt:'Sales revenue was £180,000 against a budget of £200,000. The variance is:', o:['£20,000 adverse','£20,000 favourable','£180,000 adverse','£200,000 favourable'], a:0, why:'Revenue below budget is bad for profit.'},
+    {src:'Core rule · value', prompt:'Which is a benefit of giving a manager responsibility for a budget?', o:['It can motivate them and gives a target to control spending against','It removes the need for planning','It guarantees profit','It stops all overspending'], a:0, why:'Ownership of a budget encourages control.'},
+    {src:'Core rule · limitations', prompt:'Which is a limitation of budgets?', o:['They may be based on poor forecasts and become out of date if conditions change','They make coordination harder','They cannot be used for costs','They only apply to sole traders'], a:0, why:'A budget is only as good as the forecasts behind it.'},
+    {src:'Core rule · variance causes', prompt:'Raw material costs are £30,000 over budget. Which is the most likely cause?', o:['Supplier prices rose more than expected','Sales were lower than expected and output was cut','The business found a cheaper supplier','The budget was set too high'], a:0, why:'Higher input prices push costs above budget. Lower output would usually reduce material costs.'},
+    {src:'Core rule · variance analysis', prompt:'Why might an adverse cost variance not be bad news?', o:['If sales were far higher than budgeted, costs would naturally be higher too','Adverse always means good','Costs do not affect profit','Variances are not measured in money'], a:0, why:'Look at the cause: more sales means more materials used.'},
+    {src:'Core rule · zero-based', prompt:'A business makes every department justify each item of spending from nothing each year. This is:', o:['zero-based budgeting','variance analysis','break-even analysis','cash flow forecasting'], a:0, why:'Nothing is assumed from last year.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'calc', title:'Variance and margin calculations', blurb:'Variances, then gross, operating and profit for the year margins.', serve:7, pass:5,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Measure','Formula'],[['Variance','Actual − budget, then label adverse or favourable'],['Gross profit margin','Gross profit ÷ revenue × 100'],['Operating profit margin','Operating profit ÷ revenue × 100'],['Profit for the year margin','Profit for the year ÷ revenue × 100']])}
+  <p>For variances on this site, type the size of the variance; the question tells you which way to think. Always write F or A in the exam.</p>
+  <div class="trap"><b>The traps</b>Dividing a margin by cost of sales instead of revenue. Confusing operating profit with operating profit margin: in June 2026 Paper 2 Q1.4 many students wrote about profit when the question asked about the margin.</div>`,
+  items:[
+    {src:'AQA June 2024 · Paper 1 Q4', given:'Budgeted income <b>£200m</b>; budgeted expenditure <b>£160m</b>. Actual income was as budgeted; expenditure was <b>20%</b> over budget.',prompt:'What is the size of the profit variance (in £m)? It is adverse.',pre:true,ans:32,tol:0,traps:[{v:8,m:'£8m is the actual profit. The variance compares it with the budgeted £40m.'}],work:'Actual expenditure = £160m × 1.2 = £192m. Actual profit = £200m − £192m = £8m. Budget profit = £40m. Variance = £32m adverse.'},
+    {src:'Core skill · variance', gen(){const b=rint(40,90)*1000,d=rint(2,12)*1000,over=Math.random()<.5;const a=over?b+d:b-d;
+      return {given:`Wage costs: budget <b>£${f(b)}</b>, actual <b>£${f(a)}</b>.`,prompt:`What is the size of the variance (in £)? Then decide: is it adverse or favourable? (It is ${over?'adverse':'favourable'}.)`,pre:'£',ans:d,tol:0,work:`£${f(a)} − £${f(b)} = ${over?'':'−'}£${f(d)}. Spending ${over?'more':'less'} than budget is ${over?'adverse':'favourable'}.`};}},
+    {src:'Core skill · profit variance', gen(){const bi=rint(100,300),be=rint(60,bi-20),ai=bi+rint(-20,20),ae=be+rint(-15,15);const bp=bi-be,ap=ai-ae,v=ap-bp;
+      return {given:tbl(['£000','Budget','Actual'],[['Income',bi,ai],['Expenditure',be,ae]]),prompt:'Calculate the profit variance (in £000). Use a minus sign if it is adverse.',pre:'£',unit:'k',ans:v,tol:0,work:`Budget profit = ${bi} − ${be} = ${bp}. Actual profit = ${ai} − ${ae} = ${ap}. Variance = ${ap} − ${bp} = ${v} (${v>=0?'favourable':'adverse'}).`};}},
+    {src:'Core skill · gross profit margin', gen(){const R=pick([200,250,400,500,800]),g=pick([30,35,40,45,52]);const GP=R*g/100;
+      return {given:`Revenue <b>£${R}k</b>. Gross profit <b>£${f(GP)}k</b>.`,prompt:'Calculate the gross profit margin.',unit:'%',ans:g,tol:0.05,work:`£${f(GP)}k ÷ £${R}k × 100 = ${g}%.`};}},
+    {src:'Core skill · operating profit margin', gen(){const R=pick([120,150,240,300,600]),C=R*pick([.4,.5,.55]),O=R*pick([.2,.25,.3]);const op=r1(R-C-O),ans=r1(op/R*100);
+      return {given:`Revenue <b>£${R}m</b>. Cost of sales <b>£${f(C)}m</b>. Operating expenses <b>£${f(O)}m</b>.`,prompt:'Calculate the operating profit margin.',unit:'%',ans,tol:0.05,traps:[{v:r1((R-C)/R*100),m:'That is the gross profit margin.'}],work:`Operating profit = £${f(op)}m. £${f(op)}m ÷ £${R}m × 100 = ${ans}%.`};}},
+    {src:'Core skill · profit for the year margin', gen(){const R=pick([80,100,160,250]),p=pick([4,5,6.5,8,10]);const pf=R*p/100;
+      return {given:`Revenue <b>£${R}m</b>. Profit for the year <b>£${f(pf)}m</b>.`,prompt:'Calculate the profit for the year margin.',unit:'%',ans:p,tol:0.05,work:`£${f(pf)}m ÷ £${R}m × 100 = ${p}%.`};}},
+    {src:'Based on AQA June 2026 · Paper 2 Q1.4', gen(){const R1=pick([20,40,50]),m1=pick([5,8,10]),R2=R1*pick([1.25,1.5]),op2=r2(R1*m1/100*pick([1.1,1.15,1.2]));const ans=r1(op2/R2*100);
+      return {given:`Last year: revenue <b>£${R1}m</b>, operating profit margin <b>${m1}%</b>. This year: revenue <b>£${f(R2)}m</b>, operating profit <b>£${f(op2)}m</b>.`,prompt:'Calculate this year\'s operating profit margin (1 d.p.).',unit:'%',ans,tol:0.06,work:`£${f(op2)}m ÷ £${f(R2)}m × 100 = ${ans}%. Operating profit rose (from £${f(R1*m1/100)}m) but the margin fell from ${m1}%. Profit and margin can move in opposite directions.`};}},
+    {src:'Core skill · reverse margin', gen(){const R=pick([40,60,80,120,200]),m=pick([5,10,12.5,15,20]);
+      return {given:`Revenue <b>£${R}m</b>. Operating profit margin <b>${m}%</b>.`,prompt:'Calculate operating profit (in £m).',pre:true,ans:r2(R*m/100),tol:0.01,work:`£${R}m × ${m}% = £${f(r2(R*m/100))}m.`};}}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'calc', title:'Cash flow forecasts', blurb:'Net cash flow, opening and closing balances, and the effect of credit terms.', serve:7, pass:5,
+  teach:`<h3>Refresher</h3>
+  ${CFF}
+  <ul><li><b>Net cash flow</b> = cash inflows − cash outflows.</li>
+  <li><b>Closing balance</b> = opening balance + net cash flow.</li>
+  <li>Each month\'s closing balance is the next month\'s opening balance.</li></ul>
+  <h3>Timings: payables and receivables</h3>
+  <p>Giving customers credit (receivables) delays cash coming in. Getting credit from suppliers (payables) delays cash going out. Shorter receivables days and longer payables days improve cash flow in the short term (June 2026 Paper 1 Q6).</p>
+  <h3>How it has been examined</h3>
+  <p>June 2025 Paper 2 Q1.1: from 1 November customers got one month\'s credit, so November\'s inflows of £3.35m moved to December. November closing balance = £4.30m − £3.22m = £1.08m. Many missed that the payment terms had changed. Label workings so you get process marks.</p>
+  <div class="trap"><b>The traps</b>Using the wrong month\'s opening balance. Forgetting that a negative balance means an overdraft. Missing a change in credit terms described in the question.</div>`,
+  items:[
+    {src:'Core skill · net cash flow', gen(){const i=rint(50,200),o=rint(50,200);
+      return {given:`Cash inflows <b>£${i}k</b>. Cash outflows <b>£${o}k</b>.`,prompt:'Calculate net cash flow (in £000; minus sign if negative).',pre:'£',unit:'k',ans:i-o,tol:0,work:`£${i}k − £${o}k = £${i-o}k.`};}},
+    {src:'Core skill · closing balance', gen(){const ob=rint(-30,80),i=rint(60,200),o=rint(60,200);
+      return {given:`Opening balance <b>£${ob}k</b>. Inflows <b>£${i}k</b>. Outflows <b>£${o}k</b>.`,prompt:'Calculate the closing balance (in £000; minus sign if overdrawn).',pre:'£',unit:'k',ans:ob+i-o,tol:0,traps:[{v:i-o,m:'That is net cash flow. Add the opening balance.'}],work:`£${ob}k + (£${i}k − £${o}k) = £${ob+i-o}k.`};}},
+    {src:'Core skill · two months', gen(){const ob=rint(10,60),i1=rint(80,150),o1=rint(80,150),i2=rint(80,150),o2=rint(80,150);const c1=ob+i1-o1,c2=c1+i2-o2;
+      return {given:tbl(['£000','Month 1','Month 2'],[['Inflows',i1,i2],['Outflows',o1,o2]])+`Opening balance in month 1: <b>£${ob}k</b>.`,prompt:'What is the closing balance at the end of month 2 (in £000)?',pre:'£',unit:'k',ans:c2,tol:0,traps:[{v:ob+i2-o2,m:'Month 2 opens with month 1\'s closing balance, not the original opening balance.'}],work:`Month 1 closing = ${ob} + ${i1} − ${o1} = ${c1}. Month 2 closing = ${c1} + ${i2} − ${o2} = ${c2}.`};}},
+    {src:'AQA June 2025 · Paper 2 Q1.1', given:'November forecast (assuming customers pay immediately): inflows <b>£3.35m</b>, outflows <b>£3.22m</b>, opening balance <b>£4.30m</b>. From 1 November all customers take <b>one month\'s credit</b>.',prompt:'Calculate the closing balance for November (in £m).',pre:true,ans:1.08,tol:0.001,
+     traps:[{v:4.43,m:'You kept November\'s inflows. With a month\'s credit, November\'s sales are paid in December.'}],work:'Inflows in November = 0. Net cash flow = 0 − £3.22m = −£3.22m. Closing = £4.30m − £3.22m = £1.08m.'},
+    {src:'Core skill · credit terms', gen(){const s=rint(40,90),o=rint(30,80),ob=rint(10,40);
+      return {given:`Sales of <b>£${s}k</b> a month are usually paid in cash. This month the business gives all customers <b>30 days\' credit</b>. Outflows <b>£${o}k</b>; opening balance <b>£${ob}k</b>.`,prompt:'What is this month\'s closing balance (in £000)?',pre:'£',unit:'k',ans:ob-o,tol:0,traps:[{v:ob+s-o,m:'Sales on 30 days\' credit are not paid this month.'}],work:`Inflows this month = 0. £${ob}k + 0 − £${o}k = £${ob-o}k. Profit is unchanged; the cash simply arrives later.`};}},
+    {src:'Core skill · overdraft needed', gen(){const ob=rint(5,20),i=rint(40,70),o=i+rint(15,45);const c=ob+i-o;
+      return {given:`Opening balance <b>£${ob}k</b>. Inflows <b>£${i}k</b>. Outflows <b>£${o}k</b>.`,prompt:'What size of overdraft will the business need this month (in £000)? Give a positive number.',pre:'£',unit:'k',ans:-c,tol:0,work:`Closing balance = ${ob} + ${i} − ${o} = ${c}. An overdraft of £${-c}k is needed.`};}},
+    {src:'Chart skill · reading a forecast', given:'Use the cash flow forecast in the refresher.',prompt:'What is the closing balance at the end of March (in £000)?',pre:'£',unit:'k',ans:45,tol:0,work:'Opening balance −5 + net cash flow 50 = 45.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'calc', title:'Contribution, break-even and margin of safety', blurb:'The calculations that cost the most marks, with new numbers each time.', serve:7, pass:5,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Measure','Formula','Unit'],[['Contribution per unit','Selling price − variable cost per unit','£'],['Total contribution','Contribution per unit × units sold','£'],['Profit','Total contribution − fixed costs','£'],['Break-even output','Fixed costs ÷ contribution per unit','units'],['Margin of safety','Actual output − break-even output','units'],['Output for a target profit','(Fixed costs + target profit) ÷ contribution per unit','units']])}
+  <h3>How it has been examined</h3>
+  <ul><li>June 2024 Paper 1 Q16: output = £10,000 total contribution ÷ £4 = 2,500; break-even = £8,000 ÷ £4 = 2,000; margin of safety = 500 units. "£500" lost a mark.</li>
+  <li>June 2026 Paper 1 Q17: break-even = £360,000 ÷ (£16,000 − £7,000) = 40 units; margin of safety = 52 − 40 = 12 units. Margin of safety in £ got no credit; over a quarter scored zero, often confusing it with profit.</li>
+  <li>June 2026 Paper 1 Q5: total revenue is not contribution per unit × quantity, and not total costs + total contribution.</li></ul>
+  <div class="trap"><b>The traps</b>Giving margin of safety in £. Confusing it with profit. Dividing fixed costs by price instead of contribution. Adding contribution to total costs.</div>`,
+  items:[
+    {src:'AQA June 2026 · Paper 1 Q17', given:'Kempshott plc: actual output <b>52 units</b>; selling price <b>£16,000</b> per unit; variable costs <b>£7,000</b> per unit; fixed costs <b>£360,000</b>.',prompt:'Calculate the margin of safety (units).',unit:'units',ans:12,tol:0,
+     traps:[{v:40,m:'40 is break-even output. Margin of safety = actual output − break-even.'},{v:108000,m:'That is profit. Margin of safety is measured in units.'}],work:'Break-even = £360,000 ÷ £9,000 = 40 units. 52 − 40 = 12 units.'},
+    {src:'AQA June 2024 · Paper 1 Q16', given:'Product X: fixed costs <b>£8,000</b>; selling price <b>£10</b>; variable costs per unit <b>£6</b>; total contribution from current output <b>£10,000</b>.',prompt:'Calculate the margin of safety (units).',unit:'units',ans:500,tol:0,
+     traps:[{v:2000,m:'That is break-even output. Work out current output first: £10,000 ÷ £4.'}],work:'Current output = £10,000 ÷ £4 = 2,500. Break-even = £8,000 ÷ £4 = 2,000. 2,500 − 2,000 = 500 units.'},
+    {src:'Core skill · break-even', gen(){const P=pick([12,15,20,25,40]),V=pick([4,5,6,8,10].filter(v=>v<P)),c=P-V,BE=rint(200,4000,50);const F=c*BE;
+      return {given:`Fixed costs <b>£${f(F)}</b>. Price <b>£${P}</b>. Variable cost <b>£${V}</b> per unit.`,prompt:'Calculate break-even output (units).',unit:'units',ans:BE,tol:0,traps:[{v:r1(F/P),m:'Divide by contribution per unit (price − variable cost), not by price.'}],work:`Contribution = £${P} − £${V} = £${c}. £${f(F)} ÷ £${c} = ${f(BE)} units.`};}},
+    {src:'Core skill · margin of safety', gen(){const c=pick([3,4,5,8,10]),BE=rint(500,3000,100),A=BE+rint(100,2000,100);const F=c*BE;
+      return {given:`Fixed costs <b>£${f(F)}</b>. Contribution per unit <b>£${c}</b>. Actual output <b>${f(A)}</b> units.`,prompt:'Calculate the margin of safety (units).',unit:'units',ans:A-BE,tol:0,traps:[{v:(A-BE)*c,m:'That is profit in £. Margin of safety is in units.'}],work:`Break-even = £${f(F)} ÷ £${c} = ${f(BE)}. ${f(A)} − ${f(BE)} = ${f(A-BE)} units.`};}},
+    {src:'Core skill · total contribution and profit', gen(){const P=pick([9,12,15,18]),V=pick([3,4,5,6]),Q=rint(2000,8000,250),F=rint(5000,30000,1000);const tc=(P-V)*Q;
+      return {given:`Price <b>£${P}</b>. Variable cost <b>£${V}</b>. Units sold <b>${f(Q)}</b>. Fixed costs <b>£${f(F)}</b>.`,prompt:'Calculate profit (in £; minus sign for a loss).',pre:'£',ans:tc-F,tol:0,traps:[{v:tc,m:'That is total contribution. Take off fixed costs.'}],work:`Total contribution = (£${P} − £${V}) × ${f(Q)} = £${f(tc)}. Profit = £${f(tc)} − £${f(F)} = £${f(tc-F)}.`};}},
+    {src:'Core skill · target profit', gen(){const c=pick([4,5,6,8]),F=rint(10,40)*1000,T=rint(5,20)*1000;const ans=Math.ceil((F+T)/c);
+      return {given:`Fixed costs <b>£${f(F)}</b>. Contribution per unit <b>£${c}</b>. The business wants a profit of <b>£${f(T)}</b>.`,prompt:'How many units must it sell?',unit:'units',ans,tol:0,traps:[{v:Math.ceil(F/c),m:'That only breaks even. Add the target profit to fixed costs first.'}],work:`(£${f(F)} + £${f(T)}) ÷ £${c} = ${f(ans)} units.`};}},
+    {src:'AQA June 2017 · Paper 1 Q10', given:tbl(['Output (units)','Total costs (£)'],[['0','40'],['1','80'],['2','110'],['3','150']]),prompt:'Calculate the total variable costs of producing 3 units (in £).',pre:'£',ans:110,tol:0,traps:[{v:150,m:'That is total cost. Fixed costs are the £40 at zero output; take them off.'}],work:'Fixed costs = total costs at zero output = £40. TVC = £150 − £40 = £110. This was AQA\'s answer.'},
+    {src:'Based on AQA June 2022 · Paper 1 Q5', given:'A business sells <b>10 million</b> units. Total costs at this output are <b>£60m</b>. The price rises from <b>£5</b> to <b>£9</b>.',prompt:'What is the new profit (in £m)?',pre:true,ans:30,tol:0,work:'Old profit = (£5 × 10m) − £60m = −£10m. New profit = (£9 × 10m) − £60m = £30m. AQA\'s answer: from minus £10m to £30m.'}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'mcq', title:'Break-even charts and changes', blurb:'Reading the chart, what happens when price or costs change, and the value of break-even.', serve:9, pass:7,
+  teach:`<h3>Refresher</h3>
+  ${BE}
+  ${tbl(['Change','What happens to the chart','Break-even output'],[['Price rises','Revenue line gets steeper','Falls'],['Price falls','Revenue line gets flatter','Rises'],['Variable cost per unit rises','Total cost line gets steeper','Rises'],['Variable cost per unit falls','Total cost line gets flatter','Falls'],['Fixed costs rise','Fixed and total cost lines move up in parallel','Rises'],['Fixed costs fall','Fixed and total cost lines move down in parallel','Falls']])}
+  <p>On the chart: the gap between total costs and fixed costs is total variable cost. The gap between revenue and total costs (beyond break-even) is profit.</p>
+  <h3>The value of break-even analysis</h3>
+  <p>Quick and simple; shows the effect of changes; useful for start-ups and for loan applications. But it assumes every unit is sold at one price, costs are straight lines, and it relies on forecasts. It is only as good as the data.</p>
+  <div class="trap"><b>The traps</b>Questions that read the graph in an unusual way caused problems in 2023 (Q4) and 2025 (Q6, several changes at once). Work out each change separately. Some students on June 2017 Paper 1 Q19 described break-even as a period of time: it is a level of output.</div>`,
+  items:[
+    {src:'AQA June 2018 · Paper 1 Q5', prompt:'Which change would lead to an increase in the level of output needed to break even? A decrease in:', o:['unit selling price.','fixed costs.','margin of safety.','variable costs per unit.'], a:0, why:'This is AQA\'s answer. A lower price cuts contribution per unit, so more units are needed.'},
+    {src:'AQA June 2026 · Paper 1 Q5', prompt:'Statement 1: "Total revenue = contribution per unit × quantity." Statement 2: "Total revenue = total costs + total contribution."', o:['Statement 1 is false. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.'], a:0, why:'This is AQA\'s answer. Revenue = price × quantity, and = total costs + profit. Total costs already include variable costs.'},
+    {src:'Core rule · chart changes', prompt:'Fixed costs fall and nothing else changes. What happens to the break-even chart?', o:['The total cost line moves down in parallel and break-even output falls','The revenue line gets steeper','The total cost line gets steeper','Break-even output rises'], a:0, why:'Lower fixed costs shift total costs down without changing the slope.'},
+    {src:'Core rule · chart changes', prompt:'Raw materials get cheaper and the selling price rises. What happens to break-even output?', o:['It falls','It rises','It stays the same','It cannot be known'], a:0, why:'Both changes raise contribution per unit. This was the situation drawn in June 2019 Paper 1 Q16.'},
+    {src:'Core rule · reading the chart', prompt:'On a break-even chart, what does the vertical gap between total costs and fixed costs show?', o:['Total variable costs','Profit','Total contribution','Margin of safety'], a:0, why:'Total costs minus fixed costs is variable costs.'},
+    {src:'Core rule · reading the chart', prompt:'Beyond the break-even point, what does the gap between the revenue line and the total cost line show?', o:['Profit','Fixed costs','Variable costs','Break-even output'], a:0, why:'Revenue above total costs is profit.'},
+    {src:'Core rule · value', prompt:'Which is a limitation of break-even analysis?', o:['It assumes all output is sold at one price','It is too complicated to use','It cannot show the effect of a price change','It only works for large businesses'], a:0, why:'In reality prices vary and not all output may be sold.'},
+    {src:'Based on AQA June 2017 · Paper 1 Q19', prompt:'How can break-even analysis help an entrepreneur starting a business?', o:['It shows how many units must be sold to cover costs, helping judge whether the idea is realistic and supporting a loan application','It guarantees the business will be profitable','It tells the entrepreneur how long until break-even, in months','It removes the need for market research'], a:0, why:'Break-even is a level of output, not a time period; the report noted some students got this wrong.'},
+    {src:'Core rule · contribution', prompt:'Variable cost per unit rises from £6 to £7. Price is £10 and fixed costs are £20,000. What happens to break-even output?', o:['It rises from 5,000 to about 6,667 units','It falls','It stays at 5,000','It rises to 20,000'], a:0, why:'Contribution falls from £4 to £3: £20,000 ÷ £3 ≈ 6,667.'},
+    {src:'Core rule · margin of safety', prompt:'A business has a margin of safety of 3,000 units. What does this mean?', o:['Sales could fall by 3,000 units before it starts making a loss','It makes £3,000 profit','It needs 3,000 more units to break even','It has 3,000 units of stock'], a:0, why:'It is the cushion between actual output and break-even, in units.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'mcq', title:'Sources of finance', blurb:'Internal and external, short and long term, and the right source for the purpose.', serve:9, pass:7,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Source','Internal or external','Usual term','Key points'],[['Retained profit','Internal','Long','No interest or repayment; only if profit has been made; shareholders get less in dividends'],['Overdraft','External','Short','Flexible; interest only on what is used; expensive; bank can withdraw it'],['Debt factoring','External','Short','Cash from receivables now; the factor keeps a fee; costs more for risky businesses'],['Loan','External','Medium to long','Fixed repayments and interest; raises gearing; may need security'],['Share capital','External','Long','No repayment; dividends optional; dilutes ownership and control'],['Venture capital','External','Long','Investment in a small, high-growth firm in exchange for shares; often brings advice; investor wants a high return'],['Crowd funding','External','Varies','Many people invest small amounts online, for rewards, shares or as loans; tests demand; may fail to reach the target']])}
+  <h3>Rules</h3>
+  <ul><li>Match the source to the use: short-term needs (stock, a cash gap) with short-term finance; long-term assets with long-term finance.</li>
+  <li>Choice depends on the amount, the purpose, the cost, the legal form (only a plc can sell shares to the public), the current gearing and the owners\' wish to keep control.</li></ul>
+  <div class="trap"><b>The traps</b>An overdraft is external and short term (June 2019 Paper 1 Q1: "bank overdrafts are usually a long-term source" was false). On June 2024 Paper 1 Q18 (why a plc might prefer share capital to a loan) students who argued for both sources were not rewarded for the loan side. Do not confuse venture capital with a joint venture. Crowd funding was added in 2023 and has not been examined yet.</div>`,
+  items:[
+    {src:'AQA June 2019 · Paper 1 Q1', prompt:'Statement 1: "Debt factoring is usually a short-term source of finance." Statement 2: "Bank overdrafts are usually a long-term source of finance."', o:['Statement 1 is true. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2024 · Paper 1 mark scheme (Q18)', prompt:'Why might a plc prefer share capital to a bank loan?', o:['Shares never have to be repaid and dividends can be held back until finances are healthy','Shares give the owners more control','Share capital has to be repaid sooner','A loan has no interest'], a:0, why:'The mark scheme also credited interest on loans being due whatever happens and the risk of rising rates.'},
+    {src:'Core rule · internal', prompt:'Which of these is an internal source of finance?', o:['Retained profit','An overdraft','Venture capital','A bank loan'], a:0, why:'It comes from within the business.'},
+    {src:'Core rule · matching', prompt:'A shop needs extra cash for three weeks to buy Christmas stock. Which source fits best?', o:['An overdraft','Share capital','A ten-year loan','Venture capital'], a:0, why:'A short-term need suits short-term, flexible finance.'},
+    {src:'Core rule · venture capital', prompt:'Which best describes venture capital?', o:['Investment in a small, high-growth business in exchange for a share of ownership','A loan from a bank for a fixed period','Money raised from retained profit','A partnership between two businesses on one project'], a:0, why:'The last option describes a joint venture, which is different.'},
+    {src:'Core rule · crowd funding', prompt:'Which is an advantage of crowd funding for a new business?', o:['It raises money from many people and shows whether there is demand for the idea','It never has to be repaid in any form','It guarantees the full amount will be raised','It is only available to plcs'], a:0, why:'Backers show their interest by investing. The target may not be met, though.'},
+    {src:'Core rule · legal form', prompt:'Which business can raise money by selling shares to the general public?', o:['A public limited company','A private limited company','A sole trader','A partnership'], a:0, why:'Only a plc can offer shares to the public.'},
+    {src:'Core rule · gearing', prompt:'A business is already highly geared. Why might it avoid another loan?', o:['More interest and repayments raise the risk of not being able to pay','Loans reduce gearing','Interest is not a cost','Banks always offer lower rates to highly geared firms'], a:0, why:'High gearing makes the business more exposed to rising interest rates and falling profits.'},
+    {src:'Based on AQA June 2019 · Paper 1 Q19', prompt:'A business raises the proportion of its long-term funding that is debt. What is the likely effect on dividends in the short run?', o:['They may fall, because interest and repayments must be paid first','They must rise','No effect','They are paid by the bank'], a:0, why:'The mark scheme linked more debt to less profit available, with higher dividends possible later if the project succeeds.'},
+    {src:'Core rule · retained profit', prompt:'What is the main drawback of using retained profit?', o:['It is only available if the business has made a profit, and shareholders receive less in dividends','It has to be repaid with interest','It dilutes ownership','It is external'], a:0, why:'Retained profit is cheap but limited.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'drift', title:'Improving cash flow', blurb:'The methods, what they cost and the difficulties.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Methods and their difficulties</h3>
+  ${tbl(['Method','How it helps','Difficulty'],[['Chase receivables or give less credit','Cash arrives sooner','Customers may go to rivals who give credit'],['Delay paying suppliers (more payables days)','Cash leaves later','Suppliers may lose goodwill, refuse credit or raise prices'],['Cut inventory','Less cash tied up in stock','Risk of running out'],['Debt factoring','Most of the value of invoices is paid now','The factor\'s fee reduces profit; costs more for risky firms'],['Sale and leaseback','A large sum from selling an asset, which is then rented back','Rent must be paid for years; the asset is lost'],['Overdraft','Covers a short-term gap','Expensive interest; can be withdrawn']])}
+  <h3>Rules</h3>
+  <ul><li>Many cash flow methods cost money and so reduce profit (factoring fees, discounts for early payment).</li>
+  <li>They fix the timing of cash, not the underlying problem. If a business is unprofitable, cash flow will not recover in the long run.</li></ul>
+  <div class="trap"><b>The trap</b>On June 2026 Paper 1 Q19 many students did not understand debt factoring at all. A business with poor cash flow and low profit is high risk, so factoring will cost more: cash improves in the short term, but profit falls and the cost may make cash flow worse in the long term. June 2022 Paper 3 Q3: losing 5% of revenue would have wiped out operating profit, so factoring was a short-term fix only.</div>`,
+  items:[
+    {src:'AQA June 2026 · Paper 1 Q6', q:'Which change is most likely to improve cash flow in the short term?', text:'Payables days increase and receivables days decrease.', ok:true, why:'This was AQA\'s answer. Cash goes out later and comes in sooner.'},
+    {src:'AQA June 2026 · Paper 1 Q6', q:'Which change is most likely to improve cash flow in the short term?', text:'Payables days decrease and receivables days increase.', ok:false, why:'This is the opposite: paying suppliers faster and getting paid more slowly worsens cash flow.'},
+    {src:'AQA June 2026 · Paper 1 mark scheme (Q19)', q:'A business with poor cash flow and low profits starts debt factoring.', text:'Its cash flow should improve in the short term but its profit is likely to fall.', ok:true, why:'The factor pays now but keeps a fee, which will be higher for a risky business.'},
+    {src:'AQA June 2026 · Paper 1 mark scheme (Q19)', q:'About debt factoring for a high-risk business.', text:'The factor is likely to charge more than it would for a low-risk business.', ok:true, why:'The factor is covering a higher risk of non-payment.'},
+    {src:'Core rule · factoring', q:'About debt factoring.', text:'Debt factoring increases the business\'s profit.', ok:false, why:'The business receives less than the full value of its sales, so profit falls.'},
+    {src:'Core rule · suppliers', q:'A business delays paying its suppliers by an extra 30 days.', text:'This could damage its relationship with suppliers.', ok:true, why:'Suppliers may refuse credit, raise prices or put the business at the back of the queue.'},
+    {src:'Core rule · leaseback', q:'A retailer sells its stores to a property company and rents them back.', text:'This is sale and leaseback, and it brings in a large sum of cash now.', ok:true, why:'But rent must be paid in future, which reduces profit.'},
+    {src:'Core rule · inventory', q:'A business cuts its stock levels by a third.', text:'This releases cash tied up in inventory.', ok:true, why:'Less money is sitting on shelves, though the risk of running out rises.'},
+    {src:'Core rule · underlying problem', q:'A business makes a loss every year.', text:'Improving its cash flow will solve its problems in the long run.', ok:false, why:'Cash flow methods change timing. Without profit, cash will eventually run out.'},
+    {src:'AQA June 2022 · Paper 3 mark scheme (Q3)', q:'A firm\'s operating profit would be wiped out if revenue fell by 5%. It is considering debt factoring.', text:'Factoring is better seen as a short-term fix than a long-term solution.', ok:true, why:'The factoring cost could remove most of its slim profit.'},
+    {src:'Core rule · credit to customers', q:'A business stops giving credit to its customers.', text:'This is certain to improve its cash flow with no drawbacks.', ok:false, why:'Customers who expect credit may go to competitors, reducing sales.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'mcq', title:'Improving profits and profitability', blurb:'Raising revenue, cutting costs, the difference between profit and margin, and the difficulties.', serve:8, pass:6,
+  teach:`<h3>Methods</h3>
+  ${tbl(['Method','How it raises profit','Difficulty'],[['Raise prices','More revenue per unit','Depends on PED: if demand is elastic, revenue may fall'],['Sell more','More contribution','Marketing costs; competitors respond'],['Cheaper suppliers','Lower cost of sales','Quality and reliability may fall'],['Better efficiency (productivity, lean, technology)','Lower unit costs','Investment and time; staff resistance'],['Cut staff or wages','Lower costs','Morale, quality and service may suffer']])}
+  <h3>Profit and profitability</h3>
+  <p><b>Profit</b> is an amount (£). <b>Profitability</b> is profit relative to something, usually revenue (a margin) or capital (ROCE). A business can raise profit while its margin falls, if revenue rises faster than profit.</p>
+  <h3>Difficulties</h3>
+  <p>Methods can conflict: cutting costs may hurt quality and demand; raising price may cut volume. The time scale matters: training raises costs now but profit later.</p>
+  <div class="trap"><b>The trap</b>Profit and profit margin are different. In June 2026 Paper 2 Q1.4 (will a wider range raise Bargain Barn\'s operating profit margin?) many wrote about profit; others confused economies of scope with economies of scale. In June 2018 Paper 2 Q3.1 (how a price cut could raise the operating margin per ticket) many wrote about total profit.</div>`,
+  items:[
+    {src:'Core rule · PED', prompt:'Demand for a product is price elastic. What is the likely effect of raising its price on profit?', o:['Revenue falls, so profit may fall unless costs fall by more','Profit is certain to rise','Revenue rises','No effect'], a:0, why:'Quantity falls by a larger percentage than the price rises.'},
+    {src:'Core rule · profit and margin', prompt:'Operating profit rises from £3m to £3.3m while revenue rises from £30m to £40m. What happened to the operating profit margin?', o:['It fell, from 10% to 8.25%','It rose','It stayed the same','It rose to 11%'], a:0, why:'£3.3m ÷ £40m = 8.25%. Profit rose but profitability fell.'},
+    {src:'Core rule · cost cutting', prompt:'A restaurant switches to cheaper ingredients to raise profit. What is the main risk?', o:['Quality falls and customers go elsewhere','Costs rise','Its margin falls immediately','There is no risk'], a:0, why:'Lower quality can reduce demand and so revenue.'},
+    {src:'AQA June 2026 · Paper 2 mark scheme (Q1.4)', prompt:'How might a supermarket offering a wider range of goods raise its operating profit margin?', o:['By adding higher-margin products and spreading its fixed costs over more sales','By selling exactly the same products','By cutting all prices','By ignoring costs'], a:0, why:'The mark scheme also noted the costs of entering new markets and the risk of taking focus away from the core business.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q1.4)', prompt:'A business benefits from making many different products using the same staff and premises. This is:', o:['economies of scope','economies of scale','diseconomies of scale','capacity utilisation'], a:0, why:'Scope is about the range of products; scale is about the size of output. Many confused them in 2026.'},
+    {src:'Based on AQA June 2018 · Paper 2 Q3.1', prompt:'An airline cuts ticket prices but also cuts cabin crew pay. How could its operating profit margin per ticket still rise?', o:['If the cost saving per ticket is larger than the price cut per ticket','It cannot rise if the price falls','If more people fly, whatever the costs','If profit for the year rises'], a:0, why:'The report said better answers compared the pay cut with the price cut; many wrote about total profit instead.'},
+    {src:'Core rule · efficiency', prompt:'Which is the most likely way improving labour productivity raises profitability?', o:['Labour cost per unit falls, so the margin on each unit rises','It always raises prices','It increases fixed costs','It reduces revenue'], a:0, why:'More output from the same wage bill.'},
+    {src:'Core rule · time scale', prompt:'A business spends heavily on staff training. What is the most likely effect on profit?', o:['Lower this year, but possibly higher later if productivity and quality improve','Higher this year','No effect ever','Lower forever'], a:0, why:'Costs come first, benefits later.'},
+    {src:'Core rule · profitability', prompt:'Which is a measure of profitability rather than profit?', o:['Operating profit margin','Operating profit','Revenue','Total costs'], a:0, why:'Profitability relates profit to revenue or capital.'}
+  ]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Against the clock', blurb:'Fifteen mixed questions from the whole unit, 30 seconds each.', pass:12, poolFrom:[1,2,6,7,8,9], count:15, seconds:30,
+  teach:`<p>Fifteen questions drawn at random from the rest of this unit, with 30 seconds each. Cash and profit, variances, break-even changes and sources of finance should all be automatic.</p>
+  <p>You get different questions each time you try.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'rt35', key:'rt35_course_v1', offset:1100, short:'Rules and Traps 3.5',
+  name:'Rules and Traps: Unit 3.5',
+  hero:{kicker:'Rules and Traps · Unit 3.5',
+    title:'Financial <em>management</em>',
+    lede:'Financial objectives, cash flow and profit, budgets and variances, cash flow forecasts, break-even, sources of finance, and improving cash flow and profit. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
+  doneText:'You have worked through every rule and trap in Unit 3.5. In every finance answer, check: cash or profit, profit or margin, units or pounds, adverse or favourable.',
+  stages:STAGES
+};
+</script>
+<script src="account.js"></script>
+<script src="course-engine.js"></script>
+<script src="visit.js" defer></script>
+</body>
+</html>
