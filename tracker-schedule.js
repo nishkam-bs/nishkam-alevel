@@ -399,7 +399,7 @@ async function applyPlan(items){
 let autoTried=false;
 async function autoUpdate(items){
   if(autoTried||!items.length)return false;autoTried=true;
-  const m=planChanges(items);if(!m.old.length&&!m.changed.length&&!m.missing.some(i=>/^(dr|cl)-/.test(i.id)))return false;
+  const m=planChanges(items);if(!m.old.length&&!m.changed.length&&!m.missing.some(i=>/^(dr|cl)-|^c-rt/.test(i.id)))return false;
   root.innerHTML='<div class="sc-card"><h2>Updating the schedule</h2><p class="muted">Moving to the new weekly plan...</p></div>';
   try{const r=await applyPlan(items);
     try{sessionStorage.setItem('nk_plan_msg',`The schedule has been updated to the latest weekly plan, including one Conclusion Lab question a week. ${r.kept.length?`${r.kept.length} question${r.kept.length>1?'s':''} already handed in ${r.kept.length>1?'have':'has'} been kept for the students who did ${r.kept.length>1?'them':'it'}, marked as done.`:'Nobody had handed in any of the old questions yet.'}`);}catch(e){}

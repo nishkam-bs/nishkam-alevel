@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rules and Traps: Unit 3.1 What is business?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+<link rel="stylesheet" href="rt.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   RULES AND TRAPS: UNIT 3.1 WHAT IS BUSINESS?
+   Specification topics 3.1.1a to 3.1.3b (spec.js). Every rule and trap is
+   checked against the AQA papers, mark schemes and examiner reports
+   2017 to 2026. Items marked "AQA June 20xx" are the real questions with
+   AQA's answer; "Based on" means our wording of a reported mistake.
+   Stage numbers are stored in the tracker as 700 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+const rint=(a,b,s=1)=>Math.round((a+Math.random()*(b-a))/s)*s;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
+const tbl=(head,rows)=>`<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${i?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${i?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+
+/* economic forecasts used in stage 8 */
+const ECON=tbl(['Forecast for the UK economy','2027','2028','2029'],[
+  ['GDP growth (%)','0.8','1.5','2.0'],['Inflation (%)','2.0','2.8','3.5'],['Bank of England base rate (%)','5.0','4.0','3.5'],['Unemployment (%)','4.2','4.6','4.8']]);
+const ECONCHART=`<div class="chart"><svg viewBox="0 0 520 220" role="img" aria-label="Line chart of the forecasts: GDP growth rises from 0.8 to 2.0 per cent, inflation rises from 2.0 to 3.5 per cent and the base rate falls from 5.0 to 3.5 per cent between 2027 and 2029">
+  <line class="ax" x1="50" y1="20" x2="50" y2="190"/><line class="ax" x1="50" y1="190" x2="500" y2="190"/>
+  ${[0,1,2,3,4,5].map(v=>`<line class="ax" x1="50" x2="500" y1="${190-v*32}" y2="${190-v*32}" stroke-dasharray="2 4"/><text x="40" y="${194-v*32}" text-anchor="end">${v}%</text>`).join('')}
+  ${['2027','2028','2029'].map((y,i)=>`<text x="${110+i*170}" y="208" text-anchor="middle">${y}</text>`).join('')}
+  <polyline class="l1" points="110,${190-0.8*32} 280,${190-1.5*32} 450,${190-2*32}"/>
+  <polyline class="l2" points="110,${190-2*32} 280,${190-2.8*32} 450,${190-3.5*32}"/>
+  <polyline class="l3" points="110,${190-5*32} 280,${190-4*32} 450,${190-3.5*32}"/>
+  <text x="456" y="${190-2*32+4}" style="fill:var(--start)">GDP</text><text x="456" y="${190-3.5*32+16}" style="fill:var(--end)">Inflation</text><text x="456" y="${190-3.5*32-6}" style="fill:var(--gold)">Base rate</text>
+</svg><div class="cap">The same forecasts as the table. All three lines are percentages, but they measure different things.</div></div>`;
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'drift', title:'Mission and objectives', blurb:'Why businesses exist, what a mission is, and the types of objective.', serve:8, pass:6,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Refresher</h3>
+  <p>Businesses exist to provide goods and services that people want. Most aim to make a profit for their owners, but some exist mainly for a social purpose, such as a charity or a social enterprise.</p>
+  <p>A <b>mission</b> is the overall purpose of the business, usually written as a short statement. It is not measurable on its own. <b>Objectives</b> are the targets that turn the mission into something that can be measured, for example "increase market share from 8% to 10% within two years".</p>
+  ${tbl(['Type of objective','What it looks like'],[['Profit','A target for profit or profit margin, e.g. operating profit of £2m'],['Growth','More sales, market share, outlets or employees'],['Survival','Staying in business, common in a new business or a recession'],['Cash flow','Keeping enough cash, e.g. a minimum closing balance each month'],['Social and ethical','e.g. cut carbon emissions by 30%, pay suppliers a fair price']])}
+  <h3>Rules</h3>
+  <ul><li>Mission → corporate objectives → strategies → tactics, from long term to short term. AQA tested this order in June 2025 (Paper 1 Q15).</li>
+  <li>Objectives give direction, help departments work towards the same thing, let managers measure performance and can motivate staff.</li>
+  <li>A good objective is measurable and has a time limit (SMART: specific, measurable, agreed, realistic, time-bound).</li>
+  <li>Objectives change: a new business may aim to survive; an established one may aim for growth or profit; a change of owner can change the objectives.</li></ul>
+  <div class="trap"><b>The trap</b>Assuming every organisation is trying to make a profit. On the June 2023 Paper 1 (Q10) the false statement was "Profit is a financial target for all businesses". Charities and social enterprises still set financial objectives, such as breaking even or making a surplus to reinvest, but profit for owners is not their aim.</div>
+  <p style="margin-top:14px">Decide whether each statement is true or false.</p>`,
+  items:[
+    {src:'AQA June 2023 · Paper 1 Q10', q:'Think about every type of organisation.', text:'Profit is a financial target for all businesses.', ok:false,
+     why:'This was the false statement in the 2023 question. Charities and many social enterprises do not aim for profit for owners.'},
+    {src:'AQA June 2025 · Paper 1 Q15', q:'Ranking from long term to short term.', text:'Corporate objectives come before strategies, and strategies come before tactics.', ok:true,
+     why:'AQA\'s answer: corporate objectives → strategies → tactics. Tactics are the short-term actions used to carry out a strategy.'},
+    {src:'Core rule · mission and objectives', q:'A bakery chain says its aim is "to be the UK\'s favourite bakery".', text:'This is a measurable objective.', ok:false,
+     why:'It is a mission statement. There is no number and no time limit, so nobody could say when it had been achieved.'},
+    {src:'Core rule · types of objective', q:'A business opens in the middle of a recession.', text:'Survival is more likely to be its main objective than maximising profit.', ok:true,
+     why:'A new business with few customers and little cash needs to get through the first year before profit becomes the priority.'},
+    {src:'Core rule · why set objectives', q:'A manager compares this year\'s results with the targets set last year.', text:'This is one reason businesses set objectives.', ok:true,
+     why:'Objectives give managers something to measure performance against.'},
+    {src:'Based on AQA June 2022 · Paper 1 report (Q19)', q:'A social enterprise reinvests all its surplus in its community work.', text:'It has no reason to set any financial objectives.', ok:false,
+     why:'Non-profit organisations still need cash and a surplus to carry on. Answers to the 2022 question that ignored this were limited.'},
+    {src:'Core rule · types of objective', q:'Comparing two objectives.', text:'A cash flow objective and a profit objective are the same thing.', ok:false,
+     why:'Profit is revenue minus costs. Cash flow is the timing of money in and out. A profitable business can still run short of cash.'},
+    {src:'Core rule · growth objectives', q:'A business sets a growth objective.', text:'Growth can only be measured by profit.', ok:false,
+     why:'Growth is usually measured by sales, market share, number of outlets or employees. Profit can fall while a business grows.'},
+    {src:'Core rule · ownership and objectives', q:'A family-owned Ltd becomes a plc with thousands of shareholders.', text:'Its objectives may become more focused on short-term profit and dividends.', ok:true,
+     why:'Outside shareholders often want regular dividends and a rising share price, which can push managers towards short-term targets.'},
+    {src:'Core rule · ethical objectives', q:'A clothing retailer sets an objective to pay all its suppliers\' workers a living wage.', text:'An ethical objective always reduces profit.', ok:false,
+     why:'It usually raises costs, but it can also attract customers and protect the brand. "Always" claims like this need challenging in an answer.'},
+    {src:'Core rule · tactics', q:'A shop runs a two-week half-price offer to clear old stock.', text:'This is a tactic rather than a strategy.', ok:true,
+     why:'It is a short-term action. A strategy is the long-term plan for how objectives will be met.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'mcq', title:'Revenue, costs and profit', blurb:'Fixed and variable costs, and which cost hits which profit.', serve:8, pass:6,
+  teach:`<h3>Refresher</h3>
+  <p><b>Revenue</b> (also called turnover or sales) = selling price × quantity sold. <b>Fixed costs</b> do not change with output in the short run (rent, salaries, insurance). <b>Variable costs</b> change directly with output (raw materials, packaging, piece-rate wages). <b>Total costs</b> = fixed costs + variable costs. <b>Profit</b> = revenue − total costs.</p>
+  <p>The income statement splits profit into three levels:</p>
+  ${tbl(['Line','What is taken off','Examples'],[['Revenue','',''],['− Cost of sales','Costs of making or buying what was sold','Raw materials, components, factory wages, goods bought to resell'],['= Gross profit','',''],['− Operating expenses','Other costs of running the business','Rent, rates, marketing, admin, head office salaries, insurance'],['= Operating profit','',''],['− Interest and tax','Finance costs and corporation tax',''],['= Profit for the year','','']])}
+  <h3>Rules</h3>
+  <ul><li>A cost only affects the profit lines at and below where it sits. A rise in rent reduces operating profit and profit for the year, but not gross profit.</li>
+  <li>Tax affects only profit for the year.</li>
+  <li>When output rises, total fixed costs stay the same, but fixed cost per unit falls.</li>
+  <li>Profit margin = profit ÷ revenue × 100. Say which profit: gross, operating or profit for the year.</li></ul>
+  <div class="trap"><b>The trap</b>Putting a cost on the wrong line. On the November 2020 Paper 1, a significant minority confused operating profit with profit for the year. On June 2023 Paper 1 Q9, students had to see that a rent rise has no effect on gross profit but a tax rise does affect profit for the year.</div>`,
+  items:[
+    {src:'Based on AQA June 2023 · Paper 1 Q9', prompt:'The rent on a retailer\'s head office rises. Which profit figure does this reduce first?', o:['Operating profit (and so profit for the year)','Gross profit','Profit for the year only','None of them'], a:0,
+     why:'Rent is an operating expense. It is taken off after gross profit, so gross profit is unchanged.'},
+    {src:'Core rule · cost of sales', prompt:'The price of flour rises for a bakery. Which is the first profit figure to fall?', o:['Gross profit','Operating profit only','Profit for the year only','None, because flour is a fixed cost'], a:0,
+     why:'Flour is a raw material, so it is part of cost of sales. Gross profit falls, and so does everything below it.'},
+    {src:'Core rule · tax', prompt:'The government raises corporation tax. Which profit figure falls?', o:['Profit for the year only','Gross profit','Operating profit','All three'], a:0,
+     why:'Tax is taken off operating profit to reach profit for the year. Gross and operating profit are unchanged.'},
+    {src:'Core rule · fixed costs', prompt:'Which of these is most likely to be a fixed cost for a café?', o:['Rent on the premises','Coffee beans','Paper cups','Milk'], a:0,
+     why:'Rent stays the same however many coffees are sold. The others rise with each drink sold.'},
+    {src:'Core rule · fixed costs', prompt:'A factory doubles its output in the short run. What happens to its total fixed costs?', o:['They stay the same','They double','They halve','They rise, but by less than double'], a:0,
+     why:'Total fixed costs do not change with output. Fixed cost per unit halves.'},
+    {src:'Core rule · variable costs', prompt:'Variable costs are £4 per unit. Output rises from 1,000 to 1,500 units. What are total variable costs now?', o:['£6,000','£4,000','£1,500','£2,000'], a:0,
+     why:'£4 × 1,500 = £6,000.'},
+    {src:'Core rule · revenue', prompt:'A business sells 500 units at £12 each and has total costs of £4,500. What is its profit?', o:['£1,500','£6,000','£4,500','£10,500'], a:0,
+     why:'Revenue = 500 × £12 = £6,000. Profit = £6,000 − £4,500 = £1,500.'},
+    {src:'Core rule · profit', prompt:'Assuming no other changes, which of these would raise profit?', o:['A fall in variable cost per unit','A rise in fixed costs','A lower price with the same number of units sold','A rise in the cost of components'], a:0,
+     why:'Each unit now costs less to make, so total costs fall and profit rises.'},
+    {src:'Core rule · margins', prompt:'How is the gross profit margin calculated?', o:['Gross profit ÷ revenue × 100','Gross profit ÷ cost of sales × 100','Revenue ÷ gross profit × 100','Operating profit ÷ revenue × 100'], a:0,
+     why:'Every profit margin divides that profit by revenue.'},
+    {src:'Core rule · income statement', prompt:'Which of these is not taken off to reach operating profit?', o:['Corporation tax','Cost of sales','Marketing costs','Administration costs'], a:0,
+     why:'Tax comes after operating profit.'},
+    {src:'Core rule · cost of sales', prompt:'In a furniture factory, the wages of the workers making the tables are usually part of:', o:['cost of sales','operating expenses','tax','profit for the year'], a:0,
+     why:'They are a direct cost of producing what is sold.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q1.4)', prompt:'A business\'s operating profit rises from £2m to £2.2m, while its revenue rises from £20m to £25m. What has happened to its operating profit margin?', o:['It has fallen, from 10% to 8.8%','It has risen, because operating profit rose','It is unchanged','It has risen from 10% to 11%'], a:0,
+     why:'£2m ÷ £20m = 10%; £2.2m ÷ £25m = 8.8%. Profit can rise while the margin falls. Many students in 2026 wrote about profit when the question asked about the margin.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'calc', title:'Profit calculations', blurb:'Gross profit, operating profit, profit for the year and margins, with new numbers each time.', serve:7, pass:5,
+  teach:`<h3>Refresher</h3>
+  <p>Work down the income statement one line at a time. Write the formula, show each step, and finish with the unit.</p>
+  ${tbl(['Measure','Formula'],[['Gross profit','Revenue − cost of sales'],['Operating profit','Gross profit − operating expenses'],['Profit for the year','Operating profit − interest − tax'],['Profit','Revenue − total costs'],['Total costs','Fixed costs + (variable cost per unit × output)'],['Profit margin','Profit ÷ revenue × 100']])}
+  <h3>Working backwards</h3>
+  <p>June 2026 Paper 2 Q1.2 gave revenue, gross profit and the operating profit margin and asked for operating expenses. Operating profit = revenue × margin. Then operating expenses = gross profit − operating profit. Many students stopped at operating profit, or used the wrong figure.</p>
+  <div class="trap"><b>The traps</b>Taking operating expenses off revenue instead of gross profit. Forgetting "£", "m" or "%". Stopping one step short when the question asks for operating expenses rather than operating profit.</div>
+  <p style="margin-top:14px">Type your answer as a number. The numbers change every time you try.</p>`,
+  items:[
+    {src:'Core skill · gross profit', gen(){const R=rint(40,120),C=rint(15,R-15),O=rint(3,Math.max(4,R-C-3));
+      return {given:`Revenue <b>£${R}m</b>. Cost of sales <b>£${C}m</b>. Operating expenses <b>£${O}m</b>.`,prompt:'Calculate gross profit (in £m).',pre:true,ans:R-C,tol:0,
+        traps:[{v:R-C-O,m:'That is operating profit. Gross profit only takes off cost of sales.'}],work:`£${R}m − £${C}m = £${R-C}m.`};}},
+    {src:'Core skill · operating profit', gen(){const R=rint(40,120),C=rint(15,R-15),O=rint(3,Math.max(4,R-C-3)),T=rint(1,Math.max(2,Math.floor((R-C-O)/3)));
+      return {given:`Revenue <b>£${R}m</b>. Cost of sales <b>£${C}m</b>. Operating expenses <b>£${O}m</b>. Tax <b>£${T}m</b>.`,prompt:'Calculate operating profit (in £m).',pre:true,ans:R-C-O,tol:0,
+        traps:[{v:R-C-O-T,m:'That is profit for the year. Tax is taken off after operating profit.'},{v:R-C,m:'That is gross profit. Take off operating expenses too.'}],work:`Gross profit = £${R}m − £${C}m = £${R-C}m. Operating profit = £${R-C}m − £${O}m = £${R-C-O}m.`};}},
+    {src:'Core skill · profit for the year', gen(){const R=rint(40,120),C=rint(15,R-15),O=rint(3,Math.max(4,R-C-3)),T=rint(1,Math.max(2,Math.floor((R-C-O)/3)));
+      return {given:`Revenue <b>£${R}m</b>. Cost of sales <b>£${C}m</b>. Operating expenses <b>£${O}m</b>. Tax <b>£${T}m</b>.`,prompt:'Calculate profit for the year (in £m).',pre:true,ans:R-C-O-T,tol:0,
+        traps:[{v:R-C-O,m:'That is operating profit. Take off the tax as well.'}],work:`£${R}m − £${C}m − £${O}m − £${T}m = £${R-C-O-T}m.`};}},
+    {src:'Core skill · gross profit margin', gen(){const R=pick([40,50,60,80,120,150]),C=r1(R*pick([.45,.5,.55,.6,.65,.7]));const gp=r1(R-C),ans=r1(gp/R*100);
+      return {given:`Revenue <b>£${R}m</b>. Cost of sales <b>£${f(C)}m</b>.`,prompt:'Calculate the gross profit margin.',unit:'%',ans,tol:0.05,
+        traps:[{v:r1(gp/C*100),m:'You divided by cost of sales. Margins always divide by revenue.'}],work:`Gross profit = £${R}m − £${f(C)}m = £${f(gp)}m. £${f(gp)}m ÷ £${R}m × 100 = ${ans}%.`};}},
+    {src:'Core skill · operating profit margin', gen(){const R=pick([25,40,50,64,80,125]),C=r1(R*pick([.5,.55,.6])),O=r1(R*pick([.2,.25,.3]));const op=r1(R-C-O),ans=r1(op/R*100);
+      return {given:`Revenue <b>£${R}m</b>. Cost of sales <b>£${f(C)}m</b>. Operating expenses <b>£${f(O)}m</b>.`,prompt:'Calculate the operating profit margin.',unit:'%',ans,tol:0.05,
+        traps:[{v:r1((R-C)/R*100),m:'That is the gross profit margin. Take off operating expenses first.'}],work:`Operating profit = £${R}m − £${f(C)}m − £${f(O)}m = £${f(op)}m. £${f(op)}m ÷ £${R}m × 100 = ${ans}%.`};}},
+    {src:'Based on AQA June 2026 · Paper 2 Q1.2', gen(){const R=rint(400,900,10),gpPct=pick([20,25,30]),m=pick([4,5,6,8]);const GP=R*gpPct/100,OP=r1(R*m/100),ans=r1(GP-OP);
+      return {given:`Revenue <b>€${R}m</b>. Gross profit <b>€${f(GP)}m</b>. Operating profit margin <b>${m}%</b>.`,prompt:'Calculate operating expenses (in €m).',pre:'€',unit:'m',ans,tol:0.1,
+        traps:[{v:OP,m:'That is operating profit. Operating expenses = gross profit − operating profit.'},{v:r1(R-OP),m:'Operating expenses are taken off gross profit, not revenue.'}],work:`Operating profit = €${R}m × ${m}% = €${f(OP)}m. Operating expenses = €${f(GP)}m − €${f(OP)}m = €${f(ans)}m.`};}},
+    {src:'Core skill · profit from costs', gen(){const P=pick([8,10,12,15,20,25]),V=pick([3,4,5,6]),Q=rint(2000,9000,500),F=rint(5000,20000,1000);const ans=P*Q-(F+V*Q);
+      return {given:`Price <b>£${P}</b>. Variable cost <b>£${V}</b> per unit. Fixed costs <b>£${f(F)}</b>. Units sold <b>${f(Q)}</b>.`,prompt:'Calculate profit (in £). If it is a loss, put a minus sign in front.',pre:'£',ans,tol:0,
+        traps:[{v:P*Q-F-V,m:'Variable costs must be multiplied by the number of units.'},{v:(P-V)*Q,m:'That is total contribution. Take off fixed costs to get profit.'}],work:`Revenue = £${P} × ${f(Q)} = £${f(P*Q)}. Total costs = £${f(F)} + (£${V} × ${f(Q)}) = £${f(F+V*Q)}. Profit = £${f(ans)}.`};}},
+    {src:'AQA November 2020 · Paper 1 Q4', given:tbl(['Item','£ million'],[['Cost of sales','4'],['Other expenses','3'],['Sales revenue','12'],['Taxation','2']]),prompt:'Calculate the company\'s operating profit (in £m).',pre:true,ans:5,tol:0,
+     traps:[{v:3,m:'That is profit for the year. Tax is not taken off to reach operating profit.'},{v:8,m:'That is gross profit. Take off other expenses as well.'}],work:'£12m − £4m − £3m = £5m. (AQA answer B.)'},
+    {src:'AQA June 2025 · Paper 1 Q7', given:tbl(['Bromley Apples Ltd, 2023–2024','£m'],[['Sales revenue','20'],['Cost of sales','6'],['Operating expenses','4'],['Taxation','7']]),prompt:'Calculate gross profit (in £m).',pre:true,ans:14,tol:0,
+     traps:[{v:10,m:'That is operating profit.'},{v:3,m:'That is profit for the year.'}],work:'£20m − £6m = £14m. (AQA answer C.)'},
+    {src:'Core skill · total costs', gen(){const F=rint(10,60,5),V=pick([2,2.5,3,4]),Q=rint(5,20);
+      return {given:`Fixed costs <b>£${F}k</b>. Variable cost <b>£${V}</b> per unit. Output <b>${Q},000 units</b>.`,prompt:'Calculate total costs (in £k).',pre:'£',unit:'k',ans:F+V*Q,tol:0.01,
+        traps:[{v:V*Q,m:'That is total variable costs. Add fixed costs.'}],work:`£${F}k + (£${V} × ${Q},000 = £${f(V*Q)}k) = £${f(F+V*Q)}k.`};}}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'drift', title:'Sole traders, Ltd and plc', blurb:'Liability, share capital, and what really changes when a business becomes a company.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Refresher</h3>
+  ${tbl(['','Sole trader','Private limited company (Ltd)','Public limited company (plc)'],[['Owned by','One person','Shareholders, often family or a small group','Shareholders, who can be anyone'],['Liability','Unlimited','Limited','Limited'],['Can sell shares to the public?','No shares','No','Yes, can be quoted on the stock exchange'],['Accounts','Private','Filed at Companies House, open to anyone','Filed and published; more detail required'],['Sector','Private','Private','Private']])}
+  <p><b>Unlimited liability</b>: the owner is personally responsible for all the business\'s debts and may have to sell personal assets. <b>Limited liability</b>: shareholders can lose only what they invested. <b>Ordinary share capital</b> is money raised by selling shares; ordinary shareholders usually get a vote and a dividend if one is paid.</p>
+  <h3>Rules</h3>
+  <ul><li>All three are private sector. Public sector means owned by the government.</li>
+  <li>When a sole trader becomes a Ltd, the owner usually keeps the business. There are no new shareholders unless the case says so. What changes is limited liability, a separate legal identity, public accounts, possibly more credibility and easier access to finance, and more paperwork.</li>
+  <li>Reasons to become a plc: raise large sums by selling shares to the public. Drawbacks: possible loss of control, risk of takeover, pressure for short-term results, cost of becoming listed.</li></ul>
+  <div class="trap"><b>The traps</b>Thinking a plc is public sector (only about half of students got this right on June 2018 Paper 1 Q3). Thinking shareholders of a limited company must sell personal assets (June 2023 Q11, June 2024 Q1). On June 2026 Paper 3 Q1, one of the hardest questions that year, many students invented shareholders for Danni\'s building business after it became a Ltd. Those arguments could not be credited.</div>`,
+  items:[
+    {src:'AQA June 2018 · Paper 1 Q3', q:'Statement 1 from the 2018 question.', text:'Sole traders are usually private sector organisations.', ok:true, why:'Statement 1 was true. AQA\'s answer was B.'},
+    {src:'AQA June 2018 · Paper 1 Q3', q:'Statement 2 from the 2018 question.', text:'Public limited companies are usually public sector organisations.', ok:false, why:'A plc is owned by private shareholders. The examiner report called this a common misconception.'},
+    {src:'AQA June 2023 · Paper 1 Q11', q:'A limited company stops trading.', text:'The shareholders will be expected to sell personal assets to pay the company\'s debts.', ok:false, why:'Their liability is limited to what they invested.'},
+    {src:'AQA June 2023 · Paper 1 Q11', q:'A limited company stops trading.', text:'The business will always pay its payables in full.', ok:false, why:'Limited liability protects the shareholders, not the suppliers. Payables may lose some or all of what they are owed. Both statements were false (answer D).'},
+    {src:'AQA June 2024 · Paper 1 Q1', q:'Which owners could be required to sell personal assets to pay for business liabilities?', text:'Only sole traders.', ok:true, why:'AQA\'s answer was D, sole traders only. Ltd and plc shareholders have limited liability.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q1)', q:'Danni, a builder with two employees, changes from a sole trader to a private limited company.', text:'He must now keep shareholders happy because people can buy his shares on the stock market.', ok:false, why:'A Ltd cannot sell shares to the public, and the case gave no other shareholders. This was the most common flawed argument in 2026.'},
+    {src:'Core rule · Ltd', q:'Comparing a Ltd with a plc.', text:'A private limited company can sell shares to the general public on the stock exchange.', ok:false, why:'Only a plc can offer shares to the public.'},
+    {src:'AQA June 2026 · Paper 3 mark scheme (Q1)', q:'Danni\'s business is now a Ltd.', text:'Customers could check the company\'s accounts at Companies House before hiring him.', ok:true, why:'This was one of the creditworthy points in the mark scheme. It can reassure customers.'},
+    {src:'AQA June 2026 · Paper 3 mark scheme (Q1)', q:'Danni\'s business is now a Ltd.', text:'Some customers may be more wary, because if the company cannot pay for damage it causes, Danni is not personally liable.', ok:true, why:'Also in the mark scheme. Limited liability helps the owner but can worry those dealing with the company.'},
+    {src:'Core rule · limited liability', q:'A Ltd is looking for new investors.', text:'Limited liability makes it easier to persuade people to invest.', ok:true, why:'Investors know the most they can lose is what they put in.'},
+    {src:'Core rule · sole traders', q:'About sole traders.', text:'A sole trader cannot employ anyone.', ok:false, why:'Sole trader describes the ownership, not the size. Danni employed two people before he became a Ltd.'},
+    {src:'Core rule · becoming a plc', q:'A family Ltd floats on the stock exchange as a plc.', text:'The family is certain to keep full control of the business.', ok:false, why:'Selling shares to the public dilutes ownership. If the family holds less than half the shares, it can lose control and the business can be taken over.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'mcq', title:'Sectors, non-profits and social enterprises', blurb:'Public and private sector, social enterprises, and why businesses change form.', serve:8, pass:6,
+  teach:`<h3>Refresher</h3>
+  <ul><li><b>Private sector</b>: owned by individuals or shareholders (sole traders, partnerships, Ltd, plc).</li>
+  <li><b>Public sector</b>: owned or run by the government (e.g. NHS trusts, state schools).</li>
+  <li><b>Non-profit organisations</b> (e.g. charities) use any surplus for their purpose rather than paying it to owners.</li>
+  <li><b>Social enterprises</b> trade like a business but have social or environmental aims and reinvest most of their surplus in those aims.</li></ul>
+  <h3>Rules</h3>
+  <ul><li>Ownership shapes the mission and objectives: plc shareholders may want dividends and a rising share price; a social enterprise judges itself on its social impact as well as money.</li>
+  <li>Social enterprises can measure performance with wider measures such as Elkington\'s triple bottom line (profit, people, planet). This was rewarded on June 2026 Paper 2 Q2.1.</li>
+  <li>Reasons for changing form: limited liability and credibility (sole trader to Ltd); raising large amounts of capital (Ltd to plc); escaping short-term pressure from the stock market or the threat of takeover (plc back to private).</li></ul>
+  <div class="trap"><b>The trap</b>On June 2026 Paper 2 Q2.2, some students argued that a social enterprise could raise its prices a lot because customers like its aims. The case showed that competitive pricing mattered, so the argument was rejected. Social purpose can attract customers and volunteers, but it does not mean price no longer matters.</div>`,
+  items:[
+    {src:'Core rule · sectors', prompt:'Which of these is in the public sector?', o:['An NHS hospital trust','A public limited company','A charity','A private limited company'], a:0, why:'It is run by the government. A plc is private sector, and so are charities.'},
+    {src:'Core rule · social enterprise', prompt:'Which best describes a social enterprise?', o:['A business with social aims that reinvests most of its surplus in those aims','A government-owned business','Any business that gives some money to charity','A business that does not sell anything'], a:0, why:'It trades like a business, but its main purpose is social or environmental.'},
+    {src:'Based on AQA June 2022 · Paper 1 Q19', prompt:'Which financial objective is most realistic for a charity running a chain of shops?', o:['Make a surplus each year to fund its charitable work','Maximise dividends for shareholders','Raise its share price','Achieve the highest market capitalisation in its sector'], a:0, why:'A charity has no shareholders, but it still needs a surplus or at least to break even.'},
+    {src:'Core rule · changing form', prompt:'What is the main reason a sole trader might become a private limited company?', o:['To gain limited liability','To sell shares on the stock exchange','To avoid filing any accounts','To move into the public sector'], a:0, why:'Limited liability protects the owner\'s personal assets. A Ltd cannot sell shares to the public and must file accounts.'},
+    {src:'Core rule · changing form', prompt:'What is the main reason a Ltd might become a plc?', o:['To raise large amounts of capital by selling shares to the public','To gain limited liability','To keep its accounts private','To reduce the risk of being taken over'], a:0, why:'A Ltd already has limited liability. Becoming a plc opens up the stock market but makes takeover possible.'},
+    {src:'Core rule · ownership and objectives', prompt:'After becoming a plc, a business is most likely to face more pressure to:', o:['deliver short-term profit and dividends','pay its staff more','stop growing','become a social enterprise'], a:0, why:'Large numbers of outside shareholders often judge the business on dividends and the share price.'},
+    {src:'AQA June 2026 · Paper 2 mark scheme (Q2.1)', prompt:'How might a social enterprise that runs music workshops for young people best measure its performance?', o:['Use measures of social impact, such as the number of workshops and young people helped, alongside its surplus','Use only its profit','Use only its share price','Use only its market share'], a:0, why:'The mark scheme rewarded the triple bottom line and social impact measures, with surplus still part of the picture.'},
+    {src:'Based on AQA June 2026 · Paper 2 report (Q2.2)', prompt:'Why might being a social enterprise give a business a competitive advantage?', o:['Customers and volunteers may prefer to support its social aims','It can raise prices as high as it likes','It pays no costs','It has no competitors'], a:0, why:'The mark scheme credited customer preference, cheaper or free help from tutors and a positive brand. Arguing for large price rises was rejected.'},
+    {src:'Core rule · changing form', prompt:'Why might the owners of a plc decide to take it back into private ownership?', o:['To escape short-term pressure from stock market investors and the threat of takeover','To gain limited liability','To raise more capital from the public','To move into the public sector'], a:0, why:'Private ownership lets managers focus on long-term plans without worrying about the share price.'},
+    {src:'Core rule · non-profit', prompt:'A charity uses its surplus to fund medical research. This means it:', o:['is a non-profit organisation','is in the public sector','is a plc','cannot make a surplus'], a:0, why:'Non-profit means the surplus goes to the purpose, not to owners. It can still make a surplus.'}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'drift', title:'Shareholders and share prices', blurb:'Why people buy shares, market capitalisation, dividends and what a share price change means.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Refresher</h3>
+  <p>People buy shares for <b>dividends</b> (a share of profit paid out) and for a <b>capital gain</b> if the share price rises. <b>Market capitalisation</b> = share price × number of shares issued: what the whole company is worth on the stock market.</p>
+  <p>Share prices are set by supply and demand for the shares among investors. They move with profit results and forecasts, expectations about the future, interest rates, the state of the economy, takeover rumours and news about the business.</p>
+  <h3>What a share price change means</h3>
+  <ul><li>A rising price makes shareholders wealthier, raises market capitalisation (so a takeover becomes more expensive) and makes it easier to raise money in any future share issue.</li>
+  <li>A falling price can make shareholders unhappy, make the business cheaper to take over and make new shares harder to sell.</li>
+  <li>The business itself does not receive any money when its shares change hands on the stock market. It only gets money when it issues new shares.</li></ul>
+  <div class="trap"><b>The traps</b>On November 2020 Paper 3 Q1 a large number of students believed a business has more money when its share price rises; the report called this troubling. On June 2022 Paper 2 Q2.2 a minority thought the business sets its own share price. Dividends are not compulsory and come out of profit after tax.</div>`,
+  items:[
+    {src:'Based on AQA November 2020 · Paper 3 report (Q1)', q:'Sunport plc\'s share price rises by 20%.', text:'Sunport receives the extra money from the rise.', ok:false, why:'The shares are traded between investors. The company only receives money when it issues new shares.'},
+    {src:'Core rule · market capitalisation', q:'About market capitalisation.', text:'Market capitalisation = share price × number of shares issued.', ok:true, why:'It is the stock market value of the whole company.'},
+    {src:'AQA November 2020 · Paper 3 mark scheme (Q1)', q:'A plc\'s share price has risen.', text:'It is now less likely to be taken over.', ok:true, why:'A higher market capitalisation makes it more expensive to buy control of the company.'},
+    {src:'Core rule · dividends', q:'About dividends.', text:'A plc must pay a dividend every year.', ok:false, why:'Directors decide whether to pay a dividend. Many cut or stop dividends when profits fall or cash is needed.'},
+    {src:'Core rule · share price', q:'A company\'s profits have fallen, but it has announced a new product that investors expect to sell well.', text:'Its share price could still rise.', ok:true, why:'Share prices depend on expectations of future profits, not just past results.'},
+    {src:'Based on AQA June 2022 · Paper 2 report (Q2.2)', q:'About how share prices are set.', text:'A plc sets its own share price on the stock exchange.', ok:false, why:'The price is set by supply and demand among investors. If more people want to buy than sell, the price rises.'},
+    {src:'Core rule · share price', q:'Interest rates rise sharply.', text:'Share prices may fall, because savings accounts become more attractive and borrowing costs rise for businesses.', ok:true, why:'Higher rates can reduce expected profits and make other investments more attractive.'},
+    {src:'AQA November 2020 · Paper 3 mark scheme (Q1)', q:'A plc\'s share price has risen strongly.', text:'It may find it easier to raise money through a new share issue.', ok:true, why:'New shares can be sold at a higher price, so the business raises more for each share issued.'},
+    {src:'AQA June 2022 · Paper 1 Q1', q:'Managers propose to keep all profit to pay for automation.', text:'This is likely to cause conflict with shareholders.', ok:true, why:'Shareholders would get no dividend. AQA\'s answer was employees and shareholders: employees may fear for their jobs.'},
+    {src:'Core rule · share price', q:'A company\'s share price falls by a third.', text:'The cash held by the company falls by a third.', ok:false, why:'The share price does not change the company\'s bank balance. It changes the value of the shareholders\' investment.'},
+    {src:'Core rule · why invest', q:'About why people buy shares.', text:'Investors can gain from dividends and from a rise in the share price.', ok:true, why:'These are the two returns from owning shares.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'mcq', title:'Competition and market conditions', blurb:'How rivals and changes in the market affect demand and costs.', serve:8, pass:6,
+  teach:`<h3>Refresher</h3>
+  <p>The specification asks how the external environment affects <b>costs</b> and <b>demand</b>. Every chain you write about the external environment should reach one of those, and then the end point of the question (often profit).</p>
+  ${tbl(['Change','Effect on demand','Effect on costs'],[['More competitors','Demand for each business falls; demand becomes more price elastic','More spent on marketing; may need to cut prices'],['Competitors leave','More customers and more pricing power','Fixed costs spread over more output'],['Market growing','Sales can rise even if market share falls','May need more capacity'],['Market shrinking or tastes change','Demand falls whatever the price','Spare capacity raises unit costs'],['Shortage of materials','—','Input prices rise']])}
+  <h3>Rules</h3>
+  <ul><li>New competitors entering a market raise spare capacity for existing firms (June 2023 Paper 1 Q1).</li>
+  <li>A sustained rise in capacity utilisation is most likely when competitors leave the market (June 2026 Paper 1 Q13), not when a new factory is built.</li>
+  <li>The more close substitutes there are, the more price elastic demand is.</li></ul>
+  <div class="trap"><b>The trap</b>Stopping at "more competition" or "demand falls" without saying what happens to revenue, costs or profit. Examiners repeatedly say a point only earns analysis marks when the chain reaches the end point in the question.</div>`,
+  items:[
+    {src:'Core rule · competition', prompt:'Several new rivals open near an independent gym. What is the most likely effect on the gym?', o:['Fewer members and pressure to cut prices','Higher prices with no loss of members','Lower fixed costs','No effect, because its members are loyal'], a:0, why:'More choice for customers reduces demand for each gym and makes members more sensitive to price.'},
+    {src:'Core rule · substitutes', prompt:'Which is most likely to make demand for a product more price elastic?', o:['More close substitutes become available','The product becomes a necessity','Customers become more brand loyal','Incomes rise'], a:0, why:'When customers can easily switch, a price rise loses more sales.'},
+    {src:'Core rule · market growth', prompt:'A market grows by 20% but a firm\'s market share falls from 25% to 22%. What has happened to the firm\'s sales?', o:['They have risen','They have fallen','They are unchanged','It is impossible for share to fall in a growing market'], a:0, why:'0.22 × 120 = 26.4, compared with 0.25 × 100 = 25. A smaller share of a bigger market can still mean higher sales.'},
+    {src:'Core rule · seasonality', prompt:'An ice cream maker has highly seasonal demand. Which is the most likely effect on its costs?', o:['Spare capacity in winter raises unit costs','Fixed costs disappear in winter','Variable costs per unit double in summer','Costs are unaffected by seasonality'], a:0, why:'Fixed costs are spread over fewer units in the quiet months, so unit costs rise.'},
+    {src:'Core rule · competition', prompt:'A major competitor goes out of business. Which is the business now most able to do?', o:['Raise prices without losing many customers','Cut its marketing to zero with no effect','Ignore its other competitors','Stop setting objectives'], a:0, why:'Fewer rivals means customers have less choice, so demand is less price elastic.'},
+    {src:'Core rule · tastes', prompt:'Customers turn away from sugary drinks. For a sugary drinks maker, this is a change in:', o:['market conditions that reduces demand','its fixed costs','interest rates','its legal form'], a:0, why:'A change in tastes lowers demand at every price.'},
+    {src:'Core rule · costs', prompt:'Which external change affects a bakery\'s costs rather than its demand?', o:['A global shortage of wheat','A new rival bakery opening','A fall in local incomes','A change in tastes towards low-carb diets'], a:0, why:'The wheat shortage raises the price of an input. The others affect demand.'},
+    {src:'Core rule · price wars', prompt:'A price war is most likely in a market that is:', o:['mature, with many similar products','new and growing fast, with one supplier','protected by patents','supplied by one business'], a:0, why:'When products are similar and the market is not growing, firms can only win sales from each other, often on price.'},
+    {src:'Core rule · end points', prompt:'A student writes: "More competition means the business will lose customers." What does the chain still need to earn analysis marks in a question about profit?', o:['To explain how fewer customers lowers revenue and so profit, perhaps with the cost side too','Nothing, it is complete','A definition of competition','A diagram of the market'], a:0, why:'The chain has to reach the end point in the question. Losing customers is not yet profit.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'mcq', title:'Incomes, interest rates, demographics, environment and fair trade', blurb:'Read economic data properly and follow each chain to the end.', serve:9, pass:7,
+  teach:`<h3>Incomes</h3>
+  <p>When incomes rise, demand for most products (normal goods) rises. Demand for <b>inferior goods</b> (e.g. budget own-brand ranges) can fall as people trade up. Income elasticity of demand tells you how much: YED +0.5 means demand rises by about half the percentage rise in income, so the effect is fairly small. On June 2026 Paper 3 Q4 the best answers spotted exactly this.</p>
+  <h3>Interest rates</h3>
+  <p>A rise in interest rates works through three chains. Learn all three, and the reverse for a fall.</p>
+  <div class="flow"><span>Interest rates rise</span><i>→</i><span>loan and overdraft payments rise</span><i>→</i><span>costs up, cash flow worse, worst for a highly geared firm</span></div>
+  <div class="flow"><span>Interest rates rise</span><i>→</i><span>mortgages and credit cost more, saving pays more</span><i>→</i><span>consumers spend less, especially on goods bought on credit</span></div>
+  <div class="flow"><span>Interest rates rise</span><i>→</i><span>the pound tends to rise</span><i>→</i><span>UK exports dearer abroad, imports cheaper</span></div>
+  <h3>Reading economic data</h3>
+  ${ECON}${ECONCHART}
+  <ul><li>GDP growth of 0.8% then 1.5% means the economy is growing every year, and faster each year. Slower growth is still growth: on June 2025 Paper 2 students described GDP as falling when it was rising more slowly.</li>
+  <li>Rising unemployment means more people looking for work, and usually weaker demand. In 2025 some students read it as fewer people available to work.</li>
+  <li>Inflation rising means costs are likely to rise. Whether profit suffers depends on whether the business can raise its prices too.</li>
+  <li>These changes affect competitors as well. The best answers on June 2026 Paper 3 Q4 asked whether this business was better or worse placed than its rivals.</li>
+  <li>If a question asks about given forecasts, do not argue that the forecasts might be wrong. In 2026 this was "not answering the question".</li></ul>
+  <h3>Demographics, the environment and fair trade</h3>
+  <ul><li>Demographic factors are about the population: age structure, birth rate, migration, household size. An ageing population raises demand for healthcare and leisure for older people, and can shrink the supply of workers. On June 2018 Paper 1 Q24 many students wrote about factors that are not demographic.</li>
+  <li>Environmental issues can raise costs (cleaner processes, waste disposal) and change demand (customers choosing greener products, or avoiding a brand with a poor record).</li>
+  <li>Fair trade means paying producers a fair price. It raises costs and can raise demand from ethically minded customers (June 2022 Paper 1 Q4).</li></ul>
+  <div class="trap"><b>The trap</b>On June 2024 Paper 1 Q20 (a highly geared manufacturer exporting 60% of output), many students got the exchange rate direction wrong and received no credit for that part. Remember also that the fall in UK consumer demand only hits the 40% sold in the UK.</div>`,
+  items:[
+    {src:'Reading data · interest rates', table:ECON, prompt:'Using the forecasts, which business is likely to gain most from the change in the base rate?', o:['A house builder with high gearing','A supermarket with no debt and large cash reserves','A water company with no borrowing','A business that holds all its spare cash in savings'], a:0, why:'Falling rates cut its loan repayments, and cheaper mortgages should raise demand for new houses. The cash-rich firms earn less interest.'},
+    {src:'Based on AQA June 2025 · Paper 2 report (Q1.4)', table:ECON, prompt:'Which is the correct reading of the GDP figures?', o:['The economy grows in every year, and faster each year','The economy shrinks in 2027','GDP falls between 2027 and 2029','GDP stays the same'], a:0, why:'Every figure is positive, so the economy grows each year. In 2025 some students said GDP was falling when growth was only slower.'},
+    {src:'Based on AQA June 2025 · Paper 2 report (Q1.4)', table:ECON, prompt:'Unemployment is forecast to rise from 4.2% to 4.8%. What does this most likely mean for businesses?', o:['More people are looking for work, and consumer demand may weaken','Fewer people will be available to work','Wages must rise','Demand for all products will rise'], a:0, why:'Higher unemployment means more people without jobs. In 2025 it was misread as fewer people available to work.'},
+    {src:'Reading data · inflation', table:ECON, prompt:'A builder has agreed fixed prices for jobs over the next two years. What is the main risk from the inflation forecast?', o:['Its costs may rise faster than its revenue','Its revenue will rise faster than its costs','Its fixed costs will fall','Inflation will reduce its gearing'], a:0, why:'Materials and wages are likely to rise while its prices are fixed, squeezing its profit margin.'},
+    {src:'Based on AQA June 2026 · Paper 3 Q4', prompt:'Demand for a builder\'s services has an income elasticity of +0.5. Incomes rise by 4%. What happens to demand, other things equal?', o:['It rises by about 2%','It rises by about 8%','It falls by about 2%','It rises by 4.5%'], a:0, why:'%Δ demand = YED × %Δ income = 0.5 × 4% = 2%. The mark scheme said the effect of growth on demand would be quite small.'},
+    {src:'Core rule · inferior goods', prompt:'A budget supermarket range has an income elasticity of −0.8. Incomes fall. What happens to demand for the range?', o:['It rises','It falls','It stays the same','It falls to zero'], a:0, why:'A negative YED means an inferior good: when incomes fall, people switch to it, so demand rises. This caused the hardest MCQ on June 2026 Paper 1.'},
+    {src:'AQA June 2018 · Paper 1 Q6', prompt:'Lower UK interest rates are likely to lead to an increase in the volume of UK exports because they probably lead to:', o:['a fall in costs of UK businesses and a fall in the exchange rate of the pound','a rise in costs of UK businesses and a rise in the exchange rate of the pound','a rise in costs of UK businesses and a fall in the exchange rate of the pound','a fall in costs of UK businesses and a rise in the exchange rate of the pound'], a:0, why:'AQA\'s answer was D. Cheaper borrowing lowers costs, and a weaker pound makes exports cheaper abroad.'},
+    {src:'Based on AQA June 2024 · Paper 1 Q20', prompt:'A highly geared UK manufacturer sells 60% of its output abroad. Interest rates rise sharply. Which is the best analysis?', o:['Interest payments rise; UK demand falls but affects only 40% of sales; a stronger pound may cut export sales','Exports become cheaper abroad, so sales rise','Only its exports are affected','Its costs fall because the pound rises'], a:0, why:'This combines the three chains with the data. The mark scheme said the gearing chain plus the UK demand chain alone could earn full marks.'},
+    {src:'Core rule · credit', prompt:'Interest rates rise. Which business is most likely to see demand fall?', o:['A car dealer whose customers mostly buy on finance','A supermarket selling everyday food','A pharmacy','A bus company'], a:0, why:'Customers borrowing to buy will face higher repayments, so they buy less or later.'},
+    {src:'Core rule · demographics', prompt:'Which of these is a demographic change?', o:['The population aged over 75 rises sharply','Interest rates rise','A new competitor opens','Inflation rises to 4%'], a:0, why:'Demographic factors are about the population: age, births, migration, households. The others are economic or competitive.'},
+    {src:'AQA June 2022 · Paper 1 Q4', prompt:'Which one of these changes is most likely to lead to higher costs and higher demand for a product?', o:['Introducing fair trade principles','An increase in the rate of inflation','A rise in interest rates','More competition'], a:0, why:'AQA\'s answer was C, fair trade. Paying producers more raises costs; ethical customers may buy more.'},
+    {src:'Core rule · environment', prompt:'New customer concern about plastic waste is most likely to:', o:['raise a drinks maker\'s costs if it changes packaging, but protect or raise demand','lower its costs and its demand','have no effect on costs or demand','only affect businesses in the public sector'], a:0, why:'Environmental issues usually affect both sides: costs of cleaner methods, and demand from customers who care.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q4)', prompt:'A student is evaluating how far falling interest rates will help a builder. Which point shows the best judgement?', o:['Rival builders also gain from cheaper borrowing, so the advantage over competitors may be small','The interest rate forecast might be wrong','Interest rates are set by the Bank of England','Builders always gain from lower rates'], a:0, why:'The report praised answers that saw economic changes affect rivals too. Questioning the forecast was not answering the question.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'mcq', title:'How AQA has caught students out', blurb:'Real AQA multiple-choice questions on Unit 3.1, with AQA\'s answers.', serve:8, pass:6,
+  teach:`<p>Every question in this stage is a real AQA question from the papers since 2017, with AQA\'s answer from the mark scheme. Read each one twice. Most were missed because of one word.</p>
+  <ul><li>In two-statement questions, decide on each statement separately before you look at the options.</li>
+  <li>For profit questions, write the income statement in the margin and cross off each line as you go.</li></ul>`,
+  items:[
+    {src:'AQA June 2023 · Paper 1 Q9', prompt:'Statement 1: "An increase in rent paid by a business will have no effect on its gross profit." Statement 2: "An increase in tax on a business\'s profit will have no effect on its profit for the year."', o:['Statement 1 is true. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'Rent is an operating expense, so gross profit is unchanged. Tax does reduce profit for the year. AQA\'s answer was B.'},
+    {src:'AQA November 2020 · Paper 1 Q4', table:tbl(['Item','£ million'],[['Cost of sales','4'],['Other expenses','3'],['Sales revenue','12'],['Taxation','2']]), prompt:'The company\'s operating profit is:', o:['£5 million','£3 million','£6 million','£8 million'], a:0, why:'£12m − £4m − £3m = £5m. £3m is profit for the year. AQA\'s answer was B.'},
+    {src:'AQA June 2025 · Paper 1 Q7', table:tbl(['Bromley Apples Ltd, 2023–2024','£m'],[['Sales revenue','20'],['Cost of sales','6'],['Operating expenses','4'],['Taxation','7']]), prompt:'What is Bromley Apples Ltd\'s gross profit for 2023–2024?', o:['£14m','£3m','£10m','£16m'], a:0, why:'£20m − £6m = £14m. AQA\'s answer was C.'},
+    {src:'AQA June 2018 · Paper 1 Q3', prompt:'Statement 1: "Sole traders are usually private sector organisations." Statement 2: "Public limited companies are usually public sector organisations."', o:['Statement 1 is true. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'Both are private sector. Only about half of students got this right. AQA\'s answer was B.'},
+    {src:'AQA June 2023 · Paper 1 Q11', prompt:'Statement 1: "If a limited company stops trading, the shareholders will be expected to sell personal assets to pay the company\'s debts." Statement 2: "If a limited company stops trading, the business will always pay its payables in full."', o:['Statement 1 is false. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.'], a:0, why:'Limited liability protects shareholders, and suppliers may not be paid in full. AQA\'s answer was D.'},
+    {src:'AQA June 2024 · Paper 1 Q1', prompt:'In which of these business forms could the owner/owners be required to sell personal assets to pay for business liabilities?', o:['Sole traders only','Private limited companies and public limited companies','Private limited companies and sole traders','Public limited companies only'], a:0, why:'AQA\'s answer was D.'},
+    {src:'AQA June 2023 · Paper 1 Q10', prompt:'Which of the following statements is false?', o:['Profit is a financial target for all businesses.','Profit is a measure of performance in Elkington\'s triple bottom line.','Profit is a reward for risk-taking.','Profit is a source of finance.'], a:0, why:'Not all organisations aim for profit. AQA\'s answer was A.'},
+    {src:'AQA June 2025 · Paper 1 Q15', prompt:'Which option below is correct in ranking these actions from long-term to short-term?', o:['Corporate objectives → strategies → tactics','Corporate objectives → mission statement → tactics','Mission statement → tactics → strategies','Tactics → strategies → mission statement'], a:0, why:'AQA\'s answer was B.'},
+    {src:'AQA June 2022 · Paper 1 Q1', prompt:'The managers of a business propose to retain all of its profit to finance automation of its production. This is most likely to cause conflict with:', o:['employees and shareholders.','employees and lenders.','lenders and suppliers.','shareholders and suppliers.'], a:0, why:'Shareholders lose their dividend; employees may lose jobs to machines. AQA\'s answer was B.'},
+    {src:'AQA June 2026 · Paper 1 Q10', table:tbl(['Business','1st priority','2nd priority'],[['Alpha Ltd','Workers','Customers'],['Battum Ltd','Owners','Society'],['Cream Ltd','Customers','Owners'],['Dart Ltd','Society','Workers']]), prompt:'Which company is most likely to be following the shareholder concept?', o:['Battum Ltd','Alpha Ltd','Cream Ltd','Dart Ltd'], a:0, why:'The shareholder concept puts owners first. AQA\'s answer was B.'},
+    {src:'AQA June 2023 · Paper 1 Q1', prompt:'Which of the following will cause spare capacity in a business to rise?', o:['New competitors are entering the market.','The business closes some factories.','The business\'s product becomes more fashionable.','There is a successful advertising campaign.'], a:0, why:'Rivals take some of its demand, so it uses less of its capacity. AQA\'s answer was A.'},
+    {src:'AQA June 2026 · Paper 1 Q13', prompt:'Assuming there are no other changes, which one of these situations is most likely to lead to a sustained increase in a business\'s average capacity utilisation?', o:['Competitors are leaving the market.','Demand is very seasonal.','It has just constructed an extra factory.','Sales are falling.'], a:0, why:'Its demand rises for good. A new factory would lower utilisation. AQA\'s answer was A.'},
+    {src:'AQA June 2017 · Paper 1 Q5', prompt:'Which combination is most likely to lead to an increase in sales for a company that builds houses? Assume there are no other changes.', o:['Decreasing interest rates and decreasing taxation','Decreasing interest rates and increasing taxation','Increasing interest rates and decreasing taxation','Increasing interest rates and increasing taxation'], a:0, why:'Cheaper mortgages and more disposable income both raise demand for houses. AQA\'s answer was A.'}
+  ]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Against the clock', blurb:'Fifteen mixed questions from the whole unit, 30 seconds each.', pass:12, poolFrom:[1,2,4,5,6,7,8,9], count:15, seconds:30,
+  teach:`<p>Fifteen questions drawn at random from the rest of this unit, with 30 seconds each. In the exam you need to know these rules straight away, without stopping to think about which line rent goes on or whether a plc is public sector.</p>
+  <p>You get different questions each time you try.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'rt31', key:'rt31_course_v1', offset:700, short:'Rules and Traps 3.1',
+  name:'Rules and Traps: Unit 3.1',
+  hero:{kicker:'Rules and Traps · Unit 3.1',
+    title:'What is <em>business?</em>',
+    lede:'Mission and objectives, profit, forms of business, shareholders and the external environment. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
+  doneText:'You have worked through every rule and trap in Unit 3.1. When you write about this unit, check the profit line, the legal form and the end point of every chain.',
+  stages:STAGES
+};
+</script>
+<script src="account.js"></script>
+<script src="course-engine.js"></script>
+<script src="visit.js" defer></script>
+</body>
+</html>

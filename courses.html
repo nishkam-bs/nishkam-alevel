@@ -59,7 +59,9 @@ const COURSES=[
   {href:'models-course.html',key:'models_course_v1',offset:500,stages:10,tag:'Models and theories',title:'Models Course',
    text:'Choose the right model for the question, get its mechanics right, and make it a working step in your argument rather than a name dropped in.'},
   {href:'paper3-course.html',key:'paper3_course_v1',offset:600,stages:10,tag:'Paper 3',title:'Paper 3 Course',
-   text:'One case study, worked through question by question: reading the case, using the appendices, one deep argument on the 12-markers, judgement on the longer questions and a range of businesses on question 6.'}
+   text:'One case study, worked through question by question: reading the case, using the appendices, one deep argument on the 12-markers, judgement on the longer questions and a range of businesses on question 6.'},
+  {href:'rules-and-traps.html',keys:['rt31_course_v1','rt32_course_v1','rt33_course_v1','rt34_course_v1','rt35_course_v1','rt36_course_v1','rt37_course_v1','rt38_course_v1','rt39_course_v1','rt310_course_v1'],stages:100,tag:'Unit by unit',title:'Rules and Traps',
+   text:'Ten courses, one for each unit. A refresher on every topic, the rules you need, and the traps AQA has caught students with since 2017. One unit is set each week.'}
 ];
 const A=window.Acct||{on:false,user:null,get(){},ready:Promise.resolve(),onChange(){},bar(){}};
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, fine=matchMedia('(pointer: fine)').matches;
@@ -68,8 +70,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 function local(c){if(A.on)return A.user?A.get('course:'+c.key)||null:null;try{const r=localStorage.getItem(c.key);return r?JSON.parse(r):null;}catch(e){return null;}}
 function render(){
   $('#list').innerHTML=COURSES.map((c,i)=>{
-    const st=local(c),passed=new Set(Object.keys((st&&st.passed)||{}).filter(k=>st.passed[k]).map(Number));
-    const n=passed.size;
+    const n=c.keys?c.keys.reduce((a,k)=>{const s=local({key:k});return a+Object.keys((s&&s.passed)||{}).filter(x=>s.passed[x]).length;},0):(()=>{const st=local(c);return Object.keys((st&&st.passed)||{}).filter(k=>st.passed[k]).length;})();
     return `<a class="course reveal" href="${c.href}"><div class="num">${String(i+1).padStart(2,'0')}</div>
       <div><div class="tag">${esc(c.tag)}</div><h2>${esc(c.title)}</h2><p>${esc(c.text)}</p></div>
       <div class="prog"><div class="bar"><i style="width:${n/c.stages*100}%"></i></div><span>${n===c.stages?'Complete':n?`${n} of ${c.stages} stages passed`:'Not started'}</span><span class="go">${n?'Continue':'Start'} →</span></div></a>`;
