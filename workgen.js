@@ -180,7 +180,7 @@ async function checked(items){
    answers that match the working). Returns null if nothing changes. */
 /* questions on ratios that are not on the 7132 specification (sets made before this was blocked) do not count */
 const OFFSPEC=window.SPEC7132?SPEC7132.NOT_RE:/acid[\s-]*test|quick ratio|interest cover|debt[\s-]*to[\s-]*equity/i;
-const NOT_COUNTED={marks:0,max:0,feedback:'This question is not on your AQA specification, so it does not count. You only need the current ratio for liquidity.'};
+const NOT_COUNTED={marks:0,max:0,feedback:'This question is not on your AQA specification, so it does not count.'};
 function offSpec(it){return !!it&&OFFSPEC.test([it.q,it.case,...(it.options||[]),it.explain].filter(Boolean).join(' '));}
 function recheck(spec,answers,result){
   if(!result||!Array.isArray(result.items))return null;

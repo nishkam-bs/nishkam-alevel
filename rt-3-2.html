@@ -56,26 +56,24 @@ const GRID=`<div class="chart"><svg viewBox="0 0 520 300" role="img" aria-label=
 
 const STAGES=[
 /* ---------------- STAGE 1 ---------------- */
-{ id:1, type:'drift', title:'What managers do', blurb:'The jobs of a manager, and the difference between managing and leading.', serve:8, pass:6,
+{ id:1, type:'drift', title:'Management and leadership', blurb:'The difference between managing and leading, and why it matters.', serve:8, pass:6,
   labels:TF, showLabel:'True or false?',
   teach:`<h3>Refresher</h3>
-  <p>Managers are responsible for getting things done through other people and resources. Their main jobs are:</p>
-  ${tbl(['What managers do','Example'],[['Set objectives','Agree a target of 5% sales growth for the region'],['Analyse','Look at sales data and staff turnover to see what is going wrong'],['Lead','Motivate the team and communicate the plan'],['Make decisions','Choose which supplier to use or whether to open a new branch'],['Review','Check results against the objectives and change the plan if needed']])}
   <p><b>Management</b> is about planning, organising and controlling resources so that objectives are met. <b>Leadership</b> is about setting a direction and influencing and inspiring people to follow it. Many managers do both, but they are not the same thing: someone can run a department efficiently without inspiring anyone, and someone without a management title can lead a team.</p>
   <h3>Rules</h3>
   <ul><li>Effective management and leadership depend on the situation: the task, the people, the time available and the culture of the business.</li>
   <li>When a question asks how management or leadership affects something (profit, productivity, a change), follow the chain all the way to that end point.</li></ul>
-  <div class="trap"><b>The trap</b>The distinction between management and leadership was added to the specification in 2023 and has not yet been examined, so it could come up. Do not use the words as if they mean the same thing.</div>
+  <div class="trap"><b>The trap</b>The distinction between management and leadership replaced "what managers do" in the 2023 specification and has not yet been examined, so it could come up. Do not use the words as if they mean the same thing.</div>
   <p style="margin-top:14px">Decide whether each statement is true or false.</p>`,
   items:[
-    {src:'Core rule · what managers do', q:'A manager checks this quarter\'s results against the targets set in January.', text:'This is an example of reviewing.', ok:true, why:'Reviewing means comparing what happened with the objectives and deciding what to change.'},
-    {src:'Core rule · what managers do', q:'A manager studies labour turnover figures to find out why staff are leaving.', text:'This is an example of analysing.', ok:true, why:'Analysing means using information to understand a problem before deciding what to do.'},
+    {src:'Core rule · management and leadership', q:'A manager checks this quarter\'s results against the budget and asks staff to cut overtime.', text:'This is mainly management.', ok:true, why:'It is about controlling resources so that objectives are met.'},
+    {src:'Core rule · management and leadership', q:'A chief executive sets out a new vision for the business and persuades staff to support it.', text:'This is mainly leadership.', ok:true, why:'Setting a direction and getting people to follow it is leadership.'},
     {src:'Core rule · management and leadership', q:'Comparing management and leadership.', text:'Management and leadership mean exactly the same thing.', ok:false, why:'Management is planning, organising and controlling resources; leadership is setting direction and inspiring people.'},
     {src:'Core rule · management and leadership', q:'A team member with no management title persuades colleagues to try a new way of working.', text:'This person is showing leadership.', ok:true, why:'Leadership is about influence, not job title.'},
     {src:'Core rule · management and leadership', q:'A manager draws up a rota, sets budgets and checks that deadlines are met.', text:'These are mainly management tasks.', ok:true, why:'They are about organising and controlling resources.'},
     {src:'Core rule · effectiveness', q:'About management styles.', text:'One management style is the most effective in every situation.', ok:false, why:'The best approach depends on the task, the staff, the time available and the culture.'},
-    {src:'Core rule · what managers do', q:'A manager agrees a target with her team to cut customer complaints by 20% this year.', text:'This is an example of setting objectives.', ok:true, why:'It is a measurable target with a time limit.'},
-    {src:'Core rule · what managers do', q:'About the role of managers.', text:'Making decisions is one of the main jobs of a manager.', ok:true, why:'Choosing between options is central to what managers do.'},
+    {src:'Core rule · management and leadership', q:'About leadership.', text:'Only people with a senior job title can show leadership.', ok:false, why:'Leadership is about influencing others, which anyone in a team can do.'},
+    {src:'Core rule · management and leadership', q:'A business is going through a major change that staff are worried about.', text:'Strong leadership matters more here than in a period of routine work.', ok:true, why:'During change people need a clear direction and reasons to support it; routine work relies more on good management.'},
     {src:'Core rule · end points', q:'A question asks how better leadership might improve labour productivity.', text:'An answer that explains how staff feel more valued, without linking this to output per worker, has reached the end point.', ok:false, why:'The chain has to finish at labour productivity: more motivated staff work harder or smarter, so output per worker rises.'},
     {src:'Core rule · management and leadership', q:'About managers.', text:'A good manager can organise resources well but still be a weak leader.', ok:true, why:'Running a department efficiently and inspiring people are different skills.'}
   ]},
@@ -300,7 +298,7 @@ window.COURSE={
   name:'Rules and Traps: Unit 3.2',
   hero:{kicker:'Rules and Traps · Unit 3.2',
     title:'Managers, leadership and <em>decisions</em>',
-    lede:'What managers do, leadership styles, Tannenbaum and Schmidt, decision making, decision trees and stakeholders. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
+    lede:'Management and leadership, leadership styles, Tannenbaum and Schmidt, decision making, decision trees and stakeholders. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
   doneText:'You have worked through every rule and trap in Unit 3.2. When you write about leadership or stakeholders, use the model as a working step and take every chain to the end point in the question.',
   stages:STAGES
 };

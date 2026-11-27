@@ -16,14 +16,14 @@ const SCOPE={
 "3.1.2c":"the role of shareholders and why they invest; market capitalisation; dividends; influences on share price and the significance of share price changes",
 "3.1.3a":"how the external environment affects costs and demand: competition and market conditions",
 "3.1.3b":"how the external environment affects costs and demand: incomes, interest rates, demographic factors, environmental issues and fair trade",
-"3.2.1a":"what managers do; types of management and leadership; the effectiveness of different styles",
+"3.2.1a":"the distinction between management and leadership; types of management and leadership; the effectiveness of different styles",
 "3.2.1b":"leadership styles: autocratic, paternalistic, democratic, laissez-faire; influences on the style used",
 "3.2.1c":"the Tannenbaum Schmidt continuum",
 "3.2.2a":"scientific (data-based) decision making and intuition; the value of each",
 "3.2.2b":"risk, reward, uncertainty and opportunity cost; influences on decisions: mission, objectives, ethics, the external environment including competition, resource constraints",
 "3.2.2c":"decision trees: expected values and net gains; the value of decision trees",
 "3.2.3a":"stakeholder needs; overlapping and conflicting needs of stakeholders; the importance of stakeholders",
-"3.2.3b":"stakeholder mapping (by power and interest); influences on the relationship with stakeholders; how to manage it: communication and consultation",
+"3.2.3b":"stakeholder mapping (by power and interest); how to manage it: communication and consultation",
 "3.3.1":"marketing objectives: sales volume and sales value, market size, market and sales growth, market share, brand loyalty; internal and external influences on marketing objectives",
 "3.3.2a":"the value of primary and secondary market research",
 "3.3.2b":"qualitative and quantitative data; sampling: random, stratified, quota; the value of sampling",
@@ -66,7 +66,7 @@ const SCOPE={
 "3.5.4b":"methods of improving profits and profitability and the difficulties of doing so",
 "3.6.1a":"HR objectives: employee engagement and involvement, talent development, training, diversity, alignment of values, number, skills and location of employees; internal and external influences",
 "3.6.1b":"soft and hard HR approaches",
-"3.6.2":"calculating and interpreting labour turnover and retention rates, labour productivity, employee costs as a percentage of turnover, labour cost per unit; using HR data for decisions",
+"3.6.2":"calculating and interpreting labour turnover, labour productivity, employee costs as a percentage of turnover, labour cost per unit; using HR data for decisions",
 "3.6.3a":"organisational structures: functional, product based, regional and matrix",
 "3.6.3b":"authority, span of control, hierarchy, delegation, centralisation and decentralisation; influences on organisational design; the value of changing design",
 "3.6.3c":"human resource flow: human resource plans, recruitment, training, redeployment, redundancy",
@@ -76,24 +76,24 @@ const SCOPE={
 "3.6.4d":"non-financial methods of motivation: empowerment, team working, flexible working, job enrichment, job rotation; influences on the choice of method",
 "3.6.5a":"employee involvement in decision making: individual and collective methods; employee representation: trade unions and works councils",
 "3.6.5b":"influences on the relationship between employers and employees; managing communication; the value of good employer-employee relations",
-"3.7.1a":"influences on the mission; the distinction between strategy and tactics; links between mission, corporate objectives and strategy; the impact of strategic decisions on functional decisions",
-"3.7.1b":"internal and external influences on corporate objectives and decisions, including pressures for short-termism and business ownership; the value of SWOT analysis",
+"3.7.1a":"mission, corporate objectives, functional objectives and strategy; influences on the mission; the distinction between strategy and tactics; links between mission, corporate objectives and strategy; the impact of strategic decisions on functional decisions",
+"3.7.1b":"internal and external influences on corporate objectives and decisions and on functional objectives and decisions, including pressures for short-termism and business ownership; the value of SWOT analysis",
 "3.7.2a":"assessing financial performance using balance sheets and income statements",
 "3.7.2b":"financial ratios: return on capital employed (profitability), current ratio (liquidity), gearing",
 "3.7.2c":"efficiency ratios: payables days, receivables days, inventory turnover; the value of financial ratios when assessing performance, over time or against other businesses",
 "3.7.3a":"analysing non-financial data (operations, human resources, marketing) over time or against other businesses; core competences; short-term and long-term performance; the value of different measures of performance",
 "3.7.3b":"Elkington's Triple Bottom Line (profit, people, planet)",
-"3.7.4a":"political change: UK and EU government policy on enterprise, the role of regulators, infrastructure, the environment and international trade",
-"3.7.4b":"legal change: UK and EU law on competition, the labour market and the environment",
+"3.7.4a":"political change: government policy on enterprise, the role of regulators, infrastructure, the environment and international trade",
+"3.7.4b":"legal change: the law on competition, the labour market and the environment",
 "3.7.5a":"economic change: GDP, inflation, exchange rates; interpreting economic data",
-"3.7.5b":"economic change: taxation, fiscal and monetary policy, interest rates, the move to greater openness and protectionism in trade; the reasons for and importance of globalisation and emerging economies",
-"3.7.6a":"social change: demographic change, population movements (urbanisation, migration), consumer lifestyle and buying behaviour, the growth of online businesses",
+"3.7.5b":"economic change: taxation, fiscal and monetary policy, interest rates, the move to greater openness and protectionism in trade",
+"3.7.6a":"social change: demographic change, population movements (migration), consumer lifestyle and buying behaviour, the growth of online businesses",
 "3.7.6b":"corporate social responsibility; the stakeholder versus shareholder concept; Carroll's corporate social responsibility pyramid; pressures for socially responsible behaviour",
 "3.7.6c":"technological change and its impact on functional areas and strategy",
 "3.7.7":"Porter's five forces: buyer power, supplier power, threat of new entrants, threat of substitutes, competitive rivalry; how and why they change; how they shape strategy and profits",
 "3.7.8a":"investment appraisal: payback and average rate of return (calculation and interpretation)",
 "3.7.8b":"investment appraisal: net present value (calculation and interpretation)",
-"3.7.8c":"factors influencing investment decisions: investment criteria, non-financial factors, risk and uncertainty; the value of sensitivity analysis",
+"3.7.8c":"factors influencing investment decisions: investment criteria, non-financial factors, risk and uncertainty",
 "3.8.1a":"the reasons for choosing a market and product: strategic direction",
 "3.8.1b":"Ansoff's matrix: market penetration, market development, new product development, diversification; the value of the matrix",
 "3.8.2a":"Porter's generic strategies: low cost, differentiation, focus",
@@ -119,8 +119,8 @@ const SCOPE={
 "3.10.4b":"the value of strategic planning and contingency planning; crisis management"
 };
 /* things that are not on the 7132 specification (or were removed for exams from 2025) */
-const NOT_ON_SPEC=["the acid test (quick) ratio","interest cover","debt to equity","Bowman's strategic clock","the Blake Mouton grid","Hackman and Oldham","Kaplan and Norton's balanced scorecard","Greiner's model","Bartlett and Ghoshal","Hofstede","McGregor's Theory X and Theory Y","Mayo","Vroom","McClelland","Mintzberg","the cultural web","Gantt charts","free float","PESTLE","total quality management","zero defects","ISO 9001","quality circles","batch, flow and job production","zero-based budgeting","trade credit as a source of finance","sale and leaseback as a source of finance","job enlargement","profit sharing","fringe benefits","psychographic segmentation","SMART objectives"];
-const NOT_RE=/acid[\s-]*test|quick ratio|interest cover|debt[\s-]*to[\s-]*equity|strategic clock|bowman|blake[\s-]*mouton|hackman|balanced scorecard|kaplan|greiner|bartlett|ghoshal|hofstede|mcgregor|theory x|theory y|\bmayo\b|hawthorne|vroom|mcclelland|mintzberg|cultural web|gantt|free float|pestle|total quality management|\btqm\b|zero defects|iso 9001|quality circle|zero[\s-]*based budget|job enlargement|psychographic|\bsmart objectives?\b/i;
+const NOT_ON_SPEC=["the acid test (quick) ratio","interest cover","debt to equity","Bowman's strategic clock","the Blake Mouton grid","Hackman and Oldham","Kaplan and Norton's balanced scorecard","Greiner's model","Bartlett and Ghoshal","Hofstede","McGregor's Theory X and Theory Y","Mayo","Vroom","McClelland","Mintzberg","the cultural web","Gantt charts","free float","PESTLE","total quality management","zero defects","ISO 9001","quality circles","batch, flow and job production","zero-based budgeting","trade credit as a source of finance","sale and leaseback as a source of finance","job enlargement","profit sharing","fringe benefits","psychographic segmentation","SMART objectives","sensitivity analysis","the experience curve","mass customisation","enterprise resource planning (ERP)"];
+const NOT_RE=/acid[\s-]*test|quick ratio|interest cover|debt[\s-]*to[\s-]*equity|strategic clock|bowman|blake[\s-]*mouton|hackman|balanced scorecard|kaplan|greiner|bartlett|ghoshal|hofstede|mcgregor|theory x|theory y|\bmayo\b|hawthorne|vroom|mcclelland|mintzberg|cultural web|gantt|free float|pestle|total quality management|\btqm\b|zero defects|iso 9001|quality circle|zero[\s-]*based budget|job enlargement|psychographic|\bsmart objectives?\b|sensitivity analysis|experience curve|mass customi[sz]ation|enterprise resource planning/i;
 window.SPEC7132={SCOPE,NOT_ON_SPEC,NOT_RE,scope:id=>SCOPE[id]||''};
 })();
 /* every AI call on the site (question writing, flashcards, feedback, resources) gets the same
