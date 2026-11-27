@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rules and Traps: Unit 3.9 Strategic methods</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+<link rel="stylesheet" href="rt.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   RULES AND TRAPS: UNIT 3.9 STRATEGIC METHODS
+   Specification topics 3.9.1a to 3.9.4 (spec.js). Every rule and trap is
+   checked against the AQA papers, mark schemes and examiner reports
+   2017 to 2026. Items marked "AQA June 20xx" are the real questions with
+   AQA's answer; "Based on" means our wording of a reported mistake.
+   Stage numbers are stored in the tracker as 1500 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+const rint=(a,b,s=1)=>Math.round((a+Math.random()*(b-a))/s)*s;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
+const isN=c=>/^[−\-+]?[£€]?[\d.,]+(%|m|bn|k)?$/.test(String(c).trim());
+const tbl=(head,rows)=>{const num=head.map((h,i)=>i>0&&rows.every(r=>isN(r[i])||r[i]===''));return `<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${num[i]?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${num[i]?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;};
+
+const INTEG=`<div class="chart"><svg viewBox="0 0 520 230" role="img" aria-label="Types of integration for a chocolate maker: backward vertical with a cocoa farm, forward vertical with a sweet shop chain, horizontal with another chocolate maker, conglomerate with a car insurer">
+  <rect x="190" y="95" width="140" height="40" rx="6" style="fill:var(--gold-soft);stroke:var(--gold)"/><text x="260" y="120" text-anchor="middle" style="fill:var(--fg);font-weight:600">Chocolate maker</text>
+  <rect x="190" y="10" width="140" height="40" rx="6" style="fill:var(--card);stroke:var(--line)"/><text x="260" y="35" text-anchor="middle" style="fill:var(--fg)">Cocoa farm</text>
+  <rect x="190" y="180" width="140" height="40" rx="6" style="fill:var(--card);stroke:var(--line)"/><text x="260" y="205" text-anchor="middle" style="fill:var(--fg)">Sweet shop chain</text>
+  <rect x="10" y="95" width="140" height="40" rx="6" style="fill:var(--card);stroke:var(--line)"/><text x="80" y="120" text-anchor="middle" style="fill:var(--fg)">Rival chocolate maker</text>
+  <rect x="370" y="95" width="140" height="40" rx="6" style="fill:var(--card);stroke:var(--line)"/><text x="440" y="120" text-anchor="middle" style="fill:var(--fg)">Car insurer</text>
+  <line class="ax" x1="260" y1="50" x2="260" y2="95"/><line class="ax" x1="260" y1="135" x2="260" y2="180"/><line class="ax" x1="150" y1="115" x2="190" y2="115"/><line class="ax" x1="330" y1="115" x2="370" y2="115"/>
+  <text x="268" y="77">backward vertical</text><text x="268" y="162">forward vertical</text><text x="80" y="153" text-anchor="middle">horizontal</text><text x="440" y="153" text-anchor="middle">conglomerate</text>
+</svg><div class="cap">Backward is towards the supplier, forward is towards the customer, horizontal is the same stage, conglomerate is unrelated.</div></div>`;
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'mcq', title:'Growth: organic and external', blurb:'Ways to grow, why businesses grow, and the problems growth brings.', serve:9, pass:7,
+  teach:`<h3>Methods of growth</h3>
+  ${tbl(['','Organic (internal) growth','External (inorganic) growth'],[['How','Using the business\'s own resources: new stores, new products, more capacity','Joining with another business: merger, takeover, (and ventures)'],['For','Lower risk; keeps control and culture; can be financed from profits','Fast; buys market share, skills, brands or technology at once'],['Against','Slow; limited by the business\'s own resources','Expensive; risky; culture clashes; may not deliver the expected synergy']])}
+  <h3>Reasons for growth</h3><p>Economies of scale, market power and market share, survival, spreading risk, owners\' objectives.</p>
+  <h3>Problems of growth and managing them</h3><p>Diseconomies of scale (communication, coordination, motivation), overtrading (growing faster than cash allows), loss of control, culture change. Managers deal with these through delegation and new structures, better communication, planning cash flow and recruiting and training.</p>
+  <div class="trap"><b>The traps</b>On June 2023 Paper 3 Q2 (why choose organic growth?) many said it is less risky without explaining <b>why</b>, and some drifted into sources of finance. On June 2018 Paper 3 Q6 some could not name specific problems of growth; overtrading is one. Greiner\'s model was removed from 2025.</div>`,
+  items:[
+    {src:'AQA June 2020 · Paper 1 Q11', prompt:'Statement 1: "External growth requires a business to integrate with another business that is located in a different country." Statement 2: "Organic growth requires a business to use its own resources to expand its size."', o:['Statement 1 is false. Statement 2 is true.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer. External growth can be with any business, anywhere.'},
+    {src:'AQA June 2026 · Paper 1 Q12', prompt:'Statement 1: "Backward vertical integration is an example of organic growth." Statement 2: "Conglomerate integration is an example of external growth."', o:['Statement 1 is false. Statement 2 is true.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer. All integration is external growth.'},
+    {src:'AQA June 2023 · Paper 3 report (Q2)', prompt:'Why is organic growth usually less risky than external growth? Which explanation gives the missing "why"?', o:['It happens step by step with the business\'s own resources, so it can stop if things go wrong, without paying a large sum for a business it does not fully know','It is less risky','It is organic','It uses loans'], a:0, why:'The report said many stated it was less risky but never explained why.'},
+    {src:'AQA June 2023 · Paper 3 report (Q2)', prompt:'A question asks why the owner preferred organic growth. Which answer drifts off the question?', o:['One about the best source of finance for the growth','One about keeping control','One about keeping the culture','One about lower risk, explained'], a:0, why:'The report said some drifted into sources of finance.'},
+    {src:'Core rule · overtrading', prompt:'What is overtrading?', o:['Growing so fast that the business runs short of cash to pay its bills','Producing too much inventory','Trading in too many countries','Selling at too high a price'], a:0, why:'It can make a profitable business fail.'},
+    {src:'Based on AQA June 2018 · Paper 3 report (Q6)', prompt:'Which is a specific problem caused by rapid growth?', o:['Overtrading: cash runs out as the business pays for growth before customers pay','A fall in the exchange rate','A new law','A competitor\'s advertising'], a:0, why:'The report said some students struggled to name specific problems.'},
+    {src:'Core rule · managing growth', prompt:'A business grows from 20 to 200 staff. Which action best tackles the communication problems?', o:['A clearer structure with delegation to managers and regular team briefings','Removing all managers','Having the owner make every decision','Stopping all meetings'], a:0, why:'Growth needs new structures and communication.'},
+    {src:'Core rule · reasons', prompt:'Which is a reason for growth?', o:['To gain economies of scale and lower unit costs','To increase diseconomies of scale','To reduce market share','To increase risk'], a:0, why:'Larger scale can cut unit costs.'},
+    {src:'Core rule · external growth', prompt:'Which is the main benefit of growing by takeover rather than organically?', o:['Speed: it gains market share, staff and brands at once','It is cheaper','There are no culture clashes','There is no risk'], a:0, why:'External growth is fast but costly and risky.'},
+    {src:'AQA June 2023 · Paper 3 report (Q6)', prompt:'Does the success of a growth strategy depend mainly on leadership? Which point adds context?', o:['Leadership may matter more when existing and new staff are inexperienced','Leadership is important','Growth is good','Leaders lead'], a:0, why:'The report said context can be a scenario where the argument is especially relevant.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'drift', title:'Scale: economies, diseconomies, scope and synergy', blurb:'How size affects unit costs, and what synergy really means.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Economies of scale</h3>
+  <p>Unit costs fall as output rises: purchasing (bulk buying), technical (better machinery), financial (cheaper loans), marketing (spreading advertising costs), managerial (specialist managers).</p>
+  <h3>Diseconomies of scale</h3>
+  <p>Unit costs rise as the business gets too big: poor communication, coordination problems, lower motivation, slower decisions.</p>
+  <h3>Economies of scope and synergy</h3>
+  <ul><li><b>Economies of scope</b>: lower costs from producing a <b>range</b> of products, by sharing resources (one delivery fleet, one brand, one head office).</li>
+  <li><b>Synergy</b>: when two businesses joined together are worth more than the two apart ("2 + 2 = 5"), from cost savings or higher sales.</li></ul>
+  <div class="trap"><b>The traps</b>Economies of scope are about the <b>range</b> of products, not the size of output. Students confused the two on the June 2026 diversification question. The experience curve was removed from 2025.</div>`,
+  items:[
+    {src:'Core rule · scope', q:'About economies of scope.', text:'They come from producing a larger volume of one product.', ok:false, why:'That is economies of scale. Scope comes from a range of products sharing resources.'},
+    {src:'Core rule · scope', q:'A supermarket uses the same lorries to deliver food and clothing.', text:'This is an example of economies of scope.', ok:true, why:'Different products share one resource.'},
+    {src:'AQA June 2024 · Paper 1 Q10', q:'Capacity rose from 80 to 125 units and output from 80 to 100, while unit costs fell.', text:'Economies of scale might explain the fall in unit costs, but higher capacity utilisation cannot.', ok:true, why:'AQA\'s answer. Utilisation actually fell from 100% to 80%.'},
+    {src:'AQA June 2019 · Paper 1 Q3', q:'A business replaces staff with machinery. Capacity and output rise 10% but unit costs rise 5%.', text:'This is more capital intensive production with diseconomies of scale.', ok:true, why:'AQA\'s answer. Unit costs rose as scale rose.'},
+    {src:'Based on AQA June 2019 · Paper 1 Q15', q:'A market leader suffers diseconomies of scale.', text:'This is a barrier to entry for new firms.', ok:false, why:'AQA\'s answer: it was not a barrier, because it raises the leader\'s costs.'},
+    {src:'Core rule · synergy', q:'About synergy.', text:'It means the combined business is worth more than the two separate businesses.', ok:true, why:'"2 + 2 = 5".'},
+    {src:'Core rule · synergy', q:'About synergy after a takeover.', text:'It is guaranteed.', ok:false, why:'Culture clashes and poor integration often stop the expected savings.'},
+    {src:'Core rule · diseconomies', q:'About diseconomies of scale.', text:'Poor communication in a large business can raise unit costs.', ok:true, why:'Messages are slower and mistakes more likely.'},
+    {src:'Core rule · economies', q:'A large retailer gets a 20% discount for buying in bulk.', text:'This is a purchasing economy of scale.', ok:true, why:'Buying power lowers unit costs.'},
+    {src:'Based on AQA June 2022 · Paper 1 Q13', q:'A small business operates in a niche market.', text:'Economies of scope are one of the main advantages it can expect.', ok:false, why:'AQA\'s answer: economies of scope were the least likely advantage.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'drift', title:'Retrenchment and changes in scale', blurb:'Cutting back, the reasons for it, and the effects on each function.', serve:8, pass:6,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Retrenchment</h3>
+  <p>Retrenchment is cutting back the scale of a business: closing sites, withdrawing from markets, cutting product lines, making redundancies, delayering.</p>
+  <p><b>Reasons</b>: falling demand, a recession, rising costs, overexpansion, a new strategy that focuses on the core business.</p>
+  <h3>Managing the impact</h3>
+  ${tbl(['Function','Effects of retrenchment'],[['HR','Redundancies, redeployment, morale of remaining staff, trade union resistance'],['Marketing','Fewer products or markets, changes to the marketing mix, risk to brand reputation'],['Operations','Closing sites, lower capacity, possibly higher utilisation of what remains'],['Finance','Redundancy and closure costs now; lower fixed costs later']])}
+  <div class="trap"><b>The traps</b>On June 2025 Paper 3 Q2 (impact of retrenchment on marketing activities) only the best answers explored actual marketing activities, such as how a P of the marketing mix would change. On June 2025 Paper 1 Q8 most students missed that high labour turnover makes retrenchment easier.</div>`,
+  items:[
+    {src:'AQA June 2025 · Paper 1 Q8', q:'About retrenchment.', text:'It is easier to manage if the business has a high rate of labour turnover.', ok:true, why:'AQA\'s answer. Staff numbers fall naturally, so fewer redundancies are needed.'},
+    {src:'AQA June 2025 · Paper 1 Q8', q:'About retrenchment.', text:'It is less likely to face organised resistance if few staff are trade union members.', ok:true, why:'AQA\'s answer.'},
+    {src:'AQA June 2025 · Paper 3 report (Q2)', q:'A question asks how retrenchment affects a business\'s marketing activities.', text:'Saying the brand may be damaged, without saying what marketing would change, reaches the top level.', ok:false, why:'The report wanted the effect on actual marketing activities, e.g. the marketing mix.'},
+    {src:'Based on AQA June 2025 · Paper 3 report (Q2)', q:'A business withdraws its main product from Europe.', text:'It may need to change its promotion and distribution there to support the products that remain.', ok:true, why:'This explores actual marketing activities.'},
+    {src:'Core rule · retrenchment', q:'About retrenchment.', text:'It always means the business is failing.', ok:false, why:'It may be a deliberate choice to focus on the most profitable areas.'},
+    {src:'Core rule · finance', q:'About the financial effect of closing a factory.', text:'It may raise costs in the short term but lower fixed costs in the long term.', ok:true, why:'Redundancy and closure costs come first.'},
+    {src:'Core rule · HR', q:'After redundancies.', text:'The morale of the staff who remain may fall.', ok:true, why:'They may worry about their own jobs.'},
+    {src:'Core rule · operations', q:'A business closes one of its three factories.', text:'Capacity utilisation at the remaining factories may rise.', ok:true, why:'The same output is made in less capacity.'},
+    {src:'Core rule · delayering', q:'About delayering as part of retrenchment.', text:'It removes layers of management, cutting costs and speeding up communication.', ok:true, why:'But it can overload the remaining managers.'}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'mcq', title:'Mergers, takeovers, ventures and franchising', blurb:'Different ways of joining up or spreading the business.', serve:9, pass:7,
+  teach:`${tbl(['Method','What it is','Key points'],[['Merger','Two businesses agree to join as one','Shared control; culture clashes possible'],['Takeover','One business buys control of another (over 50% of the shares)','Can be hostile; often expensive; fast'],['Joint venture','Two businesses set up a separate project or business together','Shares costs, risks and skills; possible disagreements'],['Franchising','A franchisor sells others (franchisees) the right to use its brand and business model','Fast growth with others\' money; the franchisor keeps control through the franchise agreement; reputation risk if a franchisee performs badly']])}
+  <div class="trap"><b>The traps</b>On June 2020 Paper 2 Q3.4 (is franchising a good way for any business to grow?) many just listed pros and cons; the question asked when it would or would not be a good way. On June 2024 Paper 3 Q5 some wrongly thought franchisees are left completely uncontrolled. On June 2022 Paper 2 Q2.4 (are ventures a good way for all businesses to grow?) many only used the case business.</div>`,
+  items:[
+    {src:'AQA June 2024 · Paper 3 report (Q5)', prompt:'Which statement about franchising is correct?', o:['The franchisor keeps control through the franchise agreement, setting standards franchisees must follow','Franchisees are left completely uncontrolled','The franchisor pays the franchisee a fee','Franchising is organic growth funded by the franchisor\'s own money'], a:0, why:'The report highlighted the misconception that franchisees are uncontrolled.'},
+    {src:'AQA June 2020 · Paper 2 report (Q3.4)', prompt:'Is selling franchises a good way for any business to grow? What did the examiners want?', o:['The circumstances in which it would and would not be a good way to grow, then a justified conclusion','A list of pros and cons','An argument that it is the best way','A definition of franchising'], a:0, why:'The report said too many never got beyond pros and cons.'},
+    {src:'AQA June 2022 · Paper 2 report (Q2.4)', prompt:'Are ventures a good way for all businesses to grow? What limited many answers?', o:['Only using the case business, so not covering "all" businesses','Using too many examples','Writing about growth','Writing a conclusion'], a:0, why:'The report said the lack of focus on growth and all businesses limited progress.'},
+    {src:'Core rule · takeover', prompt:'What gives one company control of another in a takeover?', o:['Buying more than half of its shares','Buying 10% of its shares','Signing a supply contract','Sharing a website'], a:0, why:'Over 50% of the voting shares gives control.'},
+    {src:'Core rule · joint venture', prompt:'Two car makers set up a new company together to develop batteries. This is:', o:['a joint venture','a takeover','franchising','organic growth'], a:0, why:'They share costs, risks and expertise in a separate project.'},
+    {src:'Core rule · franchising', prompt:'Which is the main benefit of franchising for the franchisor?', o:['Fast growth using the franchisees\' money and local knowledge','Complete control of every outlet\'s daily running','No risk to its reputation','No need for a brand'], a:0, why:'Franchisees pay to set up their outlets.'},
+    {src:'Core rule · franchising', prompt:'Which is the main risk of franchising for the franchisor?', o:['A poor franchisee may damage the whole brand\'s reputation','It must fund every outlet','It loses all fees','It cannot grow'], a:0, why:'Customers see one brand.'},
+    {src:'Core rule · merger', prompt:'Which is a common reason why mergers fail to deliver expected benefits?', o:['Clashes between the two businesses\' cultures','Too much synergy','Lower costs','Higher market share'], a:0, why:'People and culture are often the hardest part.'},
+    {src:'Based on AQA June 2018 · Paper 2 Q1.5', prompt:'A rival is deciding whether to bid for a business. Which information would be most useful?', o:['Its financial performance, market share trends and the value of its brand','Its logo colours','The CEO\'s favourite food','The number of car parking spaces'], a:0, why:'The bidder needs to judge whether the price is worth paying.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'mcq', title:'Types of integration', blurb:'Horizontal, backward and forward vertical, and conglomerate.', serve:9, pass:7,
+  teach:`${INTEG}
+  ${tbl(['Type','Main benefits','Main risks'],[['Horizontal','Market share at once, economies of scale, less rivalry (Porter)','Competition authorities may block it; culture clashes'],['Backward vertical','Control of supplies, quality and cost; lower supplier power','Less flexibility; may be in an industry it does not understand'],['Forward vertical','Control of distribution and the customer experience; captures the retailer\'s margin','Different skills needed; rivals may stop using it'],['Conglomerate','Spreads risk across unrelated markets','No obvious synergy; managers lack expertise']])}
+  <div class="trap"><b>The traps</b>Backward is towards the raw materials; forward is towards the customer. On June 2026 Paper 1 Q22 the better answers separated backward from forward integration, and used economies of scale and Porter\'s five forces for horizontal.</div>`,
+  items:[
+    {src:'AQA June 2017 · Paper 1 Q1', prompt:'A farmer takes over a retailer in order to sell its produce. This is:', o:['forward vertical integration.','horizontal integration.','backward vertical integration.','conglomerate integration.'], a:0, why:'This is AQA\'s answer. Towards the customer.'},
+    {src:'AQA June 2023 · Paper 1 Q15', prompt:'A food manufacturer buys a direct competitor and a food wholesaler. This is:', o:['Horizontal integration and forward vertical integration','Backward vertical integration and forward vertical integration','Conglomerate integration','Horizontal integration and backward vertical integration'], a:0, why:'This is AQA\'s answer. A wholesaler is between the manufacturer and the customer.'},
+    {src:'AQA June 2018 · Paper 1 Q10', prompt:'Which one of the following statements is true?', o:['Horizontal integration should give a business an immediate increase in market share.','Backward vertical integration is impossible for a retailer.','Conglomerate integration narrows the product range.','Forward vertical integration allows a business better access to its raw materials.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2026 · Paper 1 report (Q22)', prompt:'A car maker wants higher profit. Which argument about backward vertical integration is best developed?', o:['Buying a battery maker secures supply and removes the supplier\'s margin, lowering costs and raising profit','It makes the business bigger','It is integration','It means more cars'], a:0, why:'The report praised answers that separated the benefits of backward and forward integration.'},
+    {src:'AQA June 2026 · Paper 1 report (Q22)', prompt:'Which argument about horizontal integration was credited?', o:['Buying a rival reduces competitive rivalry (Porter) and gives economies of scale','It is always the best option','It means the business gets bigger, so it is better','It removes all suppliers'], a:0, why:'The report credited economies of scale and Porter\'s five forces.'},
+    {src:'Core rule · conglomerate', prompt:'A food company buys a hotel chain. Which is the main benefit?', o:['Spreading risk across unrelated markets','Economies of scale in food production','Control of food supplies','More market share in food'], a:0, why:'Conglomerate integration spreads risk.'},
+    {src:'Core rule · backward', prompt:'A coffee shop chain buys a coffee plantation. This is:', o:['backward vertical integration','forward vertical integration','horizontal integration','conglomerate integration'], a:0, why:'Towards its supplies.'},
+    {src:'Core rule · horizontal', prompt:'Which body might stop a large horizontal merger in the UK?', o:['The Competition and Markets Authority','The Bank of England','A trade union','The Advertising Standards Authority'], a:0, why:'It can block mergers that reduce competition.'},
+    {src:'Core rule · forward', prompt:'A clothing manufacturer opens its own shops. Which is the main benefit?', o:['Control of how its products are sold and the retailer\'s margin','Cheaper cotton','Less competition from other manufacturers','Spreading risk into unrelated markets'], a:0, why:'Forward integration reaches the customer.'}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'mcq', title:'Innovation', blurb:'Types of innovation, ways to become innovative, and protecting it.', serve:10, pass:8,
+  teach:`<h3>Types and value</h3>
+  <p><b>Product innovation</b>: new or improved products. <b>Process innovation</b>: new or better ways of making or delivering them. Innovation can bring a competitive advantage, higher prices and margins (product) or lower costs (process). It is risky, expensive and slow to pay back. Pressures to innovate come from competitors, customers and changing technology.</p>
+  <h3>Ways of becoming innovative</h3>
+  ${tbl(['Method','What it is'],[['Research and development (R&D)','Scientific and technical work to create new products and processes (not market research)'],['Kaizen','Continuous small improvements, usually suggested by staff'],['Intrapreneurship','Staff are given the freedom and resources to act like entrepreneurs inside the business'],['Benchmarking','Comparing with the best businesses and copying their best practice']])}
+  <p><b>Protecting innovation</b>: patents (inventions and processes) and copyright (written, artistic and musical work, software).</p>
+  <div class="trap"><b>The traps</b>Intrapreneurship is not an internship (June 2018 Paper 1 Q19). R&D is not market research (June 2020 Paper 1 Q23). On June 2025 Paper 1 Q20 (innovation and the HR function) some wrote about employees rather than the HR function.</div>`,
+  items:[
+    {src:'AQA June 2026 · Paper 1 Q4', prompt:'A business gives creative individuals more responsibility for innovation and more access to resources. This is an example of:', o:['intrapreneurship and delegation.','intrapreneurship and centralisation.','kaizen and centralisation.','kaizen and delegation.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2018 · Paper 1 report (Q19)', prompt:'What is intrapreneurship?', o:['Employees acting like entrepreneurs within the business, with freedom and resources to develop ideas','An unpaid work placement','A business angel investing in a start-up','Small continuous improvements on the production line'], a:0, why:'The report said some confused it with internships, business angels and kaizen.'},
+    {src:'AQA June 2018 · Paper 1 report (Q19)', prompt:'How can intrapreneurship improve financial performance? Which chain reaches the end point?', o:['Staff develop new products that sell well, raising revenue and profit','Staff feel motivated','Staff have more freedom','It is used by Google'], a:0, why:'The report said many did not link it to financial performance.'},
+    {src:'AQA June 2020 · Paper 1 report (Q23)', prompt:'Which is research and development?', o:['Engineers testing a new battery design','A survey of customers\' views','A focus group on packaging','Analysing competitors\' prices'], a:0, why:'The report said some confused R&D with market research.'},
+    {src:'AQA June 2019 · Paper 2 report (Q3.1)', prompt:'How do R&D and patents help a business achieve high profit margins on new products?', o:['R&D creates innovative products and patents stop copying, so the business can charge premium prices','They lower all costs','They increase competition','They are required by law'], a:0, why:'The report credited this chain to profit margins.'},
+    {src:'AQA June 2025 · Paper 1 report (Q20)', prompt:'How might an innovation strategy affect the HR function? Which answer focuses on the function?', o:['HR must recruit and train staff with new skills and design rewards that encourage creativity','Employees will be happier','Employees will work harder','Employees will be worried'], a:0, why:'The report said some linked logic to employees rather than the HR function.'},
+    {src:'Core rule · kaizen', prompt:'Staff suggest small changes every week that cut waste on the line. This is:', o:['kaizen','R&D','intrapreneurship','benchmarking'], a:0, why:'Continuous small improvements.'},
+    {src:'Core rule · benchmarking', prompt:'A hospital copies the booking system of the best-performing hospital in the country. This is:', o:['benchmarking','kaizen','intrapreneurship','R&D'], a:0, why:'Learning from the best.'},
+    {src:'Core rule · protection', prompt:'Which protects a new computer game\'s code and artwork?', o:['Copyright','A patent','A trademark only','Limited liability'], a:0, why:'Copyright covers creative and software work.'},
+    {src:'Core rule · process', prompt:'Which is a process innovation?', o:['A new robotic packing line that cuts unit costs','A new flavour of crisps','A new phone model','A new advertising campaign'], a:0, why:'It changes how things are made.'},
+    {src:'AQA June 2017 · Paper 1 report (Q24)', prompt:'Will more spending on innovation lead to success? Which approaches did the report say were relevant but rarely used?', o:['Kaizen, intrapreneurship, benchmarking and patents','Only advertising','Only price cuts','Only R&D'], a:0, why:'Most answers focused only on R&D and staff spending.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'drift', title:'Globalisation and international markets', blurb:'Why globalisation has grown, emerging economies, and why businesses go international.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Globalisation</h3>
+  <p>Globalisation is the growing integration of the world\'s economies through trade, investment, the movement of people and information. Reasons: cheaper transport, the internet, freer trade, the growth of multinationals. Globalisation and emerging economies moved into 3.9.3 in 2023.</p>
+  <h3>Emerging economies</h3>
+  <p>Countries growing fast, such as India and Vietnam. They matter to UK businesses as <b>markets</b> (rising incomes) and as <b>sources of cheaper resources and labour</b> (offshoring, suppliers).</p>
+  <h3>Reasons for going international</h3>
+  <p>Saturated home market, spreading risk, economies of scale, cheaper resources, extending the product life cycle.</p>
+  <h3>Choosing a market</h3>
+  <p>Income levels and growth, market size, competition, culture and language, political stability, exchange rates, trade barriers, infrastructure, ease of doing business.</p>
+  <div class="trap"><b>The traps</b>On June 2023 Paper 1 Q23 the stronger answers challenged the claim that emerging economies matter "only as markets", pointing to cheaper materials and labour. On June 2025 Paper 1 Q21 some confused becoming a multinational with exporting. On June 2017 Paper 2 Q3.3 good answers showed a market can suit some businesses but not others.</div>`,
+  items:[
+    {src:'AQA June 2023 · Paper 1 report (Q23)', q:'"Emerging economies are useful to UK businesses only as markets."', text:'A strong answer challenges this, pointing out they can also be sources of cheaper materials and labour.', ok:true, why:'The report praised answers that challenged the statement.'},
+    {src:'AQA June 2025 · Paper 1 report (Q21)', q:'About multinationals.', text:'A business that sells abroad only by exporting from the UK is a multinational.', ok:false, why:'A multinational has operations (factories, offices) in more than one country. Some answers focused on exporting.'},
+    {src:'AQA June 2025 · Paper 1 report (Q21)', q:'A UK business with a saturated home market becomes a multinational.', text:'Ansoff\'s market development and Porter\'s five forces can strengthen the analysis.', ok:true, why:'The report said stronger answers used these.'},
+    {src:'AQA June 2017 · Paper 2 report (Q3.3)', q:'A question asks whether a region is attractive for all businesses selling internationally.', text:'Good answers recognised it may suit some businesses but not others, because of income, age or tastes.', ok:true, why:'The report praised this.'},
+    {src:'AQA June 2026 · Paper 2 mark scheme (Q3.2)', q:'A US firm finds the UK attractive.', text:'A shared language may cut costs, because marketing materials and manuals need only small changes.', ok:true, why:'This was in the mark scheme.'},
+    {src:'Core rule · globalisation', q:'About globalisation.', text:'Cheaper transport and the internet have helped it grow.', ok:true, why:'They make it easier to trade across borders.'},
+    {src:'Core rule · reasons', q:'About going international.', text:'It can spread risk if one country\'s economy struggles.', ok:true, why:'Sales come from more than one market.'},
+    {src:'Core rule · choosing a market', q:'A country with political instability.', text:'It is likely to be more attractive for long-term investment.', ok:false, why:'Instability adds risk.'},
+    {src:'Core rule · emerging economies', q:'About emerging economies.', text:'Rising incomes there can create large new markets for UK businesses.', ok:true, why:'A growing middle class buys more.'},
+    {src:'Core rule · product life cycle', q:'A product in decline in the UK.', text:'Selling it in a new country may extend its life cycle.', ok:true, why:'It may be at an earlier stage there.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'mcq', title:'Entering and managing international markets', blurb:'Exporting, licensing, alliances, direct investment, offshoring and reshoring, and multinationals.', serve:9, pass:7,
+  teach:`<h3>Methods of entry</h3>
+  ${tbl(['Method','Control','Cost and risk'],[['Exporting','Low over sales abroad','Low cost, low risk; exposed to tariffs and exchange rates'],['Licensing','Low: a foreign firm makes the product under licence','Low cost; risk to quality and of copying'],['Alliances','Shared with a partner','Shared costs and local knowledge; possible conflict'],['Direct investment','High: own factories or offices abroad','High cost and risk; avoids tariffs; reduces currency risk']])}
+  <h3>Offshoring and reshoring</h3>
+  <p><b>Offshoring</b>: moving activities abroad, usually for lower costs. <b>Reshoring</b>: bringing them back, e.g. for quality, speed, control, rising overseas wages or political risk.</p>
+  <h3>Managing international business</h3>
+  <p>Multinationals face two pressures: <b>local responsiveness</b> (adapting products and marketing to each country) and <b>cost reduction</b> (standardising to gain economies of scale). Bartlett and Ghoshal\'s model was removed from 2025, but these two pressures remain.</p>
+  <div class="trap"><b>The traps</b>On June 2026 Paper 3 Q6 (should all UK businesses use only UK suppliers?) an "all businesses" question needs more than one scenario. On June 2025 Paper 3 Q6 some assumed small businesses are start-ups.</div>`,
+  items:[
+    {src:'AQA June 2018 · Paper 1 Q13', prompt:'A UK manufacturer wants to keep control of production and reduce the risk of currency changes affecting its prices abroad. Its best option is:', o:['direct investment.','exporting.','forming alliances.','licensing.'], a:0, why:'This is AQA\'s answer. Producing and selling in the same currency removes the risk.'},
+    {src:'AQA June 2024 · Paper 1 Q2', prompt:'Statement 1: "Cheaper resources overseas would discourage a UK business with a low-cost strategy from reshoring production." Statement 2: "Political instability overseas would discourage a UK business from reshoring production."', o:['Statement 1 is true. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer. Instability overseas encourages reshoring.'},
+    {src:'AQA June 2026 · Paper 3 report (Q6)', prompt:'Should all UK businesses use only UK suppliers? What did the examiners want?', o:['More than one scenario, showing when UK suppliers suit a business and when they do not','Only the case business','A list of UK suppliers','A definition of a supplier'], a:0, why:'The report said "all businesses" questions must consider more than one scenario.'},
+    {src:'Core rule · licensing', prompt:'Which is the main risk of licensing?', o:['The licensee may produce poor quality or copy the know-how','It is very expensive','It needs a new factory','It cannot earn any income'], a:0, why:'Control passes to the licensee.'},
+    {src:'Core rule · exporting', prompt:'Which method is lowest risk for a small business trying international markets for the first time?', o:['Exporting','Building a factory abroad','Taking over a foreign rival','A joint venture with a foreign government'], a:0, why:'It needs little investment.'},
+    {src:'Core rule · offshoring', prompt:'Which is the main reason for offshoring production?', o:['Lower labour and other costs','Shorter supply chains','Better control of quality','Less exchange rate risk'], a:0, why:'Cost is usually the driver.'},
+    {src:'Core rule · reshoring', prompt:'Which is most likely to encourage reshoring?', o:['Rising wages and long delays in the overseas supply chain','Cheaper overseas labour','A stronger pound making imports cheaper','Lower overseas taxes'], a:0, why:'The cost advantage shrinks and delays hurt service.'},
+    {src:'Core rule · local responsiveness', prompt:'A fast-food chain changes its menu in each country to suit local tastes. This responds to:', o:['pressure for local responsiveness','pressure for cost reduction','economies of scale','offshoring'], a:0, why:'Adapting to local markets.'},
+    {src:'Core rule · cost reduction', prompt:'Which action responds to pressure for cost reduction?', o:['Selling the same standard product worldwide','Changing the product for each country','Using local advertising agencies in every market','Hiring local designers everywhere'], a:0, why:'Standardisation gives economies of scale.'},
+    {src:'AQA June 2025 · Paper 3 report (Q6)', prompt:'Is managing capacity always harder for large multinationals than for small businesses? Which assumption should you avoid?', o:['That small businesses are start-ups','That multinationals operate in several countries','That demand changes','That capacity costs money'], a:0, why:'The report said this inaccurate assertion undermined arguments.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'mcq', title:'Digital technology', blurb:'Automation, e-commerce, big data and data mining, and their value.', serve:9, pass:7,
+  teach:`${tbl(['Term','What it is','Value'],[['Automation','Machines or software doing tasks people did','Lower unit costs, consistent quality; high set-up cost; job losses'],['E-commerce','Buying and selling online','Wider reach, lower costs; more price comparison and competition'],['Big data','Very large sets of data from many sources','Insight into customers if it can be analysed'],['Data mining','Transforming raw data into useful information to support decisions','Spotting patterns, targeting customers, forecasting']])}
+  <p>Digital technology can raise efficiency and open new markets, but costs money, needs skills, and raises data security and privacy risks. ERP was removed from the specification in 2023, and automation was added.</p>
+  <div class="trap"><b>The traps</b>On June 2017 Paper 1 Q25 some wrote about technology in general rather than <b>digital</b> technology. On June 2022 Paper 1 Q23 the claim that all retailers will go online-only needed challenging.</div>`,
+  items:[
+    {src:'AQA June 2025 · Paper 1 Q1', prompt:'"The process of transforming raw information into useful information that can support various activities of a business." Which term is described?', o:['Data mining','Big data','E-commerce','Scientific decision-making'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2017 · Paper 1 report (Q25)', prompt:'Could more use of digital technology increase market share? Which example is about digital technology?', o:['Using customer data from online orders to target promotions on social media','A new delivery van','A faster forklift','A new shop layout'], a:0, why:'The report said some wrote about technology in general, not digital technology.'},
+    {src:'AQA June 2020 · Paper 1 report (Q20)', prompt:'Which is a problem digital technology may cause for a small business?', o:['Customers can compare prices online easily, increasing competition from larger rivals','It lowers costs','It widens the market','It improves communication'], a:0, why:'The question focused on problems for small businesses.'},
+    {src:'Based on AQA June 2022 · Paper 1 Q23', prompt:'Will e-commerce lead to all retailers operating only online? Which is the best counter-argument?', o:['Some customers want to see, touch or try products, and shops can offer service and an experience','E-commerce is popular','Online shopping is growing','Websites cost money'], a:0, why:'An "all" claim needs challenging with real limits.'},
+    {src:'Core rule · big data', prompt:'Which is an example of big data?', o:['Millions of loyalty-card transactions recorded every day','A single customer survey','One manager\'s opinion','A printed price list'], a:0, why:'Huge volumes from many sources.'},
+    {src:'Core rule · automation', prompt:'Which is a drawback of automation?', o:['High set-up costs and possible job losses','Lower unit costs','More consistent quality','Faster production'], a:0, why:'The rest are benefits.'},
+    {src:'Core rule · e-commerce', prompt:'Which is a benefit of e-commerce for a small business?', o:['It can reach customers across the country without opening shops','It removes all competition','It needs no delivery','It guarantees sales'], a:0, why:'A wider market at lower cost.'},
+    {src:'Core rule · risk', prompt:'Which risk increases with greater use of customer data?', o:['A data breach damaging trust and leading to fines','Lower prices','Fewer customers online','Less information'], a:0, why:'Data must be protected.'},
+    {src:'Core rule · removed', prompt:'Which digital technology term is no longer on the specification?', o:['Enterprise resource planning (ERP)','Data mining','Big data','E-commerce'], a:0, why:'ERP was removed in 2023; automation was added.'},
+    {src:'Core rule · value', prompt:'When is investment in digital technology most likely to pay off?', o:['When the business has the skills to use it and it fits the strategy','Always','Never','Only for small businesses'], a:0, why:'Value depends on skills, cost and fit.'}
+  ]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Against the clock', blurb:'Fifteen mixed questions from the whole unit, 30 seconds each.', pass:12, poolFrom:[1,2,3,4,5,6,7,8,9], count:15, seconds:30,
+  teach:`<p>Fifteen questions drawn at random from the rest of this unit, with 30 seconds each. Types of integration, entry methods and innovation terms should be automatic.</p>
+  <p>You get different questions each time you try.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'rt39', key:'rt39_course_v1', offset:1500, short:'Rules and Traps 3.9',
+  name:'Rules and Traps: Unit 3.9',
+  hero:{kicker:'Rules and Traps · Unit 3.9',
+    title:'Strategic <em>methods</em>',
+    lede:'Growth and retrenchment, scale, mergers, ventures and franchising, integration, innovation, globalisation and international business, and digital technology. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
+  doneText:'You have worked through every rule and trap in Unit 3.9. Before any answer here, check the direction of integration, explain why (not just that) a method is less risky, and use more than one scenario for any all businesses question.',
+  stages:STAGES
+};
+</script>
+<script src="account.js"></script>
+<script src="course-engine.js"></script>
+<script src="visit.js" defer></script>
+</body>
+</html>
