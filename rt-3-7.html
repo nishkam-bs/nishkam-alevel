@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rules and Traps: Unit 3.7 Analysing the strategic position of a business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+<link rel="stylesheet" href="rt.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   RULES AND TRAPS: UNIT 3.7 ANALYSING THE STRATEGIC POSITION OF A BUSINESS
+   Specification topics 3.7.1a to 3.7.8c (spec.js). Every rule and trap is
+   checked against the AQA papers, mark schemes and examiner reports
+   2017 to 2026. Items marked "AQA June 20xx" are the real questions with
+   AQA's answer; "Based on" means our wording of a reported mistake.
+   Stage numbers are stored in the tracker as 1300 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+const rint=(a,b,s=1)=>Math.round((a+Math.random()*(b-a))/s)*s;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
+const isN=c=>/^[−\-+]?[£€]?[\d.,]+(%|m|bn|k)?$/.test(String(c).trim());
+const tbl=(head,rows)=>{const num=head.map((h,i)=>i>0&&rows.every(r=>isN(r[i])||r[i]===''));return `<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${num[i]?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${num[i]?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;};
+
+const ECON=`<div class="chart"><svg viewBox="0 0 520 250" role="img" aria-label="Line chart of forecasts for 2026 to 2029: GDP growth rises from 1.2 to 2.6 per cent, inflation rises from 2 to 3.9 per cent, and the interest rate falls from 4.5 to 3 per cent">
+  <line class="ax" x1="60" y1="210" x2="500" y2="210"/><line class="ax" x1="60" y1="20" x2="60" y2="210"/>
+  ${[0,1,2,3,4,5].map(v=>`<text x="50" y="${214-v*36}" text-anchor="end">${v}%</text>`).join('')}
+  ${['2026','2027','2028','2029'].map((y,i)=>`<text x="${100+i*120}" y="230" text-anchor="middle">${y}</text>`).join('')}
+  <polyline class="l1" points="${[1.2,1.8,2.4,2.6].map((v,i)=>`${100+i*120},${210-v*36}`).join(' ')}"/>
+  <polyline class="l2" points="${[2.0,2.8,3.5,3.9].map((v,i)=>`${100+i*120},${210-v*36}`).join(' ')}"/>
+  <polyline class="l3" points="${[4.5,4.0,3.5,3.0].map((v,i)=>`${100+i*120},${210-v*36}`).join(' ')}"/>
+  <text x="470" y="${210-2.6*36+16}" text-anchor="end" style="fill:var(--start)">GDP growth</text>
+  <text x="470" y="${210-3.9*36-8}" text-anchor="end" style="fill:var(--end)">Inflation</text>
+  <text x="110" y="${210-4.5*36-8}" style="fill:var(--gold)">Interest rate</text>
+</svg><div class="cap">Example forecasts for a country (made-up data). Read the direction and the size of each change.</div></div>`;
+
+const FIVE=`<div class="chart"><svg viewBox="0 0 520 250" role="img" aria-label="Porter's five forces: competitive rivalry in the centre, surrounded by threat of new entrants, buyer power, threat of substitutes and supplier power">
+  ${[['Threat of new entrants',260,30],['Supplier power',90,125],['Buyer power',430,125],['Threat of substitutes',260,220]].map(([t,x,y])=>`<rect x="${x-80}" y="${y-18}" width="160" height="36" rx="6" style="fill:var(--card);stroke:var(--line)"/><text x="${x}" y="${y+4}" text-anchor="middle" style="fill:var(--fg)">${t}</text>`).join('')}
+  <rect x="180" y="104" width="160" height="42" rx="6" style="fill:var(--gold-soft);stroke:var(--gold)"/><text x="260" y="130" text-anchor="middle" style="fill:var(--fg);font-weight:600">Competitive rivalry</text>
+  <line class="ax" x1="260" y1="48" x2="260" y2="104"/><line class="ax" x1="170" y1="125" x2="180" y2="125"/><line class="ax" x1="340" y1="125" x2="350" y2="125"/><line class="ax" x1="260" y1="146" x2="260" y2="202"/>
+</svg><div class="cap">The stronger each force, the harder it is for businesses in the industry to make high profits.</div></div>`;
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'mcq', title:'Mission, objectives, strategy and SWOT', blurb:'How mission, objectives, strategy and tactics link, what influences them, and the value of SWOT.', serve:10, pass:8,
+  teach:`<h3>How they link</h3>
+  <div class="flow"><span>Mission</span><i>→</i><span>Corporate objectives</span><i>→</i><span>Strategy</span><i>→</i><span>Functional objectives and decisions</span><i>→</i><span>Tactics</span></div>
+  <ul><li><b>Mission</b>: the overall purpose of the business. Influenced by the owners, the founder\'s values, stakeholders and the market.</li>
+  <li><b>Strategy</b>: a long-term plan to achieve the corporate objectives, decided by senior managers, hard to reverse. <b>Tactics</b>: short-term actions to carry out the strategy, often decided lower down.</li>
+  <li>Strategic decisions shape functional decisions: a strategy of entering a new market needs marketing, operations, finance and HR objectives that support it.</li>
+  <li><b>Influences</b> on corporate and functional objectives and decisions: internal (resources, culture, the existing workforce, finance) and external (competitors, the economy, the law, technology). Since 2023, influences on functional objectives sit here.</li>
+  <li><b>Short-termism</b>: putting short-term results (this year\'s profit, the share price) ahead of long-term success, e.g. cutting R&D or training. Pressure often comes from shareholders in plcs. Ownership matters: a family business or a social enterprise may take a longer view.</li></ul>
+  <h3>SWOT</h3>
+  ${tbl(['','Helpful','Harmful'],[['Internal (the business controls)','Strengths','Weaknesses'],['External (outside the business)','Opportunities','Threats']])}
+  <p>SWOT is useful as a starting point for strategy, but it is only a snapshot, can be subjective, does not rank the factors and does not tell you what to do.</p>
+  <div class="trap"><b>The traps</b>Strengths and weaknesses are internal; opportunities and threats are external. AQA has tested this in 2018, 2022 and 2024 multiple-choice questions. On June 2025 Paper 3 Q5 a "threat" had to be external, so internal problems did not count. On SWOT questions (2019 and 2024 Paper 3) many students described SWOT instead of judging how useful it is for planning strategy, and counter-arguments were weak.</div>`,
+  items:[
+    {src:'AQA June 2025 · Paper 1 Q15', prompt:'Which option is correct in ranking these actions from long-term to short-term?', o:['Corporate objectives → strategies → tactics','Corporate objectives → mission statement → tactics','Mission statement → tactics → strategies','Tactics → strategies → mission statement'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2018 · Paper 1 Q2', prompt:'In a SWOT analysis of a business, which one of the following statements is true?', o:['The liquidation of a competitor is an opportunity.','An inefficient quality assurance system is a threat.','Lower unemployment leading to increased demand is a strength.','New legislation that requires a business to modify its products is a weakness.'], a:0, why:'This is AQA\'s answer. The others mix up internal and external.'},
+    {src:'AQA June 2024 · Paper 1 Q5', prompt:'In a SWOT analysis, which one of the following statements is true?', o:['An increase in the number of patents held by a business is a strength.','A recession in the business\' main export market is a weakness.','An increase in labour productivity in the business is an opportunity.','Disappointing levels of innovation from research and development are a threat.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2022 · Paper 1 Q11', prompt:'Statement 1: "In a SWOT analysis, improvements in infrastructure are a strength for a business." Statement 2: "In a SWOT analysis, an increase in the minimum wage may be a threat to a business."', o:['Statement 1 is false. Statement 2 is true.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer. Infrastructure is external, so it is an opportunity, not a strength.'},
+    {src:'AQA June 2025 · Paper 3 report (Q5)', prompt:'A question asks whether changes in legislation are a business\'s biggest threat. Which alternative "threat" would not be credited?', o:['Its own outdated machinery','A new low-cost competitor','A rise in interest rates','A fall in the exchange rate'], a:0, why:'The report said a threat is external, as in SWOT. Outdated machinery is an internal weakness.'},
+    {src:'AQA June 2024 · Paper 3 report (Q4)', prompt:'How useful is SWOT for strategic planning? Which is the strongest counter-argument?', o:['It is a snapshot that soon dates and does not rank the factors, so it does not tell managers which strategy to choose','It has four boxes','It is about internal and external factors','It can be done quickly'], a:0, why:'The report said counter-arguments were weaker and often lacked context.'},
+    {src:'Core rule · strategy and tactics', prompt:'Which is a tactic rather than a strategy?', o:['A two-week price promotion in one region','Entering the Chinese market','Taking over a competitor','Moving the whole business online'], a:0, why:'It is short term and easy to reverse.'},
+    {src:'Core rule · short-termism', prompt:'Which is an example of short-termism?', o:['Cutting research spending to raise this year\'s profit','Investing in staff training','Building a new factory','Setting a ten-year mission'], a:0, why:'It boosts short-term results at the cost of future competitiveness.'},
+    {src:'Core rule · ownership', prompt:'Which business is most likely to face pressure for short-term results?', o:['A plc whose shareholders expect rising dividends each year','A family-owned private company','A social enterprise','A sole trader with no borrowing'], a:0, why:'Shareholders in a plc can sell their shares if results disappoint, which can push managers towards the short term.'},
+    {src:'Core rule · functional decisions', prompt:'A business adopts a strategy of competing on low cost. Which functional decision fits best?', o:['Operations invests in automation to cut unit costs','Marketing raises prices to signal quality','HR adds expensive bonuses for all staff','R&D creates luxury features'], a:0, why:'Functional decisions should support the strategy.'},
+    {src:'Core rule · influences', prompt:'Which is an internal influence on a business\'s corporate objectives?', o:['The skills of its workforce','A rise in interest rates','A new competitor','New consumer protection law'], a:0, why:'Internal factors are within the business.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'calc', title:'Financial ratios', blurb:'ROCE, current ratio, gearing, payables days, receivables days and inventory turnover.', serve:8, pass:6,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Ratio','Formula','Answer as'],[['Return on capital employed (ROCE)','Operating profit ÷ capital employed × 100','%'],['Current ratio','Current assets : current liabilities','x : 1'],['Gearing','Non-current liabilities ÷ capital employed × 100','%'],['Payables days','Payables ÷ cost of sales × 365','days'],['Receivables days','Receivables ÷ revenue × 365','days'],['Inventory turnover','Cost of sales ÷ average inventories held','times']])}
+  <p><b>Capital employed</b> = total equity + non-current liabilities (or non-current assets + net current assets). These are the only ratios on the specification: the acid test is not.</p>
+  <h3>How it has been examined</h3>
+  <ul><li>June 2019 Paper 1 Q17: a loan adds to non-current liabilities <b>and</b> to capital employed. Many students only changed the top line.</li>
+  <li>June 2022 Paper 1 Q16: only a quarter calculated inventory turnover; answers like "£6.25m" or "6.25%" were wrong.</li>
+  <li>June 2025 Paper 1 Q16: students used net current assets instead of adding up the current assets. Q17 needed ROCE in reverse.</li>
+  <li>June 2023 Paper 2 Q1.2: ROCE needed capital employed worked out from gearing.</li></ul>
+  <div class="trap"><b>The trap</b>Put the right unit on every answer: %, days, times or x : 1.</div>`,
+  items:[
+    {src:'Core skill · ROCE', gen(){const ce=rint(20,90)*10,p=pick([6,8,10,12,15,18,20]);const op=ce*p/100;
+      return {given:`Operating profit <b>£${f(op)}m</b>. Total equity <b>£${f(ce*0.6)}m</b>. Non-current liabilities <b>£${f(ce*0.4)}m</b>.`,prompt:'Calculate ROCE.',unit:'%',ans:p,tol:0.05,traps:[{v:r1(op/(ce*0.6)*100),m:'Capital employed is total equity plus non-current liabilities, not equity alone.'}],work:`Capital employed = £${f(ce*0.6)}m + £${f(ce*0.4)}m = £${f(ce)}m. £${f(op)}m ÷ £${f(ce)}m × 100 = ${p}%.`};}},
+    {src:'Core skill · gearing', gen(){const ce=rint(20,90)*10,p=pick([20,25,30,40,45,50,60]);const ncl=ce*p/100;
+      return {given:`Non-current liabilities <b>£${f(ncl)}m</b>. Total equity <b>£${f(ce-ncl)}m</b>.`,prompt:'Calculate gearing.',unit:'%',ans:p,tol:0.05,traps:[{v:r1(ncl/(ce-ncl)*100),m:'Divide by capital employed (equity + non-current liabilities), not equity.'}],work:`Capital employed = £${f(ce-ncl)}m + £${f(ncl)}m = £${f(ce)}m. £${f(ncl)}m ÷ £${f(ce)}m × 100 = ${p}%.`};}},
+    {src:'Core skill · receivables days', gen(){const R=rint(20,90)*10,d=pick([30,36.5,45,60,73]);const rec=r1(R*d/365);
+      return {given:`Revenue <b>£${f(R)}k</b>. Receivables <b>£${f(rec)}k</b>.`,prompt:'Calculate receivables days (1 d.p.).',unit:'days',ans:r1(rec/R*365),tol:0.15,work:`£${f(rec)}k ÷ £${f(R)}k × 365 = ${r1(rec/R*365)} days.`};}},
+    {src:'AQA June 2017 · Paper 1 Q4', given:'Current assets <b>£3 million</b>. Current liabilities <b>£2.4 million</b>. Non-current liabilities <b>£4.2 million</b>. Capital employed <b>£12 million</b>.',prompt:'Calculate the gearing ratio.',unit:'%',ans:35,tol:0.05,work:'£4.2m ÷ £12m × 100 = 35%. The current assets and liabilities are not needed.'},
+    {src:'AQA June 2019 · Paper 1 Q17', given:'A business has non-current liabilities of <b>£200,000</b> and a gearing ratio of <b>40%</b>. It then takes out a long-term loan of <b>£100,000</b>.',prompt:'Calculate the new gearing ratio.',unit:'%',ans:50,tol:0.05,
+     traps:[{v:60,m:'You added the loan to non-current liabilities but not to capital employed. Both go up by £100,000.'},{v:33.3,m:'You added the loan to capital employed but not to non-current liabilities.'}],work:'Capital employed = £200,000 ÷ 0.4 = £500,000. New: £300,000 ÷ £600,000 × 100 = 50%.'},
+    {src:'AQA June 2025 · Paper 1 Q16', given:tbl(['Righton plc, 2024','£m'],[['Non-current assets','335'],['Inventories','80'],['Receivables','35'],['Cash','40'],['Payables','70'],['Net current assets','85'],['Non-current liabilities','230'],['Total equity','190']]),prompt:'Calculate the current ratio (as x : 1, enter x to 1 d.p.).',unit:': 1',ans:2.2,tol:0.02,
+     traps:[{v:1.2,m:'You used net current assets (85). Add the current assets: 80 + 35 + 40 = 155.'}],work:'Current assets = 80 + 35 + 40 = 155. 155 : 70 = 2.2 : 1.'},
+    {src:'AQA June 2025 · Paper 1 Q17', given:'Using the same Righton plc data: ROCE was <b>12%</b> in 2024.',prompt:'Calculate operating profit.',pre:true,ans:50.4,tol:0.05,
+     traps:[{v:420,m:'£420m is capital employed. Now take 12% of it.'}],work:'Capital employed = 230 + 190 = £420m. 12% × £420m = £50.4m.'},
+    {src:'AQA June 2023 · Paper 2 Q1.2', given:'Gearing <b>22%</b>. Non-current liabilities <b>£4m</b>. Operating profit <b>£3m</b>.',prompt:'Calculate ROCE (1 d.p.).',unit:'%',ans:16.5,tol:0.06,work:'Capital employed = £4m ÷ 0.22 = £18.18m. £3m ÷ £18.18m × 100 = 16.5%.'},
+    {src:'AQA June 2024 · Paper 2 Q1.1', given:'Revenue <b>£47,569,000</b>. Gross profit <b>£22,289,000</b>. Payables <b>£5,056,000</b>.',prompt:'Calculate payables days.',unit:'days',ans:73,tol:0.5,
+     traps:[{v:38.8,m:'You divided by revenue. Payables days use cost of sales.'}],work:'Cost of sales = £47,569,000 − £22,289,000 = £25,280,000. £5,056,000 ÷ £25,280,000 × 365 = 73 days.'},
+    {src:'Based on AQA June 2022 · Paper 1 Q16', given:'Cost of sales <b>£50m</b>. Average inventories held <b>£8m</b>.',prompt:'Calculate inventory turnover (times).',unit:'times',ans:6.25,tol:0.01,work:'£50m ÷ £8m = 6.25 times (or 365 ÷ 6.25 = 58.4 days). Not £6.25m or 6.25%.'},
+    {src:'AQA June 2020 · Paper 2 Q1.1', given:'Non-current liabilities <b>£280m</b>. Capital employed <b>£450m</b>.',prompt:'Calculate gearing (2 d.p.).',unit:'%',ans:62.22,tol:0.01,work:'£280m ÷ £450m × 100 = 62.22%.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'mcq', title:'Assessing performance', blurb:'Reading the ratios, using non-financial data, core competences and the Triple Bottom Line.', serve:10, pass:8,
+  teach:`<h3>Reading financial performance</h3>
+  ${tbl(['Ratio','What a higher figure suggests'],[['ROCE','More profit from the capital invested; compare with interest rates and competitors'],['Current ratio','Better able to pay short-term debts; too high may mean idle cash or too much inventory'],['Gearing','More reliance on long-term borrowing: interest costs and risk rise, especially if interest rates rise'],['Payables days','Paying suppliers more slowly: good for cash flow, but may damage relationships'],['Receivables days','Customers paying more slowly: bad for cash flow'],['Inventory turnover','Inventory sells more quickly']])}
+  <p>Ratios are most useful compared over time or with other businesses. Limits: they use past data, ignore non-financial factors, can be affected by window dressing, and differ between industries.</p>
+  <h3>Non-financial performance</h3>
+  <p>Operations (capacity utilisation, quality), HR (labour turnover, productivity) and marketing (market share, customer satisfaction). Look at short-term and long-term performance. <b>Core competences</b> are the things a business does better than rivals that are hard to copy, e.g. design skills or a technology.</p>
+  <h3>Elkington\'s Triple Bottom Line</h3>
+  <p>Judge performance on <b>profit</b>, <b>people</b> (employees, the community) and <b>planet</b> (the environment).</p>
+  <div class="trap"><b>The traps</b>On June 2026 Paper 1 Q24 (profitability ratios versus others) few students used liquidity well; gearing was the stronger contrast. On June 2024 Paper 1 Q21 (are financial ratios the best way to assess non-profit organisations?) the alternatives were often vague. On June 2026 Paper 2 Q2.1 better answers named a specific measure and explained how it would be monitored.</div>`,
+  items:[
+    {src:'AQA June 2018 · Paper 1 Q7', prompt:'A business has more current liabilities than current assets and shareholders provide 90% of its capital employed. This business has:', o:['a low current ratio and low gearing.','a high current ratio and high gearing.','a high current ratio and low gearing.','a low current ratio and high gearing.'], a:0, why:'This is AQA\'s answer. Only 10% of capital employed is borrowed.'},
+    {src:'AQA June 2024 · Paper 1 Q13', prompt:'A business\' current liabilities are three times its current assets. Shareholders provide 20% of its capital employed. This business has:', o:['a low current ratio and a high gearing.','a high current ratio and a high gearing.','a high current ratio and a low gearing.','a low current ratio and a low gearing.'], a:0, why:'This is AQA\'s answer. 80% of capital employed is non-current liabilities.'},
+    {src:'AQA June 2026 · Paper 1 Q2', prompt:'Which one of the following changes will lead to a decrease in a business\' current ratio?', o:['A decrease in receivables','A decrease in a bank overdraft','An increase in cash','An increase in inventory'], a:0, why:'This is AQA\'s answer. Receivables are a current asset.'},
+    {src:'AQA June 2026 · Paper 1 Q6', prompt:'Which change is most likely to improve the cash flow of a business in the short term?', o:['Payables days increase and receivables days decrease.','Payables days decrease and receivables days decrease.','Payables days decrease and receivables days increase.','Payables days increase and receivables days increase.'], a:0, why:'This is AQA\'s answer. Pay suppliers later, get paid sooner.'},
+    {src:'AQA June 2026 · Paper 1 Q9', prompt:'During 2025: operating profit rises by 10%, capital employed rises by 20%, non-current liabilities rise by 30%. What happens?', o:['An increase in gearing and a decrease in ROCE','A decrease in gearing and a decrease in ROCE','A decrease in gearing and an increase in ROCE','An increase in gearing and an increase in ROCE'], a:0, why:'This is AQA\'s answer. The top line of gearing grows faster than the bottom; the bottom line of ROCE grows faster than the top.'},
+    {src:'AQA June 2025 · Paper 1 Q13', table:tbl(['QAQ plc, 2024','Target','Actual'],[['Capacity utilisation','90%','90%'],['Labour turnover','17%','17%'],['Market share','13%','15%'],['ROCE','15%','12%']]), prompt:'Statement 1: "The performance in operations is better than in marketing." Statement 2: "The performance in finance is better than in human resources."', o:['Statement 1 is false. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.'], a:0, why:'This is AQA\'s answer. Marketing beat its target; finance missed its target while HR met its.'},
+    {src:'AQA June 2023 · Paper 1 Q10', prompt:'Which of the following statements is false?', o:['Profit is a financial target for all businesses.','Profit is a measure of performance in Elkington\'s Triple Bottom Line.','Profit is a reward for risk-taking.','Profit is a source of finance.'], a:0, why:'This is AQA\'s answer. Many non-profit organisations do not target profit.'},
+    {src:'AQA June 2026 · Paper 1 report (Q24)', prompt:'Are profitability ratios more important than liquidity and gearing? Which contrast did the report say worked best?', o:['Gearing: high gearing can threaten a profitable business if interest rates rise','The acid test ratio','Listing all the ratios','Market capitalisation'], a:0, why:'The report said gearing was the stronger contrast; few used liquidity well.'},
+    {src:'AQA June 2023 · Paper 2 report (Q2.4)', prompt:'How might more homeworking affect a business using the Triple Bottom Line?', o:['Planet improves through less commuting, people may gain flexibility but feel isolated, and profit may rise from lower office costs','It only affects profit','It has no effect on the planet','The Triple Bottom Line only measures people'], a:0, why:'The report praised answers that judged each part and how it varies by sector.'},
+    {src:'Core rule · core competences', prompt:'Which is the best example of a core competence?', o:['A design team whose products rivals have failed to copy for years','A large car park','Selling at the same price as rivals','Having an office in London'], a:0, why:'It gives an advantage that is hard to copy.'},
+    {src:'Core rule · limits', prompt:'Which is a limitation of ratio analysis?', o:['It uses past data and ignores factors such as staff morale and brand','It uses numbers','It allows comparison over time','It shows liquidity'], a:0, why:'Ratios are backward-looking and only financial.'}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'drift', title:'Political and legal change', blurb:'Government policy, regulators, infrastructure, trade, and the law on competition, employment and the environment.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Political change</h3>
+  ${tbl(['Area','Examples','Possible effects'],[['Enterprise','Grants, tax breaks and advice for new businesses','More start-ups; more competition'],['Regulators','Bodies such as Ofgem, Ofwat and Ofcom that oversee industries','Limits on prices; standards on quality and service'],['Infrastructure','Roads, rail, broadband, energy','Lower costs; easier access to markets'],['The environment','Targets, taxes and subsidies','Higher costs for polluters; new markets for green products'],['International trade','Trade deals, tariffs, quotas','Easier or harder exporting and importing']])}
+  <h3>Legal change</h3>
+  <ul><li><b>Competition law</b>: stops abuse of market power, price fixing and mergers that reduce competition.</li>
+  <li><b>Labour market law</b>: minimum wage, working hours, discrimination, employment rights.</li>
+  <li><b>Environmental law</b>: limits on emissions and waste, recycling requirements.</li></ul>
+  <p>Changes in the law can be threats (higher costs, products banned) and opportunities (new markets, rivals who cannot afford to comply leave).</p>
+  <div class="trap"><b>The traps</b>On June 2026 Paper 2 Q2.3 many students wrote about ethics instead of legislation. On June 2024 Paper 2 Q3.3 only environmental protection laws were credited. "All businesses" questions (2019, 2024, 2026 Paper 2) need different types of business.</div>`,
+  items:[
+    {src:'AQA June 2026 · Paper 2 report (Q2.3)', q:'A question asks whether more government legislation is bad for all businesses.', text:'An answer about businesses choosing to behave ethically is answering the question.', ok:false, why:'The report said many discussed ethics rather than legislation.'},
+    {src:'AQA June 2024 · Paper 2 mark scheme (Q3.3)', q:'About environmental protection law.', text:'It can create opportunities, for example new markets for insulation or electric cars.', ok:true, why:'The mark scheme listed new products, innovation and reduced competition.'},
+    {src:'AQA June 2024 · Paper 2 mark scheme (Q3.3)', q:'A question asks whether environmental legislation is always damaging.', text:'Arguments about the minimum wage would be credited.', ok:false, why:'Only legislation that protects the environment was credited.'},
+    {src:'AQA June 2024 · Paper 2 mark scheme (Q3.3)', q:'About the impact of new environmental laws.', text:'The effect may depend on how far in advance the law is announced.', ok:true, why:'Laws announced long in advance give time to adapt.'},
+    {src:'Based on AQA June 2022 · Paper 1 Q11', q:'Improvements in infrastructure, such as faster rail links.', text:'In a SWOT analysis this is an opportunity, not a strength.', ok:true, why:'Infrastructure is external.'},
+    {src:'Core rule · competition law', q:'Two rival firms secretly agree to charge the same high price.', text:'This breaks competition law.', ok:true, why:'Price fixing reduces competition.'},
+    {src:'Core rule · labour law', q:'A rise in the minimum wage.', text:'It is likely to hit labour-intensive businesses hardest.', ok:true, why:'Wages are a bigger share of their costs.'},
+    {src:'Core rule · regulators', q:'About regulators.', text:'A regulator may limit the prices a water company can charge.', ok:true, why:'Regulators protect customers where competition is weak.'},
+    {src:'Core rule · enterprise', q:'About enterprise policy.', text:'Government support for start-ups can increase competition for existing businesses.', ok:true, why:'More new firms means more rivals.'},
+    {src:'AQA June 2019 · Paper 2 report (Q2.3)', q:'A question asks whether legal changes create more threats than opportunities for businesses.', text:'Good answers looked at how the effect varies between products or industries.', ok:true, why:'The report said effective answers showed some businesses gain and others lose.'},
+    {src:'Core rule · trade', q:'About tariffs.', text:'A tariff on imported steel may help UK steel producers but raise costs for UK car makers.', ok:true, why:'The same policy can help one business and hurt another.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'mcq', title:'Economic change', blurb:'GDP, inflation, exchange rates, interest rates, tax, fiscal and monetary policy and trade.', serve:11, pass:8,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Change','Likely effect on businesses'],[['GDP rises','Incomes rise; demand rises, especially for products with high income elasticity'],['Inflation rises','Costs rise; prices may rise; real incomes may fall'],['Interest rates rise','Higher loan costs, especially if highly geared; consumers borrow and spend less; the pound tends to rise'],['The pound rises','Imports cheaper; exports dearer in foreign currency'],['Lower taxes','More disposable income (income tax) or more profit after tax (corporation tax)']])}
+  <p><b>Fiscal policy</b>: government spending and taxation. <b>Monetary policy</b>: interest rates (set by the Bank of England). <b>Protectionism</b>: tariffs, quotas and subsidies that shield domestic firms; <b>openness</b> is removing them.</p>
+  ${ECON}
+  <h3>How it has been examined</h3>
+  <ul><li>June 2026 Paper 3 Q4: with income elasticity of +0.5, faster GDP growth would raise demand only a little. Questioning the forecasts was not answering the question.</li>
+  <li>June 2024 Paper 1 Q20: higher interest rates raise the pound, which hurts exporters. Many answers got this logic wrong.</li>
+  <li>June 2025 Paper 1 Q19: the hardest 9-marker that year. Fiscal policy was often confused with monetary policy.</li>
+  <li>June 2018 Paper 1 Q24: some treated "economic factors" as the business\'s own financial data.</li></ul>
+  <div class="trap"><b>The trap</b>Use the size of the change, not just the direction. A 0.5 percentage point change is small; elasticity tells you how much demand responds.</div>`,
+  items:[
+    {src:'AQA June 2017 · Paper 1 Q5', prompt:'Which combination is most likely to increase sales for a company that builds houses?', o:['Decreasing interest rates and decreasing taxation','Decreasing interest rates and increasing taxation','Increasing interest rates and decreasing taxation','Increasing interest rates and increasing taxation'], a:0, why:'This is AQA\'s answer. Cheaper mortgages and more disposable income.'},
+    {src:'AQA June 2018 · Paper 1 Q6', prompt:'Lower UK interest rates are likely to increase UK exports because they probably lead to:', o:['a fall in costs of UK businesses and a fall in the exchange rate of the pound.','a rise in costs and a rise in the exchange rate.','a rise in costs and a fall in the exchange rate.','a fall in costs and a rise in the exchange rate.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2023 · Paper 1 Q6', prompt:'Which government policy is most likely to increase both GDP and inflation?', o:['Lower income taxes','Higher interest rates','Higher tax on goods','More open trade'], a:0, why:'This is AQA\'s answer. More spending raises output and demand-pull inflation.'},
+    {src:'AQA June 2024 · Paper 1 Q12', prompt:'The exchange rate for the £ increases. What happens to the cost of imports to the UK and demand for UK exports?', o:['Both decrease','Imports cost less; export demand increases','Imports cost more; export demand decreases','Both increase'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2025 · Paper 1 Q3', prompt:'Which change will lead to the largest increase in UK imports?', o:['A rise in GDP and a rise in the exchange rate value of the pound','A fall in GDP and a fall in the pound','A fall in GDP and a rise in the pound','A rise in GDP and a fall in the pound'], a:0, why:'This is AQA\'s answer. Higher incomes and cheaper imports both push imports up.'},
+    {src:'AQA June 2019 · Paper 1 Q9', prompt:'Decreasing government subsidies on a country\'s agriculture would be:', o:['fiscal policy which encourages more open trade.','fiscal policy which increases protectionism.','monetary policy which encourages more open trade.','monetary policy which increases protectionism.'], a:0, why:'This is AQA\'s answer. Subsidies are government spending.'},
+    {src:'AQA June 2026 · Paper 3 mark scheme (Q4)', prompt:'A builder has income elasticity of +0.5. GDP growth is forecast to speed up. What is the best analysis?', o:['Demand should rise, but by less than incomes, so the gain is small','Demand will rise faster than GDP','Demand will fall','The forecasts may be wrong, so ignore them'], a:0, why:'The mark scheme said the effect would be small with YED below 1, and questioning the forecasts was not answering the question.'},
+    {src:'AQA June 2024 · Paper 1 report (Q20)', prompt:'A highly geared UK manufacturer exports 60% of its output. Interest rates rise sharply. Which chain is correct?', o:['Interest payments rise; the pound tends to rise, so exports become dearer abroad and sales may fall','The pound falls, so exports rise','Interest rates do not affect exporters','Gearing falls'], a:0, why:'The report said those who saw the exchange rate rise reached strong Level 3; many had the logic wrong.'},
+    {src:'AQA June 2025 · Paper 1 report (Q19)', prompt:'Which is a change in fiscal policy?', o:['The government cuts VAT on medicines','The Bank of England raises interest rates','A new law on drug testing','A competitor cuts its prices'], a:0, why:'Fiscal policy is taxation and government spending. The report said it was often confused with monetary policy and legislation.'},
+    {src:'Based on the chart above', prompt:'Using the forecasts in the chart, which business is most likely to benefit overall?', o:['A highly geared business selling products with high income elasticity','A business with large cash savings selling inferior goods','A business that cannot pass on cost rises','A business with fixed-price contracts and rising costs'], a:0, why:'Falling interest rates cut its loan costs and rising GDP lifts demand for its products.'},
+    {src:'Based on the chart above', prompt:'According to the chart, what happens to inflation between 2026 and 2029?', o:['It rises from 2% to 3.9%','It falls from 4.5% to 3%','It rises from 1.2% to 2.6%','Prices fall'], a:0, why:'The red line. Rising inflation means prices rise faster, not that they fall.'},
+    {src:'AQA June 2018 · Paper 2 report (Q2.3)', prompt:'Do all businesses need to worry about the effect of exchange rates on profits? Which approach was rewarded?', o:['Showing that some businesses benefit and others suffer, depending on whether they import or export','Writing only about the case business','Saying all businesses lose','Defining an exchange rate'], a:0, why:'The report praised balance across imports and exports.'},
+    {src:'AQA June 2018 · Paper 1 report (Q24)', prompt:'Which is an economic factor for a business?', o:['A rise in interest rates','A fall in the business\'s own profit margin','An ageing population','A new competitor'], a:0, why:'The report said some treated economic factors as internal financial data.'}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'drift', title:'Social and technological change, and CSR', blurb:'Demographics, migration, lifestyles, online business, technology, CSR and Carroll\'s pyramid.', serve:10, pass:8,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Social change</h3>
+  <ul><li><b>Demographic change</b>: the size and structure of the population, e.g. an ageing population.</li>
+  <li><b>Population movements</b>: migration into and out of the country or between regions, which changes labour supply and demand.</li>
+  <li><b>Consumer lifestyles and buying behaviour</b>: e.g. healthier eating, concern for the environment, buying online.</li>
+  <li><b>The growth of online businesses</b>: lower costs, wider reach, more price comparison and competition.</li></ul>
+  <h3>Technological change</h3>
+  <p>Affects every function (automation in operations, data in marketing, online recruitment in HR) and strategy (new markets, new business models, threats to existing products).</p>
+  <h3>Corporate social responsibility</h3>
+  <p><b>Shareholder concept</b>: the business should be run mainly for its owners. <b>Stakeholder concept</b>: it should take account of all stakeholders. <b>Carroll\'s pyramid</b>, from the bottom: economic (be profitable), legal (obey the law), ethical (do what is right), philanthropic (give back to the community). Pressures for CSR come from customers, employees, investors, pressure groups and the media.</p>
+  <div class="trap"><b>The traps</b>On June 2020 Paper 3 Q6 (does CSR decrease profit?) many wrote about what happens when a business fails to commit to CSR, which does not answer the question. On June 2018 Paper 1 Q24 some included factors that are not demographic. On June 2020 Paper 2 Q2.1 many could not name the philanthropic level. Urbanisation was removed from the specification in 2023.</div>`,
+  items:[
+    {src:'AQA June 2017 · Paper 1 Q6', q:'A business helps its local community to improve the quality of life of nearby residents.', text:'In Carroll\'s pyramid, this is philanthropic responsibility.', ok:true, why:'This is AQA\'s answer.'},
+    {src:'Based on AQA June 2026 · Paper 1 Q10', q:'A business\'s first priority is its owners and its second is society.', text:'It is most likely to be following the shareholder concept.', ok:true, why:'In the real question this business was AQA\'s answer.'},
+    {src:'AQA June 2020 · Paper 3 report (Q6)', q:'A question asks whether a commitment to CSR decreases profit for all businesses.', text:'An argument that ignoring CSR leads to boycotts and lower profit answers the question directly.', ok:false, why:'The report said this addresses failure to commit, not the effect of committing.'},
+    {src:'Core rule · Carroll', q:'About Carroll\'s pyramid.', text:'Economic responsibility is at the base, because a business must be profitable to survive.', ok:true, why:'The other levels rest on it.'},
+    {src:'AQA June 2023 · Paper 2 report (Q3.4)', q:'A question asks whether businesses act responsibly only when forced by governments.', text:'Real examples of businesses going beyond the law strengthen the answer.', ok:true, why:'The report praised confident use of Carroll\'s pyramid with real examples.'},
+    {src:'AQA June 2018 · Paper 1 report (Q24)', q:'About demographic factors.', text:'A rise in interest rates is a demographic factor.', ok:false, why:'Demographic factors are about the population: age, size, structure, migration.'},
+    {src:'Core rule · demographics', q:'An ageing population.', text:'This may be an opportunity for healthcare and leisure businesses aimed at older people.', ok:true, why:'Demand shifts towards their needs.'},
+    {src:'Core rule · migration', q:'High net migration of working-age people.', text:'This may increase the supply of labour and the size of the market.', ok:true, why:'More workers and more consumers.'},
+    {src:'Based on AQA June 2022 · Paper 1 Q23', q:'About e-commerce.', text:'The growth of online sales means every retailer will end up operating only online.', ok:false, why:'Some products and customers still favour physical stores; the answer depends on the market.'},
+    {src:'Core rule · technology', q:'About technological change.', text:'It can be a threat as well as an opportunity.', ok:true, why:'New technology can make existing products or skills out of date.'},
+    {src:'Based on AQA June 2022 · Paper 1 Q4', q:'A business adopts fair trade principles.', text:'This is likely to raise its costs and also its demand.', ok:true, why:'AQA\'s answer: higher prices to suppliers, but more appeal to ethical consumers.'},
+    {src:'Core rule · pressures', q:'About pressures for socially responsible behaviour.', text:'Social media can increase the pressure on businesses to act responsibly.', ok:true, why:'Bad behaviour can be exposed quickly.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'mcq', title:'Porter\'s five forces', blurb:'The five forces, how they change, and how they shape strategy and profit.', serve:9, pass:7,
+  teach:`${FIVE}
+  ${tbl(['Force','Stronger when'],[['Buyer power','Few buyers, large orders, easy to switch, buyers well informed'],['Supplier power','Few suppliers, unique inputs, costly to switch'],['Threat of new entrants','Low barriers to entry (low set-up costs, no patents, weak brand loyalty)'],['Threat of substitutes','Close alternatives, low switching costs'],['Competitive rivalry','Many similar competitors, slow market growth, high fixed costs']])}
+  <p>Businesses respond with strategy: e.g. building brand loyalty, integrating vertically, using patents, cutting costs. Forces change over time, e.g. online shopping raised buyer power.</p>
+  <div class="trap"><b>The traps</b>On June 2017 Paper 3 Q4 weaker answers misunderstood the power of buyers and made limited judgements on which force was bigger. Diseconomies of scale are not a barrier to entry (June 2019). On June 2026 Paper 1 Q22 using the five forces in an argument about horizontal integration was credited.</div>`,
+  items:[
+    {src:'AQA June 2018 · Paper 1 Q9', prompt:'According to Porter\'s five forces, which event is most likely to help a business\'s profitability?', o:['A decrease in supplier power.','A new entrant into the market.','An increase in buyer power.','New product development by a competitor.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2019 · Paper 1 Q15', prompt:'Which is not a barrier to entry for a business trying to enter an industry? The market leader:', o:['experiences diseconomies of scale.','is vertically integrated with its suppliers.','has high brand loyalty.','owns a patent.'], a:0, why:'This is AQA\'s answer. Diseconomies raise the leader\'s costs, making entry easier.'},
+    {src:'AQA June 2025 · Paper 1 Q14', prompt:'Statement 1: "Low supplier power may encourage a retailer to use a cost leadership strategy." Statement 2: "A market leader may use a low-price strategy in order to create a barrier to entry."', o:['Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'Based on AQA June 2017 · Paper 3 report (Q4)', prompt:'A firm sells engines to a handful of cruise ship builders, each placing huge orders. Which is the best analysis?', o:['Buyer power is high: with few large buyers, each can push for lower prices','Buyer power is low because orders are large','Buyer power depends on the firm\'s advertising','Buyers have no power in business-to-business markets'], a:0, why:'The report said weaker answers misunderstood buyer power.'},
+    {src:'AQA June 2026 · Paper 1 report (Q22)', prompt:'How could Porter\'s five forces support an argument for horizontal integration?', o:['Buying a rival reduces competitive rivalry and may increase power over suppliers','It removes the threat of substitutes completely','It reduces buyer power by raising prices freely','It has no link to the five forces'], a:0, why:'The report said the five forces were credited in horizontal integration arguments.'},
+    {src:'Core rule · substitutes', prompt:'For a train company, which is the clearest substitute?', o:['Coach travel','Another train company on the same route','A ticket machine supplier','Railway staff'], a:0, why:'A substitute is a different product meeting the same need.'},
+    {src:'Core rule · supplier power', prompt:'When is supplier power highest?', o:['When there is only one supplier of a vital component','When there are many suppliers','When the business can easily switch','When the input is standard'], a:0, why:'Few suppliers and costly switching give suppliers power.'},
+    {src:'Core rule · strategy', prompt:'Which strategy reduces supplier power?', o:['Backward vertical integration','Forward vertical integration','Cutting prices','More advertising'], a:0, why:'Owning the supplier removes its power.'},
+    {src:'Core rule · change', prompt:'How has the growth of price comparison websites changed the forces?', o:['It has raised buyer power because customers can compare and switch easily','It has lowered buyer power','It has raised supplier power','It has no effect'], a:0, why:'Better informed buyers have more power.'},
+    {src:'Core rule · rivalry', prompt:'Which market is likely to have the most intense rivalry?', o:['A slow-growing market with many similar firms','A fast-growing market with one firm','A market protected by patents','A market with high brand loyalty to one firm'], a:0, why:'Firms fight for share when growth is slow.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'calc', title:'Investment appraisal calculations', blurb:'Payback, average rate of return and net present value.', serve:8, pass:6,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Method','How','Answer as'],[['Payback','Add up net returns until the initial cost is repaid; part year = amount still owed ÷ that year\'s net return','years (and months)'],['Average rate of return (ARR)','(Total net returns − initial cost) ÷ number of years ÷ initial cost × 100','%'],['Net present value (NPV)','Multiply each year\'s net return by its discount factor, add them up, then subtract the initial cost','£']])}
+  <h3>How it has been examined</h3>
+  <ul><li>June 2026 Paper 1 Q16: only one-fifth got ARR right. The main error was not subtracting the initial cost.</li>
+  <li>June 2024 Paper 1 Q17: some subtracted the present values from the cost instead of the other way round, so missed that NPV was negative.</li>
+  <li>June 2023 Paper 2 Q1.1: some ignored a negative cash flow in year 1 or forgot the £ sign.</li>
+  <li>June 2019 Paper 3 Q4: only a minority could calculate payback and ARR.</li></ul>
+  <div class="trap"><b>The trap</b>ARR: take off the initial cost before averaging. NPV: present values minus the initial cost, keep the minus sign.</div>`,
+  items:[
+    {src:'Core skill · payback', gen(){const c=rint(4,12)*10000,a=rint(15,30)*1000,b=rint(20,40)*1000,d=rint(25,50)*1000;
+      if(a+b>=c||a+b+d<c)return this.gen();const left=c-a-b,ans=r2(2+left/d);
+      return {given:tbl(['Year','Net return (£)'],[['0','('+f(c)+')'],['1',f(a)],['2',f(b)],['3',f(d)]]),prompt:'Calculate the payback period in years (2 d.p.).',unit:'years',ans,tol:0.011,work:`After year 2, £${f(c)} − £${f(a+b)} = £${f(left)} still to repay. £${f(left)} ÷ £${f(d)} = ${r2(left/d)}, so payback = ${ans} years.`};}},
+    {src:'Core skill · ARR', gen(){const c=rint(5,20)*10000,y=pick([3,4,5]),p=pick([5,8,10,12,15,20]);const tot=c+c*p/100*y;
+      return {given:`Initial cost <b>£${f(c)}</b>. Total net returns over <b>${y} years</b> <b>£${f(tot)}</b>.`,prompt:'Calculate the ARR.',unit:'%',ans:p,tol:0.05,traps:[{v:r1(tot/y/c*100),m:'You did not subtract the initial cost from the total returns.'}],work:`(£${f(tot)} − £${f(c)}) ÷ ${y} = £${f(c*p/100)} a year. £${f(c*p/100)} ÷ £${f(c)} × 100 = ${p}%.`};}},
+    {src:'Core skill · NPV', gen(){const c=rint(8,20)*1000,r=[rint(3,8)*1000,rint(4,9)*1000,rint(4,10)*1000],df=[0.91,0.83,0.75];const pv=r.map((v,i)=>v*df[i]);const ans=Math.round(pv.reduce((a,b)=>a+b)-c);
+      return {given:tbl(['Year','Net return (£)','Discount factor'],[['0','('+f(c)+')','1.00'],['1',f(r[0]),'0.91'],['2',f(r[1]),'0.83'],['3',f(r[2]),'0.75']]),prompt:'Calculate the NPV (minus sign if negative).',pre:'£',ans,tol:1,traps:[{v:-ans,m:'You subtracted the present values from the cost. NPV = present values − initial cost.'}],work:`Present values: ${pv.map(v=>'£'+f(Math.round(v))).join(' + ')} = £${f(Math.round(pv.reduce((a,b)=>a+b)))}. Minus £${f(c)} = £${f(ans)}.`};}},
+    {src:'AQA June 2017 · Paper 1 Q16', given:tbl(['Year','Net return (£)'],[['0','(50,000)'],['1','13,000'],['2','28,000'],['3','27,000']]),prompt:'Calculate the payback period in years (2 d.p.).',unit:'years',ans:2.33,tol:0.011,work:'After year 2, £9,000 still to repay. £9,000 ÷ £27,000 = 0.33, so 2.33 years (2 years 4 months).'},
+    {src:'AQA June 2017 · Paper 1 Q17', given:tbl(['Year','Net return (£)','Discount factor (5%)'],[['0','(50,000)','1.00'],['1','13,000','0.95'],['2','28,000','0.91'],['3','27,000','0.86']]),prompt:'Calculate the NPV.',pre:'£',ans:11050,tol:1,work:'£12,350 + £25,480 + £23,220 = £61,050. £61,050 − £50,000 = £11,050.'},
+    {src:'AQA June 2020 · Paper 1 Q9', given:tbl(['Year','Net return (£000s)'],[['0','(1,000)'],['1','500'],['2','900']]),prompt:'After two years, what is the ARR?',unit:'%',ans:20,tol:0.05,traps:[{v:70,m:'You did not take off the initial cost: 1,400 ÷ 2 ÷ 1,000.'},{v:40,m:'You did not divide by the number of years.'}],work:'(500 + 900 − 1,000) ÷ 2 = 200. 200 ÷ 1,000 × 100 = 20%.'},
+    {src:'AQA June 2024 · Paper 1 Q17', given:'Initial cost <b>£20m</b>.'+tbl(['Year','Net return (£m)','Discount factor'],[['1','11','0.91'],['2','12','0.83']]),prompt:'Calculate the NPV in £m (minus sign if negative).',pre:true,ans:-0.03,tol:0.001,traps:[{v:0.03,m:'You took the present values away from the cost. NPV = 19.97 − 20 = −£0.03m.'}],work:'11 × 0.91 = 10.01; 12 × 0.83 = 9.96; total 19.97. 19.97 − 20 = −£0.03m.'},
+    {src:'AQA June 2023 · Paper 2 Q1.1', given:tbl(['Year','Net cash flow (£000s)','Discount factor'],[['0','(500)','1.00'],['1','(50)','0.91'],['2','250','0.83'],['3','600','0.75']]),prompt:'Calculate the NPV in £.',pre:'£',ans:112000,tol:1,traps:[{v:157500,m:'You ignored the negative cash flow in year 1. It has to be discounted and subtracted.'}],work:'−500 − 45.5 + 207.5 + 450 = 112, so NPV = £112,000.'},
+    {src:'AQA June 2026 · Paper 1 Q16', given:tbl(['Year','Annual revenue (£)','Annual cost (£)'],[['0','0','8,000'],['1','4,000','1,000'],['2','6,000','1,600'],['3','4,350','1,290']]),prompt:'Calculate the ARR.',unit:'%',ans:10.25,tol:0.01,traps:[{v:43.58,m:'You did not subtract the £8,000 initial cost.'}],work:'Net returns 3,000 + 4,400 + 3,060 = £10,460. Minus £8,000 = £2,460. ÷ 3 = £820. £820 ÷ £8,000 × 100 = 10.25%.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'drift', title:'Making investment decisions', blurb:'Interpreting the results, investment criteria, non-financial factors, risk and uncertainty.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Interpreting the methods</h3>
+  ${tbl(['Method','Strengths','Weaknesses'],[['Payback','Simple; focuses on the early years, which are more certain; useful when cash is short','Ignores returns after payback; ignores the time value of money'],['ARR','Uses all the returns; easy to compare with a target or an interest rate','Ignores the timing of returns'],['NPV','Allows for the time value of money','Depends on the discount rate chosen; harder to understand']])}
+  <h3>Factors in the decision</h3>
+  <ul><li><b>Investment criteria</b>: the targets a project must meet, e.g. payback within 3 years, ARR above 10%, a positive NPV.</li>
+  <li><b>Non-financial factors</b>: fit with objectives, staff morale, reputation, the environment, ethics.</li>
+  <li><b>Risk and uncertainty</b>: all figures are forecasts. The further ahead, the less reliable.</li></ul>
+  <div class="trap"><b>The traps</b>On June 2020 Paper 2 Q1.4 many gave reasons for and against and then just said "I recommend". Justify means saying why your choice is right, using your calculations. Sensitivity analysis was removed from the specification in 2023, so do not rely on it.</div>`,
+  items:[
+    {src:'Core rule · payback', q:'About payback.', text:'Payback takes account of all returns over the life of a project.', ok:false, why:'It ignores everything after the cost has been repaid.'},
+    {src:'Core rule · NPV', q:'A project has a negative NPV.', text:'On financial grounds alone, it should not go ahead.', ok:true, why:'The discounted returns do not cover the initial cost.'},
+    {src:'Core rule · NPV', q:'About NPV.', text:'NPV recognises that £1 received in five years\' time is worth less than £1 today.', ok:true, why:'That is the time value of money.'},
+    {src:'Core rule · ARR', q:'About ARR.', text:'ARR takes into account when the returns arrive.', ok:false, why:'It averages the returns, so timing is ignored.'},
+    {src:'Core rule · payback', q:'A business is short of cash.', text:'It may prefer the project with the shortest payback.', ok:true, why:'It gets its money back sooner.'},
+    {src:'Core rule · criteria', q:'A business requires an ARR of at least 12%. A project has an ARR of 10%.', text:'It fails the investment criteria.', ok:true, why:'It does not reach the target.'},
+    {src:'Core rule · risk', q:'About investment forecasts.', text:'Forecasts for year 5 are usually less reliable than for year 1.', ok:true, why:'More can change over a longer time.'},
+    {src:'AQA June 2020 · Paper 2 report (Q1.4)', q:'A question asks you to recommend whether to go ahead with an investment.', text:'Listing points for and against and then writing "I recommend" is enough.', ok:false, why:'You must justify why your recommendation is right, using the calculations.'},
+    {src:'Core rule · non-financial', q:'A project with a high NPV would involve making many staff redundant.', text:'Non-financial factors may still lead the business to reject it.', ok:true, why:'Morale, reputation and ethics matter too.'},
+    {src:'AQA June 2022 · Paper 1 Q15', q:'A business increases its level of capital expenditure.', text:'This is most likely to help it achieve long-term growth.', ok:true, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2023 · Paper 2 report (Q1.1)', q:'You calculate an NPV of 112,000.', text:'It does not matter whether you write £ or the unit.', ok:false, why:'The report said not expressing the answer in £ was a common mistake.'}
+  ]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Against the clock', blurb:'Fifteen mixed questions from the whole unit, 30 seconds each.', pass:12, poolFrom:[1,3,4,5,6,7,9], count:15, seconds:30,
+  teach:`<p>Fifteen questions drawn at random from the rest of this unit, with 30 seconds each. Ratio interpretation, SWOT and the effects of interest and exchange rates should be automatic.</p>
+  <p>You get different questions each time you try.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'rt37', key:'rt37_course_v1', offset:1300, short:'Rules and Traps 3.7',
+  name:'Rules and Traps: Unit 3.7',
+  hero:{kicker:'Rules and Traps · Unit 3.7',
+    title:'Analysing the strategic <em>position</em>',
+    lede:'Mission, objectives and SWOT, financial ratios, assessing performance, the political, legal, economic, social and technological environment, CSR, Porter\'s five forces and investment appraisal. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
+  doneText:'You have worked through every rule and trap in Unit 3.7. Before any answer here, check the unit on every calculation, whether a factor is internal or external, and the size of any economic change.',
+  stages:STAGES
+};
+</script>
+<script src="account.js"></script>
+<script src="course-engine.js"></script>
+<script src="visit.js" defer></script>
+</body>
+</html>
