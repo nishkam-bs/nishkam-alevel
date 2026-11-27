@@ -10,6 +10,7 @@ const COURSES={endpoint_course_v1:[0,'Start Point/End Point course','start-end-p
   calc_course_v1:[200,'Calculations course','calculations-course.html'],concepts_course_v1:[300,'Concept Confusions course','concepts-course.html'],
   application_course_v1:[400,'Application course','application-course.html'],models_course_v1:[500,'Models course','models-course.html'],paper3_course_v1:[600,'Paper 3 course','paper3-course.html'],
   rt31_course_v1:[700,'Rules and Traps: Unit 3.1','rt-3-1.html'],
+  rt36_course_v1:[1200,'Rules and Traps: Unit 3.6','rt-3-6.html'],
   rt35_course_v1:[1100,'Rules and Traps: Unit 3.5','rt-3-5.html'],
   rt34_course_v1:[1000,'Rules and Traps: Unit 3.4','rt-3-4.html'],
   rt33_course_v1:[900,'Rules and Traps: Unit 3.3','rt-3-3.html'],

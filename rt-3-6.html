@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rules and Traps: Unit 3.6 Human resource management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+<link rel="stylesheet" href="rt.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   RULES AND TRAPS: UNIT 3.6 HUMAN RESOURCE MANAGEMENT
+   Specification topics 3.6.1a to 3.6.5b (spec.js). Every rule and trap is
+   checked against the AQA papers, mark schemes and examiner reports
+   2017 to 2026. Items marked "AQA June 20xx" are the real questions with
+   AQA's answer; "Based on" means our wording of a reported mistake.
+   Stage numbers are stored in the tracker as 1200 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+const rint=(a,b,s=1)=>Math.round((a+Math.random()*(b-a))/s)*s;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
+const isN=c=>/^[−\-+]?[£€]?[\d.,]+(%|m|bn|k)?$/.test(String(c).trim());
+const tbl=(head,rows)=>{const num=head.map((h,i)=>i>0&&rows.every(r=>isN(r[i])||r[i]===''));return `<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${num[i]?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${num[i]?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;};
+
+const MASLOW=`<div class="chart"><svg viewBox="0 0 720 230" role="img" aria-label="Maslow's hierarchy as a pyramid, from bottom to top: physiological, safety, social, esteem, self-actualisation">
+  ${[['Self-actualisation','e.g. challenging work, chance to develop',0],['Esteem','e.g. recognition, promotion, status',1],['Social','e.g. team working, friendly colleagues',2],['Safety','e.g. secure contract, safe workplace',3],['Physiological','e.g. enough pay for food and shelter',4]].map(([t,s,i])=>{const y=20+i*40,w=120+i*70,x=180-w/2+40;return `<rect x="${x}" y="${y}" width="${w}" height="36" rx="4" style="fill:var(--gold-soft);stroke:var(--gold)"/><text x="${x+w/2}" y="${y+22}" text-anchor="middle" style="fill:var(--fg);font-weight:600">${t}</text><text x="${x+w+10}" y="${y+22}">${s}</text>`;}).join('')}
+</svg><div class="cap">Maslow: the lowest unsatisfied need motivates. Once it is met, the next level up becomes the motivator.</div></div>`;
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'drift', title:'HR objectives and approaches', blurb:'What HR objectives are, what influences them, and soft and hard HRM.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>HR objectives</h3>
+  ${tbl(['Objective','Example'],[['Employee engagement and involvement','Raise the engagement score in the staff survey from 60% to 75%'],['Talent development','Fill 70% of management vacancies internally'],['Training','Every employee completes 20 hours of training a year'],['Diversity','Increase the proportion of women in senior roles'],['Alignment of values','Staff share the business\'s values (e.g. customer service, sustainability)'],['Number, skills and location of employees','Have the right number of staff, with the right skills, in the right places']])}
+  <p><b>Influences</b>: internal (corporate objectives, finance, culture, the existing workforce) and external (the labour market, the law, the economy, technology).</p>
+  <h3>Soft and hard HRM</h3>
+  ${tbl(['','Soft HRM','Hard HRM'],[['View of staff','An asset to develop; a source of competitive advantage','A resource to be used as efficiently as possible'],['Typical features','Training, consultation, long-term planning, empowerment','Short-term contracts, close control, minimum training, pay by results'],['Likely effects','Engagement and loyalty; higher costs at first','Lower costs in the short run; may raise turnover and lower motivation']])}
+  <div class="trap"><b>The traps</b>On June 2025 Paper 2 Q3.1 (why an airline sets objectives for employee numbers and engagement), weaker answers ignored the context of a growing, low-cost airline. On June 2024 Paper 1 Q22 (does a move to soft HRM guarantee motivation of all employees?) answers drifted to sales and profit. Soft and hard HRM as ways of meeting HR objectives were added in 2023.</div>`,
+  items:[
+    {src:'Core rule · HR objectives', q:'A business sets a target to fill most management jobs by promoting its own staff.', text:'This is a talent development objective.', ok:true, why:'Developing staff so they can move into senior roles.'},
+    {src:'Core rule · HR objectives', q:'About the number, skills and location of employees.', text:'Having too many staff is never a problem as long as they are skilled.', ok:false, why:'Too many staff raises costs; HR objectives aim for the right number.'},
+    {src:'AQA June 2025 · Paper 2 mark scheme (Q3.1)', q:'A growing low-cost airline sets objectives for the number of employees and for engagement.', text:'Planning numbers helps it have the pilots and engineers it needs to grow, without excess costs.', ok:true, why:'The mark scheme credited matching the workforce to growth and anticipating skill shortages.'},
+    {src:'Core rule · soft HRM', q:'A business invests in training and consults staff before changes.', text:'This is a soft HRM approach.', ok:true, why:'Staff are treated as an asset to develop.'},
+    {src:'Core rule · hard HRM', q:'A business uses zero-hours contracts and offers little training.', text:'This is a hard HRM approach.', ok:true, why:'Staff are treated as a cost to be kept down.'},
+    {src:'AQA June 2024 · Paper 1 mark scheme (Q22)', q:'A business changes from hard to soft HRM.', text:'This is guaranteed to increase the motivation of every employee.', ok:false, why:'It depends on the staff, their roles and the culture. Some may not want more responsibility.'},
+    {src:'Core rule · influences', q:'A shortage of skilled workers in the economy.', text:'This is an external influence on HR objectives.', ok:true, why:'The labour market is outside the business.'},
+    {src:'Core rule · hard HRM', q:'About hard HRM.', text:'Hard HRM always increases profit.', ok:false, why:'It can cut costs, but higher labour turnover, absence and lower motivation can wipe out the savings.'},
+    {src:'Core rule · engagement', q:'About employee engagement.', text:'Engaged employees are more likely to stay and to work harder.', ok:true, why:'Engagement links to lower turnover and higher productivity.'},
+    {src:'Core rule · alignment', q:'About alignment of values.', text:'It means employees share the values the business stands for.', ok:true, why:'For example a focus on customers or on sustainability.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'calc', title:'HR calculations', blurb:'Labour turnover, retention, productivity, employee costs and labour cost per unit.', serve:7, pass:5,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Measure','Formula','Unit'],[['Labour turnover','Number of employees leaving ÷ average number employed × 100','%'],['Labour retention','Employees with a year or more\'s service ÷ number employed a year ago × 100','%'],['Labour productivity','Output ÷ number of employees','units per worker'],['Employee costs as % of turnover','Employee costs ÷ revenue × 100','%'],['Labour cost per unit','Labour costs ÷ units of output','£']])}
+  <h3>How it has been examined</h3>
+  <ul><li>June 2025 Paper 2 Q2.1: labour turnover for Seebus plc = 16%. Some students\' workings were unclear, so process marks could not be given.</li>
+  <li>June 2018 Paper 1 Q16: turnover (revenue) = total costs + profit = £100,000; labour costs = 42% of turnover = £42,000; output = £42,000 ÷ 84p = 50,000 units. Using 42% of total costs gave only 2 marks.</li></ul>
+  <div class="trap"><b>The traps</b>"Turnover" in employee costs as a % of turnover means revenue, not labour turnover. Use the average number of employees for labour turnover when the question gives it.</div>`,
+  items:[
+    {src:'Core skill · labour turnover', gen(){const n=rint(40,400,10),p=pick([5,8,10,12.5,15,20,25]);const l=n*p/100;
+      return {given:`Average number of employees <b>${n}</b>. Number who left during the year <b>${f(l)}</b>.`,prompt:'Calculate labour turnover.',unit:'%',ans:p,tol:0.05,traps:[{v:r1(n/l),m:'Upside down: leavers ÷ employees × 100.'}],work:`${f(l)} ÷ ${n} × 100 = ${p}%.`};}},
+    {src:'Core skill · retention', gen(){const s=rint(50,300,10),p=pick([70,75,80,85,90]);const k=s*p/100;
+      return {given:`<b>${s}</b> people were employed a year ago. <b>${f(k)}</b> of them are still employed.`,prompt:'Calculate the labour retention rate.',unit:'%',ans:p,tol:0.05,work:`${f(k)} ÷ ${s} × 100 = ${p}%.`};}},
+    {src:'Core skill · employee costs %', gen(){const R=rint(200,900,10),p=pick([18,22,25,30,35,40]);const E=R*p/100;
+      return {given:`Revenue <b>£${R}k</b>. Employee costs <b>£${f(E)}k</b>.`,prompt:'Calculate employee costs as a percentage of turnover.',unit:'%',ans:p,tol:0.05,work:`£${f(E)}k ÷ £${R}k × 100 = ${p}%.`};}},
+    {src:'Core skill · labour cost per unit', gen(){const q=rint(10,60)*1000,lc=pick([0.84,1.2,1.5,2.4,3.75]);const L=r2(q*lc);
+      return {given:`Labour costs <b>£${f(L)}</b>. Output <b>${f(q)}</b> units.`,prompt:'Calculate labour cost per unit (in £).',pre:'£',ans:lc,tol:0.005,work:`£${f(L)} ÷ ${f(q)} = £${f(lc)}.`};}},
+    {src:'AQA June 2018 · Paper 1 Q16', given:'A firm\'s total costs are <b>£80,000</b> a week and its profit is <b>£20,000</b> a week. Labour costs are <b>42% of turnover</b>. Labour cost per unit is <b>84 pence</b>.',prompt:'Calculate the weekly output (units).',unit:'units',ans:50000,tol:0,
+     traps:[{v:40000,m:'You took 42% of total costs. The question says 42% of turnover: turnover = total costs + profit.'}],work:'Turnover = £80,000 + £20,000 = £100,000. Labour = 42% × £100,000 = £42,000. £42,000 ÷ £0.84 = 50,000 units.'},
+    {src:'Core skill · productivity change', gen(){const e1=rint(20,40),e2=e1+rint(-4,6),o1=rint(10,30)*1000,o2=o1+rint(-3,5)*1000;const p1=o1/e1,p2=o2/e2,ans=r1((p2-p1)/p1*100);
+      return {given:tbl(['','Last year','This year'],[['Output (units)',f(o1),f(o2)],['Employees',e1,e2]]),prompt:'Calculate the percentage change in labour productivity (1 d.p., minus sign for a fall).',unit:'%',ans,tol:0.06,work:`Last year ${f(r1(p1))}; this year ${f(r1(p2))} units per worker. Change = ${ans}%.`};}},
+    {src:'Based on AQA June 2026 · Paper 1 Q7', given:tbl(['','2024','2025'],[['Number of employees','20','22'],['Number of leavers','6','6']]),prompt:'What was labour turnover in 2025 (1 d.p.)?',unit:'%',ans:27.3,tol:0.06,work:'6 ÷ 22 × 100 = 27.3%, down from 6 ÷ 20 = 30% in 2024. So labour turnover fell.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'mcq', title:'Using HR data', blurb:'Reading HR data properly and using it in decisions.', serve:8, pass:6,
+  teach:`<h3>What the data tells you</h3>
+  <ul><li><b>High labour turnover</b>: higher recruitment and training costs, loss of skills, lower productivity and quality while new staff learn. It may point to poor pay, conditions or management. Some turnover brings in new ideas.</li>
+  <li><b>Labour productivity</b> affects unit costs and so competitiveness.</li>
+  <li><b>Employee costs as a % of turnover</b>: a rise means staff costs are taking a bigger share of revenue.</li>
+  <li>Compare data over time and with competitors. The cause matters as much as the number.</li></ul>
+  <h3>How it has been examined</h3>
+  <ul><li>June 2018 Paper 1 Q18: labour turnover data and quality. Answers not linked to quality were capped at mid Level 2; some confused labour turnover with productivity.</li>
+  <li>June 2019 Paper 3 Q2: how setting up a works council may have changed the HR data.</li>
+  <li>June 2017 Paper 2 Q1.3: show the discount retailers managed HR effectively, using calculations from the data.</li></ul>
+  <div class="trap"><b>The trap</b>Confusing labour turnover (people leaving) with labour productivity (output per worker). Both appear in two-statement questions.</div>`,
+  items:[
+    {src:'AQA June 2019 · Paper 1 Q5', table:tbl(['','2017','2018'],[['Number of employees','25','20'],['Labour turnover (%)','20','10'],['Total units of output','500','420']]), prompt:'Statement 1: "This business had a higher labour retention rate in 2018 than 2017." Statement 2: "This business had higher labour productivity in 2018 than 2017."', o:['Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer. Turnover halved, so retention rose. Productivity: 500 ÷ 25 = 20, 420 ÷ 20 = 21.'},
+    {src:'AQA June 2023 · Paper 1 Q12', table:tbl(['Business X','2020','2021'],[['Revenue','£1,000,000','£1,000,000'],['Units of output','200,000','200,000'],['Number of employees','20','22'],['Number of leavers','6','6'],['Total employee costs','£500,000','£550,000']]), prompt:'Which outcome happened between 2020 and 2021?', o:['Labour productivity decreased and labour turnover decreased','Labour productivity decreased and labour turnover increased','Labour productivity increased and labour turnover decreased','Labour productivity increased and labour turnover increased'], a:0, why:'This is AQA\'s answer. 10,000 → 9,091 units per worker; turnover 30% → 27.3%.'},
+    {src:'AQA June 2023 · Paper 1 Q13', table:tbl(['Business X','2020','2021'],[['Revenue','£1,000,000','£1,000,000'],['Units of output','200,000','200,000'],['Total employee costs','£500,000','£550,000']]), prompt:'What happened to employee costs per unit and employee costs as a percentage of turnover?', o:['Both increased','Both decreased','Per unit decreased; % of turnover increased','Per unit increased; % of turnover decreased'], a:0, why:'This is AQA\'s answer. £2.50 → £2.75 per unit; 50% → 55% of turnover.'},
+    {src:'AQA June 2022 · Paper 1 Q6', prompt:'Three changes: 1. lower wage levels; 2. higher labour productivity; 3. higher labour turnover. Which is most likely to increase employee costs as a percentage of turnover?', o:['3 only','1 and 2 only','2 and 3 only','2 only'], a:0, why:'This is AQA\'s answer. More leavers means more recruitment and training costs. Lower wages and higher productivity reduce the ratio.'},
+    {src:'AQA June 2025 · Paper 1 Q11', prompt:'The success of employee engagement may be shown through all of these outcomes except:', o:['higher labour turnover.','higher labour productivity.','higher labour retention rates.','lower absence rates.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'Core rule · turnover costs', prompt:'Which is the most direct cost of high labour turnover?', o:['Recruiting and training replacements','Higher sales revenue','Lower wages','More capacity'], a:0, why:'Every leaver has to be replaced and trained.'},
+    {src:'Based on AQA June 2018 · Paper 1 Q18', prompt:'BBB plc\'s labour turnover fell from 15% to 8% while competitors\' rose to 23%. A question asks how this might affect quality. Which chain reaches the end point?', o:['Staff stay longer, build skills and experience, and so make fewer mistakes, improving quality','Lower turnover saves recruitment costs','Staff are happier','Fewer people leave'], a:0, why:'The mark scheme capped answers without a link to quality at mid Level 2.'},
+    {src:'Core rule · interpreting', prompt:'Labour turnover rises sharply after a new manager arrives. What is the most sensible next step?', o:['Investigate the causes, e.g. through exit interviews','Assume it is caused by pay','Ignore it','Recruit more staff'], a:0, why:'The number shows there is a problem; finding the cause tells you what to do.'},
+    {src:'Core rule · productivity', prompt:'Labour productivity rises while wage rates stay the same. What happens to labour cost per unit?', o:['It falls','It rises','It stays the same','It doubles'], a:0, why:'The same wage bill is spread over more output.'}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'mcq', title:'Organisational structure and design', blurb:'Structures, spans and levels, delegation and centralisation, and changing the design.', serve:10, pass:8,
+  teach:`<h3>Structures</h3>
+  ${tbl(['Structure','Organised by','Strengths','Weaknesses'],[['Functional','Department (marketing, finance, operations, HR)','Specialist expertise; clear roles','Departments work in silos; slow to coordinate'],['Product based','Product or division','Focus on each product\'s market; clear accountability','Duplication of functions; divisions may compete'],['Regional','Geographic area','Close to local customers and conditions','Duplication; may lose consistency'],['Matrix','Project teams drawing on staff from functions','Flexible; brings skills together','Staff have two bosses; conflict over priorities']])}
+  <h3>Design terms</h3>
+  <ul><li><b>Authority</b>: the right to make decisions. <b>Span of control</b>: the number of people directly answering to a manager. <b>Hierarchy</b>: the levels of management.</li>
+  <li><b>Delegation</b>: passing authority for a task down. <b>Centralisation</b>: decisions kept at the top. <b>Decentralisation</b>: decision-making spread to lower levels or regions.</li>
+  <li>Wider spans usually mean fewer levels (a flatter structure), faster communication and more delegation, but managers have more to supervise.</li>
+  <li>Influences on design: size, the nature of the business, the skills of staff, the culture and leadership style, technology, the market.</li></ul>
+  <div class="trap"><b>The traps</b>On June 2022 Paper 1 Q20 some students wrote about how "controlling" a manager was rather than the span of control. On June 2025 Paper 1 Q18, Level 3 needed at least two of the three data items and a focus on speed of response. Delegation, delayering and decentralisation are different (2019 report). Functional, product and matrix structures were added in 2023; regional was examined in 2019 and 2026.</div>`,
+  items:[
+    {src:'AQA June 2024 · Paper 1 Q3', prompt:'Delayering in a business is likely to:', o:['improve the speed of vertical communication.','decrease the span of control of managers.','increase opportunities for promotion.','lead to less autonomy for workers.'], a:0, why:'This is AQA\'s answer. Fewer levels means messages pass through fewer people.'},
+    {src:'AQA June 2026 · Paper 1 Q14', prompt:'Statement 1: "Delayering should lead to more levels of hierarchy." Statement 2: "Delayering should lead to more delegation of responsibility."', o:['Statement 1 is false. Statement 2 is true.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2025 · Paper 1 mark scheme (Q18)', table:tbl(['Newtown plc','Before 2024','2024 onwards'],[['Number of staff','3,906','3,616'],['Average span of control','5','15'],['Levels of hierarchy','6','4']]), prompt:'Which is the best analysis of the effect on speed of response to customers?', o:['Fewer levels and more delegation may speed up decisions, but 290 fewer staff and tripled spans may overload managers and slow responses','Speed of response is unaffected by structure','Speed must fall because staff were cut','Speed must rise because there are fewer levels'], a:0, why:'The mark scheme wanted at least two of the data items, used for speed of response, with effects either way.'},
+    {src:'Core rule · structures', prompt:'A business has separate teams for its UK, European and Asian markets, each with its own sales and marketing staff. This is:', o:['a regional structure','a functional structure','a matrix structure','a product-based structure'], a:0, why:'It is organised by geography.'},
+    {src:'Core rule · structures', prompt:'A product launch team has a marketer, an engineer and an accountant, who each also report to their own department head. This is:', o:['a matrix structure','a functional structure','a regional structure','a tall structure'], a:0, why:'Staff work in a project team and keep their functional boss.'},
+    {src:'Core rule · structures', prompt:'Which is the main weakness of a matrix structure?', o:['Staff have two managers, which can cause conflict over priorities','It cannot bring different skills together','It is too inflexible','It has no managers'], a:0, why:'Dual reporting can confuse priorities.'},
+    {src:'AQA June 2026 · Paper 2 mark scheme (Q3.1)', prompt:'How could a regional structure help a garden machinery firm build brand loyalty among its garden centre customers?', o:['Regional sales reps get to know each owner and respond to their needs, building a relationship that keeps them buying','It lets the firm advertise on national TV','It makes every region identical','It reduces the number of products'], a:0, why:'The mark scheme focused on relationships with business customers and faster local service.'},
+    {src:'Core rule · span of control', prompt:'A manager\'s span of control widens from 4 to 12. What is the most likely effect?', o:['More delegation, but less time to supervise each person','Closer supervision of each worker','More levels of hierarchy','Slower communication'], a:0, why:'With more people to manage, the manager must delegate more.'},
+    {src:'Based on AQA June 2019 · Paper 1 report (Q20)', prompt:'A business moves decision-making from head office to its regional managers. This is:', o:['decentralisation','delayering','centralisation','job rotation'], a:0, why:'The 2019 report noted students confused decentralisation with delegation and delayering.'},
+    {src:'Core rule · centralisation', prompt:'Which business is most likely to benefit from centralised decision-making?', o:['A fast-food chain that needs every outlet to be identical','A consultancy whose experts work with different clients','A business whose local markets are very different','A creative design agency'], a:0, why:'Centralisation gives consistency.'},
+    {src:'Based on AQA June 2022 · Paper 1 report (Q20)', prompt:'A question asks how widening a manager\'s span of control might affect labour productivity. Which answer is on the wrong concept?', o:['One about how strict and controlling the manager is','One about more autonomy for staff','One about the manager having less time to monitor each person','One about slower help for staff with problems'], a:0, why:'Span of control is the number of direct reports, not how controlling a manager is.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'drift', title:'Human resource flow', blurb:'Workforce planning, recruitment, training, redeployment and redundancy.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Refresher</h3>
+  <p>Human resource flow is the movement of people into, through and out of a business. It starts with a <b>human resource plan</b>: how many staff, with what skills, in which locations, will be needed in the future, compared with the current workforce.</p>
+  ${tbl(['Stage','What it involves','Key points'],[['Recruitment','Internal (promotion, transfer) or external (adverts, agencies)','Internal: cheaper, known people, motivating; external: new ideas and skills, wider choice'],['Training','Induction, on-the-job, off-the-job','Raises productivity and quality; costs time and money; trained staff may leave'],['Redeployment','Moving staff to a different role or location','Keeps skills and saves redundancy costs; needs retraining'],['Redundancy','A job is no longer needed','Redundancy pay; damage to morale of those who stay; reputation; not the same as dismissal']])}
+  <h3>How it has been examined</h3>
+  <ul><li>November 2020 Paper 1 Q22: is the growth stage of the product life cycle the most challenging for managing HR flow? The mark scheme contrasted recruitment in growth with redundancies in decline.</li>
+  <li>June 2025 Paper 3 Q4: which is harder, recruiting and training in Vietnam or managing redundancies in Europe? A "which is harder" question needs both analysed.</li></ul>
+  <div class="trap"><b>The trap</b>Redundancy is not dismissal: redundancy is about the job no longer being needed, dismissal is about the employee\'s conduct or capability.</div>`,
+  items:[
+    {src:'Core rule · HR plan', q:'About human resource plans.', text:'An HR plan compares the workforce needed in future with the current workforce.', ok:true, why:'The gap shows what recruitment, training or redundancy is needed.'},
+    {src:'Core rule · recruitment', q:'A business fills a manager\'s job by promoting a team leader.', text:'This is internal recruitment.', ok:true, why:'The person comes from inside the business.'},
+    {src:'Core rule · recruitment', q:'About internal recruitment.', text:'It is the best way to bring fresh ideas into a business.', ok:false, why:'External recruitment brings new ideas; internal recruitment uses people who know the business.'},
+    {src:'Core rule · training', q:'About training.', text:'Training can raise productivity and quality but costs time and money.', ok:true, why:'Benefits usually come after the cost.'},
+    {src:'Core rule · redeployment', q:'A factory line closes and its workers move to jobs in the warehouse.', text:'This is redeployment.', ok:true, why:'Staff move to another role instead of leaving.'},
+    {src:'Core rule · redundancy', q:'About redundancy.', text:'Redundancy and dismissal mean the same thing.', ok:false, why:'Redundancy: the job is no longer needed. Dismissal: the person\'s conduct or capability.'},
+    {src:'AQA June 2025 · Paper 3 mark scheme (Q4)', q:'A business is making many staff redundant in Europe.', text:'The staff who remain may worry about their own job security.', ok:true, why:'The mark scheme listed morale among remaining staff, plus cost, bad publicity and resistance.'},
+    {src:'AQA November 2020 · Paper 1 mark scheme (Q22)', q:'A product moves into decline.', text:'This stage can bring the most serious HR challenge if large redundancies are needed.', ok:true, why:'The mark scheme argued growth is hardest for recruitment and training, decline for redundancies.'},
+    {src:'Core rule · training', q:'About off-the-job training.', text:'It takes place away from the employee\'s normal work, e.g. at a college.', ok:true, why:'On-the-job training happens while doing the job.'},
+    {src:'Core rule · HR flow and growth', q:'A business is growing fast.', text:'Its main HR flow challenge is likely to be recruiting and training enough people.', ok:true, why:'Growth needs more staff with the right skills, quickly.'}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'mcq', title:'Motivation theory', blurb:'The benefits of motivated staff, Taylor, Maslow and Herzberg, used accurately.', serve:10, pass:8,
+  teach:`<h3>Why motivation matters</h3>
+  <p>Motivated and engaged staff are more productive, give better quality and service, are absent less and stay longer, which lowers recruitment and training costs.</p>
+  <h3>Taylor (scientific management)</h3>
+  <p>Workers are mainly motivated by money. Study each task to find the one best way, break jobs into simple specialised tasks, train workers, supervise closely, and pay by results (piece rate). Commission also fits Taylor; a fixed salary does not reward output, so it is not a Taylor incentive.</p>
+  <h3>Maslow</h3>
+  ${MASLOW}
+  <h3>Herzberg</h3>
+  ${tbl(['Hygiene factors (prevent dissatisfaction)','Motivators (create motivation)'],[['Pay, working conditions, supervision, company policy, job security, relationships with colleagues','Achievement, recognition, responsibility, the work itself, advancement and personal growth (e.g. training and career development)']])}
+  <p>If hygiene factors are poor, staff are dissatisfied. Putting them right removes dissatisfaction but does not motivate. Only motivators motivate.</p>
+  <div class="trap"><b>The traps</b>Pay is a hygiene factor in Herzberg: low pay demotivates, but more pay does not on its own motivate. Misusing this cost marks on June 2026 Paper 3 Q3. Training and career development are motivators, not hygiene factors (June 2025 Paper 2 Q2.3). On June 2026 Paper 1 Q18 the discriminator was explaining Maslow\'s hierarchy, not listing five levels. On June 2023 Paper 1 Q20 the discriminator was using the redundancy context.</div>`,
+  items:[
+    {src:'AQA June 2017 · Paper 1 Q11', prompt:'Statement 1: "According to Taylor, piece rate payments will usually motivate workers." Statement 2: "According to Herzberg, piece rate payments will usually motivate workers."', o:['Statement 1 is true. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer. For Herzberg, pay is a hygiene factor.'},
+    {src:'AQA June 2019 · Paper 1 Q14', prompt:'Which method of payment would not be seen as a method of financial motivation by Taylor?', o:['Salary','Commission','Performance-related pay','Piece rate'], a:0, why:'This is AQA\'s answer. A salary is fixed, so it does not reward extra output.'},
+    {src:'AQA June 2026 · Paper 1 Q8', prompt:'Statement 1: "According to Taylor\'s theory, piece rate payments should act as a motivator." Statement 2: "According to Taylor\'s theory, commission payments should act as a motivator."', o:['Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer. Both pay by results.'},
+    {src:'AQA June 2026 · Paper 1 mark scheme (Q18)', prompt:'How can understanding Maslow help a business lower labour turnover?', o:['By finding the lowest need each worker has not yet satisfied and meeting it, then supporting the next level, so staff see their needs met and stay','By listing the five levels','By paying everyone more','By promoting everyone'], a:0, why:'The report said the hierarchy was the discriminator; many just described the levels.'},
+    {src:'AQA June 2025 · Paper 2 mark scheme (Q2.3)', prompt:'Using Herzberg, why might a plan offering training and career development fail to motivate staff who are unhappy about pay and shift patterns?', o:['Pay and working conditions are hygiene factors; while they cause dissatisfaction, the motivators are unlikely to work','Training is a hygiene factor','Herzberg says only pay motivates','Shift patterns are motivators'], a:0, why:'The mark scheme: motivators are unlikely to work if hygiene factors are not satisfied.'},
+    {src:'Based on AQA June 2025 · Paper 2 report (Q2.3)', prompt:'Which of these is a motivator in Herzberg\'s theory?', o:['Opportunities for training and advancement','Pay','Working conditions','Supervision'], a:0, why:'The report said a common mistake was calling training a hygiene factor.'},
+    {src:'Based on AQA June 2026 · Paper 3 report (Q3)', prompt:'A student writes: "According to Herzberg, a 20% pay rise will motivate Danni\'s staff." What is wrong?', o:['Pay is a hygiene factor: a rise can remove dissatisfaction but will not motivate on its own','Nothing, this is correct','Herzberg did not discuss pay','Pay is a motivator only above 20%'], a:0, why:'The report said misunderstanding Herzberg spoiled this argument. Taylor would support the pay rise.'},
+    {src:'AQA June 2023 · Paper 1 mark scheme (Q20)', prompt:'After redundancies, how might Maslow help motivate the remaining staff?', o:['Their safety needs (job security) may now be unmet, so reassurance about jobs must come before higher needs','Give everyone a promotion','Ignore the redundancies','Pay a one-off bonus only'], a:0, why:'The report said using the redundancy context was the key discriminator.'},
+    {src:'Core rule · Taylor', prompt:'Which is a criticism of Taylor\'s approach?', o:['It ignores social and psychological needs and can make work boring','It pays by results','It uses training','It studies tasks'], a:0, why:'Repetitive, closely supervised work can demotivate.'},
+    {src:'Core rule · benefits', prompt:'Which is the most likely benefit of a well-motivated workforce?', o:['Lower labour turnover and higher productivity','Higher absence','More supervision needed','Higher recruitment costs'], a:0, why:'Motivated staff stay and work harder.'},
+    {src:'Core rule · Maslow', prompt:'A worker on a low wage is struggling to pay rent. Using Maslow, what is most likely to motivate them now?', o:['Higher pay to meet physiological needs','A grander job title','A team-building day','More responsibility'], a:0, why:'Lower needs must be met before higher ones motivate.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'drift', title:'Financial methods of motivation', blurb:'Piece rate, commission, salary schemes and performance-related pay, and why they are different.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Method','How it works','Suits','Drawbacks'],[['Piece rate','Paid a set amount for each unit produced','Repetitive production where output is easy to count','Quality may suffer as workers rush; unsuitable for services'],['Commission','A percentage of the value of sales made','Sales staff','Pushy selling; unpredictable income'],['Salary','A fixed annual amount, paid monthly','Managers and professionals; jobs where output is hard to measure','No direct reward for extra effort'],['Performance-related pay (PRP)','A bonus or pay rise based on an appraisal of performance against agreed targets, usually yearly','Jobs with clear individual or team targets','Can be divisive; subjective appraisals; a small share of pay may have little effect']])}
+  <h3>Rules</h3>
+  <ul><li>PRP is not piece rate. PRP rewards performance against targets over a period after an appraisal; piece rate pays for each unit made.</li>
+  <li>Taylor supports payment by results; Herzberg sees pay as a hygiene factor; Maslow sees pay mainly meeting lower-level needs.</li></ul>
+  <div class="trap"><b>The trap</b>On June 2026 Paper 2 Q3.3 (is performance-related pay beneficial for all businesses?) many students treated PRP as piece rate. Arguments against were weaker than arguments for. The mark scheme gave cases where PRP fits poorly: production lines where workers do not control the speed, jobs with hard-to-measure targets such as research, and businesses with high staff turnover.</div>`,
+  items:[
+    {src:'Based on AQA June 2026 · Paper 2 report (Q3.3)', q:'About performance-related pay.', text:'Performance-related pay is the same as piece rate.', ok:false, why:'PRP is based on an appraisal against targets over a period; piece rate pays for each unit made.'},
+    {src:'Core rule · piece rate', q:'A worker is paid 50p for every garment she sews.', text:'This is piece rate.', ok:true, why:'Pay depends on the number of units produced.'},
+    {src:'Core rule · commission', q:'A car salesperson earns 2% of the value of every car sold.', text:'This is commission.', ok:true, why:'Pay is a percentage of sales value.'},
+    {src:'AQA June 2026 · Paper 2 mark scheme (Q3.3)', q:'On a production line the speed is set by the line, not by individual workers.', text:'PRP based on individual output is likely to work well here.', ok:false, why:'Workers cannot control their output, so PRP may not raise productivity.'},
+    {src:'AQA June 2026 · Paper 2 mark scheme (Q3.3)', q:'A business sets clear sales targets for each regional team.', text:'PRP is more likely to work where clear targets can be set.', ok:true, why:'The mark scheme gave Shortcut UK\'s sales-led business as an example.'},
+    {src:'AQA June 2026 · Paper 2 mark scheme (Q3.3)', q:'About PRP.', text:'If badly managed, PRP can set employees against each other and lower morale.', ok:true, why:'This was in the mark scheme\'s arguments against.'},
+    {src:'Core rule · piece rate', q:'About piece rate.', text:'Piece rate can lead to lower quality as workers rush to produce more.', ok:true, why:'The reward is for quantity, not quality.'},
+    {src:'Core rule · salary', q:'About salaries.', text:'A salary rewards staff directly for each extra unit they produce.', ok:false, why:'A salary is fixed whatever the output.'},
+    {src:'AQA June 2026 · Paper 2 mark scheme (Q3.3)', q:'A fast-food chain has very high staff turnover.', text:'A yearly PRP scheme may be unsuitable because many staff leave before it pays out.', ok:true, why:'PRP is a medium-term incentive.'},
+    {src:'Core rule · theory', q:'About pay and Herzberg.', text:'Herzberg would expect a PRP scheme on its own to motivate staff.', ok:false, why:'Pay is a hygiene factor; PRP may help if it comes with recognition of achievement.'},
+    {src:'AQA June 2026 · Paper 2 mark scheme (Q3.3)', q:'About research and development staff.', text:'PRP can be hard to apply because success is hard to measure and may take years.', ok:true, why:'The mark scheme gave R&D and creative work as examples.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'mcq', title:'Non-financial methods of motivation', blurb:'Empowerment, team working, flexible working, job enrichment and job rotation.', serve:9, pass:7,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Method','What it is','Link to theory'],[['Empowerment','Giving staff the authority to make decisions about their own work','Herzberg\'s responsibility; Maslow\'s esteem and self-actualisation'],['Team working','Staff work in groups with shared goals','Maslow\'s social needs'],['Flexible working','Choice over hours or location (flexitime, home working, part time)','Can meet safety and social needs; a hygiene factor (conditions)'],['Job enrichment','Giving a job more challenge and responsibility (vertical)','Herzberg\'s motivators'],['Job rotation','Moving staff between tasks of a similar level (horizontal)','Variety; little extra responsibility']])}
+  <h3>Influences on the choice of method</h3>
+  <p>The nature of the work, what staff want, the cost, the culture and management style, and whether managers are willing to give up control.</p>
+  <div class="trap"><b>The traps</b>Job rotation is not job enrichment: rotation adds variety at the same level; enrichment adds responsibility. Non-financial methods are not free: training, time and the risk of mistakes all cost money.</div>`,
+  items:[
+    {src:'Core rule · enrichment', prompt:'A receptionist is given responsibility for planning the office budget and handling supplier contracts. This is:', o:['job enrichment','job rotation','piece rate','centralisation'], a:0, why:'More challenge and responsibility.'},
+    {src:'Core rule · rotation', prompt:'Factory workers move between three similar tasks each week. This is:', o:['job rotation','job enrichment','empowerment','delayering'], a:0, why:'Variety at the same level.'},
+    {src:'Core rule · empowerment', prompt:'Hotel staff are allowed to give guests a refund of up to £100 without asking a manager. This is:', o:['empowerment','job rotation','commission','flexible working'], a:0, why:'Staff have authority to make decisions.'},
+    {src:'Core rule · theory link', prompt:'Which theory best supports job enrichment as a motivator?', o:['Herzberg','Taylor','Neither','Only Maslow\'s physiological needs'], a:0, why:'Enrichment adds motivators such as responsibility and achievement.'},
+    {src:'Core rule · team working', prompt:'Team working is most likely to meet which of Maslow\'s needs?', o:['Social','Physiological','Safety','None'], a:0, why:'Belonging to a team meets social needs.'},
+    {src:'Core rule · drawbacks', prompt:'Which is a drawback of empowerment?', o:['Staff may make costly mistakes, and some may not want the responsibility','It always lowers motivation','It is free','It increases close supervision'], a:0, why:'It depends on staff skills and willingness.'},
+    {src:'Core rule · choice', prompt:'Which business is least suited to empowering its staff to make major decisions?', o:['A business with new, untrained staff in a high-risk task','A design studio with experienced designers','A consultancy with expert staff','A software firm with skilled developers'], a:0, why:'Staff need the skills and experience first.'},
+    {src:'Core rule · flexible working', prompt:'Which is a benefit of flexible working for the business?', o:['It can help recruit and keep staff who need flexibility, cutting turnover','It removes the need for managers','It always raises output','It cuts wages'], a:0, why:'It widens the pool of staff and helps retention.'},
+    {src:'Based on AQA June 2025 · Paper 1 report (Q20)', prompt:'A question asks how an innovation strategy affects the HR function. Which point uses intrapreneurship well?', o:['HR must recruit and develop creative staff and give them autonomy and resources to innovate','Intrapreneurs are interns','Innovation has no effect on HR','HR should cut training'], a:0, why:'The report praised real-life innovation strategies such as intrapreneurship.'},
+    {src:'Core rule · choice', prompt:'Why might managers resist empowering staff?', o:['They lose some control and may feel their position is threatened','It always costs nothing','Staff always refuse it','The law forbids it'], a:0, why:'Management style and culture influence the choice of method.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'mcq', title:'Employee involvement and relations', blurb:'Individual and collective methods, trade unions, works councils, communication and good relations.', serve:9, pass:7,
+  teach:`<h3>Employee involvement and representation</h3>
+  ${tbl(['','Individual methods','Collective methods'],[['Examples','Appraisals, suggestion schemes, empowerment, one-to-one meetings','Trade unions, works councils, staff committees, consultation'],['Strengths','Each person is heard','Stronger voice; efficient for large workforces']])}
+  <ul><li><b>Trade union</b>: an organisation that represents workers, often negotiating pay and conditions (collective bargaining) and supporting members.</li>
+  <li><b>Works council</b>: a group of employer and employee representatives that discusses issues such as working practices, training and change, rather than pay.</li></ul>
+  <h3>Relations</h3>
+  <p>Influences on the relationship: management style, culture, communication, how far staff are unionised, the state of the business and the economy. Good relations mean fewer disputes, lower turnover, easier change and higher productivity. Good communication: clear, two-way, timely, through suitable channels.</p>
+  <h3>How it has been examined</h3>
+  <ul><li>June 2024 Paper 2 Q2.3: does consultation with trade unions let all businesses overcome resistance to change? Judgement depended on the size of the change, how far it threatened self-interest, how well it was communicated and how far workers in that industry are unionised.</li>
+  <li>June 2019 Paper 3 Q2: how a works council might have changed HR data. Works councils were understood less well.</li></ul>
+  <div class="trap"><b>The trap</b>Works councils and trade unions are not the same. And consultation means asking for views before deciding; it does not mean the employees decide.</div>`,
+  items:[
+    {src:'Core rule · works council', prompt:'Which best describes a works council?', o:['A group of employer and employee representatives that discusses issues such as working practices and change','A trade union negotiating pay','A government body that sets wages','A group of shareholders'], a:0, why:'Works councils usually deal with issues other than pay.'},
+    {src:'Core rule · trade unions', prompt:'What is collective bargaining?', o:['A trade union negotiating pay and conditions on behalf of its members','Each worker negotiating their own pay','Managers setting pay without discussion','Customers negotiating prices'], a:0, why:'Workers bargain together through their union.'},
+    {src:'Core rule · methods', prompt:'Which is an individual method of employee involvement?', o:['An appraisal','A trade union','A works council','A staff committee'], a:0, why:'It involves one employee at a time.'},
+    {src:'AQA June 2024 · Paper 2 mark scheme (Q2.3)', prompt:'When is consultation with trade unions least likely to overcome resistance to change?', o:['When the change seriously threatens workers\' jobs or pay and managers ignore what was said','When the change is small and well explained','When relations are already good','When workers\' views are acted on'], a:0, why:'The mark scheme: consultation may fail if outcomes are ignored or the change conflicts with self-interest.'},
+    {src:'AQA June 2025 · Paper 1 Q8', prompt:'Statement 1: "Retrenchment is less likely to be faced with organised resistance if the business has a low level of trade union membership." Statement 2: "Retrenchment is likely to be easier to manage if a business has a high rate of labour turnover."', o:['Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer and was the hardest question on that paper. High turnover means staff numbers fall naturally, so fewer redundancies are needed.'},
+    {src:'Core rule · value', prompt:'Which is a benefit of good employer–employee relations?', o:['Change is easier to introduce and there are fewer disputes','Wages are always lower','Managers make all decisions alone','Labour turnover rises'], a:0, why:'Trust makes staff more willing to accept change.'},
+    {src:'Core rule · communication', prompt:'Which is the best example of effective two-way communication?', o:['Regular team briefings where staff can ask questions and give feedback','A notice on the staff board','An email from the chief executive with no reply option','A rumour'], a:0, why:'Two-way means staff can respond.'},
+    {src:'Core rule · consultation', prompt:'What does consultation mean?', o:['Asking for employees\' views before a decision is made','Employees making the decision themselves','Telling employees after the decision','Ignoring employees'], a:0, why:'Managers still make the final decision.'},
+    {src:'Core rule · influences', prompt:'Which is most likely to damage relations between managers and staff?', o:['Decisions announced without explanation or warning','Regular consultation','Clear communication','Involving staff in changes'], a:0, why:'Poor communication breeds mistrust.'},
+    {src:'AQA June 2024 · Paper 2 mark scheme (Q2.3)', prompt:'For an "all businesses" question about union consultation, what should students consider?', o:['That some industries and businesses have far lower union membership than others','Only the case business','Only one union','Only the law'], a:0, why:'The guidance said it is valid to consider different employee relations across industries.'}
+  ]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Against the clock', blurb:'Fifteen mixed questions from the whole unit, 30 seconds each.', pass:12, poolFrom:[1,3,4,5,6,7,8,9], count:15, seconds:30,
+  teach:`<p>Fifteen questions drawn at random from the rest of this unit, with 30 seconds each. Herzberg, PRP and structures should be automatic.</p>
+  <p>You get different questions each time you try.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'rt36', key:'rt36_course_v1', offset:1200, short:'Rules and Traps 3.6',
+  name:'Rules and Traps: Unit 3.6',
+  hero:{kicker:'Rules and Traps · Unit 3.6',
+    title:'Human resource <em>management</em>',
+    lede:'HR objectives, HR data, organisational design, HR flow, motivation theory used accurately, pay and non-financial methods, and employer and employee relations. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
+  doneText:'You have worked through every rule and trap in Unit 3.6. Before any HR answer, check the theory is used accurately (pay is a hygiene factor), PRP is not piece rate, and the chain ends where the question says.',
+  stages:STAGES
+};
+</script>
+<script src="account.js"></script>
+<script src="course-engine.js"></script>
+<script src="visit.js" defer></script>
+</body>
+</html>
