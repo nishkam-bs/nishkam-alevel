@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rules and Traps: Unit 3.2 Managers, leadership and decision making</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+<link rel="stylesheet" href="rt.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   RULES AND TRAPS: UNIT 3.2 MANAGERS, LEADERSHIP AND DECISION MAKING
+   Specification topics 3.2.1a to 3.2.3b (spec.js). Every rule and trap is
+   checked against the AQA papers, mark schemes and examiner reports
+   2017 to 2026. Items marked "AQA June 20xx" are the real questions with
+   AQA's answer; "Based on" means our wording of a reported mistake.
+   Stage numbers are stored in the tracker as 800 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+const rint=(a,b,s=1)=>Math.round((a+Math.random()*(b-a))/s)*s;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
+const isN=c=>/^[−\-+]?[£€]?[\d.,]+(%|m|bn|k)?$/.test(String(c).trim());
+const tbl=(head,rows)=>{const num=head.map((h,i)=>i>0&&rows.every(r=>isN(r[i])||r[i]===''));return `<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${num[i]?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${num[i]?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;};
+
+/* decision tree used in stages 6 and 7 */
+const TREE=`<div class="chart"><svg viewBox="0 0 520 270" role="img" aria-label="Decision tree. Option 1, launch a new product, costs 5 million pounds: 0.6 chance of 12 million, 0.4 chance of 2 million. Option 2, improve the existing product, costs 1 million: 0.7 chance of 4 million, 0.3 chance of 1 million. Option 3, do nothing.">
+  <g style="stroke:var(--fg);stroke-width:1.5;fill:none">
+  <rect x="10" y="127" width="26" height="26" stroke-width="2"/>
+  <line x1="36" y1="140" x2="228" y2="60"/><line x1="36" y1="140" x2="228" y2="170"/><line x1="36" y1="140" x2="228" y2="240"/>
+  <circle cx="240" cy="60" r="12" stroke-width="2"/><circle cx="240" cy="170" r="12" stroke-width="2"/>
+  <line x1="252" y1="60" x2="400" y2="25"/><line x1="252" y1="60" x2="400" y2="95"/>
+  <line x1="252" y1="170" x2="400" y2="140"/><line x1="252" y1="170" x2="400" y2="200"/></g>
+  <text x="226" y="34" text-anchor="end">Launch new product (cost £5m)</text>
+  <text x="206" y="144" text-anchor="middle">Improve existing (cost £1m)</text>
+  <text x="236" y="244">Do nothing (£0)</text>
+  <text x="272" y="28">Success 0.6</text><text x="272" y="100">Failure 0.4</text>
+  <text x="318" y="134">Success 0.7</text><text x="272" y="210">Failure 0.3</text>
+  <text x="408" y="29">£12m</text><text x="408" y="99">£2m</text><text x="408" y="144">£4m</text><text x="408" y="204">£1m</text>
+</svg><div class="cap">A square is a decision. A circle is a chance node, where the outcome is uncertain. Costs go on the decision branches; outcomes go at the ends.</div></div>`;
+
+/* stakeholder map used in stage 9 */
+const GRID=`<div class="chart"><svg viewBox="0 0 520 300" role="img" aria-label="Stakeholder map with power on the vertical axis and interest on the horizontal axis. Low power low interest: monitor. Low power high interest: keep informed. High power low interest: keep satisfied. High power high interest: manage closely.">
+  <line class="ax" x1="70" y1="20" x2="70" y2="260" style="stroke:var(--fg)"/><line class="ax" x1="70" y1="260" x2="500" y2="260" style="stroke:var(--fg)"/>
+  <line class="ax" x1="285" y1="20" x2="285" y2="260"/><line class="ax" x1="70" y1="140" x2="500" y2="140"/>
+  <text x="177" y="85" text-anchor="middle" style="fill:var(--fg);font-weight:600">Keep satisfied</text><text x="392" y="85" text-anchor="middle" style="fill:var(--fg);font-weight:600">Manage closely</text>
+  <text x="177" y="205" text-anchor="middle" style="fill:var(--fg);font-weight:600">Monitor</text><text x="392" y="205" text-anchor="middle" style="fill:var(--fg);font-weight:600">Keep informed</text>
+  <text x="285" y="285" text-anchor="middle">Interest →</text><text x="20" y="140" transform="rotate(-90 20 140)" text-anchor="middle">Power →</text>
+  <text x="80" y="255">Low</text><text x="470" y="255">High</text><text x="76" y="34">High</text>
+</svg><div class="cap">Stakeholder mapping by power and interest. A group's position depends on the decision being made and can change over time.</div></div>`;
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'drift', title:'What managers do', blurb:'The jobs of a manager, and the difference between managing and leading.', serve:8, pass:6,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Refresher</h3>
+  <p>Managers are responsible for getting things done through other people and resources. Their main jobs are:</p>
+  ${tbl(['What managers do','Example'],[['Set objectives','Agree a target of 5% sales growth for the region'],['Analyse','Look at sales data and staff turnover to see what is going wrong'],['Lead','Motivate the team and communicate the plan'],['Make decisions','Choose which supplier to use or whether to open a new branch'],['Review','Check results against the objectives and change the plan if needed']])}
+  <p><b>Management</b> is about planning, organising and controlling resources so that objectives are met. <b>Leadership</b> is about setting a direction and influencing and inspiring people to follow it. Many managers do both, but they are not the same thing: someone can run a department efficiently without inspiring anyone, and someone without a management title can lead a team.</p>
+  <h3>Rules</h3>
+  <ul><li>Effective management and leadership depend on the situation: the task, the people, the time available and the culture of the business.</li>
+  <li>When a question asks how management or leadership affects something (profit, productivity, a change), follow the chain all the way to that end point.</li></ul>
+  <div class="trap"><b>The trap</b>The distinction between management and leadership was added to the specification in 2023 and has not yet been examined, so it could come up. Do not use the words as if they mean the same thing.</div>
+  <p style="margin-top:14px">Decide whether each statement is true or false.</p>`,
+  items:[
+    {src:'Core rule · what managers do', q:'A manager checks this quarter\'s results against the targets set in January.', text:'This is an example of reviewing.', ok:true, why:'Reviewing means comparing what happened with the objectives and deciding what to change.'},
+    {src:'Core rule · what managers do', q:'A manager studies labour turnover figures to find out why staff are leaving.', text:'This is an example of analysing.', ok:true, why:'Analysing means using information to understand a problem before deciding what to do.'},
+    {src:'Core rule · management and leadership', q:'Comparing management and leadership.', text:'Management and leadership mean exactly the same thing.', ok:false, why:'Management is planning, organising and controlling resources; leadership is setting direction and inspiring people.'},
+    {src:'Core rule · management and leadership', q:'A team member with no management title persuades colleagues to try a new way of working.', text:'This person is showing leadership.', ok:true, why:'Leadership is about influence, not job title.'},
+    {src:'Core rule · management and leadership', q:'A manager draws up a rota, sets budgets and checks that deadlines are met.', text:'These are mainly management tasks.', ok:true, why:'They are about organising and controlling resources.'},
+    {src:'Core rule · effectiveness', q:'About management styles.', text:'One management style is the most effective in every situation.', ok:false, why:'The best approach depends on the task, the staff, the time available and the culture.'},
+    {src:'Core rule · what managers do', q:'A manager agrees a target with her team to cut customer complaints by 20% this year.', text:'This is an example of setting objectives.', ok:true, why:'It is a measurable target with a time limit.'},
+    {src:'Core rule · what managers do', q:'About the role of managers.', text:'Making decisions is one of the main jobs of a manager.', ok:true, why:'Choosing between options is central to what managers do.'},
+    {src:'Core rule · end points', q:'A question asks how better leadership might improve labour productivity.', text:'An answer that explains how staff feel more valued, without linking this to output per worker, has reached the end point.', ok:false, why:'The chain has to finish at labour productivity: more motivated staff work harder or smarter, so output per worker rises.'},
+    {src:'Core rule · management and leadership', q:'About managers.', text:'A good manager can organise resources well but still be a weak leader.', ok:true, why:'Running a department efficiently and inspiring people are different skills.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'mcq', title:'Leadership styles', blurb:'Autocratic, paternalistic, democratic and laissez-faire, and what decides which is used.', serve:9, pass:7,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Style','How decisions are made','Works best when','Risks'],[
+   ['Autocratic','The leader decides alone and tells staff. Close supervision.','A quick decision is needed, in a crisis, or staff are new or unskilled','Skilled staff feel ignored; motivation and ideas suffer'],
+   ['Paternalistic','The leader decides, but in what they believe are the staff\'s best interests, and explains the decision. Cares about staff welfare.','Staff value security and being looked after','Staff still have little say; can feel patronising'],
+   ['Democratic','Staff are involved; the leader consults or the group decides.','Staff are skilled and the decision affects them; there is time','Slower decisions; the leader must still take responsibility'],
+   ['Laissez-faire','The leader sets broad aims and leaves staff to decide how to meet them.','Staff are highly skilled and self-motivated (e.g. designers, researchers)','Lack of direction and coordination if staff are not ready for it']])}
+  <h3>What decides the style used</h3>
+  <ul><li>The leader: personality, values, experience, how much they trust staff.</li>
+  <li>The staff: skills, experience, motivation, how much responsibility they want.</li>
+  <li>The situation: urgency, risk, the type of task, the size and culture of the business.</li></ul>
+  <h3>Rules</h3>
+  <ul><li>No style is best in all situations. A judgement should say when a style works and when it does not.</li>
+  <li>Link the style to its effect on motivation, speed of decisions, quality of decisions and, if asked, profit or productivity.</li></ul>
+  <div class="trap"><b>The traps</b>These four named styles were added in 2023 and have not been examined yet. Paternalistic is not the same as democratic: a paternalistic leader still makes the decision. Laissez-faire is not "no leadership": the leader still sets the aims. Blake Mouton\'s grid has been removed from the specification, so do not build answers around it.</div>`,
+  items:[
+    {src:'Core rule · styles', prompt:'A manager decides on new shift patterns, explains that they are in the staff\'s best interests, and does not ask for their views. This is:', o:['paternalistic leadership','democratic leadership','laissez-faire leadership','not leadership at all'], a:0, why:'The leader decides, but with the staff\'s welfare in mind and with an explanation.'},
+    {src:'Core rule · styles', prompt:'A games studio\'s manager sets the release date and budget, then leaves the design team to decide everything else. This is:', o:['laissez-faire leadership','autocratic leadership','paternalistic leadership','democratic leadership'], a:0, why:'Broad aims are set and highly skilled staff decide how to meet them.'},
+    {src:'Core rule · styles', prompt:'A factory has a fire in its warehouse and must reorganise production by tomorrow. Which style is most likely to be effective right now?', o:['Autocratic','Laissez-faire','Democratic, with a vote on every change','Whichever style the staff prefer'], a:0, why:'In a crisis a quick, clear decision matters more than consultation.'},
+    {src:'Core rule · styles', prompt:'Which is the main drawback of democratic leadership?', o:['Decisions take longer','Staff are never consulted','It only works with unskilled staff','The leader has no responsibility'], a:0, why:'Consulting and agreeing takes time, which matters when decisions are urgent.'},
+    {src:'Core rule · styles', prompt:'Which group of staff is most likely to respond well to a laissez-faire leader?', o:['Experienced, self-motivated researchers','New trainees on their first day','Temporary staff doing a repetitive task','Staff who want clear instructions'], a:0, why:'Laissez-faire depends on staff who have the skills and motivation to manage themselves.'},
+    {src:'Core rule · influences', prompt:'Which factor is most likely to push a manager towards a more autocratic style?', o:['A very tight deadline','Highly skilled and experienced staff','A culture that values staff involvement','Plenty of time to make the decision'], a:0, why:'With no time to consult, the manager is more likely to decide alone.'},
+    {src:'Core rule · effects', prompt:'A business with highly skilled engineers switches to an autocratic leader. What is the most likely effect?', o:['Motivation and ideas from the engineers may fall','Productivity is certain to rise','Labour turnover will fall','Decisions will become slower'], a:0, why:'Skilled staff who are no longer consulted may feel undervalued. The effect on productivity is not certain either way.'},
+    {src:'Core rule · styles', prompt:'Which statement about paternalistic and democratic leadership is correct?', o:['A paternalistic leader makes the decision; a democratic leader involves staff in making it','They are the same style','A democratic leader never explains decisions','A paternalistic leader lets staff vote'], a:0, why:'This is the key difference. Both may explain and care about staff, but only democratic leadership shares the decision.'},
+    {src:'Core rule · judgement', prompt:'A question asks whether democratic leadership will improve productivity. Which judgement is strongest?', o:['It is likely to help where staff are skilled and the decisions affect their work, but less so where quick decisions are needed or staff do not want responsibility','Democratic leadership always improves productivity','It never improves productivity','It depends on the business'], a:0, why:'It says what the answer depends on, specifically. "It depends on the business" on its own is not a judgement.'},
+    {src:'Core rule · specification', prompt:'Which of these models is no longer on the AQA specification?', o:['Blake Mouton grid','Tannenbaum Schmidt continuum','Lewin\'s force field analysis','Porter\'s five forces'], a:0, why:'Blake Mouton was removed for exams from 2025. Tannenbaum Schmidt is the leadership model to use.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'mcq', title:'The Tannenbaum Schmidt continuum', blurb:'From manager-centred to subordinate-centred, and how to use it in an answer.', serve:8, pass:6,
+  teach:`<h3>Refresher</h3>
+  <p>Tannenbaum and Schmidt showed leadership as a continuum. At one end the manager uses their authority and makes the decision. At the other end subordinates have a large area of freedom. As you move along, the manager\'s use of authority falls and subordinates\' freedom rises.</p>
+  ${tbl(['Point on the continuum','What happens'],[['Tells','The manager decides and announces the decision'],['Sells','The manager decides, then tries to persuade staff it is right'],['Consults','The manager presents the problem, gets suggestions, then decides'],['Shares (participates)','The manager sets limits and the group makes the decision'],['Delegates','Subordinates decide within limits set by the manager']])}
+  <p>Where a manager should sit depends on forces in the manager (values, confidence in staff), forces in the subordinates (skills, wish for responsibility) and forces in the situation (time pressure, the problem, the culture).</p>
+  <h3>How it has been examined</h3>
+  <ul><li>June 2019 Paper 1 Q20: how different leadership styles affect a strategy to <b>decentralise</b>. The mark scheme used the continuum: subordinate-centred leadership fits decentralisation better than "telling". Answers that discussed leadership styles without linking them to decentralisation were capped at 5 marks. Level 3 needed two separate effects, but did not need more than one style.</li>
+  <li>November 2020 Paper 3 Q5: a move from delegating to making decisions and telling managers. The judgement had to be about improving <b>profitability</b>, not which style is better in general. Naming Tannenbaum and Schmidt was not required.</li>
+  <li>June 2023 Paper 3 Q6: does the success of a growth strategy depend mainly on leadership?</li></ul>
+  <div class="trap"><b>The trap</b>Describing the continuum and never reaching the end point in the question. The model is a tool to explain why a style will or will not help with the thing you are asked about.</div>`,
+  items:[
+    {src:'Core rule · continuum', prompt:'A manager decides on a new rota, then holds a meeting to persuade staff that it is the right choice. On the continuum this is:', o:['sells','tells','consults','delegates'], a:0, why:'The decision is already made; the manager is persuading staff to accept it.'},
+    {src:'Core rule · continuum', prompt:'A manager explains a problem, asks the team for ideas, then makes the final decision. This is:', o:['consults','tells','sells','delegates'], a:0, why:'Staff give input, but the manager still decides.'},
+    {src:'Core rule · continuum', prompt:'Moving along the continuum from "tells" towards "delegates":', o:['the manager\'s use of authority falls and subordinates\' freedom rises','the manager\'s authority rises','subordinates have less freedom','nothing changes except speed'], a:0, why:'This is the central idea of the model.'},
+    {src:'AQA June 2019 · Paper 1 mark scheme (Q20)', prompt:'A business decentralises, giving regional managers more power to make decisions. Which leadership approach is most compatible?', o:['A subordinate-centred approach, such as sharing or delegating','Telling','Selling','Close supervision of every decision from head office'], a:0, why:'The mark scheme said subordinate-centred leadership fits decentralisation; "share" works better than "consult", which works better than "sell" or "tell".'},
+    {src:'AQA June 2019 · Paper 1 mark scheme (Q20)', prompt:'An answer to "Analyse how different leadership styles might affect the effectiveness of a strategy to decentralise" explains leadership styles well but never mentions decentralisation. What happens?', o:['It is capped at 5 marks','It can still get 9 marks','It gets no marks','It is marked as a 25-mark essay'], a:0, why:'The mark scheme set a maximum of 5 for answers that only covered the effect of leadership styles.'},
+    {src:'AQA November 2020 · Paper 3 mark scheme (Q5)', prompt:'A question asks whether a change to a more autocratic style will help a company improve profitability. What should the judgement focus on?', o:['Whether the change helps improve profitability','Which style is better in general','Whether the new leader is likeable','The history of the continuum'], a:0, why:'The mark scheme said the judgement must stay focused on profitability, not on which style is better.'},
+    {src:'Core rule · forces', prompt:'Which is a "force in the subordinates" that would push a manager towards delegating?', o:['Staff are experienced and want responsibility','The decision is urgent','The manager does not trust the staff','The business is in a crisis'], a:0, why:'Capable staff who want responsibility make delegation more likely to work.'},
+    {src:'Core rule · forces', prompt:'Which "force in the situation" pushes a manager towards telling?', o:['A decision must be made immediately','Staff are highly skilled','The culture encourages involvement','The problem needs many different ideas'], a:0, why:'Time pressure leaves no room for consultation.'},
+    {src:'Based on AQA November 2020 · Paper 3 mark scheme (Q5)', prompt:'A new chief executive moves from delegating to making decisions and telling managers what to do. Which is a valid argument that this could improve profitability?', o:['Quicker, more consistent decisions could cut duplicated costs and overcome resistance to unpopular changes','It will certainly make every manager more motivated','Telling is always the best style','Profit is unaffected by leadership'], a:0, why:'The mark scheme credited faster decisions, cost-cutting and overcoming resistance, against a possible fall in motivation and engagement.'}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'drift', title:'Scientific and intuitive decisions', blurb:'Data-based decisions, gut feeling, and the value of each.', serve:8, pass:6,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Refresher</h3>
+  <p><b>Scientific decision making</b> is based on data and follows a logical process: set objectives, gather data, analyse it, choose an option, put it into practice, and review the result. <b>Intuitive decision making</b> is based on gut feeling, experience and judgement.</p>
+  ${tbl(['','Scientific','Intuitive'],[['Strengths','Reduces risk; decisions can be explained and justified; data can reveal what instinct misses','Quick and cheap; useful when there is no data, e.g. a completely new market; draws on experience'],['Weaknesses','Slow and can be costly; data may be out of date, unreliable or about the past; cannot measure everything','Can be biased or wrong; hard to justify to others; risky for large decisions']])}
+  <h3>Rules</h3>
+  <ul><li>Most good decisions use both: data to inform, judgement to interpret it and fill the gaps.</li>
+  <li>Scientific decision making reduces risk but does not remove it. The data and forecasts can still be wrong.</li>
+  <li>Data mining and big data (Unit 3.9) can support scientific decision making.</li></ul>
+  <div class="trap"><b>The trap</b>Treating "scientific" as "always right". Data is often about the past, and the future may be different, especially in a fast-changing market.</div>`,
+  items:[
+    {src:'Core rule · scientific', q:'A supermarket uses five years of sales data to decide how much stock to order for Christmas.', text:'This is scientific decision making.', ok:true, why:'The decision is based on analysing data.'},
+    {src:'Core rule · intuition', q:'A fashion buyer orders a new style because she has a strong feeling it will sell, based on twenty years\' experience.', text:'This is intuitive decision making.', ok:true, why:'It is based on judgement and experience rather than data.'},
+    {src:'Core rule · scientific', q:'About scientific decision making.', text:'Using data removes all risk from a decision.', ok:false, why:'It reduces risk, but data can be unreliable, out of date or about the past.'},
+    {src:'Core rule · intuition', q:'A business is launching a completely new type of product with no past sales data.', text:'Intuition may have to play a large part in the decision.', ok:true, why:'Where there is little data, experience and judgement fill the gap.'},
+    {src:'Core rule · scientific', q:'About scientific decision making.', text:'It is usually quicker and cheaper than an intuitive decision.', ok:false, why:'Gathering and analysing data takes time and money.'},
+    {src:'Core rule · value', q:'A manager must explain a major investment decision to the board and the bank.', text:'A scientific approach makes the decision easier to justify.', ok:true, why:'Data and analysis give evidence others can check.'},
+    {src:'Core rule · value', q:'About intuition.', text:'Intuitive decisions can be affected by the manager\'s personal bias.', ok:true, why:'Gut feeling is shaped by past experience, which may not apply to the new situation.'},
+    {src:'Core rule · process', q:'The stages of scientific decision making.', text:'Reviewing the result is part of the process.', ok:true, why:'Set objectives, gather data, analyse, decide, implement, review.'},
+    {src:'Core rule · value', q:'A market is changing very fast.', text:'Past data is always a reliable guide to what will happen next.', ok:false, why:'In a fast-changing market, the past may tell you little about the future.'},
+    {src:'Core rule · value', q:'About good decisions.', text:'Many good decisions combine data with the manager\'s judgement.', ok:true, why:'Data informs; judgement interprets it and covers what the data cannot measure.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'mcq', title:'Risk, reward and influences on decisions', blurb:'Risk, uncertainty, opportunity cost, and what shapes a decision.', serve:9, pass:7,
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Term','Meaning'],[['Risk','The chance that an outcome is worse than expected, where the chances can be estimated'],['Uncertainty','Where the possible outcomes or their chances cannot be estimated with any confidence'],['Reward','The return from a decision, such as extra profit'],['Opportunity cost','The next best alternative given up when a choice is made']])}
+  <p>Higher potential rewards usually come with higher risk. How much risk a business takes depends on its objectives, its finances and the attitude of its owners and managers.</p>
+  <h3>Influences on decisions</h3>
+  <ul><li><b>Mission and objectives</b>: a decision should help achieve them.</li>
+  <li><b>Ethics</b>: what is right, not only what is profitable.</li>
+  <li><b>The external environment</b>, including competition: rivals\' actions, the economy, the law.</li>
+  <li><b>Resource constraints</b>: finance, staff, time, capacity.</li></ul>
+  <div class="trap"><b>The trap</b>Using "risk" and "uncertainty" as if they were the same. Opportunity cost is the next best alternative only, not every alternative and not the money spent.</div>`,
+  items:[
+    {src:'Core rule · opportunity cost', prompt:'A business has £500,000 and chooses to buy new machinery instead of a marketing campaign (its second choice) or new offices (its third choice). What is the opportunity cost?', o:['The marketing campaign','The new offices','The marketing campaign and the new offices','The £500,000'], a:0, why:'Opportunity cost is the next best alternative given up.'},
+    {src:'Core rule · risk and uncertainty', prompt:'Which describes uncertainty rather than risk?', o:['A business cannot estimate how likely a new technology is to change its market','A business knows there is a 30% chance a product launch will fail','A business has data showing 5% of deliveries arrive late','A business estimates a 0.4 chance of a contract being lost'], a:0, why:'With uncertainty the chances cannot be estimated with any confidence.'},
+    {src:'Core rule · risk and reward', prompt:'Which statement about risk and reward is usually true?', o:['Options with higher potential rewards tend to carry more risk','The lowest-risk option always gives the highest reward','Risk and reward are unrelated','A business should always pick the highest reward'], a:0, why:'Bigger potential gains usually come with a greater chance of loss.'},
+    {src:'Core rule · influences', prompt:'A business turns down a profitable contract to supply a company with a poor record on workers\' rights. Which influence on decisions is shown?', o:['Ethics','Resource constraints','Competition','The economy'], a:0, why:'The decision is based on what is right, not just on profit.'},
+    {src:'Core rule · influences', prompt:'A business would like to open three new stores but can only afford one this year. Which influence on decisions is shown?', o:['Resource constraints','Ethics','Mission','Competition'], a:0, why:'Limited finance restricts the choices available.'},
+    {src:'Core rule · influences', prompt:'A rival cuts its prices by 15%, and a business decides to respond with its own price cut. Which influence is shown?', o:['Competition (the external environment)','Ethics','Resource constraints','Mission'], a:0, why:'Competitors\' actions are part of the external environment.'},
+    {src:'Core rule · influences', prompt:'A social enterprise whose mission is to train young people chooses the option that creates the most training places, not the most profit. Which influence is shown?', o:['Mission and objectives','Competition','Resource constraints','The economy'], a:0, why:'The decision is driven by what the organisation exists to do.'},
+    {src:'Core rule · attitude to risk', prompt:'Which business is most likely to choose a low-risk option?', o:['One with little cash and high debt','One with large cash reserves and no debt','One whose owners want rapid growth','One in a fast-growing market'], a:0, why:'A business that could not survive a loss cannot afford to take big risks.'},
+    {src:'Core rule · opportunity cost', prompt:'A manager spends a week preparing a funding bid instead of visiting customers. The opportunity cost is:', o:['the customer visits that did not happen','the cost of the paper used','the funding bid','nothing, because no money was spent'], a:0, why:'Time has an opportunity cost too: the next best use of it is given up.'},
+    {src:'Core rule · reward', prompt:'Which is the best example of a reward from a decision?', o:['An increase in profit from a new product','The cost of launching the product','The chance the product fails','The time spent on market research'], a:0, why:'A reward is the return from the decision.'}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'calc', title:'Decision tree calculations', blurb:'Expected values, net gains and missing probabilities, with new numbers each time.', serve:7, pass:5,
+  teach:`<h3>Refresher</h3>
+  ${TREE}
+  <ol><li><b>Expected value</b> at each chance node = sum of (probability × outcome).</li>
+  <li><b>Net gain</b> = expected value − cost of the option.</li>
+  <li>The probabilities at each chance node add up to 1.</li></ol>
+  <p>Working for the tree above:</p>
+  ${tbl(['Option','Expected value','Cost','Net gain'],[['Launch new product','(0.6 × £12m) + (0.4 × £2m) = £8.0m','£5m','£3.0m'],['Improve existing','(0.7 × £4m) + (0.3 × £1m) = £3.1m','£1m','£2.1m'],['Do nothing','£0','£0','£0']])}
+  <h3>Rules</h3>
+  <ul><li>AQA\'s definition: net gain = expected value minus the initial cost (June 2022 Paper 1 Q3).</li>
+  <li>Missing probability = 1 − the others. On June 2024 Paper 1 Q9, 0.4 + 0.32 + 0.24 left 0.04.</li>
+  <li>Give answers in £ with the right scale.</li></ul>
+  <div class="trap"><b>The traps</b>Forgetting to take off the initial cost: some students did this on June 2025 Paper 2 Q1.3. Treating the expected value as the outcome that will actually happen: it is a weighted average, and the real result will be one of the end values.</div>
+  <p style="margin-top:14px">Type your answer as a number. The numbers change each time.</p>`,
+  items:[
+    {src:'Core skill · expected value', gen(){const p=pick([0.2,0.3,0.4,0.5,0.6,0.7,0.8]),a=rint(6,20),b=rint(1,a-2);const ans=r2(p*a+(1-p)*b);
+      return {given:`A chance node has a <b>${p}</b> probability of <b>£${a}m</b> and a <b>${r1(1-p)}</b> probability of <b>£${b}m</b>.`,prompt:'Calculate the expected value (in £m).',pre:true,ans,tol:0.01,
+        traps:[{v:r2((a+b)/2),m:'You took a simple average. Weight each outcome by its probability.'}],work:`(${p} × £${a}m) + (${r1(1-p)} × £${b}m) = £${f(r2(p*a))}m + £${f(r2((1-p)*b))}m = £${f(ans)}m.`};}},
+    {src:'Core skill · net gain', gen(){const p=pick([0.3,0.4,0.5,0.6,0.7]),a=rint(8,24),b=rint(1,5),c=rint(2,6);const ev=r2(p*a+(1-p)*b),ans=r2(ev-c);
+      return {given:`An option costs <b>£${c}m</b>. It has a <b>${p}</b> probability of returning <b>£${a}m</b> and a <b>${r1(1-p)}</b> probability of returning <b>£${b}m</b>.`,prompt:'Calculate the net gain (in £m). If negative, use a minus sign.',pre:true,ans,tol:0.01,
+        traps:[{v:ev,m:'That is the expected value. Net gain takes off the cost of the option.'}],work:`Expected value = (${p} × £${a}m) + (${r1(1-p)} × £${b}m) = £${f(ev)}m. Net gain = £${f(ev)}m − £${c}m = £${f(ans)}m.`};}},
+    {src:'AQA June 2024 · Paper 1 Q9', given:'In a decision tree there are four possible outcomes of an action. The probabilities of the 1st, 2nd and 3rd outcomes are <b>0.4</b>, <b>0.32</b> and <b>0.24</b> respectively.',prompt:'What is the probability of the 4th outcome?',ans:0.04,tol:0.0001,
+     traps:[{v:0.32,m:'The probabilities must add up to 1. 0.4 + 0.32 + 0.24 = 0.96.'}],work:'1 − (0.4 + 0.32 + 0.24) = 1 − 0.96 = 0.04. This was AQA\'s answer.'},
+    {src:'Core skill · missing probability', gen(){const a=pick([0.1,0.15,0.2,0.25,0.3,0.35]),b=pick([0.2,0.25,0.3,0.4]);const ans=r2(1-a-b);
+      return {given:`A chance node has three outcomes. Two have probabilities of <b>${a}</b> and <b>${b}</b>.`,prompt:'What is the probability of the third outcome?',ans,tol:0.0001,work:`1 − (${a} + ${b}) = ${ans}.`};}},
+    {src:'Core skill · three outcomes', gen(){const ps=pick([[0.2,0.5,0.3],[0.1,0.6,0.3],[0.3,0.4,0.3],[0.25,0.5,0.25]]),vs=[rint(15,30),rint(6,12),rint(-4,2)];const ans=r2(ps[0]*vs[0]+ps[1]*vs[1]+ps[2]*vs[2]);
+      return {given:`A new product has three possible outcomes: high demand (<b>${ps[0]}</b>, <b>£${vs[0]}m</b>), medium demand (<b>${ps[1]}</b>, <b>£${vs[1]}m</b>) and low demand (<b>${ps[2]}</b>, <b>${vs[2]<0?'−£'+Math.abs(vs[2]):'£'+vs[2]}m</b>).`,prompt:'Calculate the expected value (in £m).',pre:true,ans,tol:0.01,
+        work:`(${ps[0]} × ${vs[0]}) + (${ps[1]} × ${vs[1]}) + (${ps[2]} × ${vs[2]}) = £${f(ans)}m.`};}},
+    {src:'Based on AQA June 2025 · Paper 2 Q1.3', given:'Option 1 has a net gain of <b>£2.1m</b>. Option 2 has a net gain of <b>£3.6m</b>.',prompt:'By how much is Option 2\'s net gain greater (in £m)?',pre:true,ans:1.5,tol:0.001,work:'£3.6m − £2.1m = £1.5m. The mark scheme used this comparison, alongside qualitative reasons for choosing Option 2.'},
+    {src:'Core skill · net gain from the tree', given:'Use the decision tree in the refresher: launching the new product costs <b>£5m</b>, with a <b>0.6</b> chance of <b>£12m</b> and a <b>0.4</b> chance of <b>£2m</b>.',prompt:'Calculate the net gain of launching the new product (in £m).',pre:true,ans:3,tol:0.001,
+     traps:[{v:8,m:'That is the expected value. Take off the £5m cost.'}],work:'(0.6 × £12m) + (0.4 × £2m) = £8m. £8m − £5m = £3m.'},
+    {src:'Core skill · comparing options', gen(){const c1=rint(3,8),c2=rint(1,3),p1=pick([0.3,0.4,0.5]),p2=pick([0.6,0.7,0.8]),a1=rint(14,25),b1=rint(1,4),a2=rint(5,10),b2=rint(1,3);
+      const n1=r2(p1*a1+(1-p1)*b1-c1),n2=r2(p2*a2+(1-p2)*b2-c2),ans=r2(Math.max(n1,n2));
+      return {given:`Option A costs <b>£${c1}m</b>: <b>${p1}</b> chance of <b>£${a1}m</b>, otherwise <b>£${b1}m</b>.<br>Option B costs <b>£${c2}m</b>: <b>${p2}</b> chance of <b>£${a2}m</b>, otherwise <b>£${b2}m</b>.`,prompt:'What is the higher of the two net gains (in £m)?',pre:true,ans,tol:0.01,
+        work:`A: (${p1} × ${a1}) + (${r1(1-p1)} × ${b1}) − ${c1} = £${f(n1)}m. B: (${p2} × ${a2}) + (${r1(1-p2)} × ${b2}) − ${c2} = £${f(n2)}m. Higher net gain = £${f(ans)}m (Option ${n1>=n2?'A':'B'}). Remember that the higher net gain may also carry more risk.`};}}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'mcq', title:'Using decision trees', blurb:'Reading a tree, and what the numbers do not tell you.', serve:8, pass:6,
+  teach:`<h3>The value of decision trees</h3>
+  ${tbl(['Strengths','Limitations'],[['Set out the options and possible outcomes clearly','Probabilities and outcomes are estimates, often guesses'],['Make managers think about the chances of each outcome','Ignore qualitative factors such as staff morale, brand image or ethics'],['Give a number to compare options','Ignore attitude to risk: the highest net gain may also be the riskiest'],['Encourage a scientific approach','Can give a false sense of accuracy; do not show the time money is tied up']])}
+  <h3>How it has been examined</h3>
+  <ul><li>June 2019 Paper 1 Q18: the manager chose Option A, which had the highest net gain (£3m). The question asked why A might not be the best decision. The mark scheme rewarded the risk: A had only a 0.2 chance of success and cost £10m, while B had a 0.6 chance of success, a net gain of £2.4m and a cost of £2m. Arguments based only on Ansoff were limited to 4 marks.</li>
+  <li>June 2025 Paper 2 Q1.3: why SCF chose Option 2. The quantitative side (net gain £3.6m against £2.1m, a 40% chance of £30m) had to be combined with qualitative reasons from the case: low gearing, falling efficiency at the UK site and a new leader wanting ambitious growth.</li></ul>
+  <div class="trap"><b>The traps</b>Assuming the option with the highest net gain must be chosen. Treating net gain as the profit that will be made: in 2019 some students did this. Ignoring the instruction to use qualitative information as well.</div>`,
+  items:[
+    {src:'AQA June 2022 · Paper 1 Q3', prompt:'In a decision tree the net gain of a decision is the:', o:['expected value minus the initial cost.','average pay-off of the outcomes.','expected value of the best decision minus the expected value of the next best decision.','total pay-off of the outcomes minus the initial cost.'], a:0, why:'This is AQA\'s answer. The expected value weights each outcome by its probability; the initial cost is then taken off.'},
+    {src:'Based on AQA June 2019 · Paper 1 Q18', table:tbl(['Option','Cost','Chance of success','Net gain'],[['A: new product','£10m','0.2','£3.0m'],['B: new promotion','£2m','0.6','£2.4m'],['C: do nothing','£0','–','£0']]), prompt:'Why might Option A not be the best choice, even though it has the highest net gain?', o:['It has an 80% chance of failure and costs £10m, so it is far riskier than B for a slightly higher net gain','Its net gain is lower than B\'s','Decision trees should never be used','Option C has the highest net gain'], a:0, why:'The mark scheme rewarded comparing risk with net gain: B gives a similar net gain at much lower risk and cost.'},
+    {src:'Based on AQA June 2019 · Paper 1 report (Q18)', prompt:'An option has a net gain of £3m. What does this mean?', o:['On average, weighting each outcome by its probability, the option is worth £3m more than it costs','The option will make exactly £3m profit','The option cannot make a loss','The option is certain to succeed'], a:0, why:'It is a weighted average. The actual outcome will be one of the end values, which could be a loss.'},
+    {src:'Core rule · limitations', prompt:'Which is the biggest limitation of a decision tree?', o:['The probabilities and outcomes are estimates that may be wrong','It cannot compare more than two options','It always recommends doing nothing','It includes too many qualitative factors'], a:0, why:'If the estimates are poor, the net gains are poor too.'},
+    {src:'Core rule · limitations', prompt:'Which factor does a decision tree leave out?', o:['The effect of a decision on staff morale','The probability of each outcome','The cost of each option','The financial value of each outcome'], a:0, why:'Qualitative factors are not in the numbers and must be considered separately.'},
+    {src:'Core rule · risk', prompt:'A business with very little cash is choosing between two options. Which is it most likely to prefer?', o:['A lower net gain with a small chance of loss','The highest net gain whatever the risk','The option with the most uncertain outcomes','Whichever option costs most'], a:0, why:'A business that could not survive a big loss is likely to be risk averse.'},
+    {src:'AQA June 2025 · Paper 2 mark scheme (Q1.3)', prompt:'A question says "include quantitative and qualitative information" when explaining why an option was chosen. Which answer does this best?', o:['Compares the net gains, then adds reasons from the case such as low gearing and the leader\'s growth ambitions','Lists the net gains only','Describes the decision tree without numbers','Explains what a decision tree is'], a:0, why:'The 2025 report said many answers would have improved by including qualitative factors, as the question required.'},
+    {src:'Core rule · reading a tree', prompt:'In a decision tree, what does a circle show?', o:['A chance node, where the outcome is uncertain','A decision the manager makes','The final outcome','The cost of an option'], a:0, why:'Squares are decisions; circles are chance events.'},
+    {src:'Core rule · value', prompt:'Which is a genuine benefit of using a decision tree?', o:['It makes managers set out the options and think about the chances of each outcome','It guarantees the best decision','It removes the need for judgement','It predicts the future accurately'], a:0, why:'It gives structure and a number to compare, but judgement is still needed.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'drift', title:'Stakeholders and their needs', blurb:'Who stakeholders are, where their needs overlap and where they conflict.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Refresher</h3>
+  ${tbl(['Stakeholder','Main interests'],[['Shareholders (owners)','Dividends, a rising share price, profit'],['Employees','Pay, job security, working conditions, development'],['Customers','Price, quality, service, choice'],['Suppliers','Regular orders, prompt payment, fair prices'],['Lenders','Interest and repayment on time; a business that can afford its debts'],['Local community','Jobs, low pollution and disruption, support for local causes'],['Government','Tax, employment, keeping to the law']])}
+  <h3>Overlap and conflict</h3>
+  <ul><li><b>Overlap</b>: a successful, growing business can give shareholders profit, employees secure jobs and suppliers more orders.</li>
+  <li><b>Conflict</b>: higher wages reduce profit for shareholders; keeping all profit for investment means no dividend; lower prices help customers but cut margins; closing a site saves costs but hurts the community.</li>
+  <li>Whether needs conflict often depends on the time scale: cutting costs now may raise short-term profit but damage long-term success.</li></ul>
+  <p>You will meet the shareholder concept and the stakeholder concept again in Unit 3.7. The shareholder concept puts owners first; the stakeholder concept takes all stakeholders into account.</p>
+  <div class="trap"><b>The traps</b>On June 2022 Paper 1 Q1, retaining all profit to pay for automation was expected to cause conflict with employees (fearing job losses) and shareholders (no dividend), not with lenders or suppliers. On June 2022 Paper 3 Q5 (stakeholder reactions to a takeover), the judgement had to stay on how likely conflict was; the business was struggling to survive, so there might be less conflict than usual.</div>`,
+  items:[
+    {src:'AQA June 2022 · Paper 1 Q1', q:'Managers propose to keep all of the business\'s profit to pay for automating production.', text:'This is most likely to cause conflict with employees and shareholders.', ok:true, why:'This was AQA\'s answer. Employees fear job losses; shareholders get no dividend.'},
+    {src:'AQA June 2022 · Paper 1 Q1', q:'Managers propose to keep all of the business\'s profit to pay for automating production.', text:'Lenders are the group most likely to object.', ok:false, why:'Keeping profit in the business strengthens it, which lenders usually welcome.'},
+    {src:'Core rule · conflict', q:'A business agrees a 10% pay rise for all staff.', text:'This could conflict with shareholders\' interests in the short run.', ok:true, why:'Higher wage costs reduce the profit available for dividends, unless productivity rises enough to cover it.'},
+    {src:'Core rule · overlap', q:'A business grows strongly and becomes more profitable.', text:'This can benefit shareholders, employees and suppliers at the same time.', ok:true, why:'Profit, job security and more orders can all come from the same success.'},
+    {src:'Core rule · conflict', q:'A supermarket cuts its prices sharply.', text:'Customers and suppliers are certain to gain.', ok:false, why:'Customers gain, but the supermarket may push suppliers for lower prices to protect its margin.'},
+    {src:'Core rule · time scale', q:'About stakeholder conflict.', text:'Whether stakeholders\' needs conflict can depend on the time scale.', ok:true, why:'Spending on training cuts profit now but may raise productivity and profit later.'},
+    {src:'Core rule · lenders', q:'About lenders as stakeholders.', text:'A bank\'s main interest is that the business can pay interest and repay the loan on time.', ok:true, why:'Lenders care about the business\'s ability to meet its debts.'},
+    {src:'AQA June 2022 · Paper 3 mark scheme (Q5)', q:'A struggling business might be taken over. Some employees fear redundancy; shareholders see a chance to sell before things get worse.', text:'Because the business is struggling, there may be less conflict between stakeholders than usual.', ok:true, why:'The mark scheme made this point: if the business might collapse anyway, some stakeholders see a takeover as an upside.'},
+    {src:'AQA June 2026 · Paper 1 Q10', q:'A business puts the needs of its owners first and society second.', text:'It is most likely to be following the shareholder concept.', ok:true, why:'This was AQA\'s answer (Battum Ltd).'},
+    {src:'Core rule · community', q:'A factory closes and production moves abroad.', text:'The local community is a stakeholder likely to lose out.', ok:true, why:'Local jobs and spending at nearby businesses are lost.'},
+    {src:'Core rule · stakeholders', q:'About stakeholders.', text:'Only shareholders count as stakeholders because they own the business.', ok:false, why:'A stakeholder is any group with an interest in, or affected by, the business.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'mcq', title:'Stakeholder mapping and managing relationships', blurb:'Power and interest, what to do with each group, and the limits of the map.', serve:9, pass:7,
+  teach:`<h3>Refresher</h3>
+  ${GRID}
+  ${tbl(['Position','What to do'],[['High power, high interest','Manage closely: involve and consult them'],['High power, low interest','Keep satisfied: make sure their needs are met so they do not become active'],['Low power, high interest','Keep informed: communicate regularly'],['Low power, low interest','Monitor: watch for changes']])}
+  <h3>Influences on the relationship, and how to manage it</h3>
+  <ul><li>What shapes the relationship: the power and interest of each group, the business\'s objectives and culture, its finances, and how much stakeholders\' needs overlap.</li>
+  <li>How to manage it: communication (keeping groups informed) and consultation (asking for views before deciding).</li></ul>
+  <h3>How it has been examined</h3>
+  <ul><li>June 2023 Paper 2 Q3.2: how stakeholder mapping would help Simply Bake respond to a small campaign group (APO). APO had little power; the mark scheme accepted "monitor" (low power, low interest in Simply Bake itself) or "keep informed" (low power, high interest). Many students wrote about other stakeholders instead of APO.</li>
+  <li>June 2018 Paper 1 Q21 (25 marks): can stakeholder mapping help managers of a plc manage change? Judgement depended on how accurate the map is and the fact that mapping identifies positions but managers still have to act on them.</li></ul>
+  <div class="trap"><b>The traps</b>Treating positions as fixed: a group\'s power and interest change with the decision and over time. Writing about every stakeholder when the question names one. Calling it Mendelow\'s matrix: AQA calls it stakeholder mapping.</div>`,
+  items:[
+    {src:'Core rule · mapping', prompt:'A large investor owns 30% of a company\'s shares and is very interested in a planned takeover. How should the company treat this investor?', o:['Manage closely','Monitor','Keep informed','Keep satisfied'], a:0, why:'High power and high interest: involve and consult.'},
+    {src:'Core rule · mapping', prompt:'A local residents\' group is very concerned about a factory extension but has little power to stop it. The business should:', o:['keep them informed','manage them closely','ignore them','keep them satisfied'], a:0, why:'Low power, high interest: communicate regularly so concerns do not grow.'},
+    {src:'Core rule · mapping', prompt:'A government regulator has power over a business but little interest in a decision about office furniture. The business should:', o:['keep it satisfied','manage it closely','keep it informed','monitor it only'], a:0, why:'High power, low interest: meet its needs so it does not become active.'},
+    {src:'AQA June 2023 · Paper 2 mark scheme (Q3.2)', prompt:'A small campaign group criticises a large food manufacturer. It has little direct power and little interest in this particular business. Using stakeholder mapping, the manufacturer should:', o:['monitor the group','manage it closely','give in to all its demands','keep it satisfied'], a:0, why:'The mark scheme: low power and low interest suggests "monitor"; low power and high interest suggests "keep informed".'},
+    {src:'Based on AQA June 2023 · Paper 2 report (Q3.2)', prompt:'A question asks how stakeholder mapping would help a business respond to criticism from one named pressure group. What is the most common way students went wrong?', o:['Writing about other stakeholders instead of the named group','Using the terms power and interest','Explaining what the map is','Applying it to the case'], a:0, why:'The report said too many missed "respond to criticism from APO" and wrote about other stakeholders.'},
+    {src:'Core rule · mapping', prompt:'Why might a stakeholder\'s position on the map change?', o:['Power and interest depend on the decision being made and change over time','Positions are fixed once drawn','Only the government can change position','Positions change only when profit changes'], a:0, why:'A group with little interest in one decision may be very interested in another.'},
+    {src:'AQA June 2018 · Paper 1 mark scheme (Q21)', prompt:'Which is the strongest limitation of stakeholder mapping when managing change?', o:['It identifies where groups stand, but managers still have to choose and carry out the right actions','It cannot show power','It only works for sole traders','It shows too much detail'], a:0, why:'The mark scheme: mapping helps focus thinking but does not ensure change is managed effectively.'},
+    {src:'Core rule · managing relationships', prompt:'Asking employees\' views on a new shift system before deciding is an example of:', o:['consultation','communication only','monitoring','ignoring stakeholders'], a:0, why:'Consultation means asking for views before the decision is made.'},
+    {src:'Core rule · influences', prompt:'Which is most likely to improve a business\'s relationship with its suppliers?', o:['Paying on time and giving regular orders','Delaying payments to improve its own cash flow','Switching supplier every month for the lowest price','Never communicating plans'], a:0, why:'Suppliers value prompt payment and steady business.'},
+    {src:'Core rule · terms', prompt:'What does AQA call the power and interest grid?', o:['Stakeholder mapping','Mendelow\'s matrix','The Boston Matrix','Ansoff\'s matrix'], a:0, why:'Use the term stakeholder mapping in your answers.'}
+  ]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Against the clock', blurb:'Fifteen mixed questions from the whole unit, 30 seconds each.', pass:12, poolFrom:[1,2,3,4,5,7,8,9], count:15, seconds:30,
+  teach:`<p>Fifteen questions drawn at random from the rest of this unit, with 30 seconds each. You should know these without having to stop and think: which style is which, what net gain means, where a stakeholder sits on the map.</p>
+  <p>You get different questions each time you try.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'rt32', key:'rt32_course_v1', offset:800, short:'Rules and Traps 3.2',
+  name:'Rules and Traps: Unit 3.2',
+  hero:{kicker:'Rules and Traps · Unit 3.2',
+    title:'Managers, leadership and <em>decisions</em>',
+    lede:'What managers do, leadership styles, Tannenbaum and Schmidt, decision making, decision trees and stakeholders. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
+  doneText:'You have worked through every rule and trap in Unit 3.2. When you write about leadership or stakeholders, use the model as a working step and take every chain to the end point in the question.',
+  stages:STAGES
+};
+</script>
+<script src="account.js"></script>
+<script src="course-engine.js"></script>
+<script src="visit.js" defer></script>
+</body>
+</html>

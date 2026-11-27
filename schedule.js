@@ -9,7 +9,8 @@ const EX={};(window.EXAMS||[]).forEach(e=>{EX[e.id]=e;});
 const COURSES={endpoint_course_v1:[0,'Start Point/End Point course','start-end-point-course.html'],judgement_course_v1:[100,'Judgement course','judgement-course.html'],
   calc_course_v1:[200,'Calculations course','calculations-course.html'],concepts_course_v1:[300,'Concept Confusions course','concepts-course.html'],
   application_course_v1:[400,'Application course','application-course.html'],models_course_v1:[500,'Models course','models-course.html'],paper3_course_v1:[600,'Paper 3 course','paper3-course.html'],
-  rt31_course_v1:[700,'Rules and Traps: Unit 3.1','rt-3-1.html']};
+  rt31_course_v1:[700,'Rules and Traps: Unit 3.1','rt-3-1.html'],
+  rt32_course_v1:[800,'Rules and Traps: Unit 3.2','rt-3-2.html']};
 
 /* UK clocks: BST from the last Sunday in March to the last Sunday in October */
 function lastSunday(y,m){const d=new Date(Date.UTC(y,m+1,0));d.setUTCDate(d.getUTCDate()-d.getUTCDay());return d;}

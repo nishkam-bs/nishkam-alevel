@@ -25,7 +25,8 @@ const rint=(a,b,s=1)=>Math.round((a+Math.random()*(b-a))/s)*s;
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
 const r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
-const tbl=(head,rows)=>`<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${i?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${i?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const isN=c=>/^[−\-+]?[£€]?[\d.,]+(%|m|bn|k)?$/.test(String(c).trim());
+const tbl=(head,rows)=>{const num=head.map((h,i)=>i>0&&rows.every(r=>isN(r[i])||r[i]===''));return `<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${num[i]?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${num[i]?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;};
 
 /* economic forecasts used in stage 8 */
 const ECON=tbl(['Forecast for the UK economy','2027','2028','2029'],[
