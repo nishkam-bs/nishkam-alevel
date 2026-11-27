@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rules and Traps: Unit 3.8 Choosing strategic direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="course-engine.css">
+<link rel="stylesheet" href="rt.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   RULES AND TRAPS: UNIT 3.8 CHOOSING STRATEGIC DIRECTION
+   Specification topics 3.8.1a to 3.8.2b (spec.js). Every rule and trap is
+   checked against the AQA papers, mark schemes and examiner reports
+   2017 to 2026. Items marked "AQA June 20xx" are the real questions with
+   AQA's answer; "Based on" means our wording of a reported mistake.
+   Stage numbers are stored in the tracker as 1400 + stage.
+   ===================================================================== */
+const TF=['True','False'];
+const rint=(a,b,s=1)=>Math.round((a+Math.random()*(b-a))/s)*s;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const f=n=>Number(n).toLocaleString('en-GB',{maximumFractionDigits:2});
+const r1=n=>Math.round(n*10)/10, r2=n=>Math.round(n*100)/100;
+const isN=c=>/^[−\-+]?[£€]?[\d.,]+(%|m|bn|k)?$/.test(String(c).trim());
+const tbl=(head,rows)=>{const num=head.map((h,i)=>i>0&&rows.every(r=>isN(r[i])||r[i]===''));return `<div class="tablewrap"><table class="d"><thead><tr>${head.map((h,i)=>`<th${num[i]?' class="r"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${num[i]?' class="r"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;};
+
+const ANSOFF=`<div class="chart"><svg viewBox="0 0 520 260" role="img" aria-label="Ansoff's matrix. Existing products in existing markets is market penetration; new products in existing markets is new product development; existing products in new markets is market development; new products in new markets is diversification. Risk rises towards diversification.">
+  <text x="300" y="18" text-anchor="middle">Products</text><text x="200" y="40" text-anchor="middle">Existing</text><text x="400" y="40" text-anchor="middle">New</text>
+  <text x="30" y="150" text-anchor="middle" transform="rotate(-90 30 150)">Markets</text><text x="80" y="100" text-anchor="middle">Existing</text><text x="80" y="200" text-anchor="middle">New</text>
+  <rect x="110" y="50" width="180" height="96" rx="4" style="fill:var(--ok-soft);stroke:var(--line)"/><text x="200" y="98" text-anchor="middle" style="fill:var(--fg);font-weight:600">Market penetration</text><text x="200" y="116" text-anchor="middle">lowest risk</text>
+  <rect x="300" y="50" width="180" height="96" rx="4" style="fill:var(--gold-soft);stroke:var(--line)"/><text x="390" y="98" text-anchor="middle" style="fill:var(--fg);font-weight:600">New product development</text>
+  <rect x="110" y="152" width="180" height="96" rx="4" style="fill:var(--gold-soft);stroke:var(--line)"/><text x="200" y="200" text-anchor="middle" style="fill:var(--fg);font-weight:600">Market development</text>
+  <rect x="300" y="152" width="180" height="96" rx="4" style="fill:var(--end-soft);stroke:var(--line)"/><text x="390" y="200" text-anchor="middle" style="fill:var(--fg);font-weight:600">Diversification</text><text x="390" y="218" text-anchor="middle">highest risk</text>
+</svg><div class="cap">Ansoff's matrix. Risk rises as a business moves away from what it knows: its products and its customers.</div></div>`;
+
+const PORTER=`<div class="chart"><svg viewBox="0 0 520 210" role="img" aria-label="Porter's generic strategies. Across the whole market: cost leadership or differentiation. In a narrow segment: cost focus or differentiation focus.">
+  <text x="300" y="18" text-anchor="middle">Source of competitive advantage</text><text x="200" y="40" text-anchor="middle">Lower cost</text><text x="400" y="40" text-anchor="middle">Differentiation</text>
+  <text x="58" y="96" text-anchor="middle">Broad</text><text x="58" y="112" text-anchor="middle">(whole market)</text><text x="58" y="166" text-anchor="middle">Narrow</text><text x="58" y="182" text-anchor="middle">(a segment)</text>
+  <rect x="110" y="50" width="180" height="70" rx="4" style="fill:var(--card);stroke:var(--line)"/><text x="200" y="90" text-anchor="middle" style="fill:var(--fg);font-weight:600">Cost leadership</text>
+  <rect x="300" y="50" width="180" height="70" rx="4" style="fill:var(--card);stroke:var(--line)"/><text x="390" y="90" text-anchor="middle" style="fill:var(--fg);font-weight:600">Differentiation</text>
+  <rect x="110" y="126" width="180" height="70" rx="4" style="fill:var(--gold-soft);stroke:var(--line)"/><text x="200" y="166" text-anchor="middle" style="fill:var(--fg);font-weight:600">Cost focus</text>
+  <rect x="300" y="126" width="180" height="70" rx="4" style="fill:var(--gold-soft);stroke:var(--line)"/><text x="390" y="166" text-anchor="middle" style="fill:var(--fg);font-weight:600">Differentiation focus</text>
+</svg><div class="cap">Porter's generic strategies: low cost, differentiation, and focus (either of them in a narrow segment).</div></div>`;
+
+const STAGES=[
+/* ---------------- STAGE 1 ---------------- */
+{ id:1, type:'drift', title:'Choosing markets and products', blurb:'Strategic direction: which markets to compete in and which products to offer.', serve:8, pass:6,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Strategic direction</h3>
+  <p>Strategic direction is the long-term choice about <b>which markets to compete in</b> and <b>which products to offer</b>. It is one of the biggest decisions a business makes because it commits resources for years and is hard to reverse.</p>
+  <h3>What influences the choice</h3>
+  <ul><li><b>Objectives</b>: growth, survival, spreading risk.</li>
+  <li><b>The market</b>: its size and growth, competition (Porter\'s five forces), barriers to entry.</li>
+  <li><b>The business\'s strengths</b>: its resources, finance, skills and core competences (SWOT).</li>
+  <li><b>Risk</b>: how much the owners are willing to take.</li>
+  <li><b>The external environment</b>: the economy, the law, technology, social trends.</li></ul>
+  <div class="rule"><b>The rule</b>Link the choice back to what the business is good at and the state of the market. A strategy that fits the business\'s strengths is more likely to work.</div>`,
+  items:[
+    {src:'Core rule · strategic direction', q:'About strategic direction.', text:'It is a decision about which markets to compete in and which products to offer.', ok:true, why:'That is the definition.'},
+    {src:'Core rule · strategic direction', q:'About strategic direction.', text:'It is a short-term decision that is easy to reverse.', ok:false, why:'It commits resources for years.'},
+    {src:'Core rule · influences', q:'A market is growing fast and has few strong competitors.', text:'This makes it more attractive to enter.', ok:true, why:'Growth and weak rivalry make profit more likely.'},
+    {src:'Core rule · influences', q:'A business has a core competence in battery technology.', text:'This may push it towards markets where that skill gives an advantage, such as electric bikes.', ok:true, why:'Strategy should build on strengths.'},
+    {src:'Core rule · risk', q:'A family business whose owners want to avoid risk.', text:'It is more likely to stick with existing products and markets.', ok:true, why:'Moving away from what it knows raises risk.'},
+    {src:'AQA June 2026 · Paper 2 mark scheme (Q3.2)', q:'A US garden machinery firm chose the UK as its first foreign market.', text:'A shared language and similar values reduce the risk of moving into a new market.', ok:true, why:'The mark scheme said it might want to limit risk as it was new to market development.'},
+    {src:'Core rule · finance', q:'About finance and strategic direction.', text:'A business short of cash may not be able to follow a strategy that needs heavy investment.', ok:true, why:'Resources limit the options.'},
+    {src:'Core rule · environment', q:'An ageing population.', text:'It may lead a business to develop products for older customers.', ok:true, why:'External change creates new opportunities.'},
+    {src:'Core rule · barriers', q:'A market protected by patents and strong brands.', text:'It is easy for a new business to enter.', ok:false, why:'These are barriers to entry.'}
+  ]},
+
+/* ---------------- STAGE 2 ---------------- */
+{ id:2, type:'mcq', title:'Ansoff\'s matrix: the four options', blurb:'Placing a strategy correctly in Ansoff\'s matrix.', serve:9, pass:7,
+  teach:`${ANSOFF}
+  ${tbl(['Strategy','Products','Markets','Example'],[['Market penetration','Existing','Existing','A café runs a loyalty card to get regulars to visit more often'],['Market development','Existing','New','A UK clothing brand starts selling in the USA, or to a new age group'],['New product development','New','Existing','A clothes store adds furniture for its existing customers'],['Diversification','New','New','A supermarket opens a bank']])}
+  <p>A "new market" can be a new country or region, or a new customer segment in the same country.</p>
+  <div class="trap"><b>The traps</b>Ask two questions: is the product new to this business, and are the customers new? On June 2019 Paper 1 Q8 the statements wrongly said market penetration means a new market and diversification can be a new product <b>or</b> a new market (it needs both). On June 2024 Paper 1 Q6 the statement that market development is a new product in a new market was false.</div>`,
+  items:[
+    {src:'AQA June 2017 · Paper 1 Q8', prompt:'Starbucks, an American coffee shop, opened over 300 tea shops in America to appeal to its existing customers. According to Ansoff\'s matrix this is:', o:['product development.','diversification.','market development.','market penetration.'], a:0, why:'This is AQA\'s answer. A new product for existing customers.'},
+    {src:'AQA June 2023 · Paper 1 Q3', prompt:'A women\'s clothes store adds furniture to its range to increase spending by its existing customers. According to Ansoff this is:', o:['product development','diversification','market development','market penetration'], a:0, why:'This is AQA\'s answer. The customers are the same, so it is not diversification.'},
+    {src:'AQA June 2022 · Paper 1 Q7', prompt:'A hot drinks business asks a focus group for views; customers say they want cakes with their drinks, so cakes are introduced. This is:', o:['product development, resulting from qualitative market research.','diversification, resulting from qualitative market research.','diversification, resulting from quantitative market research.','product development, resulting from quantitative market research.'], a:0, why:'This is AQA\'s answer. A focus group gives opinions, so it is qualitative.'},
+    {src:'AQA June 2019 · Paper 1 Q8', prompt:'Statement 1: "According to Ansoff, market penetration involves selling an existing product in a new market." Statement 2: "According to Ansoff, diversification can be either developing a new product or entering a new market."', o:['Statement 1 is false. Statement 2 is false.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2024 · Paper 1 Q6', prompt:'Statement 1: "According to Ansoff\'s matrix, market development involves selling a new product in a new market." Statement 2: "According to Ansoff\'s matrix, market penetration involves selling an existing product in an existing market."', o:['Statement 1 is false. Statement 2 is true.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'Core rule · market development', prompt:'A toy company that sells to children starts selling the same puzzles to adults. This is:', o:['market development','market penetration','product development','diversification'], a:0, why:'A new customer segment is a new market.'},
+    {src:'Core rule · market penetration', prompt:'A gym cuts its prices to win members from rival gyms in the same town. This is:', o:['market penetration','market development','product development','diversification'], a:0, why:'Same product, same market, more share.'},
+    {src:'Core rule · diversification', prompt:'A car maker starts building homes. This is:', o:['diversification','product development','market development','market penetration'], a:0, why:'New product and new customers.'},
+    {src:'Core rule · market development', prompt:'A UK bakery chain opens its first shops in France. This is:', o:['market development','diversification','product development','market penetration'], a:0, why:'Same products in a new market.'},
+    {src:'Core rule · product development', prompt:'A smartphone maker launches a smartwatch for its existing customers. This is:', o:['product development','market penetration','market development','diversification'], a:0, why:'A new product for existing customers.'}
+  ]},
+
+/* ---------------- STAGE 3 ---------------- */
+{ id:3, type:'drift', title:'Ansoff: risk and value', blurb:'Why risk rises across the matrix, and how useful the matrix really is.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Risk</h3>
+  <p>Risk rises as the business moves away from what it knows. Market penetration is usually the least risky; diversification the most, because the business knows neither the product nor the customers. Market development and product development sit in between.</p>
+  <p>But risk also depends on the situation: market penetration in a saturated market may fail, while diversification can <b>spread</b> risk across different markets.</p>
+  <h3>The value of the matrix</h3>
+  ${tbl(['Useful because','Limited because'],[['It sets out the options clearly','It does not say which option to choose'],['It highlights the risk of each option','It ignores the competition and the external environment'],['It encourages managers to think about growth','Real strategies may not fit neatly into one box']])}
+  <div class="trap"><b>The trap</b>Do not say diversification "always fails" or market penetration is "always safe". Say what it depends on: the business\'s resources, its knowledge of the market, and the competition.</div>`,
+  items:[
+    {src:'AQA June 2025 · Paper 1 Q5', q:'According to Ansoff\'s matrix.', text:'Diversification is the most risky strategy and market penetration is the least risky.', ok:true, why:'AQA\'s answer: both statements true.'},
+    {src:'AQA June 2026 · Paper 2 mark scheme (Q3.2)', q:'About market development.', text:'It is less risky than diversification but more risky than market penetration.', ok:true, why:'This was in the mark scheme.'},
+    {src:'Core rule · risk', q:'About diversification.', text:'It can reduce overall risk by spreading the business across different markets.', ok:true, why:'If one market declines, others may hold up.'},
+    {src:'Core rule · risk', q:'About market penetration.', text:'It is always a safe strategy.', ok:false, why:'In a saturated market, winning share may need costly price cuts.'},
+    {src:'Core rule · value', q:'About Ansoff\'s matrix.', text:'It tells managers which strategy is best.', ok:false, why:'It shows the options and their risk; managers still have to choose.'},
+    {src:'Core rule · value', q:'About Ansoff\'s matrix.', text:'It does not consider what competitors are doing.', ok:true, why:'Porter\'s five forces is more useful for that.'},
+    {src:'AQA June 2024 · Paper 3 mark scheme (Q6)', q:'About product development.', text:'Ansoff suggests it carries risk, because the new product may not succeed.', ok:true, why:'The mark scheme used this in an argument about innovation.'},
+    {src:'Core rule · reasons', q:'Why might a business choose market development?', text:'Its home market is saturated, so it looks for new customers for products it already makes well.', ok:true, why:'It uses existing strengths.'},
+    {src:'Core rule · reasons', q:'Why might a business choose diversification?', text:'Its existing market is in long-term decline.', ok:true, why:'It needs new products and new customers to survive.'},
+    {src:'Core rule · evaluation', q:'A question asks if diversification is the best strategy for a business.', text:'A strong answer will consider the business\'s resources and knowledge of the new market.', ok:true, why:'Evaluation depends on context.'}
+  ]},
+
+/* ---------------- STAGE 4 ---------------- */
+{ id:4, type:'mcq', title:'Porter\'s generic strategies', blurb:'Low cost, differentiation and focus.', serve:9, pass:7,
+  teach:`${PORTER}
+  <ul><li><b>Cost leadership</b>: be the lowest-cost producer in the market. Then either charge lower prices than rivals or charge similar prices and earn higher margins.</li>
+  <li><b>Differentiation</b>: offer something customers see as different and better (quality, design, brand, service), so they will pay more. Demand becomes more price inelastic.</li>
+  <li><b>Focus</b>: target a narrow segment (a niche) with either low cost or differentiation.</li></ul>
+  <p>Porter warned against being "stuck in the middle": not cheap enough to win on price and not different enough to win on value.</p>
+  <div class="trap"><b>The traps</b>Low cost means low <b>costs</b>, not just low prices. Bowman\'s strategic clock was removed from 2025: use Porter\'s generic strategies instead.</div>`,
+  items:[
+    {src:'AQA June 2025 · Paper 1 Q2', prompt:'In Porter\'s generic strategies, which would help a business achieve a differentiation strategy?', o:['Advertising leading to higher added value','Achieving economies of scale','Finding cheaper suppliers','New production methods leading to higher labour productivity'], a:0, why:'This is AQA\'s answer. The others lower costs.'},
+    {src:'AQA June 2025 · Paper 1 Q14', prompt:'Statement 1: "Low supplier power may encourage a retailer to use a cost leadership strategy." Statement 2: "A market leader may use a low-price strategy in order to create a barrier to entry."', o:['Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2024 · Paper 1 Q11', prompt:'Statement 1: "A business might improve the quality of its product in order to make its demand more price inelastic." Statement 2: "A business might improve the quality of its product in order to achieve a competitive advantage."', o:['Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is true.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer.'},
+    {src:'AQA June 2022 · Paper 1 Q10', prompt:'Statement 1: "A business might improve the quality of its product in order to make its demand more price elastic." Statement 2: "A business might improve the quality of its product in order to increase added value."', o:['Statement 1 is false. Statement 2 is true.','Statement 1 is true. Statement 2 is true.','Statement 1 is true. Statement 2 is false.','Statement 1 is false. Statement 2 is false.'], a:0, why:'This is AQA\'s answer. Better quality makes demand less price elastic.'},
+    {src:'Core rule · cost leadership', prompt:'Which business is most clearly following cost leadership?', o:['A budget airline with one aircraft type, online-only booking and quick turnarounds','A luxury hotel chain','A handmade furniture maker','A designer fashion label'], a:0, why:'Everything is set up to keep costs as low as possible.'},
+    {src:'Core rule · differentiation', prompt:'Which business is most clearly following differentiation?', o:['A phone maker whose design and brand let it charge more than rivals','A discount supermarket','A no-frills gym','A wholesaler of basic stationery'], a:0, why:'Customers pay more for something they see as different.'},
+    {src:'Core rule · focus', prompt:'A company makes only high-end bikes for professional racers. This is:', o:['differentiation focus','cost leadership','cost focus','broad differentiation'], a:0, why:'A narrow segment served with a premium product.'},
+    {src:'Core rule · stuck in the middle', prompt:'What does "stuck in the middle" mean in Porter\'s theory?', o:['Neither the lowest cost nor clearly different, so no competitive advantage','Having a medium-sized market share','Selling in two countries','Using both Ansoff and Porter'], a:0, why:'Porter argued such firms struggle to compete.'},
+    {src:'Core rule · cost leadership', prompt:'A cost leader charges the same price as rivals. What is the benefit?', o:['Higher profit margins because its costs are lower','Higher sales volume','More brand loyalty','Lower quality'], a:0, why:'Low cost does not have to mean low price.'},
+    {src:'Core rule · Bowman removed', prompt:'Which positioning model should you use for a 2027 exam answer?', o:['Porter\'s generic strategies','Bowman\'s strategic clock','Greiner\'s model','Hofstede\'s cultures'], a:0, why:'Bowman, Greiner and Hofstede were removed from 2025.'}
+  ]},
+
+/* ---------------- STAGE 5 ---------------- */
+{ id:5, type:'drift', title:'Achieving and keeping low cost', blurb:'Where low costs come from and whether they last.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Sources of low cost</h3>
+  <ul><li>Economies of scale (purchasing, technical, financial).</li>
+  <li>High capacity utilisation: using non-current assets as fully as possible spreads fixed costs.</li>
+  <li>Lean production, automation and high labour productivity.</li>
+  <li>Strong buyer power over suppliers; outsourcing or offshoring to cheaper locations.</li>
+  <li>A simple, standard product with few extras.</li></ul>
+  <h3>Keeping it</h3>
+  <p>Low cost can be copied: rivals can grow, find cheaper suppliers or automate. It lasts longer when it rests on something hard to copy, such as huge scale or a unique process.</p>
+  <div class="trap"><b>The traps</b>On June 2019 Paper 1 Q22 (low cost or differentiation: which is easier to maintain?) many described low cost without explaining how it is achieved or kept; good answers used economies of scale, buyer power and outsourcing. On June 2025 Paper 2 Q3.3 (using non-current assets fully as the route to low cost) some could not say what non-current assets are, or drifted into capital versus labour intensity.</div>`,
+  items:[
+    {src:'AQA June 2019 · Paper 1 report (Q22)', q:'An essay asks which type of competitive advantage is easier to maintain.', text:'Describing what a low-cost strategy is, without explaining how the low costs are achieved or kept, is enough.', ok:false, why:'The report criticised description without explanation.'},
+    {src:'AQA June 2019 · Paper 1 report (Q22)', q:'About maintaining low cost.', text:'Economies of scale and buyer power can help a business stay the lowest-cost producer.', ok:true, why:'The report credited these, along with outsourcing.'},
+    {src:'AQA June 2025 · Paper 2 report (Q3.3)', q:'About non-current assets.', text:'Using factories and machinery as fully as possible spreads fixed costs over more units, cutting unit costs.', ok:true, why:'This was the core argument.'},
+    {src:'AQA June 2025 · Paper 2 report (Q3.3)', q:'About non-current assets.', text:'Inventory is a non-current asset.', ok:false, why:'Inventory is a current asset. Some students could not tell the two apart.'},
+    {src:'AQA June 2025 · Paper 2 report (Q3.3)', q:'An "all low-cost businesses" question about using non-current assets.', text:'Good answers brought in other routes to low cost, such as outsourcing or lean production.', ok:true, why:'The report praised this wider context.'},
+    {src:'Core rule · copying', q:'About low cost.', text:'A low-cost advantage based on cheap suppliers is easy for rivals to copy.', ok:true, why:'Rivals can find the same suppliers.'},
+    {src:'Core rule · scale', q:'About cost leadership.', text:'It usually suits large businesses better than small ones.', ok:true, why:'Large businesses gain more economies of scale.'},
+    {src:'Core rule · capacity', q:'A business with high fixed costs and low capacity utilisation.', text:'It will find it hard to be a cost leader.', ok:true, why:'Fixed costs are spread over too few units.'},
+    {src:'Core rule · quality', q:'About low-cost strategies.', text:'They mean the product must be poor quality.', ok:false, why:'They mean low costs; quality must still be acceptable to customers.'},
+    {src:'AQA June 2023 · Paper 1 Q2', q:'About value added.', text:'Value added can be increased both by creating barriers to entry and by lowering unit costs.', ok:true, why:'AQA\'s answer: both statements true.'}
+  ]},
+
+/* ---------------- STAGE 6 ---------------- */
+{ id:6, type:'mcq', title:'Achieving and keeping differentiation', blurb:'Where differentiation comes from, and how it links to marketing, operations and innovation.', serve:9, pass:7,
+  teach:`<h3>Sources of differentiation</h3>
+  <p>Brand and reputation, design, quality, features, customer service, innovation, ethical credentials. Differentiation lets a business charge a higher price, because demand becomes less price elastic.</p>
+  <h3>Functional effects</h3>
+  ${tbl(['Function','Low cost','Differentiation'],[['Marketing','Price-led promotion; less spending on brand','Heavy spending on brand and promotion'],['Operations','Efficiency, scale, standard products','Quality, design, flexibility'],['HR','Lower-skill roles, efficiency','Skilled, creative staff; training']])}
+  <div class="trap"><b>The traps</b>On June 2024 Paper 3 Q6 (is innovation essential for all businesses that differentiate?) many drifted into the drawbacks of innovation, instead of arguing that differentiation can come from other sources such as brand or service. On June 2020 Paper 1 Q24 the question needed both marketing and operations spending.</div>`,
+  items:[
+    {src:'AQA June 2024 · Paper 3 report (Q6)', prompt:'Is innovation essential for every business with a differentiation strategy? Which counter-argument stays on the question?', o:['Differentiation can come from brand, service or quality instead, so innovation is not always essential','Innovation is expensive','Innovation may fail','Patents run out'], a:0, why:'The report said many lost focus by writing about the drawbacks of innovation.'},
+    {src:'AQA June 2020 · Paper 1 report (Q24)', prompt:'A business moves from low cost to differentiation. Will it spend more on marketing and less on operations? Which is the best point?', o:['Marketing spending is likely to rise to build the brand, but operations spending may also rise to deliver higher quality','Only marketing changes','Operations spending must fall','Nothing changes'], a:0, why:'The question needed both functions; good answers showed operations spending may not fall.'},
+    {src:'Core rule · PED', prompt:'Successful differentiation is most likely to make demand:', o:['more price inelastic','more price elastic','perfectly elastic','unaffected'], a:0, why:'Customers see fewer close substitutes.'},
+    {src:'Core rule · sources', prompt:'Which is least likely to be a source of differentiation?', o:['Buying the same standard inputs as rivals','A strong brand','Excellent customer service','A unique design'], a:0, why:'Standard inputs do not make the product different.'},
+    {src:'AQA June 2026 · Paper 2 report (Q2.2)', prompt:'How could being a social enterprise give a business a competitive advantage? Which answer goes far enough?', o:['Its social mission builds customer loyalty, which raises repeat sales and so revenue','It has a good reputation','Customers like it','It is ethical'], a:0, why:'The report said weaker answers did not explain how reputation turns into better performance.'},
+    {src:'AQA June 2026 · Paper 2 report (Q2.2)', prompt:'The case shows competitive pricing matters to a social enterprise\'s customers. What should you avoid arguing?', o:['That it can raise prices a lot because of its reputation','That loyalty may raise repeat sales','That a good image attracts new customers','That staff may be more motivated'], a:0, why:'The report criticised arguments that ignored the evidence on pricing.'},
+    {src:'Core rule · copying', prompt:'Which differentiation is hardest for rivals to copy?', o:['A brand built up over decades','A temporary price promotion','A new colour option','A free gift'], a:0, why:'Reputation takes years to build.'},
+    {src:'Core rule · cost', prompt:'Which is a risk of differentiation?', o:['Customers may not value the difference enough to pay the higher price','It always lowers prices','It reduces added value','It removes the need for marketing'], a:0, why:'If customers will not pay, costs rise without extra revenue.'},
+    {src:'Core rule · HR', prompt:'A design-led business differentiates through innovation. Which HR approach fits best?', o:['Recruit and keep creative, skilled staff, with training and some autonomy','Use mostly untrained temporary staff','Pay piece rates for every design','Supervise every decision closely'], a:0, why:'Functional decisions should support the strategy.'}
+  ]},
+
+/* ---------------- STAGE 7 ---------------- */
+{ id:7, type:'drift', title:'Focus and niche markets', blurb:'Serving a narrow segment, and why large businesses sometimes do it.', serve:8, pass:6,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Focus</h3>
+  <p>A focus strategy targets a narrow segment, either with low costs (cost focus) or with a specialised product (differentiation focus).</p>
+  ${tbl(['Benefits','Drawbacks'],[['Less competition, at least at first','A small market limits sales and economies of scale'],['Can tailor the product closely to customers\' needs','Larger rivals may enter if the niche grows'],['Customers may pay more','Vulnerable if tastes in the niche change']])}
+  <div class="trap"><b>The traps</b>On June 2023 Paper 1 Q18 (why might a large business enter a niche market?) the discriminator was using the size of the business, not just describing niche markets. On June 2022 Paper 1 Q13 economies of scope were the least likely advantage of a niche for a small business.</div>`,
+  items:[
+    {src:'AQA June 2023 · Paper 1 report (Q18)', q:'A question asks why a large business might launch a product in a niche market.', text:'A description of what niche markets are, without using the fact that the business is large, would reach the top level.', ok:false, why:'The report said failing to use the size of the business held answers back.'},
+    {src:'Based on AQA June 2023 · Paper 1 report (Q18)', q:'A large business enters a niche market.', text:'It can use its existing brand, finance and distribution to compete with small specialist firms.', ok:true, why:'This uses the size of the business.'},
+    {src:'Based on AQA June 2022 · Paper 1 Q13', q:'About niche markets for small businesses.', text:'Economies of scope are a likely advantage.', ok:false, why:'AQA\'s answer: economies of scope were the least likely advantage.'},
+    {src:'Core rule · niche', q:'About niche markets.', text:'They usually allow a business to tailor its products closely to customers.', ok:true, why:'A small, specific group is easier to understand.'},
+    {src:'Core rule · niche', q:'A niche grows quickly.', text:'This may attract larger competitors.', ok:true, why:'Growth makes the market more attractive to enter.'},
+    {src:'Core rule · focus', q:'A budget hotel chain only for business travellers on short trips.', text:'This is an example of cost focus.', ok:true, why:'A narrow segment served at low cost.'},
+    {src:'Core rule · niche', q:'About niche markets.', text:'They allow large economies of scale.', ok:false, why:'Sales volumes are usually small.'},
+    {src:'Core rule · niche', q:'About the risk of a niche strategy.', text:'Relying on one small segment can be risky if its tastes change.', ok:true, why:'There is little else to fall back on.'},
+    {src:'Core rule · pricing', q:'A firm serving a specialist niche.', text:'It may be able to charge higher prices because there are few alternatives.', ok:true, why:'Demand is less price elastic.'}
+  ]},
+
+/* ---------------- STAGE 8 ---------------- */
+{ id:8, type:'mcq', title:'Competitive advantage', blurb:'Distinctive capabilities, and how to sustain an advantage.', serve:9, pass:7,
+  teach:`<h3>Competitive advantage</h3>
+  <p>A competitive advantage is something that lets a business offer better value than rivals: lower costs or a product customers prefer. It comes from <b>distinctive capabilities</b>, such as a strong reputation, innovation (patents), relationships with suppliers or customers, or a unique location.</p>
+  <h3>Sustaining it</h3>
+  <p>An advantage lasts if it is hard to copy. Rivals copy, technology changes and tastes change, so businesses must keep investing: in R&D, brand, staff and new equipment.</p>
+  <div class="trap"><b>The traps</b>On June 2025 Paper 1 Q23 (is the need to keep investing the biggest difficulty in maintaining a competitive advantage?) students understood competitive advantage but were less sure what "investment" means. Investment means spending now on assets or capabilities for future returns, e.g. machinery, R&D, training, brand building.</div>`,
+  items:[
+    {src:'AQA June 2025 · Paper 1 report (Q23)', prompt:'Which of these is investment in maintaining a competitive advantage?', o:['Spending on R&D to develop the next version of a product','Paying this month\'s wages','Paying dividends','Repaying an overdraft'], a:0, why:'The report said many were unsure what investment means.'},
+    {src:'AQA June 2025 · Paper 1 report (Q23)', prompt:'Which example would best support an argument about continued investment?', o:['A drug company that must keep funding research as patents expire','A corner shop','A business with no rivals','A government department'], a:0, why:'The report praised examples from the pharmaceutical and car industries.'},
+    {src:'Core rule · distinctive capability', prompt:'Which is a distinctive capability?', o:['A patented technology rivals cannot use','Having a website','Paying the minimum wage','Using email'], a:0, why:'It is unique and protected.'},
+    {src:'Core rule · sustaining', prompt:'Why is a competitive advantage based only on a lower price hard to sustain?', o:['Rivals can cut their prices too','Customers never like low prices','Prices cannot change','It is illegal'], a:0, why:'Unless costs are also lower, the advantage disappears.'},
+    {src:'Core rule · sustaining', prompt:'Which is most likely to erode a competitive advantage?', o:['A rival develops a better technology','The business trains its staff','The business builds its brand','The business renews its patent portfolio'], a:0, why:'Technological change can make an advantage out of date.'},
+    {src:'Core rule · value added', prompt:'A successful competitive advantage is most likely to increase:', o:['added value and profit margins','costs only','price elasticity of demand','labour turnover'], a:0, why:'Customers pay more or costs are lower.'},
+    {src:'Based on AQA June 2025 · Paper 1 Q23', prompt:'A strong evaluation of the essay about investment would say it depends on:', o:['how fast the industry changes, e.g. technology firms need constant investment while a luxury brand relies more on heritage','nothing; investment is always the biggest difficulty','the business\'s name','the number of shareholders'], a:0, why:'Evaluation shows what the answer depends on.'},
+    {src:'Core rule · reputation', prompt:'Why can reputation be a lasting advantage?', o:['It is built up over many years and cannot be bought quickly','It costs nothing','It never changes','It is protected by patent'], a:0, why:'It takes time to build, so it is hard to copy.'},
+    {src:'Core rule · copying', prompt:'Which advantage is easiest to copy?', o:['Opening longer hours','A unique location','Decades of brand loyalty','A patent'], a:0, why:'Rivals can easily do the same.'}
+  ]},
+
+/* ---------------- STAGE 9 ---------------- */
+{ id:9, type:'drift', title:'Choosing a positioning strategy', blurb:'What influences the choice, and how to judge its value in an essay.', serve:9, pass:7,
+  labels:TF, showLabel:'True or false?',
+  teach:`<h3>Influences on the choice</h3>
+  <ul><li>The business\'s strengths: scale, skills, brand, technology.</li>
+  <li>The market: competitors\' positions, customers\' price sensitivity, the size of segments.</li>
+  <li>Porter\'s five forces: for example, low supplier power makes cost leadership easier.</li>
+  <li>The external environment: in a recession, low-cost positions may gain; when incomes rise, differentiated products may gain.</li></ul>
+  <h3>Judging the value of a strategy</h3>
+  <p>A positioning strategy works if it gives a competitive advantage that customers value, that rivals cannot easily copy, and that fits the business\'s resources. Answers should say what the success depends on.</p>
+  <div class="trap"><b>The traps</b>Questions about "all businesses" (e.g. June 2024 Paper 3 Q6) need different types of business. Stay on the strategy named in the question: a differentiation question is not a general question about innovation. June 2024 Paper 2 Q2.1 asked about a change in positioning using Bowman\'s clock; from 2025, answer this kind of question with Porter.</div>`,
+  items:[
+    {src:'Core rule · influences', q:'Customers in a market are very price sensitive.', text:'A low-cost position is more likely to succeed.', ok:true, why:'Price is what wins customers.'},
+    {src:'Core rule · influences', q:'A recession hits the economy.', text:'Businesses with a low-cost position may gain customers.', ok:true, why:'Customers trade down when incomes fall.'},
+    {src:'Core rule · influences', q:'A small business with no economies of scale.', text:'It is more likely to compete through differentiation or focus than cost leadership.', ok:true, why:'It cannot match the costs of large rivals.'},
+    {src:'AQA June 2024 · Paper 3 report (Q6)', q:'An "all businesses" question about differentiation.', text:'Showing when the statement is true and when it is false, in different situations, is what the examiners want.', ok:true, why:'The report said this shows what the answer depends on.'},
+    {src:'Core rule · five forces', q:'High buyer power in a market.', text:'It makes it easier for businesses to charge premium prices.', ok:false, why:'Powerful buyers push prices down.'},
+    {src:'Core rule · value', q:'About a positioning strategy.', text:'It is valuable if it gives an advantage customers care about and rivals cannot easily copy.', ok:true, why:'Both conditions matter.'},
+    {src:'Core rule · Bowman removed', q:'From 2025.', text:'You can still use Bowman\'s strategic clock as your main model for positioning.', ok:false, why:'It was removed; use Porter\'s generic strategies.'},
+    {src:'Core rule · change', q:'A business changes from low cost to differentiation.', text:'It may need new skills, more marketing and higher quality standards.', ok:true, why:'Every function has to support the new position.'},
+    {src:'Core rule · stuck in the middle', q:'A business tries to be both the cheapest and the most premium brand.', text:'Porter would warn it risks being stuck in the middle.', ok:true, why:'Trying to do both can mean doing neither well.'},
+    {src:'Core rule · end point', q:'A question asks how a differentiation strategy affects profit.', text:'The chain must finish at profit, e.g. higher prices raise margins and so profit.', ok:true, why:'Always reach the end point named in the question.'}
+  ]},
+
+/* ---------------- STAGE 10 ---------------- */
+{ id:10, type:'timed', title:'Against the clock', blurb:'Fifteen mixed questions from the whole unit, 30 seconds each.', pass:12, poolFrom:[1,2,3,4,5,6,7,8,9], count:15, seconds:30,
+  teach:`<p>Fifteen questions drawn at random from the rest of this unit, with 30 seconds each. Placing a strategy in Ansoff\'s matrix and recognising Porter\'s strategies should be automatic.</p>
+  <p>You get different questions each time you try.</p>`,
+  items:[]}
+];
+
+window.COURSE={
+  id:'rt38', key:'rt38_course_v1', offset:1400, short:'Rules and Traps 3.8',
+  name:'Rules and Traps: Unit 3.8',
+  hero:{kicker:'Rules and Traps · Unit 3.8',
+    title:'Choosing strategic <em>direction</em>',
+    lede:'Which markets and products, Ansoff\'s matrix, Porter\'s generic strategies, focus and niche markets, and competitive advantage. Each stage starts with a refresher and the rules, then shows you the traps AQA has caught students with since 2017. Pass each stage to unlock the next.'},
+  doneText:'You have worked through every rule and trap in Unit 3.8. Before any answer here, check whether the product and the customers are new, that low cost means low costs, and that you stay on the strategy named in the question.',
+  stages:STAGES
+};
+</script>
+<script src="account.js"></script>
+<script src="course-engine.js"></script>
+<script src="visit.js" defer></script>
+</body>
+</html>
